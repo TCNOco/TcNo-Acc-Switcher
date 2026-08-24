@@ -14,7 +14,9 @@ type profileImageSource struct {
 	RemoteURL string
 }
 
-var profileImageProviderLog = slog.Default().With("component", "profile-image-provider")
+func profileImageProviderLog() *slog.Logger {
+	return slog.Default().With("component", "profile-image-provider")
+}
 
 func platformProfileImageSource(platformKey, folder string, ctx platform.PathTokenContext) (profileImageSource, bool, error) {
 	key := strings.ToLower(strings.TrimSpace(platformKey))
@@ -79,7 +81,7 @@ func platformSuggestedSaveName(platformKey, folder string, ctx platform.PathToke
 		if strings.TrimSpace(userPat) == "" {
 			userPat = builtInPatternPath(d, folder, ctx, `%LocalAppData%\Electronic Arts\EA Desktop\user_*.ini`, vars, "", false)
 		}
-		profileImageProviderLog.Debug("ea suggested-name patterns", "builtInUsernameFile", d.Extras.BuiltInUsernameFile, "builtInUserId", d.Extras.BuiltInUserId, "resolvedDataPattern", dataPat, "resolvedUserPattern", userPat)
+		profileImageProviderLog().Debug("ea suggested-name patterns", "builtInUsernameFile", d.Extras.BuiltInUsernameFile, "builtInUserId", d.Extras.BuiltInUserId, "resolvedDataPattern", dataPat, "resolvedUserPattern", userPat)
 		name, err := basicplatforms.EASuggestedName(dataPat, userPat)
 		return strings.TrimSpace(name), true, err
 	case "rockstar":
@@ -88,7 +90,7 @@ func platformSuggestedSaveName(platformKey, folder string, ctx platform.PathToke
 		if strings.TrimSpace(dataPat) == "" {
 			dataPat = builtInPatternPath(d, "", platform.PathTokenContext{}, `%Documents%\Rockstar Games\Social Club\Launcher\Renderer\Default\Cache\Cache_Data\data_*`, vars, "", false)
 		}
-		profileImageProviderLog.Debug("rockstar suggested-name pattern", "builtInUsernameFile", d.Extras.BuiltInUsernameFile, "resolvedDataPattern", dataPat)
+		profileImageProviderLog().Debug("rockstar suggested-name pattern", "builtInUsernameFile", d.Extras.BuiltInUsernameFile, "resolvedDataPattern", dataPat)
 		name, err := basicplatforms.RockstarSuggestedName(dataPat)
 		return strings.TrimSpace(name), true, err
 	case "geforce now":
@@ -96,7 +98,7 @@ func platformSuggestedSaveName(platformKey, folder string, ctx platform.PathToke
 		if strings.TrimSpace(dataPat) == "" {
 			dataPat = builtInPatternPath(d, folder, ctx, `%LocalAppData%\NVIDIA Corporation\GeForceNOW\CefCache\Default\Cache\Cache_Data\data_*`, vars, "", false)
 		}
-		profileImageProviderLog.Debug("geforce now suggested-name pattern", "builtInUsernameFile", d.Extras.BuiltInUsernameFile, "resolvedDataPattern", dataPat)
+		profileImageProviderLog().Debug("geforce now suggested-name pattern", "builtInUsernameFile", d.Extras.BuiltInUsernameFile, "resolvedDataPattern", dataPat)
 		name, err := basicplatforms.GeForceNowSuggestedName(dataPat)
 		return strings.TrimSpace(name), true, err
 	default:

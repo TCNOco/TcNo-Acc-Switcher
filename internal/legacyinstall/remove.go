@@ -33,7 +33,9 @@ const BackupSuffix = ".old"
 // Ok reports whether every entry was removed.
 func (r Result) Ok() bool { return len(r.Failed) == 0 }
 
-var removeLog = slog.Default().With("component", "legacy-install")
+func removeLog() *slog.Logger {
+	return slog.Default().With("component", "legacy-install")
+}
 
 // Remove deletes every entry in rep. Entries are re-validated against the
 // release manifest first, so a Report that has been tampered with or built
@@ -45,7 +47,7 @@ func Remove(rep Report) Result {
 	}
 	for _, e := range rep.Entries {
 		if !safeToRemove(rep.ExeDir, e) {
-			removeLog.Warn("skipping entry outside the legacy manifest", "path", e.Path)
+			removeLog().Warn("skipping entry outside the legacy manifest", "path", e.Path)
 			continue
 		}
 		if e.Preserve {
@@ -55,7 +57,7 @@ func Remove(rep Report) Result {
 				continue
 			}
 			res.Preserved = append(res.Preserved, backup)
-			removeLog.Info("kept a copy of a file the old version let you edit", "path", backup)
+			removeLog().Info("kept a copy of a file the old version let you edit", "path", backup)
 			continue
 		}
 		if err := fsutil.RemoveAllWithRetry(e.Path, removeRetryWindow, os.RemoveAll); err != nil {
@@ -65,7 +67,7 @@ func Remove(rep Report) Result {
 		res.Removed = append(res.Removed, e.Path)
 		res.Bytes += e.Bytes
 	}
-	removeLog.Info("legacy install cleanup",
+	removeLog().Info("legacy install cleanup",
 		"removed", len(res.Removed), "kept", len(res.Preserved),
 		"failed", len(res.Failed), "freed", res.Bytes)
 	return res

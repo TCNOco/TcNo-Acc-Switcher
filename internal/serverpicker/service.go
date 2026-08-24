@@ -149,14 +149,14 @@ func (s *Service) LoadServers(gameID string) (ServerListDTO, error) {
 func (s *Service) reconcileBlocked(revision int64, groups []Group) map[string]struct{} {
 	st, err := loadState()
 	if err != nil {
-		serverPickerLog.Warn("could not read saved selection", "err", err)
+		serverPickerLog().Warn("could not read saved selection", "err", err)
 		st = defaultState()
 	}
 
 	ids := st.BlockedGroups
 	fromFirewall, ferr := listBlockedGroupIDs()
 	if ferr != nil {
-		serverPickerLog.Warn("could not read firewall rules; using saved selection", "err", ferr)
+		serverPickerLog().Warn("could not read firewall rules; using saved selection", "err", ferr)
 	} else {
 		ids = fromFirewall
 	}
@@ -176,7 +176,7 @@ func (s *Service) reconcileBlocked(revision int64, groups []Group) map[string]st
 				continue
 			}
 			if err := applyBlock(g.ID, g.RelayIPs(), true); err != nil {
-				serverPickerLog.Warn("could not refresh firewall rule", "group", g.ID, "err", err)
+				serverPickerLog().Warn("could not refresh firewall rule", "group", g.ID, "err", err)
 				revisionStale = false
 			}
 		}
@@ -187,7 +187,7 @@ func (s *Service) reconcileBlocked(revision int64, groups []Group) map[string]st
 		next.SDRRevision = revision
 	}
 	if err := saveState(next); err != nil {
-		serverPickerLog.Warn("could not save selection", "err", err)
+		serverPickerLog().Warn("could not save selection", "err", err)
 	}
 	return blocked
 }
@@ -244,7 +244,7 @@ func (s *Service) setBlocked(gameID string, groupIDs []string, blocked bool) err
 			if winutil.IsNeedsAdmin(err) {
 				return err
 			}
-			serverPickerLog.Error("could not apply firewall rule", "group", id, "blocked", blocked, "err", err)
+			serverPickerLog().Error("could not apply firewall rule", "group", id, "blocked", blocked, "err", err)
 			failures = append(failures, id)
 		}
 	}
@@ -259,7 +259,7 @@ func (s *Service) setBlocked(gameID string, groupIDs []string, blocked bool) err
 func (s *Service) persistCurrentSelection() error {
 	ids, err := listBlockedGroupIDs()
 	if err != nil {
-		serverPickerLog.Warn("could not read back firewall rules", "err", err)
+		serverPickerLog().Warn("could not read back firewall rules", "err", err)
 		return nil
 	}
 	st, err := loadState()
@@ -268,7 +268,7 @@ func (s *Service) persistCurrentSelection() error {
 	}
 	st.BlockedGroups = ids
 	if err := saveState(st); err != nil {
-		serverPickerLog.Warn("could not save selection", "err", err)
+		serverPickerLog().Warn("could not save selection", "err", err)
 	}
 	return nil
 }

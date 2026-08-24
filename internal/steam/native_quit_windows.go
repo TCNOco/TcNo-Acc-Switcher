@@ -37,7 +37,7 @@ func steamNativeQuit(root string) func() error {
 		// silently put every Steam switch back on the 5s graceful window that never works.
 		// Choosing no native quit at all is still available through the closing method:
 		// TaskKill and Electron never reach this path.
-		steamLog.Debug("steam descriptor has no QuitArgs; using built-in default", "args", defaultSteamQuitArgs)
+		steamLog().Debug("steam descriptor has no QuitArgs; using built-in default", "args", defaultSteamQuitArgs)
 		args = defaultSteamQuitArgs
 	}
 	return func() error {

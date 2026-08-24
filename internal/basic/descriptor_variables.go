@@ -7,7 +7,9 @@ import (
 	"TcNo-Acc-Switcher/internal/platform"
 )
 
-var descriptorVarsLog = slog.Default().With("component", "descriptor-variables")
+func descriptorVarsLog() *slog.Logger {
+	return slog.Default().With("component", "descriptor-variables")
+}
 
 func resolveDescriptorVariables(d platform.Descriptor, folder string, ctx platform.PathTokenContext, accountCacheRoot string, saved bool) map[string]string {
 	out := map[string]string{}
@@ -25,13 +27,13 @@ func resolveDescriptorVariables(d platform.Descriptor, folder string, ctx platfo
 			if saved {
 				ref = mapSavedLevelDBReference(d, folder, ctx, ref, accountCacheRoot)
 			}
-			descriptorVarsLog.Debug("resolve variable via leveldb", "name", name, "saved", saved, "ref", ref)
+			descriptorVarsLog().Debug("resolve variable via leveldb", "name", name, "saved", saved, "ref", ref)
 			if resolved, err := resolveLevelDBReference(ref, ctx); err == nil {
 				out[name] = strings.TrimSpace(resolved)
-				descriptorVarsLog.Debug("resolved variable via leveldb", "name", name, "valuePreview", previewLevelDBValue(out[name]))
+				descriptorVarsLog().Debug("resolved variable via leveldb", "name", name, "valuePreview", previewLevelDBValue(out[name]))
 				continue
 			} else {
-				descriptorVarsLog.Debug("resolve variable via leveldb failed", "name", name, "saved", saved, "ref", ref, "err", err)
+				descriptorVarsLog().Debug("resolve variable via leveldb failed", "name", name, "saved", saved, "ref", ref, "err", err)
 				// Do not treat failed leveldb references as plain paths/strings.
 				// Keep variable empty so callers never receive literal ".\\leveldb:..." text.
 				out[name] = ""
@@ -39,7 +41,7 @@ func resolveDescriptorVariables(d platform.Descriptor, folder string, ctx platfo
 			}
 		}
 		out[name] = strings.TrimSpace(applyVariableTransformPipeline(expandDescriptorVariables(expandPlatformPath(v, folder, ctx), out)))
-		descriptorVarsLog.Debug("resolved variable via template", "name", name, "valuePreview", previewLevelDBValue(out[name]))
+		descriptorVarsLog().Debug("resolved variable via template", "name", name, "valuePreview", previewLevelDBValue(out[name]))
 	}
 	return out
 }
@@ -67,10 +69,10 @@ func resolveDescriptorValue(d platform.Descriptor, raw, folder string, ctx platf
 	v = strings.TrimSpace(expandDescriptorVariables(v, vars))
 	if resolved, handled, err := resolveLatestModifiedFileValue(v, folder, ctx); handled {
 		if err != nil {
-			descriptorVarsLog.Debug("resolve descriptor value via latest modified file failed", "saved", saved, "value", v, "err", err)
+			descriptorVarsLog().Debug("resolve descriptor value via latest modified file failed", "saved", saved, "value", v, "err", err)
 			return ""
 		}
-		descriptorVarsLog.Debug("resolved descriptor value via latest modified file", "value", resolved)
+		descriptorVarsLog().Debug("resolved descriptor value via latest modified file", "value", resolved)
 		return strings.TrimSpace(applyVariableTransformPipeline(strings.TrimSpace(resolved)))
 	}
 	if isLevelDBReference(v) {
@@ -78,23 +80,23 @@ func resolveDescriptorValue(d platform.Descriptor, raw, folder string, ctx platf
 		if saved {
 			ref = mapSavedLevelDBReference(d, folder, ctx, ref, accountCacheRoot)
 		}
-		descriptorVarsLog.Debug("resolve descriptor value via leveldb", "saved", saved, "ref", ref)
+		descriptorVarsLog().Debug("resolve descriptor value via leveldb", "saved", saved, "ref", ref)
 		if resolved, err := resolveLevelDBReference(ref, ctx); err == nil {
 			out := strings.TrimSpace(resolved)
-			descriptorVarsLog.Debug("resolved descriptor value via leveldb", "valuePreview", previewLevelDBValue(out))
+			descriptorVarsLog().Debug("resolved descriptor value via leveldb", "valuePreview", previewLevelDBValue(out))
 			return strings.TrimSpace(applyVariableTransformPipeline(out))
 		} else {
-			descriptorVarsLog.Debug("resolve descriptor value via leveldb failed", "saved", saved, "ref", ref, "err", err)
+			descriptorVarsLog().Debug("resolve descriptor value via leveldb failed", "saved", saved, "ref", ref, "err", err)
 			// Do not degrade to plain path expansion for command values.
 			return ""
 		}
 	}
 	if resolved, handled, err := resolveSQLiteValue(v, folder, ctx); handled {
 		if err != nil {
-			descriptorVarsLog.Debug("resolve descriptor value via sqlite failed", "saved", saved, "value", v, "err", err)
+			descriptorVarsLog().Debug("resolve descriptor value via sqlite failed", "saved", saved, "value", v, "err", err)
 			return ""
 		}
-		descriptorVarsLog.Debug("resolved descriptor value via sqlite", "valuePreview", previewLevelDBValue(resolved))
+		descriptorVarsLog().Debug("resolved descriptor value via sqlite", "valuePreview", previewLevelDBValue(resolved))
 		return strings.TrimSpace(applyVariableTransformPipeline(strings.TrimSpace(resolved)))
 	}
 	return strings.TrimSpace(applyVariableTransformPipeline(strings.TrimSpace(expandPlatformPath(v, folder, ctx))))

@@ -83,12 +83,12 @@ func StartupCleanup(dir string) {
 		return
 	}
 	if !Writable(dir) {
-		removeLog.Info("found files from the old version; removal needs elevation",
+		removeLog().Info("found files from the old version; removal needs elevation",
 			"dir", rep.ExeDir, "entries", rep.Count(), "size", HumanBytes(rep.Bytes),
 			"dismissed", loadState().Dismissed)
 		return
 	}
-	removeLog.Info("removing files from the old version",
+	removeLog().Info("removing files from the old version",
 		"dir", rep.ExeDir, "entries", rep.Count(), "size", HumanBytes(rep.Bytes))
 	go func() {
 		Remove(rep)
@@ -101,11 +101,11 @@ func pruneUninstallEntriesBestEffort(dir string) {
 	if err != nil {
 		// Unelevated this is just access denied; the installer and the elevated
 		// path both cover it.
-		removeLog.Debug("could not remove the old uninstall entry", "err", err)
+		removeLog().Debug("could not remove the old uninstall entry", "err", err)
 		return
 	}
 	for _, k := range keys {
-		removeLog.Info("removed stale uninstall entry", "key", k)
+		removeLog().Info("removed stale uninstall entry", "key", k)
 	}
 }
 

@@ -39,7 +39,7 @@ func refreshRunningProcessCache(force bool) {
 	}
 	set, err := winutil.SnapshotRunningExeBasenames()
 	if err != nil {
-		gameStatsLog.Debug("game stats process snapshot failed", "err", err)
+		gameStatsLog().Debug("game stats process snapshot failed", "err", err)
 		return
 	}
 	gameStatsProcessCache = set

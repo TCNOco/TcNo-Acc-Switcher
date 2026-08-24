@@ -99,7 +99,7 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 		return err
 	}
 	if err := winutil.KillByNameWithOpts(steamKillNames, winutil.ClosingMethod(st.ClosingMethod), nativeQuitOpts(root)); err != nil {
-		steamLog.Warn("kill steam processes", slog.Any("err", err))
+		steamLog().Warn("kill steam processes", slog.Any("err", err))
 	}
 
 	platform.EmitActionBarStatusI18n("Status_ActionBar_UpdatingSteamLogin")
@@ -109,14 +109,14 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 	}
 
 	if err := setShowSteamSwitcher(root, st.ShowSteamSwitcher); err != nil {
-		steamLog.Warn("config.vdf AlwaysShowUserChooser", slog.Any("err", err))
+		steamLog().Warn("config.vdf AlwaysShowUserChooser", slog.Any("err", err))
 	}
 
 	if pS >= 0 && strings.TrimSpace(steamID64) != "" {
 		platform.EmitActionBarStatusI18n("Status_ActionBar_UpdatingSteamPersona")
 		platform.EmitActionBarStatusI18nVars("Status_UpdatingFile", map[string]string{"file": "localconfig.vdf"})
 		if err := setPersonaStateLocalConfig(root, steamID64, pS); err != nil {
-			steamLog.Warn("localconfig ePersonaState", slog.Any("err", err))
+			steamLog().Warn("localconfig ePersonaState", slog.Any("err", err))
 		}
 	}
 
@@ -271,10 +271,10 @@ func writeLoginUsersAndAutoLogin(steamRoot, selectedID64 string) error {
 		// the next read anyway. Leave Steam's file alone and let the cleared
 		// AutoLoginUser below put Steam on its account chooser instead.
 		if strings.TrimSpace(u.AccountName) == "" && strings.TrimSpace(u.PersonaName) == "" {
-			steamLog.Warn("stored Steam account has no login or persona name; Steam will open its account chooser",
+			steamLog().Warn("stored Steam account has no login or persona name; Steam will open its account chooser",
 				slog.String("steamId", tailSteamID(selected)))
 		} else {
-			steamLog.Info("re-creating a loginusers.vdf row from the account store",
+			steamLog().Info("re-creating a loginusers.vdf row from the account store",
 				slog.String("steamId", tailSteamID(selected)))
 			users = append(users, u)
 		}

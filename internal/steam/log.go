@@ -6,7 +6,9 @@ import (
 )
 
 // steamLog is the structured logger for this package (Steam account sync, VDF, HTTP).
-var steamLog = slog.Default().With("component", "steam")
+func steamLog() *slog.Logger {
+	return slog.Default().With("component", "steam")
+}
 
 // tailSteamID logs only the last 6 digits to reduce PII in logs.
 func tailSteamID(id string) string {

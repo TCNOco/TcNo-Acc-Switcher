@@ -71,7 +71,7 @@ func FetchMiniprofile(ctx context.Context, client *http.Client, steamID64 string
 				// and get the same answer, so the endpoint stands down as a whole
 				// rather than each of them finding out for itself.
 				miniprofileLimiter.penalise(miniprofilePenalty)
-				steamLog.Warn("miniprofile endpoint refused; standing down",
+				steamLog().Warn("miniprofile endpoint refused; standing down",
 					slog.String("steamId", tailSteamID(steamID64)),
 					slog.Int("status", resp.StatusCode),
 					slog.Duration("for", miniprofilePenalty))
@@ -86,13 +86,13 @@ func FetchMiniprofile(ctx context.Context, client *http.Client, steamID64 string
 		container := extractMiniprofileContainerHTML(page)
 		sanitizedHTML = sanitizeMiniprofileHTML(container)
 		if strings.TrimSpace(container) != "" && strings.TrimSpace(sanitizedHTML) == "" {
-			steamLog.Warn("miniprofile sanitize produced empty output",
+			steamLog().Warn("miniprofile sanitize produced empty output",
 				slog.String("steamId", tailSteamID(steamID64)))
 		}
 		if strings.TrimSpace(sanitizedHTML) != "" {
 			rewritten, embErr := embedMiniprofileHTMLAssets(ctx, client, steamID64, sanitizedHTML, maxAgeDays)
 			if embErr != nil {
-				steamLog.Warn("miniprofile asset embed failed",
+				steamLog().Warn("miniprofile asset embed failed",
 					slog.String("steamId", tailSteamID(steamID64)),
 					slog.Any("err", embErr))
 			} else if strings.TrimSpace(rewritten) != "" {

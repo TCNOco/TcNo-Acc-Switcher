@@ -113,7 +113,7 @@ func (s *SteamService) buildSteamListContext() (*steamListContext, error) {
 
 	root, err := ResolveInstallFolder(exeDir, st, app, raw)
 	if err != nil {
-		steamLog.Error("ResolveInstallFolder failed", slog.Any("err", err))
+		steamLog().Error("ResolveInstallFolder failed", slog.Any("err", err))
 		return nil, err
 	}
 	// ResolveInstallFolder has to commit to one answer and hands back
@@ -122,7 +122,7 @@ func (s *SteamService) buildSteamListContext() (*steamListContext, error) {
 	// path outranking the sources that would have found the real one.
 	root = accountsRoot(root)
 	if root == "" {
-		steamLog.Error("steam install folder not found after resolution")
+		steamLog().Error("steam install folder not found after resolution")
 		return nil, fmt.Errorf("steam install folder not found")
 	}
 
@@ -133,7 +133,7 @@ func (s *SteamService) buildSteamListContext() (*steamListContext, error) {
 	// list here would render as an install with no accounts on it, which is the
 	// one thing this is not: it is Steam sitting somewhere nobody told us about.
 	if len(users) == 0 && !LoginUsersFileExists(root) {
-		steamLog.Error("no Steam loginusers.vdf at any candidate root", slog.String("checked", LoginUsersPath(root)))
+		steamLog().Error("no Steam loginusers.vdf at any candidate root", slog.String("checked", LoginUsersPath(root)))
 		return nil, fmt.Errorf("%w (looked in %s) - pick your Steam folder in Steam's settings", ErrSteamNotFound, LoginUsersPath(root))
 	}
 
@@ -169,7 +169,7 @@ func (s *SteamService) buildSteamListContext() (*steamListContext, error) {
 	// means no cooldown lines until the next sweep rewrites the file.
 	cooldowns, err := cs2cooldown.Load()
 	if err != nil {
-		steamLog.Warn("CS2 cooldown cache unavailable", slog.Any("err", err))
+		steamLog().Warn("CS2 cooldown cache unavailable", slog.Any("err", err))
 		cooldowns = map[string]cs2cooldown.Entry{}
 	}
 
@@ -207,7 +207,7 @@ func (s *SteamService) GetSteamAccountsList() ([]SteamAccountListItemDTO, error)
 func loadSteamGuardAccountStates() map[string]SteamGuardAccountState {
 	entries, err := steamguardregistry.Load()
 	if err != nil {
-		steamLog.Warn("Steam Guard account state unavailable", slog.Any("err", err))
+		steamLog().Warn("Steam Guard account state unavailable", slog.Any("err", err))
 		return nil
 	}
 	states := make(map[string]SteamGuardAccountState, len(entries))

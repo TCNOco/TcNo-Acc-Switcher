@@ -75,15 +75,15 @@ func loadAppInfoNames() map[string]string {
 
 	raw, err := os.ReadFile(path)
 	if err != nil {
-		steamLog.Debug("steam appinfo cache unreadable", slog.Any("err", err))
+		steamLog().Debug("steam appinfo cache unreadable", slog.Any("err", err))
 		return map[string]string{}
 	}
 	names, err := parseAppInfo(raw)
 	if err != nil {
-		steamLog.Debug("steam appinfo cache not parsed", slog.Any("err", err), slog.Int("bytes", len(raw)))
+		steamLog().Debug("steam appinfo cache not parsed", slog.Any("err", err), slog.Int("bytes", len(raw)))
 		names = map[string]string{}
 	} else {
-		steamLog.Debug("steam appinfo cache parsed", slog.Int("names", len(names)), slog.Int("bytes", len(raw)))
+		steamLog().Debug("steam appinfo cache parsed", slog.Int("names", len(names)), slog.Int("bytes", len(raw)))
 	}
 
 	appInfoCache.path = path

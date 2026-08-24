@@ -66,7 +66,7 @@ func (m *gameStatsManager) loadGameCacheLocked(game string) error {
 		cached[accountID] = row
 	}
 	m.cacheByGame[game] = cached
-	gameStatsLog.Debug("loaded game stats cache", "game", game, "accounts", len(cached), "path", p)
+	gameStatsLog().Debug("loaded game stats cache", "game", game, "accounts", len(cached), "path", p)
 	return nil
 }
 
@@ -97,6 +97,6 @@ func (m *gameStatsManager) saveGameCacheLocked(game string) error {
 	if err != nil {
 		return err
 	}
-	gameStatsLog.Debug("saving game stats cache", "game", game, "accounts", len(payload), "path", p)
+	gameStatsLog().Debug("saving game stats cache", "game", game, "accounts", len(payload), "path", p)
 	return fsutil.WriteFileAtomic(p, b, 0o644)
 }

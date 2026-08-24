@@ -36,7 +36,7 @@ func loadState() state {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if !errors.Is(err, os.ErrNotExist) {
-			removeLog.Debug("read legacy cleanup state", "path", path, "err", err)
+			removeLog().Debug("read legacy cleanup state", "path", path, "err", err)
 		}
 		return state{}
 	}

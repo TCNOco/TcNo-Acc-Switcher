@@ -27,7 +27,7 @@ type OwnedGamesPatch struct {
 func EmitOwnedGamesPatch(patch OwnedGamesPatch) {
 	app := application.Get()
 	if app == nil {
-		steamLog.Warn("emit steam-owned-games-updated skipped: application not ready",
+		steamLog().Warn("emit steam-owned-games-updated skipped: application not ready",
 			slog.String("steamId", tailSteamID(patch.SteamID64)))
 		return
 	}

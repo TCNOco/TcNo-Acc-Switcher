@@ -232,7 +232,9 @@ var gameStatsState = &gameStatsManager{
 	cacheByGame: map[string]map[string]userGameStat{},
 }
 
-var gameStatsLog = slog.Default().With("component", "game-stats")
+func gameStatsLog() *slog.Logger {
+	return slog.Default().With("component", "game-stats")
+}
 
 func seedEmbeddedGameStats() {
 	if len(embeddedGameStatsJSON) == 0 {
@@ -246,7 +248,7 @@ func seedEmbeddedGameStats() {
 	_ = os.MkdirAll(filepath.Dir(dest), 0o755)
 	payload := append([]byte(nil), embeddedGameStatsJSON...)
 	_ = fsutil.WriteFileAtomic(dest, payload, 0o644)
-	gameStatsLog.Debug("seeded embedded GameStats.json", "dest", dest, "bytes", len(payload))
+	gameStatsLog().Debug("seeded embedded GameStats.json", "dest", dest, "bytes", len(payload))
 }
 
 func (m *gameStatsManager) ensureLoadedLocked() error {
@@ -258,7 +260,7 @@ func (m *gameStatsManager) ensureLoadedLocked() error {
 	if err != nil {
 		return err
 	}
-	gameStatsLog.Debug("loading game stats config", "path", cfgPath)
+	gameStatsLog().Debug("loading game stats config", "path", cfgPath)
 	raw, err := os.ReadFile(cfgPath)
 	if err != nil {
 		return fmt.Errorf("read %s: %w", cfgPath, err)
@@ -274,7 +276,7 @@ func (m *gameStatsManager) ensureLoadedLocked() error {
 			if err := mergeGameStatsCustom(&cfg, customRaw); err != nil {
 				return err
 			}
-			gameStatsLog.Debug("merged GameStats.custom.json", "path", customPath)
+			gameStatsLog().Debug("merged GameStats.custom.json", "path", customPath)
 		} else if !os.IsNotExist(err) {
 			return fmt.Errorf("read %s: %w", customPath, err)
 		}
@@ -302,10 +304,10 @@ func (m *gameStatsManager) ensureLoadedLocked() error {
 		if err := m.loadGameCacheLocked(game); err != nil {
 			return err
 		}
-		gameStatsLog.Debug("loaded game definition", "game", game, "vars", len(def.Vars), "collect", len(def.Collect), "fallbacks", len(def.resolved))
+		gameStatsLog().Debug("loaded game definition", "game", game, "vars", len(def.Vars), "collect", len(def.Collect), "fallbacks", len(def.resolved))
 	}
 	m.loaded = true
-	gameStatsLog.Info("game stats config loaded", "games", len(m.defs), "platformCompat", len(m.compat))
+	gameStatsLog().Info("game stats config loaded", "games", len(m.defs), "platformCompat", len(m.compat))
 	return nil
 }
 
@@ -776,10 +778,10 @@ func (b *BasicService) SetGameVars(platformName, game, accountID string, vars ma
 		if saveErr := gameStatsState.saveGameCacheLocked(game); saveErr != nil {
 			return false, saveErr
 		}
-		gameStatsLog.Warn("game stats refresh after save failed", "platform", platformName, "game", game, "accountID", accountID, "err", err)
+		gameStatsLog().Warn("game stats refresh after save failed", "platform", platformName, "game", game, "accountID", accountID, "err", err)
 		return false, err
 	}
-	gameStatsLog.Info("game stats vars updated", "platform", platformName, "game", game, "accountID", accountID, "vars", len(existing.Vars), "hiddenMetrics", len(existing.HiddenMetrics))
+	gameStatsLog().Info("game stats vars updated", "platform", platformName, "game", game, "accountID", accountID, "vars", len(existing.Vars), "hiddenMetrics", len(existing.HiddenMetrics))
 	return true, nil
 }
 
@@ -803,7 +805,7 @@ func (b *BasicService) DisableGame(game, accountID string) error {
 	}
 	delete(rows, accountID)
 	gameStatsState.cacheByGame[game] = rows
-	gameStatsLog.Info("game stats disabled", "game", game, "accountID", accountID)
+	gameStatsLog().Info("game stats disabled", "game", game, "accountID", accountID)
 	return gameStatsState.saveGameCacheLocked(game)
 }
 
@@ -898,7 +900,7 @@ func fetchAndParseGameStats(fetch GameStatsCollector, urlStr, requestCookies, pl
 	if fetch != nil {
 		source = "collector:" + strings.TrimSpace(def.Fetch)
 	}
-	gameStatsLog.Info("refresh game stats begin", "platform", platformName, "game", game, "accountID", accountID, "url", source)
+	gameStatsLog().Info("refresh game stats begin", "platform", platformName, "game", game, "accountID", accountID, "url", source)
 	reqCtx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 	if fetch != nil {
@@ -907,7 +909,7 @@ func fetchAndParseGameStats(fetch GameStatsCollector, urlStr, requestCookies, pl
 		rawHTML, err = fetchGameStatsHTML(reqCtx, urlStr, requestCookies)
 	}
 	if err != nil {
-		gameStatsLog.Warn("refresh game stats fetch failed", "platform", platformName, "game", game, "accountID", accountID, "url", source, "err", err)
+		gameStatsLog().Warn("refresh game stats fetch failed", "platform", platformName, "game", game, "accountID", accountID, "url", source, "err", err)
 		return nil, nil, err
 	}
 	if msg := strings.TrimSpace(gjson.GetBytes(rawHTML, "Error").String()); msg != "" {
@@ -1022,7 +1024,7 @@ func attemptGameStatsChain(platformName, game, accountID string, variants []game
 				res.allNotFound = false
 			}
 			if len(variants) > 1 {
-				gameStatsLog.Info("game stats source failed, trying next", "game", game, "accountID", accountID, "variant", i, "err", err)
+				gameStatsLog().Info("game stats source failed, trying next", "game", game, "accountID", accountID, "variant", i, "err", err)
 			}
 			continue
 		}
@@ -1058,7 +1060,7 @@ func (m *gameStatsManager) applyChainResultLocked(platformName, game, accountID 
 				if saveErr := m.saveGameCacheLocked(g); saveErr != nil {
 					return saveErr
 				}
-				gameStatsLog.Info("game stats disabled after every source returned not-found", "game", g, "accountID", acct)
+				gameStatsLog().Info("game stats disabled after every source returned not-found", "game", g, "accountID", acct)
 			}
 		}
 	}
@@ -1085,7 +1087,7 @@ func (m *gameStatsManager) refreshSaveLocked(platformName, game, accountID strin
 		// over a page that says nothing about the account. LastUpdated is
 		// deliberately not bumped, so the row is still stale and the next round
 		// replaces it as soon as the real source answers.
-		gameStatsLog.Warn("refresh game stats extracted no rows", "platform", platformName, "game", game, "accountID", accountID, "htmlBytes", len(rawHTML), "keptPrevious", len(row.Collected))
+		gameStatsLog().Warn("refresh game stats extracted no rows", "platform", platformName, "game", game, "accountID", accountID, "htmlBytes", len(rawHTML), "keptPrevious", len(row.Collected))
 		return fmt.Errorf("no statistics extracted (saved debug HTML under DataRoot/temp)")
 	}
 	row.Collected = collected
@@ -1093,7 +1095,7 @@ func (m *gameStatsManager) refreshSaveLocked(platformName, game, accountID strin
 	row.Vars = cloneStringMap(row.Vars)
 	row.FallbackIndex = fallbackIndex
 	m.cacheByGame[g][acct] = row
-	gameStatsLog.Info("refresh game stats success", "platform", platformName, "game", game, "accountID", accountID, "collected", len(collected), "variant", fallbackIndex)
+	gameStatsLog().Info("refresh game stats success", "platform", platformName, "game", game, "accountID", accountID, "collected", len(collected), "variant", fallbackIndex)
 	return m.saveGameCacheLocked(g)
 }
 

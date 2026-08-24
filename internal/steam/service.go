@@ -259,7 +259,7 @@ func downloadSteamAccountAvatars(
 			return animRes.PublicURL, staticURL, nil
 		}
 		if aerr != nil {
-			steamLog.Debug("animated avatar download failed, using static fallback",
+			steamLog().Debug("animated avatar download failed, using static fallback",
 				slog.String("steamId", tailSteamID(steamID64)),
 				slog.Any("err", aerr))
 		}
@@ -402,7 +402,7 @@ func (s *SteamService) SaveSteamSettings(st Settings) error {
 			continue
 		}
 		if err := basic.ClearManagedTag(PlatformKey, tag); err != nil {
-			steamLog.Warn("could not clear a managed CS2 tag",
+			steamLog().Warn("could not clear a managed CS2 tag",
 				slog.String("tag", tag), slog.Any("err", err))
 		}
 	}
@@ -558,7 +558,7 @@ func (s *SteamService) noteProfileRefreshOutcome(unreachable bool) {
 		s.StartSteamProfileRefresh()
 	})
 	s.refreshMu.Unlock()
-	steamLog.Info("profile refresh could not reach Steam; retrying",
+	steamLog().Info("profile refresh could not reach Steam; retrying",
 		slog.Int("consecutiveFailures", failures), slog.Duration("in", delay))
 }
 
@@ -583,7 +583,7 @@ func (s *SteamService) runProfileRefresh() {
 	if s.refreshRunning {
 		s.refreshQueued = true
 		s.refreshMu.Unlock()
-		steamLog.Debug("profile refresh coalesced: already running")
+		steamLog().Debug("profile refresh coalesced: already running")
 		return
 	}
 	s.refreshRunning = true
@@ -601,53 +601,53 @@ func (s *SteamService) runProfileRefresh() {
 		}
 	}()
 
-	steamLog.Info("background profile refresh started")
+	steamLog().Info("background profile refresh started")
 
 	exeDir, err := platform.ResolveExeDir()
 	if err != nil {
-		steamLog.Error("ResolveExeDir failed", slog.Any("err", err))
+		steamLog().Error("ResolveExeDir failed", slog.Any("err", err))
 		return
 	}
 	app, err := platform.LoadAppSettings(exeDir)
 	if err != nil {
-		steamLog.Error("LoadAppSettings failed", slog.Any("err", err))
+		steamLog().Error("LoadAppSettings failed", slog.Any("err", err))
 		return
 	}
 	st, err := LoadSettings()
 	if err != nil {
-		steamLog.Error("LoadSettings (Steam) failed", slog.Any("err", err))
+		steamLog().Error("LoadSettings (Steam) failed", slog.Any("err", err))
 		return
 	}
 	if !st.CollectInfo {
-		steamLog.Info("profile refresh skipped: CollectInfo is false")
+		steamLog().Info("profile refresh skipped: CollectInfo is false")
 		return
 	}
 	if app.OfflineMode {
-		steamLog.Info("profile refresh skipped: offline mode")
+		steamLog().Info("profile refresh skipped: offline mode")
 		return
 	}
 
 	raw, err := platform.LoadPlatformsJSON(exeDir)
 	if err != nil {
-		steamLog.Error("load platforms config failed", slog.Any("err", err))
+		steamLog().Error("load platforms config failed", slog.Any("err", err))
 		return
 	}
 	root, err := ResolveInstallFolder(exeDir, st, app, raw)
 	if err != nil {
-		steamLog.Error("ResolveInstallFolder failed", slog.Any("err", err))
+		steamLog().Error("ResolveInstallFolder failed", slog.Any("err", err))
 		return
 	}
 	if root == "" {
-		steamLog.Error("steam root empty after ResolveInstallFolder")
+		steamLog().Error("steam root empty after ResolveInstallFolder")
 		return
 	}
 	users := knownAccountsForRoot(accountsRoot(root))
 	if len(users) == 0 {
-		steamLog.Warn("no Steam accounts to refresh")
+		steamLog().Warn("no Steam accounts to refresh")
 		return
 	}
 
-	steamLog.Info("refreshing Steam profiles",
+	steamLog().Info("refreshing Steam profiles",
 		slog.Int("accounts", len(users)), slog.Int("concurrency", profileRefreshConcurrency))
 
 	vacRows, _ := LoadVacCache(st.SteamImageExpiryTime)
@@ -701,7 +701,7 @@ func (s *SteamService) runProfileRefresh() {
 			)
 
 			if err != nil {
-				steamLog.Warn("community profile XML failed",
+				steamLog().Warn("community profile XML failed",
 					slog.String("steamId", tailSteamID(u.SteamID64)),
 					slog.Any("err", err))
 				if isTransientProfileRefreshError(err) {
@@ -719,7 +719,7 @@ func (s *SteamService) runProfileRefresh() {
 				return
 			}
 			if fields.Private {
-				steamLog.Info("community profile private or blocked",
+				steamLog().Info("community profile private or blocked",
 					slog.String("steamId", tailSteamID(u.SteamID64)))
 				patch.Error = "Profile is private or unavailable"
 				patch.MetaPending = false
@@ -746,7 +746,7 @@ func (s *SteamService) runProfileRefresh() {
 				frameSrc, miniHTML, mErr := FetchMiniprofile(mctx, appclient.Shared, u.SteamID64, st.SteamImageExpiryTime)
 				mcancel()
 				if mErr != nil {
-					steamLog.Warn("miniprofile fetch failed",
+					steamLog().Warn("miniprofile fetch failed",
 						slog.String("steamId", tailSteamID(u.SteamID64)),
 						slog.Any("err", mErr))
 					// The last good fragment is kept rather than left empty. A
@@ -772,7 +772,7 @@ func (s *SteamService) runProfileRefresh() {
 						if derr == nil && res != nil {
 							patch.AvatarFrameURL = res.PublicURL
 						} else if derr != nil {
-							steamLog.Debug("avatar frame download failed",
+							steamLog().Debug("avatar frame download failed",
 								slog.String("steamId", tailSteamID(u.SteamID64)),
 								slog.Any("err", derr))
 						}
@@ -792,7 +792,7 @@ func (s *SteamService) runProfileRefresh() {
 			}
 
 			if strings.TrimSpace(fields.AvatarFullURL) == "" {
-				steamLog.Warn("no avatar URL in profile XML",
+				steamLog().Warn("no avatar URL in profile XML",
 					slog.String("steamId", tailSteamID(u.SteamID64)))
 				patch.Error = "No avatar URL in profile"
 				patch.AvatarPending = false
@@ -837,11 +837,11 @@ func (s *SteamService) runProfileRefresh() {
 				patch.StaticImageURL = staticURL
 				patch.AvatarPending = false
 				patch.Error = ""
-				steamLog.Info("avatar cached",
+				steamLog().Info("avatar cached",
 					slog.String("steamId", tailSteamID(u.SteamID64)),
 					slog.String("url", imageURL))
 			} else {
-				steamLog.Warn("avatar download failed",
+				steamLog().Warn("avatar download failed",
 					slog.String("steamId", tailSteamID(u.SteamID64)),
 					slog.Any("err", err))
 				// Same treatment as the profile fetch above, and for the same
@@ -870,16 +870,16 @@ func (s *SteamService) runProfileRefresh() {
 		}
 	}
 	if err := SaveVacCache(rows); err != nil {
-		steamLog.Error("SaveVacCache failed", slog.Any("err", err))
+		steamLog().Error("SaveVacCache failed", slog.Any("err", err))
 	} else {
-		steamLog.Info("profile refresh finished", slog.Int("vacRows", len(rows)))
+		steamLog().Info("profile refresh finished", slog.Int("vacRows", len(rows)))
 	}
 }
 
 func (s *SteamService) emit(p AccountPatch) {
 	app := application.Get()
 	if app == nil {
-		steamLog.Warn("emit steam-account-updated skipped: application not ready",
+		steamLog().Warn("emit steam-account-updated skipped: application not ready",
 			slog.String("steamId", tailSteamID(p.SteamID64)))
 		return
 	}
@@ -973,7 +973,7 @@ func (s *SteamService) ForgetSteamAccount(steamID64 string) error {
 		return err
 	}
 	if err := removeFromOrder(steamID64); err != nil {
-		steamLog.Warn("could not prune the forgotten account from the saved order",
+		steamLog().Warn("could not prune the forgotten account from the saved order",
 			slog.String("steamId", tailSteamID(steamID64)), slog.Any("err", err))
 	}
 	_ = profileimage.DeleteCached(PlatformKey, steamID64)

@@ -66,7 +66,7 @@ func releaseSteamGuardRecord(steamID64 string) error {
 		// An index this build cannot read is also one the account list cannot
 		// rebuild a row from, so forgetting is no worse off for going ahead -
 		// and there is nothing here to tell it what to delete.
-		steamLog.Warn("Steam Guard account state unavailable while forgetting",
+		steamLog().Warn("Steam Guard account state unavailable while forgetting",
 			slog.String("steamId", tailSteamID(steamID64)), slog.Any("err", err))
 		return nil
 	}

@@ -418,11 +418,11 @@ func ensureGameIconLocal(id string, squareOnly bool) (string, error) {
 	data, err := readGameIconFile(src)
 	switch {
 	case err != nil:
-		steamLog.Debug("steam game icon librarycache read failed",
+		steamLog().Debug("steam game icon librarycache read failed",
 			slog.String("appId", id), slog.String("src", src), slog.Any("err", err))
 		return "", nil
 	case !looksLikeJPEG(data):
-		steamLog.Debug("steam game icon librarycache entry is not a jpeg",
+		steamLog().Debug("steam game icon librarycache entry is not a jpeg",
 			slog.String("appId", id), slog.String("src", src))
 		return "", nil
 	}
@@ -468,7 +468,7 @@ func EnsureGameIcon(ctx context.Context, appID string) (string, error) {
 	// icons stops downloading the moment offline is switched on. Nothing is
 	// marked missing here - being offline says nothing about what the CDN holds.
 	if appclient.IsOfflineMode() {
-		steamLog.Debug("steam game icon download skipped: offline mode", slog.String("appId", id))
+		steamLog().Debug("steam game icon download skipped: offline mode", slog.String("appId", id))
 		return "", nil
 	}
 	if gameIconRecentlyMissing(id) {
@@ -535,7 +535,7 @@ func EnsureLocalGameIcons(appIDs []string) map[string]string {
 
 			url, err := ensureGameIconLocal(id, true)
 			if err != nil {
-				steamLog.Debug("steam local game icon failed", slog.String("appId", id), slog.Any("err", err))
+				steamLog().Debug("steam local game icon failed", slog.String("appId", id), slog.Any("err", err))
 				return
 			}
 			if url == "" {
@@ -578,7 +578,7 @@ func downloadGameIcon(ctx context.Context, id string) ([]byte, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusNotFound || resp.StatusCode == http.StatusForbidden {
-		steamLog.Debug("steam game icon not on cdn", slog.String("appId", id), slog.Int("status", resp.StatusCode))
+		steamLog().Debug("steam game icon not on cdn", slog.String("appId", id), slog.Int("status", resp.StatusCode))
 		return nil, nil
 	}
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
@@ -589,7 +589,7 @@ func downloadGameIcon(ctx context.Context, id string) ([]byte, error) {
 		return nil, err
 	}
 	if !looksLikeJPEG(data) {
-		steamLog.Debug("steam game icon cdn response is not a jpeg",
+		steamLog().Debug("steam game icon cdn response is not a jpeg",
 			slog.String("appId", id), slog.Int("bytes", len(data)))
 		return nil, nil
 	}
@@ -634,7 +634,7 @@ func WarmGameIcons(ctx context.Context, appIDs []string) map[string]string {
 
 			url, err := EnsureGameIcon(ctx, id)
 			if err != nil {
-				steamLog.Debug("steam game icon warm failed", slog.String("appId", id), slog.Any("err", err))
+				steamLog().Debug("steam game icon warm failed", slog.String("appId", id), slog.Any("err", err))
 				return
 			}
 			if url == "" {

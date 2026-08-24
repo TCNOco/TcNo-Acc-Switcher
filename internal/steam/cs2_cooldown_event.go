@@ -38,7 +38,7 @@ type CS2CooldownPatch struct {
 func EmitCS2CooldownPatch(patch CS2CooldownPatch) {
 	app := application.Get()
 	if app == nil {
-		steamLog.Warn("emit steam-cs2-cooldown-updated skipped: application not ready",
+		steamLog().Warn("emit steam-cs2-cooldown-updated skipped: application not ready",
 			slog.String("steamId", tailSteamID(patch.SteamID64)))
 		return
 	}

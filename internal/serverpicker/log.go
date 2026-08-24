@@ -2,4 +2,6 @@ package serverpicker
 
 import "log/slog"
 
-var serverPickerLog = slog.Default().With("component", "server-picker")
+func serverPickerLog() *slog.Logger {
+	return slog.Default().With("component", "server-picker")
+}

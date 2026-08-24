@@ -52,7 +52,7 @@ func knownAccountsForRoot(steamRoot string) []LoginUser {
 	loginPath := LoginUsersPath(steamRoot)
 	users, err := ParseLoginUsers(loginPath)
 	if err != nil {
-		steamLog.Warn("ParseLoginUsers failed; falling back to the account store",
+		steamLog().Warn("ParseLoginUsers failed; falling back to the account store",
 			slog.String("path", loginPath), slog.Any("err", err))
 		users = nil
 	}
@@ -71,7 +71,7 @@ func syncKnownAccounts(users []LoginUser) []LoginUser {
 	if err != nil {
 		// A store we cannot parse must neither blank the list nor be written
 		// over - it is the only copy of accounts Steam has already forgotten.
-		steamLog.Warn("Steam account store unavailable", slog.Any("err", err))
+		steamLog().Warn("Steam account store unavailable", slog.Any("err", err))
 		return users
 	}
 
@@ -83,7 +83,7 @@ func syncKnownAccounts(users []LoginUser) []LoginUser {
 	incoming := recordsFromLoginUsers(users)
 	incoming = append(incoming, recordsFromSteamGuardRegistry()...)
 	if changed, err := accountstore.UpsertMany(incoming); err != nil {
-		steamLog.Warn("could not update the Steam account store", slog.Any("err", err))
+		steamLog().Warn("could not update the Steam account store", slog.Any("err", err))
 	} else if changed {
 		// The upsert can add accounts the load above could not see - a Steam
 		// Guard folder swapped in behind the app's back is exactly that - and
@@ -104,7 +104,7 @@ func syncKnownAccounts(users []LoginUser) []LoginUser {
 		// nothing else is going to ask: the profile refresh runs on a page load
 		// or a user action, and a folder appearing underneath the app is
 		// neither. The next pass finds nothing new, so this cannot cycle.
-		steamLog.Info("importing accounts the switcher had not seen", slog.Int("count", discovered))
+		steamLog().Info("importing accounts the switcher had not seen", slog.Int("count", discovered))
 		RequestProfileRefresh()
 	}
 
@@ -156,7 +156,7 @@ func recordsFromLoginUsers(users []LoginUser) []accountstore.Record {
 func recordsFromSteamGuardRegistry() []accountstore.Record {
 	entries, err := steamguardregistry.Load()
 	if err != nil {
-		steamLog.Warn("Steam Guard account state unavailable", slog.Any("err", err))
+		steamLog().Warn("Steam Guard account state unavailable", slog.Any("err", err))
 		return nil
 	}
 	out := make([]accountstore.Record, 0, len(entries))
@@ -192,7 +192,7 @@ func loginUserFromRecord(rec accountstore.Record) LoginUser {
 func knownAccountAsLoginUser(steamID64 string) (LoginUser, bool) {
 	rec, ok, err := accountstore.Get(steamID64)
 	if err != nil {
-		steamLog.Warn("Steam account store unavailable",
+		steamLog().Warn("Steam account store unavailable",
 			slog.String("steamId", tailSteamID(steamID64)), slog.Any("err", err))
 		return LoginUser{}, false
 	}
@@ -212,7 +212,7 @@ func knownAccountAsLoginUser(steamID64 string) (LoginUser, bool) {
 	}
 	u.AccountName = name
 	if _, err := accountstore.Upsert(accountstore.Record{SteamID64: rec.SteamID64, AccountName: name}); err != nil {
-		steamLog.Warn("could not record a recovered Steam login name",
+		steamLog().Warn("could not record a recovered Steam login name",
 			slog.String("steamId", tailSteamID(rec.SteamID64)), slog.Any("err", err))
 	}
 	return u, true

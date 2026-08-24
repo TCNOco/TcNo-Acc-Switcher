@@ -116,7 +116,7 @@ func queueGameStatsRefresh(platformKey, game, accountID string) {
 		gameStatsRefreshSlots <- struct{}{}
 		defer func() { <-gameStatsRefreshSlots }()
 		if err := refreshGameStatsWorker(platformKey, game, accountID); err != nil {
-			gameStatsLog.Debug("background game stats refresh failed", "platform", platformKey, "game", game, "accountID", accountID, "err", err)
+			gameStatsLog().Debug("background game stats refresh failed", "platform", platformKey, "game", game, "accountID", accountID, "err", err)
 			return
 		}
 		emitGameStatsUpdated(GameStatsUpdatedPatch{PlatformKey: platformKey, UniqueID: accountID})
@@ -251,7 +251,7 @@ func queuePlatformGameStatsRefresh(platformKey, liveAccountID string, force bool
 			queueGameStatsRefresh(job.platformKey, job.game, job.accountID)
 		}
 		if len(jobs) > 0 {
-			gameStatsLog.Debug("queued game stats refresh", "platform", platformKey, "jobs", len(jobs), "forced", force)
+			gameStatsLog().Debug("queued game stats refresh", "platform", platformKey, "jobs", len(jobs), "forced", force)
 		}
 	}()
 }

@@ -294,14 +294,14 @@ func downloadAndStoreAppNameMap(ctx context.Context, reason string) error {
 		return err
 	}
 
-	steamLog.Info("steam app name map download started",
+	steamLog().Info("steam app name map download started",
 		slog.String("reason", reason),
 		slog.String("cachePath", cachePath),
 	)
 
 	var lastErr error
 	for _, source := range steamAppNameMapSources {
-		steamLog.Info("steam app name map fetching",
+		steamLog().Info("steam app name map fetching",
 			slog.String("url", source.url),
 			slog.String("reason", reason),
 			slog.Bool("xz", source.xzCompressed),
@@ -309,7 +309,7 @@ func downloadAndStoreAppNameMap(ctx context.Context, reason string) error {
 		raw, compressedBytes, err := fetchSteamAppNameMapPayload(ctx, source)
 		if err != nil {
 			lastErr = err
-			steamLog.Warn("steam app name map fetch failed",
+			steamLog().Warn("steam app name map fetch failed",
 				slog.String("url", source.url),
 				slog.Bool("xz", source.xzCompressed),
 				slog.Any("err", err),
@@ -319,7 +319,7 @@ func downloadAndStoreAppNameMap(ctx context.Context, reason string) error {
 		names, err := parseAppNameMapJSON(raw)
 		if err != nil {
 			lastErr = fmt.Errorf("invalid app name map payload from %s: %w", source.url, err)
-			steamLog.Warn("steam app name map fetch invalid payload",
+			steamLog().Warn("steam app name map fetch invalid payload",
 				slog.String("url", source.url),
 				slog.Bool("xz", source.xzCompressed),
 				slog.Int("compressedBytes", compressedBytes),
@@ -342,7 +342,7 @@ func downloadAndStoreAppNameMap(ctx context.Context, reason string) error {
 		if source.xzCompressed {
 			logArgs = append(logArgs, slog.Int("compressedBytes", compressedBytes))
 		}
-		steamLog.Info("steam app name map refreshed", logArgs...)
+		steamLog().Info("steam app name map refreshed", logArgs...)
 		return nil
 	}
 	if lastErr != nil {
@@ -353,19 +353,19 @@ func downloadAndStoreAppNameMap(ctx context.Context, reason string) error {
 
 func tryStartAppNameMapRefresh(reason string) {
 	if appclient.IsOfflineMode() {
-		steamLog.Info("steam app name map refresh skipped: offline mode", slog.String("reason", reason))
+		steamLog().Info("steam app name map refresh skipped: offline mode", slog.String("reason", reason))
 		return
 	}
 	steamAppNameMapRefreshMu.Lock()
 	if steamAppNameMapRefreshing {
 		steamAppNameMapRefreshMu.Unlock()
-		steamLog.Debug("steam app name map refresh coalesced: already running", slog.String("reason", reason))
+		steamLog().Debug("steam app name map refresh coalesced: already running", slog.String("reason", reason))
 		return
 	}
 	steamAppNameMapRefreshing = true
 	steamAppNameMapRefreshMu.Unlock()
 
-	steamLog.Info("steam app name map background refresh queued", slog.String("reason", reason))
+	steamLog().Info("steam app name map background refresh queued", slog.String("reason", reason))
 
 	go func() {
 		defer crashlog.Capture()
@@ -377,7 +377,7 @@ func tryStartAppNameMapRefresh(reason string) {
 		ctx, cancel := context.WithTimeout(context.Background(), steamAppNameMapFetchTimeout)
 		defer cancel()
 		if err := downloadAndStoreAppNameMap(ctx, reason); err != nil {
-			steamLog.Warn("steam app name map background refresh failed", slog.String("reason", reason), slog.Any("err", err))
+			steamLog().Warn("steam app name map background refresh failed", slog.String("reason", reason), slog.Any("err", err))
 		}
 	}()
 }
@@ -412,11 +412,11 @@ func runSteamAppNameMapMonitor() {
 	} else {
 		logArgs = append(logArgs, slog.String("cacheStatus", "missing"))
 	}
-	steamLog.Info("steam app name map monitor started", logArgs...)
+	steamLog().Info("steam app name map monitor started", logArgs...)
 
 	refreshIfStale := func() {
 		if appclient.IsOfflineMode() {
-			steamLog.Info("steam app name map refresh skipped: offline mode", slog.String("reason", "startup"))
+			steamLog().Info("steam app name map refresh skipped: offline mode", slog.String("reason", "startup"))
 			return
 		}
 		if steamAppNameMapCacheExpired() {
@@ -424,7 +424,7 @@ func runSteamAppNameMapMonitor() {
 			return
 		}
 		if age, ok := steamAppNameMapCacheAge(); ok {
-			steamLog.Info("steam app name map refresh skipped: cache fresh",
+			steamLog().Info("steam app name map refresh skipped: cache fresh",
 				slog.String("reason", "startup"),
 				slog.Duration("cacheAge", age),
 			)
@@ -436,7 +436,7 @@ func runSteamAppNameMapMonitor() {
 	defer ticker.Stop()
 	for range ticker.C {
 		if appclient.IsOfflineMode() {
-			steamLog.Info("steam app name map refresh skipped: offline mode", slog.String("reason", "scheduled"))
+			steamLog().Info("steam app name map refresh skipped: offline mode", slog.String("reason", "scheduled"))
 			continue
 		}
 		tryStartAppNameMapRefresh("scheduled")
@@ -505,10 +505,10 @@ func ensureAppNameMap(ctx context.Context) (map[string]string, error) {
 	}
 
 	if appclient.IsOfflineMode() {
-		steamLog.Info("steam app name map download skipped: offline mode", slog.String("reason", "on-demand-missing"))
+		steamLog().Info("steam app name map download skipped: offline mode", slog.String("reason", "on-demand-missing"))
 		return nil, fmt.Errorf("steam app name map: %w", appclient.ErrOfflineMode)
 	}
-	steamLog.Info("steam app name map cache missing; blocking download", slog.String("reason", "on-demand-missing"))
+	steamLog().Info("steam app name map cache missing; blocking download", slog.String("reason", "on-demand-missing"))
 	if err := downloadAndStoreAppNameMap(ctx, "on-demand-missing"); err != nil {
 		return nil, fmt.Errorf("steam app name map: %w", err)
 	}

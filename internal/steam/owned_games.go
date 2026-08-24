@@ -78,7 +78,7 @@ func (s *SteamService) GetOwnedGamesList() ([]OwnedGameDTO, error) {
 	entries, err := ownedgames.Load()
 	if err != nil {
 		// An unreadable store must not hide the installed games as well.
-		steamLog.Warn("steam owned games store unreadable", slog.Any("err", err))
+		steamLog().Warn("steam owned games store unreadable", slog.Any("err", err))
 		entries = map[string]ownedgames.Entry{}
 	}
 	owners := make(map[string][]string)
@@ -162,7 +162,7 @@ func installedGamesForOwnedList(names, local map[string]string) []InstalledGameI
 	}
 	installed, err := buildInstalledGamesListWithNames(root, names, local)
 	if err != nil {
-		steamLog.Debug("steam installed games unavailable for owned games list", slog.Any("err", err))
+		steamLog().Debug("steam installed games unavailable for owned games list", slog.Any("err", err))
 		return nil
 	}
 	return installed

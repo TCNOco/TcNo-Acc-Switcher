@@ -29,7 +29,9 @@ type AccountImagePatch struct {
 	ManualProfileImage bool   `json:"manualProfileImage"`
 }
 
-var basicProfileImgLog = slog.Default().With("component", "basic-profile-image")
+func basicProfileImgLog() *slog.Logger {
+	return slog.Default().With("component", "basic-profile-image")
+}
 
 func emitAccountImagePatch(p AccountImagePatch) {
 	app := application.Get()
@@ -150,11 +152,11 @@ func (b *BasicService) runProfileImageRefresh(platformKey string) {
 		return
 	}
 	if b.imgRefreshCooldown.shouldSkip(platformKey) {
-		basicProfileImgLog.Debug("profile image refresh rate-limited", "platform", platformKey)
+		basicProfileImgLog().Debug("profile image refresh rate-limited", "platform", platformKey)
 		return
 	}
 	if !b.imgRefreshCoalescer.tryClaim(platformKey) {
-		basicProfileImgLog.Debug("profile image refresh coalesced: already running", "platform", platformKey)
+		basicProfileImgLog().Debug("profile image refresh coalesced: already running", "platform", platformKey)
 		return
 	}
 	defer func() {
@@ -166,7 +168,7 @@ func (b *BasicService) runProfileImageRefresh(platformKey string) {
 
 	d, _, err := readDescriptor(platformKey)
 	if err != nil {
-		basicProfileImgLog.Warn("readDescriptor failed", slog.String("platform", platformKey), slog.Any("err", err))
+		basicProfileImgLog().Warn("readDescriptor failed", slog.String("platform", platformKey), slog.Any("err", err))
 		return
 	}
 	folder, _ := resolveExeFolder(b.deps(), platformKey)
@@ -177,22 +179,22 @@ func (b *BasicService) runProfileImageRefresh(platformKey string) {
 
 	exeDir, err := platform.ResolveExeDir()
 	if err != nil {
-		basicProfileImgLog.Warn("ResolveExeDir failed", slog.Any("err", err))
+		basicProfileImgLog().Warn("ResolveExeDir failed", slog.Any("err", err))
 		return
 	}
 	appSt, err := platform.LoadAppSettings(exeDir)
 	if err != nil {
-		basicProfileImgLog.Warn("LoadAppSettings failed", slog.Any("err", err))
+		basicProfileImgLog().Warn("LoadAppSettings failed", slog.Any("err", err))
 		return
 	}
 	if appSt.OfflineMode {
-		basicProfileImgLog.Info("profile image refresh skipped: offline mode")
+		basicProfileImgLog().Info("profile image refresh skipped: offline mode")
 		return
 	}
 
 	ps, err := platform.LoadPlatformSettings(platformKey)
 	if err != nil {
-		basicProfileImgLog.Warn("LoadPlatformSettings failed", slog.Any("err", err))
+		basicProfileImgLog().Warn("LoadPlatformSettings failed", slog.Any("err", err))
 		return
 	}
 	maxAge := ps.ProfileImageExpiryDays
@@ -211,7 +213,7 @@ func (b *BasicService) runProfileImageRefresh(platformKey string) {
 
 	f, err := readIdsFile(platformKey)
 	if err != nil {
-		basicProfileImgLog.Warn("readIdsFile failed", slog.Any("err", err))
+		basicProfileImgLog().Warn("readIdsFile failed", slog.Any("err", err))
 		return
 	}
 	var uids []string
@@ -225,7 +227,7 @@ func (b *BasicService) runProfileImageRefresh(platformKey string) {
 		return
 	}
 
-	basicProfileImgLog.Info("background profile image refresh", slog.String("platform", platformKey), slog.Int("accounts", len(uids)), slog.Int("concurrency", 5))
+	basicProfileImgLog().Info("background profile image refresh", slog.String("platform", platformKey), slog.Int("accounts", len(uids)), slog.Int("concurrency", 5))
 
 	ctx := context.Background()
 	sem := semaphore.NewWeighted(5)
@@ -281,7 +283,7 @@ func (b *BasicService) runProfileImageRefresh(platformKey string) {
 	}
 	wg.Wait()
 	b.imgRefreshCooldown.markFinished(platformKey)
-	basicProfileImgLog.Info("profile image refresh finished", slog.String("platform", platformKey))
+	basicProfileImgLog().Info("profile image refresh finished", slog.String("platform", platformKey))
 }
 
 func (b *BasicService) queueMissingSavedProfileImages(platformKey string) {
