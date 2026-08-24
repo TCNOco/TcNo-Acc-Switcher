@@ -343,7 +343,7 @@ func unmarshalPollResponse(data []byte) (pollWireResult, *Error) {
 	if !decoder.validEnd() {
 		return pollWireResult{}, invalidResponseDetail("poll_trailing_bytes")
 	}
-	if seen&(uint64(1)<<2) != 0 && (result.newClientID == 0 || !validChallengeURL(string(challengeURL))) {
+	if seen&(uint64(1)<<2) != 0 && (result.newClientID == 0 || !challengeURLNamesClient(string(challengeURL), result.newClientID)) {
 		return pollWireResult{}, invalidResponseDetail("poll_challenge_url")
 	}
 	if len(accountName) != 0 && !validProtocolString(string(accountName), maxAccountNameBytes, false) {

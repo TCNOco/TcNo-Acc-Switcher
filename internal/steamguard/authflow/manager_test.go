@@ -32,6 +32,7 @@ type fakeClient struct {
 	begin       func(context.Context, protocol.PasswordCredentialsRequest, []byte, time.Duration) (protocol.BeginCredentialsResult, error)
 	submit      func(context.Context, protocol.AuthSession, protocol.ChallengeType, []byte, time.Duration) (protocol.ChallengeResult, error)
 	poll        func(context.Context, protocol.AuthSession, time.Duration) (protocol.PollResult, error)
+	beginQR     func(context.Context, protocol.BeginQRRequest, time.Duration) (protocol.BeginQRResult, error)
 	beginCalls  atomic.Int32
 	submitCalls atomic.Int32
 	pollCalls   atomic.Int32
@@ -40,6 +41,13 @@ type fakeClient struct {
 func (client *fakeClient) Begin(ctx context.Context, request protocol.PasswordCredentialsRequest, password []byte, timeout time.Duration) (protocol.BeginCredentialsResult, error) {
 	client.beginCalls.Add(1)
 	return client.begin(ctx, request, password, timeout)
+}
+
+func (client *fakeClient) BeginQR(ctx context.Context, request protocol.BeginQRRequest, timeout time.Duration) (protocol.BeginQRResult, error) {
+	if client.beginQR == nil {
+		return protocol.BeginQRResult{}, flowError(ErrorInvalid)
+	}
+	return client.beginQR(ctx, request, timeout)
 }
 
 func (client *fakeClient) SubmitCode(ctx context.Context, session protocol.AuthSession, challenge protocol.ChallengeType, code []byte, timeout time.Duration) (protocol.ChallengeResult, error) {

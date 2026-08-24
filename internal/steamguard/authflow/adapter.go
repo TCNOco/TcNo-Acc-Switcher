@@ -27,6 +27,13 @@ func (c *ProtocolClient) Begin(ctx context.Context, request protocol.PasswordCre
 	return result, err
 }
 
+func (c *ProtocolClient) BeginQR(ctx context.Context, request protocol.BeginQRRequest, timeout time.Duration) (protocol.BeginQRResult, error) {
+	if c == nil || c.client == nil {
+		return protocol.BeginQRResult{}, flowError(ErrorInvalid)
+	}
+	return c.client.BeginAuthSessionViaQR(ctx, request, timeout)
+}
+
 func (c *ProtocolClient) SubmitCode(ctx context.Context, session protocol.AuthSession, challenge protocol.ChallengeType, code []byte, timeout time.Duration) (protocol.ChallengeResult, error) {
 	if c == nil || c.client == nil {
 		return protocol.ChallengeResult{}, flowError(ErrorInvalid)

@@ -56,6 +56,7 @@ type Config struct {
 // borrow password and code only for the duration of their respective calls.
 type Client interface {
 	Begin(context.Context, protocol.PasswordCredentialsRequest, []byte, time.Duration) (protocol.BeginCredentialsResult, error)
+	BeginQR(context.Context, protocol.BeginQRRequest, time.Duration) (protocol.BeginQRResult, error)
 	SubmitCode(context.Context, protocol.AuthSession, protocol.ChallengeType, []byte, time.Duration) (protocol.ChallengeResult, error)
 	Poll(context.Context, protocol.AuthSession, time.Duration) (protocol.PollResult, error)
 }
@@ -67,6 +68,12 @@ type Binding struct {
 	ExpectedSteamID uint64
 	VaultGeneration string
 	CapabilityID    string
+	// ExpectedAccountName is required for a QR session and ignored otherwise.
+	// Which account a QR code signs in is decided by whoever scans it, and the
+	// poll answers with a name rather than a SteamID, so this is the only thing
+	// standing between "somebody signed in" and "the account we were asked to
+	// sign in signed in". Compared case-insensitively: Steam account names are.
+	ExpectedAccountName string
 }
 
 func (Binding) String() string   { return "Steam authentication binding [redacted]" }
@@ -104,6 +111,9 @@ type Status struct {
 	CanSubmitEmailCode  bool        `json:"canSubmitEmailCode"`
 	CanSubmitDeviceCode bool        `json:"canSubmitDeviceCode"`
 	CanPoll             bool        `json:"canPoll"`
+	// ChallengeURL is set only for a QR session: the URL its image must encode.
+	// It changes while the session is open, because Steam rotates the code.
+	ChallengeURL        string      `json:"challengeUrl,omitempty"`
 	PollAfterMillis     int64       `json:"pollAfterMillis,omitempty"`
 	ExpiresAtUnix       int64       `json:"expiresAtUnix"`
 }

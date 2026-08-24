@@ -7,6 +7,7 @@ import (
 	"encoding/base64"
 	"io"
 	"runtime"
+	"strings"
 	"sync"
 	"time"
 	"unicode/utf8"
@@ -38,9 +39,15 @@ type authorizedData struct {
 }
 
 type sessionEntry struct {
-	handle     string
-	binding    Binding
-	session    protocol.AuthSession
+	handle string
+	// accountKey indexes m.accounts. A QR session and a password session for one
+	// account are two different sign-ins and both have to be able to be open at
+	// once, because the unlock screen offers them side by side.
+	accountKey   string
+	viaQR        bool
+	challengeURL string
+	binding      Binding
+	session      protocol.AuthSession
 	state      State
 	challenges []Challenge
 	expiresAt  time.Time
@@ -150,14 +157,15 @@ func (m *Manager) Begin(ctx context.Context, binding Binding, request protocol.P
 	}
 	opCtx, cancel := context.WithTimeout(ctx, m.config.OperationTimeout)
 	entry := &sessionEntry{
-		handle:    handle,
-		binding:   binding,
-		expiresAt: now.Add(m.config.SessionTTL),
-		busy:      true,
-		cancel:    cancel,
+		handle:     handle,
+		accountKey: binding.AccountID,
+		binding:    binding,
+		expiresAt:  now.Add(m.config.SessionTTL),
+		busy:       true,
+		cancel:     cancel,
 	}
 	m.sessions[handle] = entry
-	m.accounts[binding.AccountID] = entry
+	m.accounts[entry.accountKey] = entry
 	m.wg.Add(1)
 	m.mu.Unlock()
 	defer m.wg.Done()
@@ -201,6 +209,111 @@ func (m *Manager) Begin(ctx context.Context, binding Binding, request protocol.P
 	status = m.statusLocked(entry, m.config.Clock.Now())
 	m.mu.Unlock()
 	return status, nil
+}
+
+// BeginQR starts a session that is authorised by scanning, for the account named
+// in binding.ExpectedAccountName.
+//
+// It occupies a different slot from Begin, so the QR code and the password form
+// on the same screen are two live sign-ins rather than one refusing the other.
+// The account name is mandatory: without it nothing checks who scanned, and the
+// session would hand back a sign-in for whoever did.
+func (m *Manager) BeginQR(ctx context.Context, binding Binding, request protocol.BeginQRRequest) (status Status, err error) {
+	if ctx == nil || !validBinding(binding) || !validBoundedString(binding.ExpectedAccountName) {
+		return Status{}, flowError(ErrorInvalid)
+	}
+	accountKey := qrAccountKey(binding.AccountID)
+	now := m.config.Clock.Now()
+	m.mu.Lock()
+	m.expireLocked(now)
+	if m.closed {
+		m.mu.Unlock()
+		return Status{}, flowError(ErrorClosed)
+	}
+	if _, exists := m.accounts[accountKey]; exists {
+		m.mu.Unlock()
+		return Status{}, flowError(ErrorConflict)
+	}
+	if len(m.sessions) >= m.config.Capacity {
+		m.mu.Unlock()
+		return Status{}, flowError(ErrorCapacity)
+	}
+	handle, handleErr := m.newHandleLocked()
+	if handleErr != nil {
+		m.mu.Unlock()
+		return Status{}, handleErr
+	}
+	opCtx, cancel := context.WithTimeout(ctx, m.config.OperationTimeout)
+	entry := &sessionEntry{
+		handle:     handle,
+		accountKey: accountKey,
+		viaQR:      true,
+		binding:    binding,
+		expiresAt:  now.Add(m.config.SessionTTL),
+		busy:       true,
+		cancel:     cancel,
+	}
+	m.sessions[handle] = entry
+	m.accounts[accountKey] = entry
+	m.wg.Add(1)
+	m.mu.Unlock()
+	defer m.wg.Done()
+	defer m.recoverOperation(entry)
+
+	result, clientErr := m.client.BeginQR(opCtx, request, m.config.OperationTimeout)
+	cancel()
+	m.mu.Lock()
+	entry.busy = false
+	entry.cancel = nil
+	if entry.closed {
+		result.Session.Destroy()
+		m.destroyEntryLocked(entry)
+		m.mu.Unlock()
+		return Status{}, flowError(ErrorGone)
+	}
+	if clientErr != nil {
+		result.Session.Destroy()
+		m.closeEntryLocked(entry, m.config.Clock.Now())
+		m.mu.Unlock()
+		return Status{}, classifyClientError(clientErr)
+	}
+	if !entry.expiresAt.After(m.config.Clock.Now()) {
+		result.Session.Destroy()
+		m.closeEntryLocked(entry, m.config.Clock.Now())
+		m.mu.Unlock()
+		return Status{}, flowError(ErrorGone)
+	}
+	if !validQRSession(result.Session) || result.ChallengeURL == "" {
+		result.Session.Destroy()
+		m.closeEntryLocked(entry, m.config.Clock.Now())
+		m.mu.Unlock()
+		return Status{}, flowError(ErrorProtocol)
+	}
+	entry.session = result.Session
+	entry.state = StateWaiting
+	entry.challengeURL = result.ChallengeURL
+	entry.nextPoll = m.config.Clock.Now().Add(result.Session.PollInterval())
+	status = m.statusLocked(entry, m.config.Clock.Now())
+	m.mu.Unlock()
+	return status, nil
+}
+
+// qrAccountKey keeps a QR session out of the slot the password session uses. The
+// separator is a NUL so no account ID can be spelled to land in the other slot.
+func qrAccountKey(accountID string) string {
+	return "qr\x00" + accountID
+}
+
+// qrAccountMatches decides whether the account that scanned is the account the
+// session was opened for. Steam treats account names case-insensitively, and the
+// poll reports one rather than a SteamID, so this is the whole identity check.
+func qrAccountMatches(expected, reported string) bool {
+	expected = strings.TrimSpace(expected)
+	reported = strings.TrimSpace(reported)
+	if expected == "" || reported == "" {
+		return false
+	}
+	return strings.EqualFold(expected, reported)
 }
 
 // SubmitCode sends one allowed email or device challenge answer. Code is
@@ -291,7 +404,7 @@ func (m *Manager) Poll(ctx context.Context, binding Binding, handle string) (sta
 		m.mu.Unlock()
 		return Status{}, flowError(ErrorGone)
 	}
-	if !validSession(result.Session, binding.ExpectedSteamID) {
+	if !sessionStillValid(entry, result.Session, binding) {
 		result.Session.Destroy()
 		wipePollResult(&result)
 		m.closeEntryLocked(entry, m.config.Clock.Now())
@@ -300,6 +413,13 @@ func (m *Manager) Poll(ctx context.Context, binding Binding, handle string) (sta
 	}
 	entry.session = result.Session
 	now := m.config.Clock.Now()
+	// Steam rotates a QR code while it waits to be scanned, and reports the
+	// replacement as a challenge. For this session that is not a challenge to
+	// answer - it is the same sign-in with a new image - so it stays waiting.
+	if entry.viaQR && result.State == protocol.AuthResultChallengeRequired && result.ChallengeURL != "" {
+		entry.challengeURL = result.ChallengeURL
+		result.State = protocol.AuthResultWaiting
+	}
 	switch result.State {
 	case protocol.AuthResultAuthorized:
 		if result.AccessToken == "" && result.RefreshToken == "" {
@@ -307,6 +427,15 @@ func (m *Manager) Poll(ctx context.Context, binding Binding, handle string) (sta
 			m.closeEntryLocked(entry, now)
 			m.mu.Unlock()
 			return Status{}, flowError(ErrorProtocol)
+		}
+		if entry.viaQR && !qrAccountMatches(binding.ExpectedAccountName, result.AccountName) {
+			// Somebody scanned it, but not the account this session was opened
+			// for. Their tokens are never stored: they are wiped here, before
+			// anything downstream can be handed a sign-in for the wrong account.
+			wipePollResult(&result)
+			m.closeEntryLocked(entry, now)
+			m.mu.Unlock()
+			return Status{}, flowError(ErrorBindingMismatch)
 		}
 		entry.authorized = &authorizedData{
 			steamID:              result.Session.SteamID(),
@@ -546,6 +675,7 @@ func (m *Manager) statusLocked(entry *sessionEntry, now time.Time) Status {
 		State:         entry.state,
 		Challenges:    append([]Challenge(nil), entry.challenges...),
 		CanPoll:       entry.authorized == nil,
+		ChallengeURL:  entry.challengeURL,
 		ExpiresAtUnix: entry.expiresAt.Unix(),
 	}
 	for _, challenge := range entry.challenges {
@@ -588,8 +718,8 @@ func (m *Manager) detachEntryLocked(entry *sessionEntry, now time.Time) {
 	if current := m.sessions[entry.handle]; current == entry {
 		delete(m.sessions, entry.handle)
 	}
-	if current := m.accounts[entry.binding.AccountID]; current == entry {
-		delete(m.accounts, entry.binding.AccountID)
+	if current := m.accounts[entry.accountKey]; current == entry {
+		delete(m.accounts, entry.accountKey)
 	}
 	m.addTombstoneLocked(entry.handle, now)
 }
@@ -752,6 +882,21 @@ func validSession(session protocol.AuthSession, expectedSteamID uint64) bool {
 		session.PollInterval() > 0 && (expectedSteamID == 0 || session.SteamID() == expectedSteamID)
 }
 
+// validQRSession is validSession for a sign-in nobody has scanned yet, which is
+// why it names no account. The account arrives with the poll and is checked
+// against the binding there.
+func validQRSession(session protocol.AuthSession) bool {
+	return session.ID() != "" && session.ClientID() != 0 && session.ViaQR() &&
+		session.SteamID() == 0 && session.PollInterval() > 0
+}
+
+func sessionStillValid(entry *sessionEntry, session protocol.AuthSession, binding Binding) bool {
+	if entry.viaQR {
+		return validQRSession(session)
+	}
+	return validSession(session, binding.ExpectedSteamID)
+}
+
 func validBinding(binding Binding) bool {
 	return validBoundedString(binding.AccountID) && validBoundedString(binding.VaultGeneration) && validBoundedString(binding.CapabilityID)
 }
@@ -762,6 +907,7 @@ func validBoundedString(value string) bool {
 
 func sameBinding(left, right Binding) bool {
 	return left.ExpectedSteamID == right.ExpectedSteamID &&
+		subtle.ConstantTimeCompare([]byte(left.ExpectedAccountName), []byte(right.ExpectedAccountName)) == 1 &&
 		subtle.ConstantTimeCompare([]byte(left.AccountID), []byte(right.AccountID)) == 1 &&
 		subtle.ConstantTimeCompare([]byte(left.VaultGeneration), []byte(right.VaultGeneration)) == 1 &&
 		subtle.ConstantTimeCompare([]byte(left.CapabilityID), []byte(right.CapabilityID)) == 1
