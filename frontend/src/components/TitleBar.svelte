@@ -306,7 +306,11 @@
         --wails-draggable: no-drag;
         z-index: 1;
         display: grid;
-        grid-template-columns: repeat(3, 46px);
+        /* Sized to however many buttons are rendered, not to three. Game Mode
+           shows only close, and a fixed three-slot grid left it sitting in the
+           first slot with two empty ones between it and the corner. */
+        grid-auto-flow: column;
+        grid-auto-columns: 46px;
         top: 0;
         right: 0;
         height: 100%;

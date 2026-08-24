@@ -287,6 +287,7 @@ func RunGUI(params RunGUIParams) {
 
 	winOpts := mainWindowOptions(guiSettings, parsed)
 	win := wailsApp.Window.NewWithOptions(winOpts)
+	applyGameModeZoom(win)
 	screenprivacy.Follow(win)
 	registerNotificationResponseHandler(wailsApp, win, notifier)
 	registerControllerInputVisibility(win, params.ControllerInput, !winOpts.Hidden)
