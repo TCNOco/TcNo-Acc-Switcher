@@ -366,19 +366,16 @@ func resolvePlatformsPath(exeDir string, s AppSettings) string {
 }
 
 func parsePlatformNames(raw []byte) ([]string, error) {
-	var pf platformsFile
-	if err := json.Unmarshal(raw, &pf); err != nil {
+	entries, names, err := indexCatalog(raw)
+	if err != nil {
 		return nil, err
 	}
-	if pf.Platforms == nil {
+	if entries == nil {
 		return nil, errors.New("invalid Platforms.json: missing Platforms")
 	}
-	out := make([]string, 0, len(pf.Platforms))
-	for k := range pf.Platforms {
-		out = append(out, k)
-	}
-	sortStringsFold(out)
-	return out, nil
+	// A copy: the cached slice must not be handed to callers that may sort or
+	// append to it.
+	return append([]string(nil), names...), nil
 }
 
 func sliceToSet(s []string) map[string]struct{} {

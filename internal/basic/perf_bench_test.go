@@ -2,6 +2,7 @@ package basic
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -25,11 +26,63 @@ const (
 	benchTagsPerPlatform     = 6
 )
 
-func benchResetPaths(tb testing.TB) {
+func benchResetPaths(tb testing.TB) string {
 	tb.Helper()
 	exeDir := tb.TempDir()
 	platform.ResetPathSingletonsForTest(exeDir)
 	paths.ResetForTest(filepath.Join(exeDir, "TcNo Account Switcher"))
+	return exeDir
+}
+
+// seedBenchCatalog writes the real shipped Platforms.json with the benchmark's
+// platforms added to it.
+//
+// Without a catalog present readDescriptor fails, and buildAccountListContext
+// silently skips the descriptor parse and the live-unique-id read along with
+// it - so a benchmark without this measures a path no user is on. The catalog
+// keeps its real size because the descriptor parse cost scales with it.
+func seedBenchCatalog(tb testing.TB, exeDir string, platformNames []string) {
+	tb.Helper()
+	raw, err := os.ReadFile(filepath.Join("..", "..", "Platforms.json"))
+	if err != nil {
+		tb.Skipf("Platforms.json unavailable: %v", err)
+	}
+	var top struct {
+		Version   string                     `json:"Version"`
+		Platforms map[string]json.RawMessage `json:"Platforms"`
+	}
+	if err := json.Unmarshal(raw, &top); err != nil {
+		tb.Fatalf("parse catalog: %v", err)
+	}
+
+	idFile := filepath.Join(tb.TempDir(), ".account_id")
+	if err := os.WriteFile(idFile, []byte("live-unique-id"), 0o644); err != nil {
+		tb.Fatal(err)
+	}
+	entry, err := json.Marshal(map[string]any{
+		"ExeLocationDefault": []string{},
+		"UniqueIdMethod":     "CREATE_ID_FILE",
+		"UniqueIdFile":       idFile,
+		"LoginFiles":         map[string]string{`%Platform_Folder%\config.cfg`: "Saved/config.cfg"},
+	})
+	if err != nil {
+		tb.Fatal(err)
+	}
+	for _, n := range platformNames {
+		top.Platforms[n] = entry
+	}
+
+	out, err := json.Marshal(top)
+	if err != nil {
+		tb.Fatal(err)
+	}
+	dir := platform.UserDataDir(exeDir)
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		tb.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, platform.PlatformsFileName()), out, 0o644); err != nil {
+		tb.Fatal(err)
+	}
 }
 
 // seedBenchPlatforms writes a realistic ids.json per platform: accounts, tags,
@@ -354,6 +407,42 @@ func BenchmarkGetAccountsListEncrypted(b *testing.B) {
 			svc := &BasicService{}
 			if _, err := svc.GetAccountsList(names[0]); err != nil {
 				b.Fatalf("GetAccountsList: %v", err)
+			}
+
+			b.ReportAllocs()
+			b.ResetTimer()
+			for i := 0; i < b.N; i++ {
+				if _, err := svc.GetAccountsList(names[0]); err != nil {
+					b.Fatal(err)
+				}
+			}
+		})
+	}
+}
+
+// BenchmarkGetAccountsListWithCatalog is GetAccountsList on the path a real
+// install takes: a populated Platforms.json, so the descriptor parse and the
+// live-unique-id read both happen. The plain BenchmarkGetAccountsList above
+// runs without a catalog and so skips both.
+func BenchmarkGetAccountsListWithCatalog(b *testing.B) {
+	for _, n := range benchAccountSizes() {
+		b.Run(fmt.Sprintf("%daccounts", n), func(b *testing.B) {
+			exeDir := benchResetPaths(b)
+			names := seedBenchPlatforms(b, 1, n)
+			seedBenchCatalog(b, exeDir, names)
+
+			svc := &BasicService{}
+			got, err := svc.GetAccountsList(names[0])
+			if err != nil {
+				b.Fatalf("GetAccountsList: %v", err)
+			}
+			if len(got) != n {
+				b.Fatalf("list returned %d rows, want %d", len(got), n)
+			}
+			if !got[0].CurrentSession && !got[len(got)-1].CurrentSession {
+				// Not fatal, but the descriptor path is what makes this
+				// benchmark different - warn loudly if it did not engage.
+				b.Logf("note: no row matched the live unique id")
 			}
 
 			b.ReportAllocs()

@@ -20,16 +20,14 @@ func ParsePlatformEntry(raw []byte, platformKey string) (PlatformEntry, error) {
 }
 
 func parsePlatformEntry(raw []byte, platformKey string) (PlatformEntry, error) {
-	var top struct {
-		Platforms map[string]json.RawMessage `json:"Platforms"`
-	}
-	if err := json.Unmarshal(raw, &top); err != nil {
+	entries, _, err := indexCatalog(raw)
+	if err != nil {
 		return PlatformEntry{}, err
 	}
-	if top.Platforms == nil {
+	if entries == nil {
 		return PlatformEntry{}, errors.New("missing Platforms")
 	}
-	blob, ok := top.Platforms[platformKey]
+	blob, ok := entries[platformKey]
 	if !ok {
 		return PlatformEntry{}, errors.New("unknown platform: " + platformKey)
 	}
