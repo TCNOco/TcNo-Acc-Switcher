@@ -106,7 +106,10 @@ func (p *PlatformService) withSettingsWrite(fn func(s *AppSettings) error) error
 	return saveSettingsAtomic(exeDir, s)
 }
 
-func (p *PlatformService) GetStartup() (PlatformStartup, error) {
+// startupSnapshot builds the startup payload. withCounts decides whether the
+// per-platform account and tag totals are resolved, which is the only part that
+// touches every platform's ids.json.
+func (p *PlatformService) startupSnapshot(withCounts bool) (PlatformStartup, error) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
@@ -178,7 +181,10 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 	}
 	sortStringsFold(disList)
 	nav := ConsumeStartupNavigateHint()
-	accountCounts, tagCounts := resolveStartupCounts(names, settings.StatsEnabled)
+	accountCounts, tagCounts := map[string]int{}, map[string]PlatformTagCountInfo{}
+	if withCounts {
+		accountCounts, tagCounts = resolveStartupCounts(names, settings.StatsEnabled)
+	}
 	return PlatformStartup{
 		HomePlatformOrder:        home,
 		AllPlatformNames:         names,
@@ -217,8 +223,20 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 	}, nil
 }
 
+// GetStartup is the full startup payload, including the per-platform account and
+// tag totals the home screen paints as skeleton hints.
+func (p *PlatformService) GetStartup() (PlatformStartup, error) {
+	return p.startupSnapshot(true)
+}
+
+// ReadSettings returns the same payload without those counts.
+//
+// Resolving them reads every platform's ids.json, and no caller of ReadSettings
+// looks at them - each wants one scalar setting. Two of those callers run during
+// the first paint, so the sweep was happening four times a launch instead of
+// twice.
 func (p *PlatformService) ReadSettings() (PlatformStartup, error) {
-	return p.GetStartup()
+	return p.startupSnapshot(false)
 }
 
 type SettingsBatchUpdate struct {
