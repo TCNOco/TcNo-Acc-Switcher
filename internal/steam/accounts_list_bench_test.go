@@ -1,6 +1,7 @@
 package steam
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -136,6 +137,48 @@ func BenchmarkSteamEnrichment(b *testing.B) {
 				if _, err := svc.GetSteamAccountsEnrichment(); err != nil {
 					b.Fatal(err)
 				}
+			}
+		})
+	}
+}
+
+// seedTrayUsers writes Tray_Users.json with n Steam entries.
+func seedTrayUsers(tb testing.TB, ids []string, n int) {
+	tb.Helper()
+	root, err := paths.DataRoot()
+	if err != nil {
+		tb.Fatal(err)
+	}
+	entries := make([]map[string]string, 0, n)
+	for i := 0; i < n && i < len(ids); i++ {
+		entries = append(entries, map[string]string{"Name": "Account", "Arg": "+s:" + ids[i]})
+	}
+	body, err := json.Marshal(map[string][]map[string]string{PlatformKey: entries})
+	if err != nil {
+		tb.Fatal(err)
+	}
+	if err := os.MkdirAll(root, 0o755); err != nil {
+		tb.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(root, "Tray_Users.json"), body, 0o644); err != nil {
+		tb.Fatal(err)
+	}
+}
+
+// BenchmarkSyncTrayKnownAccounts is the Steam tray prune that runs before the
+// window is created. The tray keeps three accounts by default however many the
+// install has.
+func BenchmarkSyncTrayKnownAccounts(b *testing.B) {
+	for _, n := range []int{50, 200} {
+		b.Run(fmt.Sprintf("%daccounts", n), func(b *testing.B) {
+			steamDir := benchSteamEnv(b)
+			ids := seedSteamAccounts(b, steamDir, n)
+			seedTrayUsers(b, ids, 3)
+
+			b.ReportAllocs()
+			b.ResetTimer()
+			for range b.N {
+				SyncTrayKnownAccounts()
 			}
 		})
 	}

@@ -72,6 +72,23 @@ func SyncTrayKnownAccounts() {
 	if err != nil || root == "" {
 		return
 	}
+	// SyncPlatformUsers only prunes entries the tray already has, and keeps at
+	// most TrayAccNumber of them, so an install with no Steam tray entries needs
+	// none of the work below.
+	trayUsers, err := tray.LoadUsers()
+	if err != nil {
+		return
+	}
+	kept := make(map[string]struct{}, len(trayUsers[PlatformKey]))
+	for _, tu := range trayUsers[PlatformKey] {
+		if arg := strings.TrimSpace(tu.Arg); arg != "" {
+			kept[arg] = struct{}{}
+		}
+	}
+	if len(kept) == 0 {
+		return
+	}
+
 	// The union, not just Steam's rows: pruning against loginusers.vdf alone
 	// would drop tray entries for accounts the switcher still lists.
 	users := knownAccountsForRoot(accountsRoot(root))
@@ -81,7 +98,15 @@ func SyncTrayKnownAccounts() {
 		if id == "" {
 			continue
 		}
-		argNames["+s:"+id] = trayLabelForUser(st, u)
+		arg := "+s:" + id
+		// Only the handful of accounts the tray actually keeps get the community
+		// name, which costs a cached-miniprofile read and two HTML parses. The
+		// rest are here to survive the prune; their label is never read.
+		if _, keep := kept[arg]; keep {
+			argNames[arg] = trayLabelForUser(st, u)
+		} else {
+			argNames[arg] = displayPersona(u)
+		}
 	}
 	_ = tray.SyncPlatformUsers(PlatformKey, argNames, st.TrayAccNumber)
 }
