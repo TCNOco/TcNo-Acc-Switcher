@@ -4,6 +4,7 @@
   import { actionBarStatus } from "../stores/fileDrop";
   import { platformActionBusy, triggerPlatformAction } from "../stores/platformPage";
   import { tooltip } from "../lib/actions/tooltip";
+  import { collapse, DUR } from "../lib/animation";
   import { t } from "../stores/i18n";
   import { openAlertNoButton } from "../stores/modal";
   import HelpAboutModalBody from "./modals/HelpAboutModalBody.svelte";
@@ -97,7 +98,13 @@
   }
 </script>
 
-<footer class="actionbar" data-busy={$platformActionBusy.busy}>
+<!-- The bar is dropped entirely on pages that have no actions. Collapsing its
+     height hands the space back to the page instead of snapping it away. -->
+<footer
+  class="actionbar"
+  data-busy={$platformActionBusy.busy}
+  transition:collapse={{ duration: DUR.fast }}
+>
 <span class="actionbar__status">{$actionBarStatus}</span>
   <div class="actionbar__actions">
     {#if isPlatformPage}

@@ -154,7 +154,13 @@ button,
    rather than having to out-specify it. */
 .btnicontext,
 button:not(.fancyLink) {
-  transition: filter 0.12s ease-out, background 0.12s ease-out;
+  /* border-colour is in the list because hover and :active both change it; left
+     out, the fill eased in while the outline snapped. */
+  transition:
+    filter var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-instant) var(--ease-out);
 
   /* A button label never wraps. Buttons are sized for one line, so a second one
      overflows the height instead of growing the control. */
@@ -162,6 +168,7 @@ button:not(.fancyLink) {
 
   &:active:not(:disabled) {
     filter: brightness(0.85);
+    transform: scale(0.97);
   }
 }
 

@@ -291,6 +291,15 @@
     }
   }
 
+  /**
+   * A dismissed menu lingers for the length of its fade. Take it out of
+   * hit-testing for that window so a click aimed at what is behind it lands
+   * there instead of on a menu that is already gone.
+   */
+  function onMenuLeave(event: Event): void {
+    (event.currentTarget as HTMLElement).style.pointerEvents = "none";
+  }
+
   function onSubmenuPlanned(ev: Event): void {
     if (
       menuEl &&
@@ -482,6 +491,8 @@
     aria-label="Context menu"
     tabindex="-1"
     in:scale={{ start: 0.97, duration: motionEnabled() ? DUR.fast : 0, easing: cubicOut }}
+    out:scale={{ start: 0.98, duration: motionEnabled() ? DUR.instant : 0, easing: cubicOut }}
+    on:outrostart={onMenuLeave}
     on:introend={onMenuIntroEnd}
     on:animationend={onMenuAnimationEnd}
     on:keydown={onMenuKeydown}

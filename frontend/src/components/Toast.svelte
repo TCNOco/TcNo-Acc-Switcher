@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { fly } from 'svelte/transition'
-  import { cubicOut } from 'svelte/easing'
+  import { flip } from 'svelte/animate'
+  import { DUR, EASE, flipMotion, motionEnabled } from '../lib/animation'
   import { Events } from '@wailsio/runtime'
   import { get } from 'svelte/store'
   import { dismissToastById, pushToast, toastStore } from '../stores/toast'
@@ -82,8 +83,19 @@
     {#each $toastStore as t (t.id)}
       <div
         class="toast {typeClass(t.type)}"
-        in:fly={{ y: -14, duration: 240, opacity: 0, easing: cubicOut }}
-        out:fly={{ y: -10, duration: 200, opacity: 0, easing: cubicOut }}
+        in:fly={{
+          y: motionEnabled() ? -14 : 0,
+          duration: motionEnabled() ? DUR.slow : 0,
+          opacity: 0,
+          easing: EASE.default,
+        }}
+        out:fly={{
+          x: motionEnabled() ? 28 : 0,
+          duration: motionEnabled() ? DUR.normal : 0,
+          opacity: 0,
+          easing: EASE.default,
+        }}
+        animate:flip={flipMotion()}
         role="status"
       >
         {#if t.count > 1}

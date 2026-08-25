@@ -1,5 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher, onDestroy, onMount } from "svelte";
+  import { flip } from "svelte/animate";
+  import { flipMotion, staggerDelay, tileIn, tileOut } from "../lib/animation";
   import {
     insertionIndexFromTileHover,
     moveItem,
@@ -90,6 +92,29 @@
   /** If no synthetic post-drag click fires, expire suppress so the next real click is not eaten. */
   let suppressClickExpire: ReturnType<typeof setTimeout> | null = null;
 
+  /**
+   * The dragged tile is genuinely destroyed while a drag runs - `previewSlots`
+   * swaps it for a gap - and rebuilt on drop. Without this the tile would play
+   * its full entrance, staggered delay and all, at the moment it lands.
+   */
+  let suppressEntry = false;
+  let suppressEntryExpire: ReturnType<typeof setTimeout> | null = null;
+
+  function suppressEntryForDrop(): void {
+    if (suppressEntryExpire) clearTimeout(suppressEntryExpire);
+    suppressEntry = true;
+    suppressEntryExpire = setTimeout(() => {
+      suppressEntry = false;
+      suppressEntryExpire = null;
+    }, 0);
+  }
+
+  /* Reflow is only worth animating once the layout is settled: mid-drag the
+     slots shuffle on every pointer move, and hit-testing reads the rects that
+     an in-flight animation would be moving. */
+  $: flipParams = flipMotion({ enabled: dragIndex === null });
+  $: tileMotion = dragIndex === null && !suppressEntry;
+
   function armSuppressClickAfterDrag(): void {
     if (suppressClickExpire) {
       clearTimeout(suppressClickExpire);
@@ -140,6 +165,10 @@
     el.style.margin = "0";
     el.style.maxWidth = "none";
     el.style.maxHeight = "none";
+    /* A tile grabbed mid-entrance still carries that transition's inline
+       transform and opacity; cloned as-is they would offset or dim the ghost. */
+    el.style.transform = "none";
+    el.style.opacity = "1";
     // Avoid duplicate ids / radio group side effects in the floating copy
     el.querySelectorAll("input").forEach((n) => n.remove());
     el.querySelectorAll("[id]").forEach((n) => n.removeAttribute("id"));
@@ -174,6 +203,7 @@
       const from = dragIndex;
       const to = dragOverIndex ?? from;
       armSuppressClickAfterDrag();
+      suppressEntryForDrop();
       dragIndex = null;
       dragOverIndex = null;
       pendingDrag = null;
@@ -222,6 +252,7 @@
     if (e.key !== "Escape") return;
     if (dragIndex === null && !pendingDrag) return;
     e.preventDefault();
+    suppressEntryForDrop();
     dragIndex = null;
     dragOverIndex = null;
     pendingDrag = null;
@@ -380,6 +411,7 @@
     document.body.style.userSelect = "";
     delete document.body.dataset.dragging;
     if (suppressClickExpire) clearTimeout(suppressClickExpire);
+    if (suppressEntryExpire) clearTimeout(suppressEntryExpire);
   });
 </script>
 
@@ -393,35 +425,35 @@
     targetSelector: ".shortcutDropdown",
   }}
 >
+  <!-- One element for both slot kinds: `animate:flip` only works on the
+       immediate child of a keyed each, and a branch in between disqualifies it. -->
   {#each displaySlots as slot, i (slot === null ? `gap-${i}` : slot)}
-    {#if slot === null}
-      <div
-        class="reorder-pointer-grid__gap {placeholderClass}"
-        role="presentation"
-        data-dnd-cell
-        data-dnd-visual={i}
-        data-dnd-gap="true"
-      ></div>
-    {:else}
-      <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-      <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-      <div
-        class="reorder-pointer-grid__cell {itemClass}"
-        class:dragging={draggingId === slot}
-        role={itemRole}
-        aria-label={itemAriaLabel ? itemAriaLabel(slot) : undefined}
-        tabindex={slot === activeGridId ? 0 : -1}
-        data-dnd-cell
-        data-dnd-visual={i}
-        data-dnd-name={slot}
-        on:focus={() => { localActiveId = slot; }}
-        on:pointerdown={(e) => onCellPointerDown(e, slot)}
-        on:keydown={(e) => onCellKeyDown(e, slot)}
-        on:click={() => onCellClick(slot)}
-      >
+    <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+    <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+    <div
+      class={slot === null
+        ? `reorder-pointer-grid__gap ${placeholderClass}`
+        : `reorder-pointer-grid__cell ${itemClass}`}
+      class:dragging={slot !== null && draggingId === slot}
+      role={slot === null ? "presentation" : itemRole}
+      aria-label={slot !== null && itemAriaLabel ? itemAriaLabel(slot) : undefined}
+      tabindex={slot === null ? undefined : slot === activeGridId ? 0 : -1}
+      data-dnd-cell
+      data-dnd-visual={i}
+      data-dnd-gap={slot === null ? "true" : undefined}
+      data-dnd-name={slot ?? undefined}
+      on:focus={() => { if (slot !== null) localActiveId = slot; }}
+      on:pointerdown={(e) => { if (slot !== null) onCellPointerDown(e, slot); }}
+      on:keydown={(e) => { if (slot !== null) onCellKeyDown(e, slot); }}
+      on:click={() => { if (slot !== null) onCellClick(slot); }}
+      animate:flip={flipParams}
+      in:tileIn={{ enabled: slot !== null && tileMotion, delay: staggerDelay(i, 18, 160) }}
+      out:tileOut={{ enabled: slot !== null && dragIndex === null }}
+    >
+      {#if slot !== null}
         <slot name="item" rowId={slot} index={i} />
-      </div>
-    {/if}
+      {/if}
+    </div>
   {/each}
 </div>
 
@@ -520,11 +552,4 @@
     word-break: break-word;
   }
 
-  [data-dnd-cell] {
-    transition: transform 0.15s ease-out;
-  }
-
-  [data-dnd-cell].dragging {
-    transition: none;
-  }
 </style>

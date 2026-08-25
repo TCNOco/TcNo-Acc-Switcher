@@ -1,4 +1,4 @@
-import { fade, fly, scale, slide } from "svelte/transition";
+import { fade, fly, scale } from "svelte/transition";
 import { cubicOut, quartOut } from "svelte/easing";
 import type { TransitionConfig } from "svelte/transition";
 import { get } from "svelte/store";
@@ -67,16 +67,73 @@ export function scaleFade(
 }
 
 /**
- * Height collapse for sections that open in place. Padding and margin travel
- * with the height, so the surrounding layout never jumps at the endpoints.
+ * Height collapse for bars and sections that open in place. Padding, margin and
+ * border travel with the height so the surrounding layout never jumps at the
+ * endpoints.
+ *
+ * Not `svelte/transition`'s `slide`: that one animates `height` alone, and a bar
+ * carrying its own `min-height` - the action bar does - simply refuses to
+ * shrink past it. Zeroing `min-height` for the duration is the whole difference.
  */
 export function collapse(node: Element, params?: MotionParams): TransitionConfig {
   if (!motionEnabled()) return noOpTransition();
-  return slide(node, {
-    duration: params?.duration ?? DUR.normal,
+  const style = getComputedStyle(node);
+  const opacity = Number(style.opacity);
+  const height = parseFloat(style.height);
+  const paddingTop = parseFloat(style.paddingTop);
+  const paddingBottom = parseFloat(style.paddingBottom);
+  const marginTop = parseFloat(style.marginTop);
+  const marginBottom = parseFloat(style.marginBottom);
+  const borderTop = parseFloat(style.borderTopWidth);
+  const borderBottom = parseFloat(style.borderBottomWidth);
+  return {
     delay: params?.delay ?? 0,
+    duration: params?.duration ?? DUR.normal,
     easing: EASE.default,
-  });
+    css: (t) =>
+      "overflow: hidden;" +
+      "min-height: 0;" +
+      `opacity: ${Math.min(t * 20, 1) * opacity};` +
+      `height: ${t * height}px;` +
+      `padding-top: ${t * paddingTop}px;` +
+      `padding-bottom: ${t * paddingBottom}px;` +
+      `margin-top: ${t * marginTop}px;` +
+      `margin-bottom: ${t * marginBottom}px;` +
+      `border-top-width: ${t * borderTop}px;` +
+      `border-bottom-width: ${t * borderBottom}px;`,
+  };
+}
+
+type TileParams = MotionParams & { enabled?: boolean; y?: number; start?: number };
+
+/**
+ * Grid tiles arriving: rise a little and settle to full size. `scale` alone
+ * reads as a pop and `fly` alone as a slide; together they read as the tile
+ * coming forward into place.
+ */
+export function tileIn(node: Element, params?: TileParams): TransitionConfig {
+  if (!motionEnabled() || params?.enabled === false) return noOpTransition();
+  const y = params?.y ?? 6;
+  const start = params?.start ?? 0.94;
+  return {
+    delay: params?.delay ?? 0,
+    duration: params?.duration ?? DUR.normal,
+    easing: EASE.default,
+    css: (t, u) =>
+      `opacity: ${t}; transform: translateY(${u * y}px) scale(${start + (1 - start) * t});`,
+  };
+}
+
+/** Grid tiles leaving: shrink out of the way, quicker than they arrived. */
+export function tileOut(node: Element, params?: TileParams): TransitionConfig {
+  if (!motionEnabled() || params?.enabled === false) return noOpTransition();
+  const start = params?.start ?? 0.9;
+  return {
+    delay: params?.delay ?? 0,
+    duration: params?.duration ?? DUR.fast,
+    easing: EASE.default,
+    css: (t) => `opacity: ${t}; transform: scale(${start + (1 - start) * t});`,
+  };
 }
 
 /**

@@ -1,10 +1,21 @@
 <script lang="ts">
+  import { collapse, DUR } from "../lib/animation";
+
   export let label = "";
   export let onClick: (ev: Event) => void = () => {};
   export let disabled = false;
 </script>
 
-<button type="button" class="tag-filter-bar" class:tag-filter-bar--disabled={disabled} on:click={disabled ? undefined : onClick} disabled={disabled}>
+<!-- The bar only exists while a tag filter is active, and it sits directly above
+     the account grid: collapsing its height moves the grid instead of jolting it. -->
+<button
+  type="button"
+  class="tag-filter-bar"
+  class:tag-filter-bar--disabled={disabled}
+  on:click={disabled ? undefined : onClick}
+  disabled={disabled}
+  transition:collapse={{ duration: DUR.normal }}
+>
   <span class="tag-filter-bar__label">{label}</span>
   <span class="tag-filter-bar__icon" aria-hidden="true">
     <svg
@@ -32,8 +43,17 @@
     font: inherit;
     cursor: pointer;
     box-sizing: border-box;
-    &::active {
-      border: 1px solid var(--overlay-white-12)!important;
+    transition: background-color var(--dur-fast) var(--ease-out);
+
+    &:hover:not(:disabled) {
+      background: var(--overlay-white-08);
+    }
+
+    /* Inset ring rather than a border: a real border is a pixel of layout shift
+       on every press. The rule this replaces used `::active`, which is not a
+       selector that matches anything. */
+    &:active:not(:disabled) {
+      box-shadow: inset 0 0 0 1px var(--overlay-white-12);
     }
   }
 
