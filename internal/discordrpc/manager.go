@@ -18,7 +18,22 @@ const (
 	refreshPeriod        = 30 * time.Second
 	discordLargeImageKey = "switcher"
 	discordSmallImageKey = "switcher_small"
+
+	// connectRetryMin and connectRetryMax bound the wait after a failed connect.
+	//
+	// Connecting to a Discord that is not running is not cheap: the IPC dial
+	// retries a named pipe for a full two seconds before giving up, and neither
+	// rich-go nor this manager remembers that it failed, so every refresh paid
+	// it again. Backing off keeps an absent Discord from costing two seconds out
+	// of every thirty for the whole session, while still picking presence up
+	// within a few minutes of Discord starting.
+	connectRetryMin = 30 * time.Second
+	connectRetryMax = 5 * time.Minute
 )
+
+// discordLogin is richgo.Login behind a variable so tests can substitute a slow
+// or failing connect without talking to a real Discord.
+var discordLogin = richgo.Login
 
 type Manager struct {
 	mu        sync.Mutex
@@ -27,6 +42,10 @@ type Manager struct {
 	initialized bool
 	startedAt   time.Time
 	stopCh      chan struct{}
+	stopping    bool
+
+	connectBackoff      time.Duration
+	connectBackoffUntil time.Time
 
 	lastDetails string
 	lastState   string
@@ -48,27 +67,40 @@ func (m *Manager) Start() {
 		return
 	}
 	m.stopCh = make(chan struct{})
+	m.stopping = false
 	stopCh := m.stopCh
 	m.mu.Unlock()
 
 	logRPC().Info("manager started", "refreshPeriod", refreshPeriod.String())
 	go m.runPeriodic(stopCh)
-	m.Refresh()
+	// Asynchronous deliberately. Start runs before the window exists, and the
+	// first refresh connects to Discord - a dial that takes two seconds to fail
+	// when Discord is not running. Nothing on screen waits for presence.
+	m.RefreshAsync()
 }
 
 func (m *Manager) Stop() {
-	m.refreshMu.Lock()
-	defer m.refreshMu.Unlock()
-
+	// Signal before taking refreshMu, so a refresh that has not reached the
+	// connect yet bails instead of making shutdown wait out its dial.
 	m.mu.Lock()
+	m.stopping = true
 	stopCh := m.stopCh
 	m.stopCh = nil
 	m.mu.Unlock()
 	if stopCh != nil {
 		close(stopCh)
 	}
+
+	m.refreshMu.Lock()
+	defer m.refreshMu.Unlock()
 	logRPC().Info("manager stopping")
 	m.shutdown()
+}
+
+func (m *Manager) isStopping() bool {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	return m.stopping
 }
 
 func (m *Manager) RefreshAsync() {
@@ -76,8 +108,14 @@ func (m *Manager) RefreshAsync() {
 }
 
 func (m *Manager) Refresh() {
+	if m.isStopping() {
+		return
+	}
 	m.refreshMu.Lock()
 	defer m.refreshMu.Unlock()
+	if m.isStopping() {
+		return
+	}
 
 	settings, err := loadCurrentSettings()
 	if err != nil {
@@ -137,14 +175,35 @@ func (m *Manager) ensureStarted() error {
 	if m.initialized {
 		return nil
 	}
-	if err := richgo.Login(clientID); err != nil {
+	if now := time.Now(); now.Before(m.connectBackoffUntil) {
+		return fmt.Errorf("discord connect backing off for another %s",
+			m.connectBackoffUntil.Sub(now).Round(time.Second))
+	}
+	if err := discordLogin(clientID); err != nil {
+		m.noteConnectFailedLocked()
 		return err
 	}
+	m.connectBackoff = 0
+	m.connectBackoffUntil = time.Time{}
 	now := time.Now()
 	m.startedAt = now
 	m.initialized = true
 	logRPC().Info("rpc client initialized", "clientID", clientID)
 	return nil
+}
+
+// noteConnectFailedLocked doubles the wait before the next connect is attempted,
+// up to connectRetryMax. Callers hold m.mu.
+func (m *Manager) noteConnectFailedLocked() {
+	switch {
+	case m.connectBackoff <= 0:
+		m.connectBackoff = connectRetryMin
+	case m.connectBackoff < connectRetryMax:
+		m.connectBackoff *= 2
+	}
+	m.connectBackoff = min(m.connectBackoff, connectRetryMax)
+	m.connectBackoffUntil = time.Now().Add(m.connectBackoff)
+	logRPC().Debug("discord connect failed; backing off", "retryIn", m.connectBackoff.String())
 }
 
 func (m *Manager) shutdown() {
