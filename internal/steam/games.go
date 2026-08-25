@@ -223,17 +223,6 @@ func parseAppNameMapJSON(raw []byte) (map[string]string, error) {
 	return m, nil
 }
 
-func cloneAppNameMap(m map[string]string) map[string]string {
-	if len(m) == 0 {
-		return map[string]string{}
-	}
-	out := make(map[string]string, len(m))
-	for k, v := range m {
-		out[k] = v
-	}
-	return out
-}
-
 func steamAppNameMapCacheModTime() (time.Time, bool) {
 	cachePath, err := appIdsUserPath()
 	if err != nil {
@@ -262,16 +251,25 @@ func steamAppNameMapCacheAge() (time.Duration, bool) {
 	return time.Since(mt), true
 }
 
+// setSteamAppNameMapMemory publishes m as the in-memory catalogue. It takes
+// ownership: every producer builds a fresh map, and nothing mutates one after
+// publishing, so the map is replaced wholesale rather than copied into.
 func setSteamAppNameMapMemory(m map[string]string) {
 	steamAppNameMapMu.Lock()
-	steamAppNameMapMem = cloneAppNameMap(m)
+	steamAppNameMapMem = m
 	steamAppNameMapMu.Unlock()
 }
 
+// getSteamAppNameMapCached returns the Steam app catalogue. The result is
+// read-only and shared - do not write to it.
+//
+// It used to hand back a copy, which for the ~180k-entry catalogue is around
+// 10MB and 180k hash inserts per call, on a map every caller only reads.
+// appinfo.go's cache already returns its map uncopied for the same reason.
 func getSteamAppNameMapCached() (map[string]string, error) {
 	steamAppNameMapMu.RLock()
 	if steamAppNameMapLooksValid(steamAppNameMapMem) {
-		m := cloneAppNameMap(steamAppNameMapMem)
+		m := steamAppNameMapMem
 		steamAppNameMapMu.RUnlock()
 		return m, nil
 	}
@@ -285,7 +283,7 @@ func getSteamAppNameMapCached() (map[string]string, error) {
 		return nil, fmt.Errorf("steam app name map cache invalid")
 	}
 	setSteamAppNameMapMemory(m)
-	return cloneAppNameMap(m), nil
+	return m, nil
 }
 
 func downloadAndStoreAppNameMap(ctx context.Context, reason string) error {
