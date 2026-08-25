@@ -42,16 +42,28 @@ func EnsureCached(platformKey, exeFullPath, wwwroot string) (publicURL string, e
 	dir := filepath.Join(www, "img", "shortcuts", SafeFolderName(platformKey))
 	out := filepath.Join(dir, strings.TrimSuffix(strings.ToLower(base), ".exe")+".png")
 
-	if st, err := os.Stat(out); err == nil && !st.IsDir() {
-		if exeSt, err := os.Stat(exeFullPath); err == nil && !exeSt.ModTime().After(st.ModTime()) {
-			return PublicURL(platformKey, base), nil
-		}
+	if cachedIconIsFresh(out, exeFullPath) {
+		return PublicURL(platformKey, base), nil
 	}
 
-	if err := winutil.ExtractExeIcon(exeFullPath, out); err != nil {
+	if err := extractExeIcon(exeFullPath, out); err != nil {
 		return "", err
 	}
 	return PublicURL(platformKey, base), nil
+}
+
+// cachedIconIsFresh reports whether the cached PNG exists and is no older than
+// the file it was extracted from.
+func cachedIconIsFresh(out, source string) bool {
+	st, err := os.Stat(out)
+	if err != nil || st.IsDir() {
+		return false
+	}
+	srcSt, err := os.Stat(source)
+	if err != nil {
+		return false
+	}
+	return !srcSt.ModTime().After(st.ModTime())
 }
 
 func EnsureShortcutCached(platformKey, exeBase, shortcutPath, wwwroot string) (publicURL string, err error) {
@@ -63,8 +75,23 @@ func EnsureShortcutCached(platformKey, exeBase, shortcutPath, wwwroot string) (p
 	www := filepath.Clean(wwwroot)
 	dir := filepath.Join(www, "img", "shortcuts", SafeFolderName(platformKey))
 	out := filepath.Join(dir, strings.TrimSuffix(strings.ToLower(exeBase), ".exe")+".png")
-	if err := winutil.ExtractShortcutIcon(shortcutPath, out); err != nil {
+
+	// The same guard EnsureCached applies. Without it this resolved the shortcut
+	// through the shell, reloaded the exe's icon resources and re-encoded the PNG
+	// on every page open, throwing away the file it wrote last time.
+	if cachedIconIsFresh(out, shortcutPath) {
+		return PublicURL(platformKey, exeBase), nil
+	}
+
+	if err := extractShortcutIcon(shortcutPath, out); err != nil {
 		return "", err
 	}
 	return PublicURL(platformKey, exeBase), nil
 }
+
+// Extraction goes through these so tests can count calls without needing a real
+// shortcut and the shell to resolve it.
+var (
+	extractExeIcon      = winutil.ExtractExeIcon
+	extractShortcutIcon = winutil.ExtractShortcutIcon
+)
