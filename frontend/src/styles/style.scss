@@ -41,9 +41,23 @@
     border-radius: 0.5rem;
 }
 
+/* Inset by a transparent border so the bar reads as a thumb sitting in a track
+   rather than a solid accent stripe down the edge of the window. The width is
+   unchanged: `scrollbarWidthVar` measures it, and the dropdowns are laid out
+   against what it reports. */
 ::-webkit-scrollbar-thumb {
     background-color: var(--accent);
+    background-clip: padding-box;
+    border: 3px solid transparent;
     border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    border-width: 2px;
+}
+
+::-webkit-scrollbar-thumb:active {
+    border-width: 1px;
 }
 
 body {

@@ -17,8 +17,26 @@ export const EASE = {
   snappy: quartOut,
 } as const;
 
-/** Global guard: returns true when motion is enabled. */
+/**
+ * Matched once: the list stays live, so a change to the OS setting is picked up
+ * without a reload. Undefined where matchMedia is not implemented (tests).
+ */
+const reducedMotionQuery =
+  typeof window !== "undefined" && typeof window.matchMedia === "function"
+    ? window.matchMedia("(prefers-reduced-motion: reduce)")
+    : null;
+
+/**
+ * Global guard: true when motion is enabled.
+ *
+ * The OS preference counts as well as the app setting. animations.scss already
+ * neutralises CSS animations under `prefers-reduced-motion`, and every
+ * transition here compiles down to one - but Svelte still holds a leaving
+ * element for the length of the duration it was handed. Answering false here is
+ * what actually removes it on the frame it was told to go.
+ */
 export function motionEnabled(): boolean {
+  if (reducedMotionQuery?.matches) return false;
   return get(animationsEnabled);
 }
 
