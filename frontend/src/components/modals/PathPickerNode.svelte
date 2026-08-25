@@ -11,6 +11,7 @@
   } from "../../lib/fsPaths";
   import { folderNameMatches } from "../../lib/folderNamePattern";
   import { formatUnknownError } from "../../lib/formatWailsError";
+  import { collapse, DUR } from "../../lib/animation";
   import { getContext, onDestroy } from "svelte";
   import { writable, type Writable } from "svelte/store";
   import { t } from "../../stores/i18n";
@@ -330,7 +331,7 @@
     >{displayLabel}</span>
   </div>
   {#if expanded}
-    <div class="pp-node-group" role="group">
+    <div class="pp-node-group" role="group" transition:collapse={{ duration: DUR.fast }}>
       {#if loading}
         <div class="pp-muted" style:padding-left="14px">…</div>
       {/if}

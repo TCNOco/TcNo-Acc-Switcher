@@ -5,6 +5,7 @@
   import { capabilities, currentOS } from "../stores/osCapabilities";
   import { pushToast } from "../stores/toast";
   import { formatToastWithError } from "../lib/formatWailsError";
+  import { collapse, DUR } from "../lib/animation";
   import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import * as SteamService from "../../bindings/TcNo-Acc-Switcher/internal/steam/steamservice.js";
   import type { SteamShortcutState } from "../../bindings/TcNo-Acc-Switcher/internal/steam/models.js";
@@ -775,7 +776,7 @@
     {/if}
   </div>
   {#each addToSteamNotices(steamShortcut) as notice (notice)}
-    <p class="settings-note">{$t(notice)}</p>
+    <p class="settings-note" transition:collapse={{ duration: DUR.fast }}>{$t(notice)}</p>
   {/each}
 </SettingsGroup>
 

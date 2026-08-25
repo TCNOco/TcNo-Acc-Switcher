@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { flip } from "svelte/animate";
+  import { collapse, DUR, flipMotion } from "../../lib/animation";
   import { t } from "../../stores/i18n";
   import { dismissModal } from "../../stores/modal";
 
@@ -50,7 +52,11 @@
   {:else}
     <ul class="security-keys__list">
       {#each keys as row (row.id)}
-        <li class="security-keys__row">
+        <li
+          class="security-keys__row"
+          animate:flip={flipMotion()}
+          out:collapse={{ duration: DUR.fast }}
+        >
           <span class="security-keys__name">
             {row.label}
             {#if row.requiresPassword}
