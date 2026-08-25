@@ -11,9 +11,22 @@
   import FeedbackModalBody from "./modals/FeedbackModalBody.svelte";
   import CrashReportModalBody from "./modals/CrashReportModalBody.svelte";
   import UpdateModalBody from "./modals/UpdateModalBody.svelte";
-  import SteamGuardModalBody from "./modals/SteamGuardModalBody.svelte";
+
+  // The Steam Guard body is the largest component in the app and most sessions
+  // never open it, so it is fetched when the modal is first asked for rather
+  // than parsed as part of the startup bundle.
+  type SteamGuardBody = (typeof import("./modals/SteamGuardModalBody.svelte"))["default"];
+  let SteamGuardModalBody: SteamGuardBody | null = null;
+  let steamGuardBodyRequested = false;
 
   $: m = $activeModal;
+
+  $: if (m?.kind === "steamGuard" && !steamGuardBodyRequested) {
+    steamGuardBodyRequested = true;
+    void import("./modals/SteamGuardModalBody.svelte").then((mod) => {
+      SteamGuardModalBody = mod.default;
+    });
+  }
 
   // What the open modal renders from. Only ever assigned a real modal, so the
   // markup below can dereference it freely.
@@ -129,13 +142,28 @@
           downloadUrl={shown.downloadUrl}
         />
       {:else if shown.kind === "steamGuard"}
-        <SteamGuardModalBody
-          account={shown.account}
-          entry={shown.entry}
-          knownAccounts={shown.knownAccounts}
-          controller={shown.controller}
-        />
+        {#if SteamGuardModalBody}
+          <svelte:component
+            this={SteamGuardModalBody}
+            account={shown.account}
+            entry={shown.entry}
+            knownAccounts={shown.knownAccounts}
+            controller={shown.controller}
+          />
+        {:else}
+          <p class="modal-lazy-loading">{$t("SteamGuard_Loading")}</p>
+        {/if}
       {/if}
     {/key}
   </ModalShell>
 {/if}
+
+<style lang="scss">
+  // Only visible for the frame or two the Steam Guard chunk takes to arrive.
+  .modal-lazy-loading {
+    margin: 0;
+    padding: 2rem 1rem;
+    text-align: center;
+    opacity: 0.7;
+  }
+</style>
