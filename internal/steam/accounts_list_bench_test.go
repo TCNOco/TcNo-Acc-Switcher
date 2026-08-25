@@ -183,3 +183,36 @@ func BenchmarkSyncTrayKnownAccounts(b *testing.B) {
 		})
 	}
 }
+
+// BenchmarkDropStaleMiniprofileFragments is the staleness sweep the profile
+// refresh runs per account. Each account asks about five avatar variants, and
+// probing the filesystem walks the extension list for every one of them.
+func BenchmarkDropStaleMiniprofileFragments(b *testing.B) {
+	for _, n := range []int{50, 200} {
+		steamDir := benchSteamEnv(b)
+		ids := seedSteamAccounts(b, steamDir, n)
+
+		b.Run(fmt.Sprintf("%daccounts/PerAccount", n), func(b *testing.B) {
+			direct := profileimage.DirectLookup(PlatformKey)
+			b.ReportAllocs()
+			for b.Loop() {
+				for _, id := range ids {
+					dropStaleMiniprofileFragment(direct, id, 7)
+				}
+			}
+		})
+
+		b.Run(fmt.Sprintf("%daccounts/Snapshot", n), func(b *testing.B) {
+			b.ReportAllocs()
+			for b.Loop() {
+				snap, err := profileimage.NewSnapshot(PlatformKey)
+				if err != nil {
+					b.Fatal(err)
+				}
+				for _, id := range ids {
+					dropStaleMiniprofileFragment(snap, id, 7)
+				}
+			}
+		})
+	}
+}

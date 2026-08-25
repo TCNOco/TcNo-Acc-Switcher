@@ -478,7 +478,12 @@ func (s *SteamService) RefreshAllSteamImages() error {
 // bought nothing - and it cost the list its faces for the whole of the round,
 // which is precisely what a refresh looked like to the user: every tile blank,
 // then slowly filling back in.
-func dropStaleMiniprofileFragment(steamID64 string, maxAgeDays int) {
+// dropStaleMiniprofileFragment asks about five avatar variants per account, and
+// takes the answers from a Lookup so the caller can hand it one snapshot for a
+// whole refresh round. Probing per account walked the extension list for each
+// variant - upwards of thirty stats an account - for a directory one read
+// answers in full.
+func dropStaleMiniprofileFragment(avatars profileimage.Lookup, steamID64 string, maxAgeDays int) {
 	ids := []string{
 		steamID64,
 		steamStaticAvatarID(steamID64),
@@ -488,10 +493,10 @@ func dropStaleMiniprofileFragment(steamID64 string, maxAgeDays int) {
 	}
 	expired := deleteMiniprofileCacheIfOlder(steamID64, maxAgeDays)
 	for _, id := range ids {
-		if id == steamID64 && profileimage.HasManualProfileMarker(PlatformKey, steamID64) {
+		if id == steamID64 && avatars.HasManualProfileMarker(steamID64) {
 			continue
 		}
-		if p, ok := profileimage.CachedFilePath(PlatformKey, id); ok && profileimage.FileOlderThanDays(p, maxAgeDays) {
+		if _, ok := avatars.CachedFilePath(id); ok && avatars.OlderThanDays(id, maxAgeDays) {
 			expired = true
 		}
 	}
@@ -654,6 +659,17 @@ func (s *SteamService) runProfileRefresh() {
 	vm := vacMap(vacRows)
 	var vmMu sync.Mutex
 
+	// One directory read for the whole round. Each account only ever reads its
+	// own entries and writes its own files after that read, so a view taken
+	// before the fan-out is the same one a per-account probe would have seen.
+	var avatars profileimage.Lookup = profileimage.DirectLookup(PlatformKey)
+	if snap, snapErr := profileimage.NewSnapshot(PlatformKey); snapErr == nil {
+		avatars = snap
+	} else {
+		steamLog().Warn("profile refresh could not read the avatar directory; probing per account instead",
+			slog.Any("err", snapErr))
+	}
+
 	ctx := context.Background()
 	sem := semaphore.NewWeighted(profileRefreshConcurrency)
 	var wg sync.WaitGroup
@@ -672,7 +688,7 @@ func (s *SteamService) runProfileRefresh() {
 			_ = sem.Acquire(ctx, 1)
 			defer sem.Release(1)
 
-			dropStaleMiniprofileFragment(u.SteamID64, st.SteamImageExpiryTime)
+			dropStaleMiniprofileFragment(avatars, u.SteamID64, st.SteamImageExpiryTime)
 
 			vmMu.Lock()
 			prev := vm[u.SteamID64]
