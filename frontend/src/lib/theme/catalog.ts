@@ -1,13 +1,13 @@
-import { parse as parseYaml } from "yaml";
 import { DEFAULT_THEME_ID, DEFAULT_THEME_OPTION } from "./types";
 import type { ThemeOption, ThemeAccentOption } from "./types";
 import { normalizeHexColor } from "./color";
 
+// Already parsed: the yaml-as-json Vite plugin turns each of these into a JSON
+// module at build time, so no parser ships and none of this runs on startup.
 const themeInfos = import.meta.glob("../../styles/themes/*/info.yaml", {
-  query: "?raw",
   import: "default",
   eager: true,
-}) as Record<string, string>;
+}) as Record<string, unknown>;
 
 export const themeStyles = import.meta.glob("../../styles/themes/*/style.scss", {
   query: "?inline",
@@ -124,17 +124,11 @@ function parseAccentOptions(value: unknown, fallbackColor: string): ThemeAccentO
   return options.length ? options : fallback();
 }
 
-function parseThemeInfo(raw: string, id: string): ThemeOption | null {
-  let parsed: ThemeInfoYaml;
-  try {
-    const next = parseYaml(raw);
-    if (!next || typeof next !== "object") {
-      return null;
-    }
-    parsed = next as ThemeInfoYaml;
-  } catch {
+function parseThemeInfo(info: unknown, id: string): ThemeOption | null {
+  if (!info || typeof info !== "object") {
     return null;
   }
+  const parsed = info as ThemeInfoYaml;
 
   const label = typeof parsed.name === "string" && parsed.name.trim() ? parsed.name.trim() : id;
   const accent = normalizeHexColor(parsed.accent) ?? DEFAULT_THEME_OPTION.defaultAccentColor;
@@ -161,12 +155,12 @@ function parseThemeInfo(raw: string, id: string): ThemeOption | null {
 
 function buildThemeCatalog(): ThemeOption[] {
   const rest: ThemeOption[] = [];
-  for (const [path, raw] of Object.entries(themeInfos)) {
+  for (const [path, info] of Object.entries(themeInfos)) {
     const id = folderFromInfoPath(path);
     if (!id || !styleLoaderPathForId(id)) {
       continue;
     }
-    const theme = parseThemeInfo(raw, id);
+    const theme = parseThemeInfo(info, id);
     if (theme) {
       rest.push(theme);
     }

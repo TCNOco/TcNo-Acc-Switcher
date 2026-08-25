@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import wails from "@wailsio/runtime/plugins/vite";
+import { yamlAsJson } from "./vite-plugin-yaml";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -16,7 +17,7 @@ export default defineConfig({
       ),
     },
   },
-  plugins: [svelte(), wails("./bindings")],
+  plugins: [yamlAsJson(), svelte(), wails("./bindings")],
   json: {
     // Nothing imports a named export from a .json file - the locales come in
     // through import.meta.glob and are read off .default - so emitting one
