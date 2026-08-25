@@ -10,17 +10,6 @@
   }
 }
 
-@keyframes bgZoneSlideUp {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(2rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-}
-
 .acc-img-overlay {
   position: fixed;
   inset: 0;
@@ -290,13 +279,14 @@ label.acc.acc--drop-target {
   position: absolute;
   bottom: 1rem;
   left: 50%;
-  transform: translateX(-50%);
+  /* `translate`, not `transform`: the component's enter/exit transition animates
+     `transform`, and the two would fight over the centring. */
+  translate: -50% 0;
   z-index: 10040;
   display: flex;
   gap: 0.75rem;
   align-items: flex-end;
   pointer-events: none;
-  animation: bgZoneSlideUp 0.22s ease-out both;
 }
 
 .bg-drop-zone {

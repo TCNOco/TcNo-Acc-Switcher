@@ -4,7 +4,7 @@
   import { t } from "../stores/i18n";
   import { route } from "../stores/nav";
   import { shouldUseAccountProfileRowDropCue } from "../lib/profileImageDrop";
-  import { DUR, fadeMotion } from "../lib/animation";
+  import { DUR, fadeUp } from "../lib/animation";
   import { backgroundZoneInterceptor } from "../stores/fileDrop";
   import type { FileDropContext } from "../stores/fileDrop";
   import { appBgInfo, platformBgInfo } from "../stores/backgroundImage";
@@ -146,7 +146,14 @@
 
 {#if dragActive}
   <!-- svelte-ignore a11y-no-static-element-interactions -->
-  <div class="bg-drop-zones" aria-hidden="true" transition:fadeMotion={{ duration: DUR.instant }}>
+  <!-- The zones used to slide in from a CSS keyframe and then vanish on a frame
+       when the drag ended, because a keyframe only has one direction. -->
+  <div
+    class="bg-drop-zones"
+    aria-hidden="true"
+    in:fadeUp={{ y: 24, duration: DUR.normal }}
+    out:fadeUp={{ y: 16, duration: DUR.fast }}
+  >
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
       id={appDropTargetId}

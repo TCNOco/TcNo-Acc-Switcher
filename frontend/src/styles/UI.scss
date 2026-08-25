@@ -685,9 +685,9 @@ button .caret, .button .caret {
     justify-content: flex-end;
     border-right: none;
 
-    &:hover {
-        padding: 1px;
-    }
+    /* No `&:hover { padding: 1px }`. Nothing paired with it - no border appeared,
+       no theme compensated - so all it did was shove every tile in the strip a
+       pixel sideways whenever the pointer crossed it. */
 
     &:empty {
         padding: 0;
