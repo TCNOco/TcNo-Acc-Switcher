@@ -113,9 +113,9 @@ type Status struct {
 	CanPoll             bool        `json:"canPoll"`
 	// ChallengeURL is set only for a QR session: the URL its image must encode.
 	// It changes while the session is open, because Steam rotates the code.
-	ChallengeURL        string      `json:"challengeUrl,omitempty"`
-	PollAfterMillis     int64       `json:"pollAfterMillis,omitempty"`
-	ExpiresAtUnix       int64       `json:"expiresAtUnix"`
+	ChallengeURL    string `json:"challengeUrl,omitempty"`
+	PollAfterMillis int64  `json:"pollAfterMillis,omitempty"`
+	ExpiresAtUnix   int64  `json:"expiresAtUnix"`
 }
 
 // Consumer is invoked at most once with borrowed credential slices. The

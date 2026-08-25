@@ -48,15 +48,15 @@ type sessionEntry struct {
 	challengeURL string
 	binding      Binding
 	session      protocol.AuthSession
-	state      State
-	challenges []Challenge
-	expiresAt  time.Time
-	nextPoll   time.Time
-	authorized *authorizedData
-	busy       bool
-	closed     bool
-	destroyed  bool
-	cancel     context.CancelFunc
+	state        State
+	challenges   []Challenge
+	expiresAt    time.Time
+	nextPoll     time.Time
+	authorized   *authorizedData
+	busy         bool
+	closed       bool
+	destroyed    bool
+	cancel       context.CancelFunc
 }
 
 type tombstone struct {

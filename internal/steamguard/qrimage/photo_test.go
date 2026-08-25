@@ -2,10 +2,12 @@ package qrimage
 
 import (
 	"context"
+	"errors"
 	"image"
 	"image/color"
 	"math"
 	"testing"
+	"time"
 )
 
 // photographed degrades a clean symbol the way a phone camera pointed at a
@@ -85,5 +87,79 @@ func TestDecodeCandidatesReadsAPhotographedCode(t *testing.T) {
 	}
 	if len(candidates) != 1 || candidates[0].Payload != payload {
 		t.Fatalf("candidates = %#v, want the challenge", candidates)
+	}
+}
+
+// The redraw is a second attempt, not a first one. A screenshot decodes as it
+// arrives and must not pay for thresholding it never needed.
+func TestDecodeCandidatesOnlyRedrawsWhenTheFrameItselfHeldNothing(t *testing.T) {
+	payload := "https://s.team/q/1/1234567890123456789"
+
+	var reads int
+	readable := func(image.Image) (string, error) {
+		reads++
+		return payload, nil
+	}
+	if _, err := decodeCandidates(context.Background(), []*Frame{makeQRFrame(t, payload)},
+		readable, time.Now, MaxCandidateFrames, MaxCandidatePixels, MaxCandidateDecodeTime); err != nil {
+		t.Fatal(err)
+	}
+	readsWhenFound := reads
+
+	reads = 0
+	blind := func(image.Image) (string, error) {
+		reads++
+		return "", errors.New("no code here")
+	}
+	if _, err := decodeCandidates(context.Background(), []*Frame{makeQRFrame(t, payload)},
+		blind, time.Now, MaxCandidateFrames, MaxCandidatePixels, MaxCandidateDecodeTime); err != nil {
+		t.Fatal(err)
+	}
+	if reads <= readsWhenFound+1 {
+		t.Fatalf("reads = %d after a frame that held nothing, %d when it decoded: the redraw did not run",
+			reads, readsWhenFound)
+	}
+}
+
+// Both variants are thresholds, so every pixel they hand the decoder is black or
+// white. A variant that still carried the photograph's greys would only be
+// asking the same question twice.
+func TestNormalizedVariantsAreBinaryAndTheSameSize(t *testing.T) {
+	frame := photographed(t, makeQRFrame(t, "https://s.team/q/1/1234567890123456789"))
+	source := frame.Image()
+
+	variants := normalizedVariants(source)
+	if len(variants) != maxNormalizedVariants {
+		t.Fatalf("variants = %d, want %d", len(variants), maxNormalizedVariants)
+	}
+	for index, variant := range variants {
+		if variant.Bounds().Dx() != source.Bounds().Dx() || variant.Bounds().Dy() != source.Bounds().Dy() {
+			t.Fatalf("variant %d is %v, want %v", index, variant.Bounds(), source.Bounds())
+		}
+		gray, ok := variant.(*image.Gray)
+		if !ok {
+			t.Fatalf("variant %d is %T", index, variant)
+		}
+		for _, value := range gray.Pix {
+			if value != 0 && value != 255 {
+				t.Fatalf("variant %d still holds grey (%d), so it was never thresholded", index, value)
+			}
+		}
+	}
+
+	wipeVariants(variants)
+	for index, variant := range variants {
+		for _, value := range variant.(*image.Gray).Pix {
+			if value != 0 {
+				t.Fatalf("variant %d survived the wipe", index)
+			}
+		}
+	}
+}
+
+func TestNormalizedVariantsDeclineAnImageTooSmallToHoldACode(t *testing.T) {
+	tiny := image.NewNRGBA(image.Rect(0, 0, minNormalizedDimension-1, minNormalizedDimension-1))
+	if variants := normalizedVariants(tiny); variants != nil {
+		t.Fatalf("variants = %d for an image no code fits in", len(variants))
 	}
 }

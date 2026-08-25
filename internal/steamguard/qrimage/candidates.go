@@ -131,12 +131,59 @@ func decodeCandidates(
 				return candidates, nil
 			}
 		}
+		// Only when the frame as it arrived held nothing. A screenshot decodes on
+		// the first pass and never pays for this; a photograph of a screen is the
+		// input that needs redrawing before it can be read at all.
+		if len(candidates) == 0 {
+			found, err := decodeVariants(ctx, frame, decoder, now, started, maxDuration)
+			if err != nil {
+				return nil, err
+			}
+			if found != "" {
+				candidates = append(candidates, Candidate{Payload: found})
+			}
+		}
 		frame.Wipe()
 	}
 	if err := checkDecodeBudget(ctx, started, now, maxDuration); err != nil {
 		return nil, err
 	}
 	return candidates, nil
+}
+
+// decodeVariants reads re-drawn copies of a frame, whole rather than in regions:
+// this is the second attempt at one photograph of one code, and splitting the
+// frame was not what stopped the first attempt.
+func decodeVariants(
+	ctx context.Context,
+	frame *Frame,
+	decoder frameDecoder,
+	now decodeClock,
+	started time.Time,
+	maxDuration time.Duration,
+) (string, error) {
+	variants := normalizedVariants(frame.Image())
+	defer wipeVariants(variants)
+	for _, variant := range variants {
+		if err := checkDecodeBudget(ctx, started, now, maxDuration); err != nil {
+			return "", err
+		}
+		payload, decodeErr := decoder(variant)
+		if errors.Is(decodeErr, ErrDecoderFailure) {
+			return "", ErrDecoderFailure
+		}
+		if budgetErr := checkDecodeBudget(ctx, started, now, maxDuration); budgetErr != nil {
+			return "", budgetErr
+		}
+		if decodeErr != nil {
+			continue
+		}
+		if _, parseErr := qr.ParseChallenge(payload); parseErr != nil {
+			continue
+		}
+		return payload, nil
+	}
+	return "", nil
 }
 
 // decodeRegions returns views over the source image; it never copies pixels.
