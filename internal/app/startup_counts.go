@@ -1,22 +1,15 @@
 package app
 
 import (
-	"runtime"
 	"strings"
-	"sync"
-	"sync/atomic"
 
 	"TcNo-Acc-Switcher/internal/basic"
+	"TcNo-Acc-Switcher/internal/parallel"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/security"
 	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/steam"
 )
-
-// startupCountWorkerCap bounds the fan-out below. The work is one small file
-// read per platform, so it saturates the disk queue long before it saturates
-// the CPU; more workers than this just adds scheduling noise.
-const startupCountWorkerCap = 8
 
 // RegisterStartupAccountCounts wires per-platform account and tag totals for GetStartup skeleton hints.
 func RegisterStartupAccountCounts() {
@@ -52,24 +45,10 @@ func resolveStartupCounts(platformNames []string, statsEnabled bool) (map[string
 		return accounts, tagCounts
 	}
 
-	workers := min(min(len(names), runtime.NumCPU()), startupCountWorkerCap)
 	results := make([]startupPlatformCounts, len(names))
-	var next atomic.Int64
-	var wg sync.WaitGroup
-	wg.Add(workers)
-	for w := 0; w < workers; w++ {
-		go func() {
-			defer wg.Done()
-			for {
-				i := int(next.Add(1)) - 1
-				if i >= len(names) {
-					return
-				}
-				results[i] = resolvePlatformCounts(names[i], statsEnabled)
-			}
-		}()
-	}
-	wg.Wait()
+	parallel.ForEachIndex(len(names), func(i int) {
+		results[i] = resolvePlatformCounts(names[i], statsEnabled)
+	})
 
 	for _, r := range results {
 		accounts[r.name] = r.accounts
