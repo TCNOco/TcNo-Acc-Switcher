@@ -184,13 +184,13 @@ func RequireUnlocked() error {
 }
 
 func AppLocked() bool {
-	st, err := defaultManager.status()
-	return err == nil && st.AppLocked
+	_, locked, _, err := defaultManager.lockState()
+	return err == nil && locked
 }
 
 func SavedAccountDataEncrypted() bool {
-	st, err := defaultManager.status()
-	return err == nil && st.SavedAccountDataEncrypted
+	_, _, encrypted, err := defaultManager.lockState()
+	return err == nil && encrypted
 }
 
 // DeriveSteamGuardOuterKey derives a purpose-specific key from the unlocked
@@ -513,12 +513,29 @@ func (m *manager) remove(path string) error {
 	return os.Remove(path)
 }
 
+// lockState answers the lock and encryption predicates without the two
+// directory scans status() runs for its UI-only fields.
+//
+// QuarantineCount costs a ReadDir and InterruptedRestorePending costs a Glob,
+// and nothing that merely asks "is the app locked" or "is saved data
+// encrypted" ever looks at either. requireUnlocked guards every account-list
+// call, so both scans were being paid on a path that discards them.
+func (m *manager) lockState() (passwordSet, locked, encrypted bool, err error) {
+	sf, ok, err := loadSecurityFile()
+	if err != nil {
+		return false, false, false, err
+	}
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	return ok, ok && len(m.masterKey) == 0, ok && sf.SavedAccountDataEncrypted, nil
+}
+
 func (m *manager) requireUnlocked() error {
-	st, err := m.status()
+	_, locked, _, err := m.lockState()
 	if err != nil {
 		return err
 	}
-	if st.AppLocked {
+	if locked {
 		return ErrLocked
 	}
 	return nil
