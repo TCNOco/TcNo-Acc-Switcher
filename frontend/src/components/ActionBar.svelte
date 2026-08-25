@@ -7,9 +7,7 @@
   import { t } from "../stores/i18n";
   import { openAlertNoButton } from "../stores/modal";
   import HelpAboutModalBody from "./modals/HelpAboutModalBody.svelte";
-  import GameShortcutBar from "./GameShortcutBar.svelte";
   import { capabilities } from "../stores/osCapabilities";
-  import SteamGamesAccountBar from "./SteamGamesAccountBar.svelte";
   import { steamPageTab } from "../stores/steamPageTab";
   import { openContextMenu } from "../stores/contextMenu";
   import type { MenuItemDef } from "../stores/contextMenu";
@@ -18,8 +16,22 @@
   import { steamGuardActionAccount } from "../stores/steamGuardAction";
   import { emitSteamGuardMenuRequest } from "../lib/steam/steamGuardMenuRequest";
   import "../styles/actionbar.scss";
+  // Neither of these ever renders on the home screen, which is the page the
+  // startup bundle has to paint. They are fetched the first time a platform
+  // page asks for them; the platform page chunk pulls them in anyway.
+  type Lazy = typeof import("./GameShortcutBar.svelte")["default"] | null;
+  type LazySteamBar = typeof import("./SteamGamesAccountBar.svelte")["default"] | null;
+  let GameShortcutBar: Lazy = null;
+  let SteamGamesAccountBar: LazySteamBar = null;
+
   $: r = $route;
   $: isPlatformPage = r.page === "platform";
+  $: if (isPlatformPage && !GameShortcutBar) {
+    void import("./GameShortcutBar.svelte").then((m) => (GameShortcutBar = m.default));
+  }
+  $: if (isPlatformPage && !SteamGamesAccountBar) {
+    void import("./SteamGamesAccountBar.svelte").then((m) => (SteamGamesAccountBar = m.default));
+  }
   $: isHomePage = r.page === "home";
   $: platformName = isPlatformPage ? (r as Extract<Route, { page: "platform" }>).platformName : "";
   $: showSaveCurrent = !!platformName && platformName !== "Steam";
@@ -90,12 +102,14 @@
   <div class="actionbar__actions">
     {#if isPlatformPage}
       {#if steamGamesMode}
-        <SteamGamesAccountBar />
+        {#if SteamGamesAccountBar}
+          <svelte:component this={SteamGamesAccountBar} />
+        {/if}
       {:else}
       <!-- Every action in the bar - scan, run, create, the drop-import - goes
            through winutil shortcut/.lnk code that is ErrUnsupported off Windows. -->
-      {#if $capabilities.shortcuts}
-        <GameShortcutBar platformName={platformName} />
+      {#if $capabilities.shortcuts && GameShortcutBar}
+        <svelte:component this={GameShortcutBar} platformName={platformName} />
       {/if}
       <button class="btnicontext actionbar__add" type="button" aria-label={$t("Button_AddNew")} use:tooltip={$t("Tooltip_AddNew")} disabled={isActionBusy} on:click={() => triggerPlatformAction("addNew")}
         ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true"
