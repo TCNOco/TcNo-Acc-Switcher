@@ -1,5 +1,6 @@
 <script lang="ts">
   import { modalFocus } from "../lib/modalFocus";
+  import { DUR, fadeMotion, scaleFade } from "../lib/animation";
   import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import { t } from "../stores/i18n";
 
@@ -68,6 +69,7 @@
     use:modalFocus={{ initialFocus: () => panelEl, onEscape: close }}
     role="presentation"
     on:click|self={close}
+    transition:fadeMotion={{ duration: DUR.fast }}
   >
     <button
       bind:this={closeButtonEl}
@@ -84,6 +86,8 @@
       aria-modal="true"
       aria-labelledby="acc-img-overlay-title"
       tabindex="-1"
+      in:scaleFade={{ start: 0.96, duration: DUR.normal, delay: 40 }}
+      out:scaleFade={{ start: 0.97, duration: DUR.fast }}
     >
       <h2 id="acc-img-overlay-title" class="acc-img-overlay__title">
         {$t("Overlay_ProfileImageTitle")}

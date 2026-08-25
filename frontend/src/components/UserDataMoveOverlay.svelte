@@ -1,5 +1,6 @@
 <script lang="ts">
   import { t } from "../stores/i18n";
+  import { DUR, fadeMotion, scaleFade } from "../lib/animation";
   import { userDataMoveOverlay } from "../stores/userDataMove";
 
   $: pct =
@@ -14,8 +15,17 @@
 </script>
 
 {#if $userDataMoveOverlay.active}
-  <div class="fileDropOverlay userDataMoveOverlay" aria-busy="true" aria-live="polite">
-    <div class="fileDropOverlay__inner">
+  <div
+    class="fileDropOverlay userDataMoveOverlay"
+    aria-busy="true"
+    aria-live="polite"
+    transition:fadeMotion={{ duration: DUR.fast }}
+  >
+    <div
+      class="fileDropOverlay__inner"
+      in:scaleFade={{ start: 0.95, duration: DUR.normal, delay: 40 }}
+      out:scaleFade={{ start: 0.97, duration: DUR.fast }}
+    >
       <div class="userDataMoveOverlay__spinner" aria-hidden="true"></div>
       <p class="fileDropOverlay__text">{label}</p>
       <div class="userDataMoveOverlay__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow={indeterminate ? undefined : pct}>

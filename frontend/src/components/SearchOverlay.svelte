@@ -65,6 +65,7 @@
   import { createEventDispatcher, onDestroy, onMount, tick } from "svelte";
   import { get } from "svelte/store";
   import { platformIconFgHref } from "../lib/platformIcon";
+  import { DUR, fadeMotion, scaleFade } from "../lib/animation";
   import { searchOverlayCtrl, searchOverlayPendingAppend } from "../stores/searchOverlay";
   import { t } from "../stores/i18n";
   import "../styles/SearchOverlay.scss";
@@ -236,13 +237,20 @@
 {#if open}
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <!-- svelte-ignore a11y-no-static-element-interactions -->
-  <div class="searchOverlay_overlay" role="presentation" on:click|self={onOverlayClick}>
+  <div
+    class="searchOverlay_overlay"
+    role="presentation"
+    on:click|self={onOverlayClick}
+    transition:fadeMotion={{ duration: DUR.fast }}
+  >
     <div
       bind:this={dialogEl}
       class="searchOverlay_content"
       role="dialog"
       aria-modal="true"
       aria-labelledby={searchDialogTitleId}
+      in:scaleFade={{ start: 0.97, duration: DUR.normal, delay: 30 }}
+      out:scaleFade={{ start: 0.98, duration: DUR.fast }}
     >
       <h2 id={searchDialogTitleId} class="searchOverlay_srOnly">{$t("Context_Search")}</h2>
       <label id={searchInputLabelId} class="searchOverlay_srOnly" for="searchOverlay_input">

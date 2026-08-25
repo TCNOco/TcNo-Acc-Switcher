@@ -13,7 +13,6 @@
     padding: 1rem;
     box-sizing: border-box;
     z-index: 20050;
-    animation: searchOverlay_fadeIn 0.15s ease-out;
   }
 
   .searchOverlay_srOnly {
@@ -28,14 +27,6 @@
     border: 0;
   }
   
-  @keyframes searchOverlay_fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
   /* Bounded by the host the overlay is positioned against, not by the viewport:
      the host is shorter than the window, so a dvh cap let the dialog grow past
      it and spill its overflow onto whichever ancestor still scrolled. The

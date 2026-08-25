@@ -1,12 +1,12 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { get } from "svelte/store";
-  import { fade } from "svelte/transition";
+  import { fade, fly } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
   import { Events } from "@wailsio/runtime";
   import { initStreamerMode } from "./stores/streamerMode";
   import { initScreenCovered } from "./stores/screenCovered";
-  import { motionEnabled } from "./lib/animation";
+  import { DUR, EASE, motionEnabled } from "./lib/animation";
   import { applyAnimationClass } from "./lib/animationClass";
   import { installInputModalityTracking } from "./lib/inputModality";
   import { animationsEnabled, loadAnimationsEnabled } from "./stores/animationSettings";
@@ -22,7 +22,7 @@
   import ContextMenu from './components/ContextMenu.svelte'
   import BackgroundDropZones from './components/BackgroundDropZones.svelte'
   import ActionBar from './components/ActionBar.svelte'
-  import { route, applyNavigateJSON, navigateBackLikeButton, navigateForward } from './stores/nav'
+  import { route, navDirection, applyNavigateJSON, navigateBackLikeButton, navigateForward } from './stores/nav'
   import { installPageStatsTracking } from "./lib/pageStatsTrack";
   import { loadPageModule, prefetchCommonPages } from "./lib/pageLoaders";
   import { actionBarStatus } from './stores/fileDrop'
@@ -139,6 +139,22 @@
     if (activeBg?.hasImage && !activeBg.luma?.measured) {
       syncBackdropInk(activeBg.luma, activeBg.opacity, bgLayerEl);
     }
+  }
+
+  /**
+   * The page leaving and the page arriving overlap for the length of the
+   * crossfade. Neutralise the outgoing copy for that window: `inert` takes it
+   * out of hit-testing and the tab order, and dropping the id keeps the skip
+   * link pointed at the page that is actually arriving. The z-index is set
+   * inline rather than by class: Svelte scopes its stylesheet at compile time,
+   * so a class added from script would never match a scoped rule.
+   */
+  function onPageLeave(event: Event): void {
+    const el = event.currentTarget as HTMLElement;
+    el.style.zIndex = "0";
+    el.removeAttribute("id");
+    el.setAttribute("inert", "");
+    el.setAttribute("aria-hidden", "true");
   }
 
   let restoreRepairPromptOpen = false;
@@ -534,8 +550,27 @@
       {/if}
     {/key}
     <div class="page-content-wrapper">
+      <div class="page-stage">
       {#key $route.page + ("platformName" in $route ? $route.platformName : "")}
-        <main id="app-main" class="page-content" tabindex="-1">
+        <main
+          id="app-main"
+          class="page-content"
+          tabindex="-1"
+          in:fly={{
+            x: motionEnabled() ? $navDirection * 22 : 0,
+            duration: motionEnabled() ? DUR.normal + 40 : 0,
+            delay: motionEnabled() ? 40 : 0,
+            opacity: 0,
+            easing: EASE.default,
+          }}
+          out:fly={{
+            x: motionEnabled() ? $navDirection * -14 : 0,
+            duration: motionEnabled() ? DUR.fast : 0,
+            opacity: 0,
+            easing: EASE.default,
+          }}
+          on:outrostart={onPageLeave}
+        >
           {#await loadPageModule($route) then { default: Page }}
             {#if $route.page === "home"}
               <Page />
@@ -561,6 +596,7 @@
           {/await}
         </main>
       {/key}
+      </div>
       {#if showActionBar}
         <ActionBar />
       {/if}
@@ -641,9 +677,18 @@
     flex-direction: column;
   }
 
-  .page-content {
+  /* Both pages of a navigation share this box while the crossfade runs, so the
+     stage owns the flex slot and each page is absolutely filled into it. */
+  .page-stage {
+    position: relative;
     flex: 1;
     min-height: 0;
+  }
+
+  .page-content {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     overflow: hidden;

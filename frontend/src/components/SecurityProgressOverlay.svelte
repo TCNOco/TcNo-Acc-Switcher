@@ -1,11 +1,16 @@
 <script lang="ts">
   import { t } from "../stores/i18n";
+  import { DUR, fadeMotion, scaleFade } from "../lib/animation";
   import { securityProgressActive, securityProgressMessage } from "../stores/security";
 </script>
 
 {#if $securityProgressActive}
-  <div class="security-progress-overlay">
-    <div class="security-progress-panel">
+  <div class="security-progress-overlay" transition:fadeMotion={{ duration: DUR.fast }}>
+    <div
+      class="security-progress-panel"
+      in:scaleFade={{ start: 0.94, duration: DUR.normal, delay: 40 }}
+      out:scaleFade={{ start: 0.97, duration: DUR.fast }}
+    >
       <div class="security-progress-spinner" aria-hidden="true"></div>
       <div>
         <h2>{$t("Security_Progress_Title")}</h2>

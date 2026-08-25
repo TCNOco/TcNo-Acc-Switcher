@@ -55,6 +55,15 @@ export const previousPage = {
   },
 };
 export const appBarTitle = writable("TcNo Account Switcher");
+
+/**
+ * Which way the last navigation went: 1 deeper into the app, -1 back out.
+ * Page transitions read it so content enters from the side it came from. It is
+ * written before every `route.set`, and this store's subscribers run before
+ * Svelte flushes the DOM, so a transition never reads a stale direction.
+ */
+export const navDirection = writable<1 | -1>(1);
+
 let historyIndex = 0;
 let historyMaxIndex = 0;
 
@@ -105,6 +114,7 @@ function replaceCurrentHistoryRoute(next: Route): void {
     const idx =
       typeof st?.idx === "number" && Number.isFinite(st.idx) ? st.idx : historyIndex;
     window.history.replaceState({ idx }, "", url);
+    navDirection.set(-1);
     route.set(next);
   } finally {
     syncing = false;
@@ -126,6 +136,7 @@ export function installHashSync(): () => void {
       }
       historyIndex += 1;
       historyMaxIndex = historyIndex;
+      navDirection.set(1);
       history.pushState({ idx: historyIndex }, "", url);
       syncing = false;
     }
@@ -136,7 +147,10 @@ export function installHashSync(): () => void {
     if (next) {
       const idx = ev.state?.idx;
       if (typeof idx === "number" && Number.isFinite(idx)) {
+        navDirection.set(idx < historyIndex ? -1 : 1);
         historyIndex = idx;
+      } else {
+        navDirection.set(-1);
       }
       syncing = true;
       route.set(next);

@@ -4,6 +4,7 @@
   import { t } from "../stores/i18n";
   import { route } from "../stores/nav";
   import { shouldUseAccountProfileRowDropCue } from "../lib/profileImageDrop";
+  import { DUR, fadeMotion } from "../lib/animation";
   import { backgroundZoneInterceptor } from "../stores/fileDrop";
   import type { FileDropContext } from "../stores/fileDrop";
   import { appBgInfo, platformBgInfo } from "../stores/backgroundImage";
@@ -145,7 +146,7 @@
 
 {#if dragActive}
   <!-- svelte-ignore a11y-no-static-element-interactions -->
-  <div class="bg-drop-zones" aria-hidden="true">
+  <div class="bg-drop-zones" aria-hidden="true" transition:fadeMotion={{ duration: DUR.instant }}>
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
       id={appDropTargetId}

@@ -5,6 +5,7 @@
   import { fileDropAcceptor, fileDropInterceptor, backgroundZoneInterceptor, accountProfileImageDropActive } from "../stores/fileDrop";
   import type { FileDropContext, FileDropTargetDetails } from "../stores/fileDrop";
   import { getDragFileCategory, type DragFileCategory } from "../lib/profileImageDrop";
+  import { DUR, fadeMotion, scaleFade } from "../lib/animation";
   import { handleSteamGuardDrop } from "../stores/steamGuardDrop";
   import { t } from "../stores/i18n";
 
@@ -193,8 +194,9 @@
     class="fileDropOverlay"
     class:fileDropOverlay--incompatible={dragCategory === "incompatible"}
     aria-hidden="true"
+    transition:fadeMotion={{ duration: DUR.instant }}
   >
-    <div class="fileDropOverlay__inner">
+    <div class="fileDropOverlay__inner" in:scaleFade={{ start: 0.94, duration: DUR.normal }}>
       <div class="fileDropOverlay__icon" aria-hidden="true">
         {#if dragCategory === "incompatible"}
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { modalFocus } from "../lib/modalFocus";
+  import { DUR, fadeMotion, scaleFade } from "../lib/animation";
   import { t } from "../stores/i18n";
   import {
     securityStatus,
@@ -40,11 +41,14 @@
     role="dialog"
     aria-modal="true"
     aria-labelledby={titleId}
+    transition:fadeMotion={{ duration: DUR.fast }}
   >
     <form
       class="app-lock-panel"
       use:modalFocus={{ initialFocus: () => passwordEl }}
       on:submit|preventDefault={submit}
+      in:scaleFade={{ start: 0.96, duration: DUR.normal, delay: 40 }}
+      out:scaleFade={{ start: 0.97, duration: DUR.fast }}
     >
       <div class="app-lock-panel-inner">
         <header class="app-lock-headerbar">
