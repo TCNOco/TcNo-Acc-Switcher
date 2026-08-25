@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"TcNo-Acc-Switcher/internal/accountlist"
+	"TcNo-Acc-Switcher/internal/parallel"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/profileimage"
 	"TcNo-Acc-Switcher/internal/security"
@@ -116,17 +117,23 @@ func (b *BasicService) GetAccountsList(platformKey string) ([]AccountListItemDTO
 		return nil, nil
 	}
 
-	out := make([]AccountListItemDTO, 0, len(ctx.keys))
+	// With saved-account encryption on, SavedDataBroken reads and AEAD-decrypts
+	// that account's whole blob, which dwarfs everything else on this path and
+	// scales with the account count. The rows are independent, so they are built
+	// concurrently; without encryption the check short-circuits and this is a
+	// plain loop's worth of map lookups either way.
+	out := make([]AccountListItemDTO, len(ctx.keys))
 	encrypted := security.SavedAccountDataEncrypted()
-	for _, uid := range ctx.keys {
-		out = append(out, AccountListItemDTO{
+	parallel.ForEachIndex(len(ctx.keys), func(i int) {
+		uid := ctx.keys[i]
+		out[i] = AccountListItemDTO{
 			PlatformKey:     ctx.platformKey,
 			UniqueID:        uid,
 			DisplayName:     ctx.ids[uid],
 			CurrentSession:  ctx.liveUID != "" && strings.EqualFold(ctx.liveUID, uid),
 			SavedDataBroken: encrypted && !security.AccountBlobValid(ctx.platformKey, uid),
-		})
-	}
+		}
+	})
 	if len(out) > 0 {
 		syncBasicPlatformCounts(ctx.platformKey, len(out), ctx.ps)
 	}
@@ -157,9 +164,12 @@ func (b *BasicService) GetAccountsEnrichment(platformKey string) ([]AccountEnric
 		return nil, err
 	}
 
-	out := make([]AccountEnrichmentDTO, 0, len(ctx.keys))
+	// Same as GetAccountsList: SavedDataBroken is a full blob decrypt per account
+	// when encryption is on, and the rows share nothing writable.
+	out := make([]AccountEnrichmentDTO, len(ctx.keys))
 	encrypted := security.SavedAccountDataEncrypted()
-	for _, uid := range ctx.keys {
+	parallel.ForEachIndex(len(ctx.keys), func(i int) {
+		uid := ctx.keys[i]
 		note := ""
 		if ctx.ps.AccountNotes != nil {
 			note = ctx.ps.AccountNotes[uid]
@@ -181,7 +191,7 @@ func (b *BasicService) GetAccountsEnrichment(platformKey string) ([]AccountEnric
 		if ctx.lastUsedMap != nil {
 			lu = strings.TrimSpace(ctx.lastUsedMap[uid])
 		}
-		out = append(out, AccountEnrichmentDTO{
+		out[i] = AccountEnrichmentDTO{
 			UniqueID:           uid,
 			ImageURL:           img,
 			AvatarPending:      pending,
@@ -191,8 +201,8 @@ func (b *BasicService) GetAccountsEnrichment(platformKey string) ([]AccountEnric
 			ShowLastUsed:       ctx.ps.ShowLastUsed,
 			Tags:               resolveTagsForAccount(ctx.idf, uid),
 			SavedDataBroken:    encrypted && !security.AccountBlobValid(ctx.platformKey, uid),
-		})
-	}
+		}
+	})
 	return out, nil
 }
 

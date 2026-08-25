@@ -1,7 +1,9 @@
 package basic
 
 import (
+	"bytes"
 	"fmt"
+	"os"
 	"path/filepath"
 	"sync"
 	"sync/atomic"
@@ -10,6 +12,8 @@ import (
 
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/platform"
+	"TcNo-Acc-Switcher/internal/profileimage"
+	"TcNo-Acc-Switcher/internal/security"
 )
 
 // benchPlatformCount and benchAccountsPerPlatform model a well-used install:
@@ -208,5 +212,157 @@ func BenchmarkResolveTagsForAllAccounts(b *testing.B) {
 		for _, uid := range uids {
 			_ = resolveTagsForAccount(f, uid)
 		}
+	}
+}
+
+// seedBenchAvatars writes a cached avatar per account so the enrichment pass
+// resolves real URLs rather than short-circuiting on an empty directory.
+func seedBenchAvatars(tb testing.TB, platformKey string, uids []string) {
+	tb.Helper()
+	dir, err := profileimage.ProfileDir(platformKey)
+	if err != nil {
+		tb.Fatal(err)
+	}
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		tb.Fatal(err)
+	}
+	for _, uid := range uids {
+		if err := os.WriteFile(filepath.Join(dir, uid+".jpg"), []byte("jpegbytes"), 0o644); err != nil {
+			tb.Fatal(err)
+		}
+	}
+}
+
+func benchAccountSizes() []int { return []int{10, 50, 200} }
+
+// BenchmarkGetAccountsList is the fast payload the account page paints first.
+func BenchmarkGetAccountsList(b *testing.B) {
+	for _, n := range benchAccountSizes() {
+		b.Run(fmt.Sprintf("%daccounts", n), func(b *testing.B) {
+			benchResetPaths(b)
+			names := seedBenchPlatforms(b, 1, n)
+			svc := &BasicService{}
+			if _, err := svc.GetAccountsList(names[0]); err != nil {
+				b.Fatalf("GetAccountsList: %v", err)
+			}
+
+			b.ReportAllocs()
+			b.ResetTimer()
+			for i := 0; i < b.N; i++ {
+				if _, err := svc.GetAccountsList(names[0]); err != nil {
+					b.Fatal(err)
+				}
+			}
+		})
+	}
+}
+
+// BenchmarkGetAccountsEnrichment is the slower second payload: avatars, notes,
+// tags and last-used for every account on the page.
+func BenchmarkGetAccountsEnrichment(b *testing.B) {
+	for _, n := range benchAccountSizes() {
+		b.Run(fmt.Sprintf("%daccounts", n), func(b *testing.B) {
+			benchResetPaths(b)
+			names := seedBenchPlatforms(b, 1, n)
+			f, err := readIdsFile(names[0])
+			if err != nil {
+				b.Fatal(err)
+			}
+			uids := make([]string, 0, len(f.IDs))
+			for uid := range f.IDs {
+				uids = append(uids, uid)
+			}
+			seedBenchAvatars(b, names[0], uids)
+
+			svc := &BasicService{}
+			got, err := svc.GetAccountsEnrichment(names[0])
+			if err != nil {
+				b.Fatalf("GetAccountsEnrichment: %v", err)
+			}
+			if len(got) != n {
+				b.Fatalf("enrichment returned %d rows, want %d", len(got), n)
+			}
+
+			b.ReportAllocs()
+			b.ResetTimer()
+			for i := 0; i < b.N; i++ {
+				if _, err := svc.GetAccountsEnrichment(names[0]); err != nil {
+					b.Fatal(err)
+				}
+			}
+		})
+	}
+}
+
+// benchVaultPassword only ever protects a temp directory created by the
+// benchmark below.
+const benchVaultPassword = "bench vault password Aa1!"
+
+// seedEncryptedAccounts turns on saved-account encryption and writes one
+// encrypted blob per account, so SavedDataBroken has real work to verify.
+// payloadKB sets the plaintext size of each account's saved login data.
+func seedEncryptedAccounts(tb testing.TB, platformKey string, uids []string, payloadKB int) {
+	tb.Helper()
+	if err := security.SetAppPassword(benchVaultPassword); err != nil {
+		tb.Skipf("cannot set app password: %v", err)
+	}
+	if err := security.EnableSavedAccountEncryption(benchVaultPassword); err != nil {
+		tb.Skipf("cannot enable saved-account encryption: %v", err)
+	}
+	tb.Cleanup(func() {
+		_ = security.DisableSavedAccountEncryption(benchVaultPassword)
+		_ = security.RemoveAppPassword(benchVaultPassword)
+	})
+
+	payload := bytes.Repeat([]byte("saved account login payload blob\n"), payloadKB*1024/33)
+	for _, uid := range uids {
+		save, err := security.BeginAccountSave(platformKey, uid, uid, "")
+		if err != nil {
+			tb.Fatalf("BeginAccountSave: %v", err)
+		}
+		if err := os.WriteFile(filepath.Join(save.DestRoot, "config.cfg"), payload, 0o644); err != nil {
+			security.CleanupAccountSave(save)
+			tb.Fatalf("write payload: %v", err)
+		}
+		if err := security.CommitAccountSave(save, ""); err != nil {
+			tb.Fatalf("CommitAccountSave: %v", err)
+		}
+	}
+	if !security.SavedAccountDataEncrypted() {
+		tb.Skip("saved-account encryption did not stay enabled")
+	}
+}
+
+// BenchmarkGetAccountsListEncrypted is the same first payload on an install
+// with saved-account encryption on. Every row's SavedDataBroken flag costs a
+// full read and AEAD-decrypt of that account's blob.
+func BenchmarkGetAccountsListEncrypted(b *testing.B) {
+	for _, n := range []int{10, 50} {
+		b.Run(fmt.Sprintf("%daccounts", n), func(b *testing.B) {
+			benchResetPaths(b)
+			names := seedBenchPlatforms(b, 1, n)
+			f, err := readIdsFile(names[0])
+			if err != nil {
+				b.Fatal(err)
+			}
+			uids := make([]string, 0, len(f.IDs))
+			for uid := range f.IDs {
+				uids = append(uids, uid)
+			}
+			seedEncryptedAccounts(b, names[0], uids, 64)
+
+			svc := &BasicService{}
+			if _, err := svc.GetAccountsList(names[0]); err != nil {
+				b.Fatalf("GetAccountsList: %v", err)
+			}
+
+			b.ReportAllocs()
+			b.ResetTimer()
+			for i := 0; i < b.N; i++ {
+				if _, err := svc.GetAccountsList(names[0]); err != nil {
+					b.Fatal(err)
+				}
+			}
+		})
 	}
 }
