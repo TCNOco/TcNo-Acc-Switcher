@@ -521,3 +521,40 @@ func BenchmarkSyncAllTrayKnownAccounts(b *testing.B) {
 		SyncAllTrayKnownAccounts()
 	}
 }
+
+// BenchmarkGameStatsMarkupNoStatsConfigured is the account page asking for game
+// stats on a platform that has none - which is most of the two dozen the
+// catalog ships. The answer is empty either way; the question is what it costs
+// to arrive at.
+func BenchmarkGameStatsMarkupNoStatsConfigured(b *testing.B) {
+	exeDir := benchResetPaths(b)
+	names := seedBenchPlatforms(b, 1, 10)
+	seedBenchCatalog(b, exeDir, names)
+
+	// The real definitions, so the compat lookup misses for the same reason it
+	// misses on a real install: nothing is configured for this platform.
+	gameStats, err := os.ReadFile(filepath.Join("..", "..", "GameStats.json"))
+	if err != nil {
+		b.Skipf("GameStats.json unavailable: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(exeDir, "GameStats.json"), gameStats, 0o644); err != nil {
+		b.Fatal(err)
+	}
+
+	svc := &BasicService{}
+	got, gerr := svc.GetUserStatsAllGamesMarkup(names[0], "7656119000000000")
+	if gerr != nil {
+		b.Fatalf("GetUserStatsAllGamesMarkup: %v", gerr)
+	}
+	if len(got) != 0 {
+		b.Fatalf("expected no stats for an unconfigured platform, got %d", len(got))
+	}
+
+	b.ReportAllocs()
+	b.ResetTimer()
+	for range b.N {
+		if _, err := svc.GetUserStatsAllGamesMarkup(names[0], "7656119000000000"); err != nil {
+			b.Fatal(err)
+		}
+	}
+}

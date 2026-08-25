@@ -838,6 +838,14 @@ func (b *BasicService) GetUserStatsAllGamesMarkup(platformName, accountID string
 	}
 	platformName = strings.TrimSpace(platformName)
 	accountID = strings.TrimSpace(accountID)
+	// Nothing below this point does anything for a platform with no game stats
+	// configured, which is most of the two dozen. Leaving early matters because
+	// currentLiveAccountID is not cheap: it resolves the descriptor and reads
+	// the live account id, which for some platforms means opening their LevelDB.
+	if len(gameStatsState.compat[platformName]) == 0 {
+		gameStatsState.mu.Unlock()
+		return map[string]map[string]StatValueAndIconDTO{}, nil
+	}
 	liveAccountID := currentLiveAccountID(b, platformName)
 	staleJobs := collectStaleGameStatsJobs(platformName, accountID, liveAccountID)
 	out := map[string]map[string]StatValueAndIconDTO{}
