@@ -137,7 +137,13 @@ func resolveLevelDBReference(raw string, ctx platform.PathTokenContext) (string,
 	}
 	dbPath := platform.ExpandPathTokens(platform.ExpandWindowsPath(ref.Path), ctx)
 	slog.Debug("leveldb resolve reference", "dbPath", dbPath, "key", ref.Key, "jsonPath", ref.JSONPath != "")
-	return sharedLevelDBStore.readValueFresh(dbPath, ref.Key, ref.JSONPath)
+	// readValue, not readValueFresh: an account page resolves one of these per
+	// account against the same live database, and the fresh path reopened it
+	// every time. Handle lifetime is already scoped by the
+	// closeSharedLevelDBHandles calls bracketing every flow phase, so a handle
+	// never outlives the operation that opened it or survives a phase that
+	// rewrites the database.
+	return sharedLevelDBStore.readValue(dbPath, ref.Key, ref.JSONPath)
 }
 
 func levelDBOpenMayBeSharingViolation(err error) bool {
@@ -174,6 +180,8 @@ func openReadOnlyLevelDBWithTempCopyFallback(dbPath string) (db *leveldb.DB, cle
 	return db2, func() { _ = os.RemoveAll(tmp) }, nil
 }
 
+// readValueFresh opens the database, reads one value and closes it again,
+// bypassing the shared handle cache.
 func (s *levelDBStore) readValueFresh(dbPath, key, jsonPath string) (string, error) {
 	dbPath = filepath.Clean(strings.TrimSpace(dbPath))
 	if dbPath == "" {
@@ -198,7 +206,12 @@ func (s *levelDBStore) readValueFresh(dbPath, key, jsonPath string) (string, err
 	return readLevelDBValue(dbPath, db, key, jsonPath)
 }
 
+// readValue reads one value through the shared handle cache, so repeated reads
+// of the same database within one operation open it once.
 func (s *levelDBStore) readValue(dbPath, key, jsonPath string) (string, error) {
+	if strings.TrimSpace(key) == "" {
+		return "", fmt.Errorf("empty leveldb key")
+	}
 	db, release, err := s.acquire(dbPath)
 	if err != nil {
 		return "", err
