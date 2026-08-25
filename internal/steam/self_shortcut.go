@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"slices"
 	"strings"
+	"sync"
 	"sync/atomic"
 
 	"TcNo-Acc-Switcher/internal/fsutil"
@@ -104,7 +105,7 @@ func (s *SteamService) SetAddToSteam(enabled bool) (SteamShortcutApplyResult, er
 	defer s.mu.Unlock()
 
 	result := SteamShortcutApplyResult{Enabled: enabled, SteamRunning: steamIsRunning()}
-	users, flatpak, applyErr := applySelfShortcut(enabled)
+	users, flatpak, applyErr := applySelfShortcut(enabled, nil)
 	result.Users = users
 	result.FlatpakSteam = flatpak
 
@@ -135,22 +136,31 @@ func SyncSelfShortcut(enabled bool) error {
 	if !enabled {
 		return nil
 	}
-	_, _, err := applySelfShortcut(true)
+	_, _, err := applySelfShortcut(true, nil)
 	return err
 }
 
-// selfShortcutSyncing keeps the account list, which can be reloaded in bursts,
-// from stacking up passes over every user's shortcut file.
+// selfShortcutSyncing keeps the account list, which is reloaded on every window
+// focus, from stacking up passes.
 var selfShortcutSyncing atomic.Bool
 
-// SyncSelfShortcutInBackground re-runs the sync off the caller's path, reading
-// the preference itself.
+// selfShortcutSynced remembers which shortcut files this process has already
+// brought in line with the preference, so the repeat passes cost one directory
+// listing per Steam install instead of a read and a parse of every user's list.
+var selfShortcutSynced sync.Map
+
+// SyncSelfShortcutForNewUsers writes the entry for Steam users that have turned
+// up since the last pass, off the caller's goroutine.
 //
 // Steam creates userdata/<id32> when an account first signs in, which is after
 // the startup sync has already listed the users there were. Without a later
 // pass the entry exists for every account but the newly added one, for as long
 // as the app keeps running.
-func SyncSelfShortcutInBackground() {
+//
+// This is not a poll: callers hang it off things that only happen after a
+// sign-in could have. Users already done are skipped without opening their
+// file, so a pass that finds nothing new is a handful of stats.
+func SyncSelfShortcutForNewUsers() {
 	if !selfShortcutSyncing.CompareAndSwap(false, true) {
 		return
 	}
@@ -160,14 +170,30 @@ func SyncSelfShortcutInBackground() {
 		if err != nil {
 			return
 		}
+		// Cached in-process, so this is not a settings file read per call.
 		app, err := platform.LoadAppSettings(exeDir)
 		if err != nil || !app.AddToSteam {
 			return
 		}
-		if err := SyncSelfShortcut(true); err != nil {
+		if _, _, err := applySelfShortcut(true, skipAlreadySynced); err != nil {
 			steamLog().Warn("steam shortcut sync", slog.Any("err", err))
 		}
 	}()
+}
+
+func skipAlreadySynced(path string) bool {
+	_, done := selfShortcutSynced.Load(path)
+	return done
+}
+
+// forgetSyncedSelfShortcuts drops what a full pass is about to redo. Every full
+// pass runs for a reason the memo cannot see - the preference flipped, or the
+// app moved and every entry now points at the old path.
+func forgetSyncedSelfShortcuts() {
+	selfShortcutSynced.Range(func(k, _ any) bool {
+		selfShortcutSynced.Delete(k)
+		return true
+	})
 }
 
 // applySelfShortcut writes or removes the entry across every Steam install and
@@ -175,9 +201,15 @@ func SyncSelfShortcutInBackground() {
 //
 // A user whose file cannot be parsed is skipped rather than overwritten: that
 // file holds shortcuts we merely failed to read, and replacing it would lose
-// every one of them.
-func applySelfShortcut(enabled bool) (users int, flatpak bool, err error) {
+// every one of them. Such a user is also left out of the synced memo, so the
+// next pass tries it again.
+//
+// skip, when set, drops a user's file before it is opened.
+func applySelfShortcut(enabled bool, skip func(path string) bool) (users int, flatpak bool, err error) {
 	var failures []error
+	if skip == nil {
+		forgetSyncedSelfShortcuts()
+	}
 	for _, root := range selfShortcutRoots() {
 		target, err := resolveSelfShortcutTarget(root)
 		if err != nil {
@@ -188,6 +220,10 @@ func applySelfShortcut(enabled bool) (users int, flatpak bool, err error) {
 			flatpak = true
 		}
 		for _, path := range shortcutsVDFPaths(root) {
+			if skip != nil && skip(path) {
+				users++
+				continue
+			}
 			list, err := readShortcuts(path)
 			if err != nil {
 				slog.Warn("skipping unreadable Steam shortcut list", "path", path, "err", err)
@@ -201,6 +237,7 @@ func applySelfShortcut(enabled bool) (users int, flatpak bool, err error) {
 					continue
 				}
 			}
+			selfShortcutSynced.Store(path, struct{}{})
 			users++
 		}
 	}

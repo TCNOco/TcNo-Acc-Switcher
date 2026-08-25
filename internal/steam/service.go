@@ -323,10 +323,6 @@ func (s *SteamService) GetSteamAccounts() ([]AccountDTO, error) {
 		mergeSteamAccountDTO,
 	)
 	syncSteamPlatformCounts(len(out))
-	// Reloading the list is the first thing that happens after someone comes
-	// back from signing a new account into Steam, and that sign-in is what
-	// created the userdata folder the entry has to go in.
-	SyncSelfShortcutInBackground()
 	return out, nil
 }
 

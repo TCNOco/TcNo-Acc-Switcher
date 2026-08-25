@@ -277,3 +277,120 @@ func TestUpsertMakesNoChangeWhenOnlyTheNameAndIconDiffer(t *testing.T) {
 		t.Fatal("upsert reported a change, want the file left alone")
 	}
 }
+
+// steamInstallWithUsers builds a signed-into Steam root holding one userdata
+// folder per id.
+func steamInstallWithUsers(t *testing.T, ids ...string) string {
+	t.Helper()
+	root := filepath.Join(t.TempDir(), "Steam")
+	if err := os.MkdirAll(filepath.Join(root, "config"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(root, "config", "loginusers.vdf"), []byte(`"users"{}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	for _, id := range ids {
+		addSteamUser(t, root, id)
+	}
+	return root
+}
+
+func addSteamUser(t *testing.T, root, id32 string) {
+	t.Helper()
+	if err := os.MkdirAll(filepath.Join(root, "userdata", id32, "config"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func hasSelfShortcut(t *testing.T, root, id32 string) bool {
+	t.Helper()
+	list, err := readShortcuts(filepath.Join(root, "userdata", id32, "config", "shortcuts.vdf"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, entry := range list {
+		if isSelfShortcut(entry) {
+			return true
+		}
+	}
+	return false
+}
+
+func TestApplyReachesAUserThatSignedInAfterTheFirstPass(t *testing.T) {
+	// Steam creates userdata/<id32> at first sign-in, so an account added while
+	// the app is running is not in the list the startup pass walked.
+	root := steamInstallWithUsers(t, "111")
+	prev := steamRootCandidatesFn
+	steamRootCandidatesFn = func() []string { return []string{root} }
+	t.Cleanup(func() { steamRootCandidatesFn = prev })
+	forgetSyncedSelfShortcuts()
+	t.Cleanup(forgetSyncedSelfShortcuts)
+
+	if _, _, err := applySelfShortcut(true, nil); err != nil {
+		t.Fatal(err)
+	}
+	addSteamUser(t, root, "222")
+	if _, _, err := applySelfShortcut(true, skipAlreadySynced); err != nil {
+		t.Fatal(err)
+	}
+
+	if !hasSelfShortcut(t, root, "222") {
+		t.Error("the user who signed in after the first pass has no entry")
+	}
+	if !hasSelfShortcut(t, root, "111") {
+		t.Error("the user who was already there lost the entry")
+	}
+}
+
+func TestRepeatPassLeavesSyncedUsersUnopened(t *testing.T) {
+	// The trigger is every account list load, which is every window focus. A
+	// pass that finds no new user must not read and rewrite what is already done.
+	root := steamInstallWithUsers(t, "111")
+	prev := steamRootCandidatesFn
+	steamRootCandidatesFn = func() []string { return []string{root} }
+	t.Cleanup(func() { steamRootCandidatesFn = prev })
+	forgetSyncedSelfShortcuts()
+	t.Cleanup(forgetSyncedSelfShortcuts)
+
+	if _, _, err := applySelfShortcut(true, nil); err != nil {
+		t.Fatal(err)
+	}
+	path := filepath.Join(root, "userdata", "111", "config", "shortcuts.vdf")
+	sentinel := []byte("not a shortcut list at all")
+	if err := os.WriteFile(path, sentinel, 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	if _, _, err := applySelfShortcut(true, skipAlreadySynced); err != nil {
+		t.Fatalf("a skipped user must not even be parsed: %v", err)
+	}
+	got, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(got) != string(sentinel) {
+		t.Error("a user already synced was read and rewritten")
+	}
+}
+
+func TestFullPassRedoesUsersAMemoisedPassWouldSkip(t *testing.T) {
+	// Toggling the option or moving the app has to reach every user, including
+	// the ones an earlier pass recorded as done.
+	root := steamInstallWithUsers(t, "111")
+	prev := steamRootCandidatesFn
+	steamRootCandidatesFn = func() []string { return []string{root} }
+	t.Cleanup(func() { steamRootCandidatesFn = prev })
+	forgetSyncedSelfShortcuts()
+	t.Cleanup(forgetSyncedSelfShortcuts)
+
+	if _, _, err := applySelfShortcut(true, nil); err != nil {
+		t.Fatal(err)
+	}
+	if _, _, err := applySelfShortcut(false, nil); err != nil {
+		t.Fatal(err)
+	}
+
+	if hasSelfShortcut(t, root, "111") {
+		t.Error("turning the option off left the entry behind")
+	}
+}
