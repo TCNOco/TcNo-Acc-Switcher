@@ -7,7 +7,9 @@
     textColorForTagBackground,
     type TagDefRow,
   } from "../lib/accountTagsContext";
+  import { flip } from "svelte/animate";
   import { tooltip } from "../lib/actions/tooltip";
+  import { DUR, flipMotion, scaleFade } from "../lib/animation";
   import { t } from "../stores/i18n";
 
   export let tags: TagDefRow[] = [];
@@ -89,6 +91,9 @@
     {#each tags as tg (tg.id)}
       <span
         class="acc_tag_bubble"
+        animate:flip={flipMotion()}
+        in:scaleFade={{ start: 0.6, duration: DUR.fast }}
+        out:scaleFade={{ start: 0.6, duration: DUR.instant }}
         class:acc_tag_bubble--default={!tg.color?.trim()}
         style:background-color={tg.color?.trim() ? tg.color : undefined}
         style:color={textColorForTagBackground(tg.color?.trim() ? tg.color : fallbackTagBg)}

@@ -1,7 +1,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { route, previousPage, appBarTitle } from "../stores/nav";
+  import { flip } from "svelte/animate";
   import { t } from "../stores/i18n";
+  import { DUR, fadeMotion, fadeUp, flipMotion } from "../lib/animation";
   import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import "../styles/Settings.scss";
 
@@ -84,7 +86,12 @@
       {/if}
       <div class="rowSetting platformsCheckboxes">
         {#each disabledSorted as item (item)}
-          <div class="form-check mb-2">
+          <div
+            class="form-check mb-2"
+            animate:flip={flipMotion()}
+            in:fadeUp={{ y: 4, duration: DUR.fast }}
+            out:fadeMotion={{ duration: DUR.instant }}
+          >
             <input
               class="form-check-input"
               type="checkbox"
@@ -102,7 +109,12 @@
       <h2 class="SettingsHeader">{$t("Settings_ExtraPlatformsEnabled")}</h2>
       <div class="rowSetting platformsCheckboxes">
         {#each enabledSorted as item (item)}
-          <div class="form-check mb-2">
+          <div
+            class="form-check mb-2"
+            animate:flip={flipMotion()}
+            in:fadeUp={{ y: 4, duration: DUR.fast }}
+            out:fadeMotion={{ duration: DUR.instant }}
+          >
             <input
               class="form-check-input"
               type="checkbox"

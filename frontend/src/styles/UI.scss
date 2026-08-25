@@ -821,10 +821,21 @@ button .caret, .button .caret {
     white-space: normal;
     word-wrap: break-word;
     opacity: 0;
-    transition: opacity 0.15s linear;
+    /* Drifts the last few pixels out of the element it belongs to rather than
+       materialising beside it. `translate`, not `transform`: the arrow child
+       uses `transform` and the root is placed with inline left/top. */
+    transition:
+        opacity var(--dur-fast) var(--ease-out),
+        translate var(--dur-fast) var(--ease-out);
+
+    &[data-placement="top"] { translate: 0 4px; }
+    &[data-placement="bottom"] { translate: 0 -4px; }
+    &[data-placement="left"] { translate: 4px 0; }
+    &[data-placement="right"] { translate: -4px 0; }
 
     &.show {
         opacity: 1;
+        translate: 0 0;
     }
 }
 

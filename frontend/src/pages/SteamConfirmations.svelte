@@ -12,7 +12,9 @@
     type ConfirmationTradeItem,
     type SteamConfirmationsState,
   } from "../lib/steamConfirmations";
+  import { flip } from "svelte/animate";
   import { loadSteamGuardSwitcherProfile } from "../lib/steamGuardBridge";
+  import { collapse, DUR, flipMotion } from "../lib/animation";
   import { Browser } from "@wailsio/runtime";
   import "../styles/steam-confirmations.scss";
 
@@ -340,10 +342,14 @@
           {@const rowChecked = Boolean($confirmations.checked[row.handle])}
           <!-- Two controls, the way the Steam app splits them: the image marks the
                row for a batch decision, the rest of the row opens it. -->
+          <!-- A decided confirmation collapses out of the list and the rows below
+               it slide up, so the queue visibly shortens instead of blinking. -->
           <div
             class="confirmations-row"
             class:active={row.handle === $confirmations.selectedHandle}
             class:checked={rowChecked}
+            animate:flip={flipMotion()}
+            out:collapse={{ duration: DUR.fast }}
           >
             <button
               type="button"
