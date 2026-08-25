@@ -35,13 +35,15 @@
 </script>
 
 {#if $securityStatusLoaded && $securityStatus.appLocked}
-  <div class="app-lock-overlay">
+  <div
+    class="app-lock-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby={titleId}
+  >
     <form
       class="app-lock-panel"
       use:modalFocus={{ initialFocus: () => passwordEl }}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby={titleId}
       on:submit|preventDefault={submit}
     >
       <div class="app-lock-panel-inner">

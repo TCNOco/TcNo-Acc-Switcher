@@ -219,7 +219,7 @@
   });
 </script>
 
-<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
   class="modalBG"
   bind:this={backdropEl}
@@ -254,7 +254,7 @@
       ></div>
     {/each}
     <div class="modalFG-inner">
-      <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+      <!-- svelte-ignore a11y_no_static_element_interactions -->
       <header class="modal-headerbar" bind:this={headerEl} on:pointerdown={onHeaderPointerDown}>
         <span class="modal-title-left">
           {#if $modalBackAction}
