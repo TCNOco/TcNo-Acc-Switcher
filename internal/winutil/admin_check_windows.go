@@ -39,6 +39,7 @@ func CanKillProcesses(names []string, method ClosingMethod) (blocker string, ok 
 	if m == "" {
 		m = ClosingCombined
 	}
+	var pids map[string]uint32
 	for _, raw := range names {
 		raw = strings.TrimSpace(raw)
 		if raw == "" {
@@ -62,20 +63,31 @@ func CanKillProcesses(names []string, method ClosingMethod) (blocker string, ok 
 		if !strings.HasSuffix(strings.ToLower(base), ".exe") {
 			image = strings.TrimSpace(raw) + ".exe"
 		}
-		if blocked, n := processImageRequiresElevationToKill(image); blocked {
+		// One walk of the process table answers for every name. Taken lazily, so
+		// a list of nothing but SERVICE: entries never pays for it.
+		if pids == nil {
+			p, err := snapshotFirstPIDs()
+			if err != nil {
+				// Same outcome as before, when each name swallowed this error
+				// separately: nothing can be shown to need elevation.
+				return "", true
+			}
+			pids = p
+		}
+		if blocked, n := processImageRequiresElevationToKill(image, pids); blocked {
 			return n, false
 		}
 	}
 	return "", true
 }
 
-func processImageRequiresElevationToKill(image string) (blocked bool, name string) {
+func processImageRequiresElevationToKill(image string, pids map[string]uint32) (blocked bool, name string) {
 	image = strings.TrimSpace(image)
 	if image == "" {
 		return false, ""
 	}
-	pid, found, err := firstPIDForImageName(image)
-	if err != nil || !found {
+	pid, found := pids[strings.ToLower(image)]
+	if !found {
 		return false, ""
 	}
 	h, err := windows.OpenProcess(windows.PROCESS_QUERY_LIMITED_INFORMATION, false, pid)
@@ -103,35 +115,40 @@ func processImageRequiresElevationToKill(image string) (blocked bool, name strin
 	return false, ""
 }
 
-func firstPIDForImageName(want string) (pid uint32, found bool, err error) {
-	want = strings.TrimSpace(want)
-	if want == "" {
-		return 0, false, nil
-	}
+// snapshotFirstPIDs walks the process table once and records the first PID seen
+// for each image name, lowercased.
+//
+// This used to be one snapshot per name looked up, and CanKillProcesses asks
+// about every executable a platform lists - so a platform naming six of them
+// walked the same process table six times.
+func snapshotFirstPIDs() (map[string]uint32, error) {
 	snap, err := windows.CreateToolhelp32Snapshot(windows.TH32CS_SNAPPROCESS, 0)
 	if err != nil {
-		return 0, false, err
+		return nil, err
 	}
 	defer windows.CloseHandle(snap)
 
+	out := map[string]uint32{}
 	var pe windows.ProcessEntry32
 	pe.Size = uint32(unsafe.Sizeof(pe))
 	if err := windows.Process32First(snap, &pe); err != nil {
 		if err == windows.ERROR_NO_MORE_FILES {
-			return 0, false, nil
+			return out, nil
 		}
-		return 0, false, err
+		return nil, err
 	}
 	for {
-		exe := utf16FixedToString(pe.ExeFile[:])
-		if strings.EqualFold(exe, want) {
-			return pe.ProcessID, true, nil
+		// First wins, matching the enumeration order the per-name scan returned.
+		if exe := strings.ToLower(utf16FixedToString(pe.ExeFile[:])); exe != "" {
+			if _, seen := out[exe]; !seen {
+				out[exe] = pe.ProcessID
+			}
 		}
 		if err := windows.Process32Next(snap, &pe); err != nil {
 			if err == windows.ERROR_NO_MORE_FILES {
-				return 0, false, nil
+				return out, nil
 			}
-			return 0, false, err
+			return nil, err
 		}
 	}
 }
