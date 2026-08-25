@@ -455,3 +455,69 @@ func BenchmarkGetAccountsListWithCatalog(b *testing.B) {
 		})
 	}
 }
+
+// seedTrayBenchEnv builds an install with the real 24-platform catalog, an
+// ids.json for every platform, and tray entries for just one of them - which is
+// what most installs look like.
+func seedTrayBenchEnv(tb testing.TB, trayPlatform string) {
+	tb.Helper()
+	exeDir := benchResetPaths(tb)
+
+	raw, err := os.ReadFile(filepath.Join("..", "..", "Platforms.json"))
+	if err != nil {
+		tb.Skipf("Platforms.json unavailable: %v", err)
+	}
+	userData := platform.UserDataDir(exeDir)
+	if err := os.MkdirAll(userData, 0o755); err != nil {
+		tb.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(userData, platform.PlatformsFileName()), raw, 0o644); err != nil {
+		tb.Fatal(err)
+	}
+
+	var top struct {
+		Platforms map[string]json.RawMessage `json:"Platforms"`
+	}
+	if err := json.Unmarshal(raw, &top); err != nil {
+		tb.Fatalf("parse catalog: %v", err)
+	}
+	for name := range top.Platforms {
+		f := idsFile{IDs: map[string]string{}, LastUsed: map[string]string{}}
+		for i := range benchAccountsPerPlatform {
+			uid := fmt.Sprintf("%s-account-%02d", name, i)
+			f.IDs[uid] = fmt.Sprintf("Account %d", i)
+		}
+		if err := writeIdsFile(name, f); err != nil {
+			tb.Fatalf("seed %s: %v", name, err)
+		}
+	}
+
+	root, err := paths.DataRoot()
+	if err != nil {
+		tb.Fatal(err)
+	}
+	trayBody, err := json.Marshal(map[string][]map[string]string{
+		trayPlatform: {{"Name": "Account 0", "Arg": "+x:" + trayPlatform + "-account-00"}},
+	})
+	if err != nil {
+		tb.Fatal(err)
+	}
+	if err := os.MkdirAll(root, 0o755); err != nil {
+		tb.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(root, "Tray_Users.json"), trayBody, 0o644); err != nil {
+		tb.Fatalf("seed tray users: %v", err)
+	}
+}
+
+// BenchmarkSyncAllTrayKnownAccounts is the tray prune that runs before the
+// window is created.
+func BenchmarkSyncAllTrayKnownAccounts(b *testing.B) {
+	seedTrayBenchEnv(b, "Discord")
+
+	b.ReportAllocs()
+	b.ResetTimer()
+	for range b.N {
+		SyncAllTrayKnownAccounts()
+	}
+}

@@ -200,7 +200,7 @@ func (b *BasicService) ForgetAccount(platformKey, uniqueID string) error {
 	if err := writeIdsFile(platformKey, f); err != nil {
 		return err
 	}
-	syncBasicTrayKnownAccounts(platformKey, f.IDs)
+	syncBasicTrayKnownAccountsFor(platformKey, f.IDs)
 	tray.RefreshMenuIfSet()
 	if name != "" {
 		dir, err := accountCacheDir(platformKey, name)

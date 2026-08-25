@@ -435,7 +435,7 @@ func saveCurrentAfterKill(deps FlowDeps, accountName string, fc FlowContext) err
 	if err := touchLastUsed(fc.PlatformKey, uid); err != nil {
 		return err
 	}
-	syncBasicTrayKnownAccounts(fc.PlatformKey, ids)
+	syncBasicTrayKnownAccountsFor(fc.PlatformKey, ids)
 
 	platform.EmitActionBarStatusI18n("Status_HandlingImage")
 	return queueAutomatedProfileImage(fc.PlatformKey, uid, accountName, fc.Descriptor, fc.Folder)
