@@ -1,6 +1,7 @@
 <script lang="ts">
   import { tick } from "svelte";
   import { viewportDropdown } from "../lib/actions/viewportDropdown";
+  import { DUR, scaleFade } from "../lib/animation";
   import { dropdownDismiss } from "../lib/actions/dropdownDismiss";
   import { t } from "../stores/i18n";
   import {
@@ -92,7 +93,12 @@
         <span class="caret" aria-hidden="true"></span>
       </button>
       {#if themeOpen}
-        <ul class="custom-dropdown-menu dropdown-menu" use:viewportDropdown>
+        <ul
+          class="custom-dropdown-menu dropdown-menu"
+          use:viewportDropdown
+          in:scaleFade={{ start: 0.96, duration: DUR.instant }}
+          out:scaleFade={{ start: 0.98, duration: DUR.instant }}
+        >
           {#each themes as theme}
             <li role="none">
               <button type="button" class="dropdown-item" on:click={() => void pickTheme(theme.id)}>
@@ -138,7 +144,12 @@
         </button>
 
         {#if accentOpen}
-          <ul class="custom-dropdown-menu dropdown-menu accent-dropdown-menu" use:viewportDropdown>
+          <ul
+            class="custom-dropdown-menu dropdown-menu accent-dropdown-menu"
+            use:viewportDropdown
+            in:scaleFade={{ start: 0.96, duration: DUR.instant }}
+            out:scaleFade={{ start: 0.98, duration: DUR.instant }}
+          >
             <li role="none">
               <button
                 type="button"

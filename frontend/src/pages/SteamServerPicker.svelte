@@ -8,6 +8,7 @@
   import { activeModal, openAlert, openConfirm } from "../stores/modal";
   import { pushToast } from "../stores/toast";
   import { formatToastWithError } from "../lib/formatWailsError";
+  import { collapse, DUR } from "../lib/animation";
   import { isNeedsAdminError } from "../lib/adminFlow";
   import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import {
@@ -434,7 +435,13 @@
         {#if isOpen}
           {#each group.members as member (member.id)}
             {@const p = pings[member.id]}
-            <div class="serverpicker-row serverpicker-row--member" role="row">
+            <!-- The group's own row stays put while its members unroll under it,
+                 so the table never jumps the row you just clicked off-screen. -->
+            <div
+              class="serverpicker-row serverpicker-row--member"
+              role="row"
+              transition:collapse={{ duration: DUR.fast }}
+            >
               <span role="cell"></span>
               <span role="cell" class="serverpicker-cell--name">
                 <span class="serverpicker-name">{member.desc}</span>

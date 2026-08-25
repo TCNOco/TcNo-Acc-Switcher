@@ -1,6 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { viewportDropdown } from "../../lib/actions/viewportDropdown";
+  import { DUR, scaleFade } from "../../lib/animation";
   import { dropdownDismiss } from "../../lib/actions/dropdownDismiss";
   import SettingsField from "./SettingsField.svelte";
 
@@ -32,7 +33,12 @@
       <span class="caret" aria-hidden="true"></span>
     </button>
     {#if open}
-      <ul class="custom-dropdown-menu dropdown-menu" use:viewportDropdown>
+      <ul
+        class="custom-dropdown-menu dropdown-menu"
+        use:viewportDropdown
+        in:scaleFade={{ start: 0.96, duration: DUR.instant }}
+        out:scaleFade={{ start: 0.98, duration: DUR.instant }}
+      >
         {#each values as v}
           <li>
             <button type="button" class="dropdown-item" on:click={() => select(v)}>

@@ -2,6 +2,7 @@
   import { createEventDispatcher } from "svelte";
   import { get } from "svelte/store";
   import { viewportDropdown } from "../../lib/actions/viewportDropdown";
+  import { DUR, scaleFade } from "../../lib/animation";
   import { dropdownDismiss } from "../../lib/actions/dropdownDismiss";
   import { t } from "../../stores/i18n";
   import { capabilities } from "../../stores/osCapabilities";
@@ -306,7 +307,12 @@
         <span class="caret" aria-hidden="true"></span>
       </button>
       {#if stateOpen}
-        <ul class="custom-dropdown-menu dropdown-menu" use:viewportDropdown>
+        <ul
+          class="custom-dropdown-menu dropdown-menu"
+          use:viewportDropdown
+          in:scaleFade={{ start: 0.96, duration: DUR.instant }}
+          out:scaleFade={{ start: 0.98, duration: DUR.instant }}
+        >
           {#each overrideStates as o}
             <li>
               <button
