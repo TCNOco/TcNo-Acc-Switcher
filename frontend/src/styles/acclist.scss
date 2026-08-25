@@ -324,10 +324,12 @@ label.acc {
   line-height: 1em;
 
   /* Platform tiles lift under the cursor and account tiles did not, which made
-     the account grid read as a static picture rather than a row of controls. */
+     the account grid read as a static picture rather than a row of controls.
+
+     Lift and shadow only. Border and fill are what mark the selected account and
+     the live one, and a hover rule is specific enough to outrank both - repaint
+     either here and pointing at a tile would erase the state it is in. */
   &:hover:not(.acc--broken) {
-    border-color: var(--accent-border-strong);
-    background: var(--code-background);
     box-shadow: 0 4px 14px var(--shadow-color-35);
     transform: translateY(-2px);
   }
