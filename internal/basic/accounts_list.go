@@ -118,20 +118,20 @@ func (b *BasicService) GetAccountsList(platformKey string) ([]AccountListItemDTO
 	}
 
 	// With saved-account encryption on, SavedDataBroken reads and AEAD-decrypts
-	// that account's whole blob, which dwarfs everything else on this path and
-	// scales with the account count. The rows are independent, so they are built
-	// concurrently; without encryption the check short-circuits and this is a
-	// plain loop's worth of map lookups either way.
+	// that account's whole blob, which dwarfs everything else here and scales
+	// with the account count, so the rows are built concurrently. Without it the
+	// row is a few map lookups and the fan-out would cost more than it saves.
 	out := make([]AccountListItemDTO, len(ctx.keys))
-	encrypted := security.SavedAccountDataEncrypted()
-	parallel.ForEachIndex(len(ctx.keys), func(i int) {
+	blobs := security.NewAccountBlobValidator()
+	defer blobs.Close()
+	parallel.ForEachIndexWhen(blobs.Encrypted(), len(ctx.keys), func(i int) {
 		uid := ctx.keys[i]
 		out[i] = AccountListItemDTO{
 			PlatformKey:     ctx.platformKey,
 			UniqueID:        uid,
 			DisplayName:     ctx.ids[uid],
 			CurrentSession:  ctx.liveUID != "" && strings.EqualFold(ctx.liveUID, uid),
-			SavedDataBroken: encrypted && !security.AccountBlobValid(ctx.platformKey, uid),
+			SavedDataBroken: !blobs.Valid(ctx.platformKey, uid),
 		}
 	})
 	if len(out) > 0 {
@@ -164,11 +164,12 @@ func (b *BasicService) GetAccountsEnrichment(platformKey string) ([]AccountEnric
 		return nil, err
 	}
 
-	// Same as GetAccountsList: SavedDataBroken is a full blob decrypt per account
-	// when encryption is on, and the rows share nothing writable.
+	// Same as GetAccountsList: worth fanning out exactly when SavedDataBroken
+	// costs a blob decrypt per account.
 	out := make([]AccountEnrichmentDTO, len(ctx.keys))
-	encrypted := security.SavedAccountDataEncrypted()
-	parallel.ForEachIndex(len(ctx.keys), func(i int) {
+	blobs := security.NewAccountBlobValidator()
+	defer blobs.Close()
+	parallel.ForEachIndexWhen(blobs.Encrypted(), len(ctx.keys), func(i int) {
 		uid := ctx.keys[i]
 		note := ""
 		if ctx.ps.AccountNotes != nil {
@@ -200,7 +201,7 @@ func (b *BasicService) GetAccountsEnrichment(platformKey string) ([]AccountEnric
 			LastUsed:           lu,
 			ShowLastUsed:       ctx.ps.ShowLastUsed,
 			Tags:               resolveTagsForAccount(ctx.idf, uid),
-			SavedDataBroken:    encrypted && !security.AccountBlobValid(ctx.platformKey, uid),
+			SavedDataBroken:    !blobs.Valid(ctx.platformKey, uid),
 		}
 	})
 	return out, nil

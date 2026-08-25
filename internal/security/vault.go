@@ -200,21 +200,69 @@ func RemoveAccountCache(platformKey, uniqueID, accountName, normalDir string) er
 }
 
 func AccountBlobValid(platformKey, uniqueID string) bool {
+	v := NewAccountBlobValidator()
+	defer v.Close()
+	return v.Valid(platformKey, uniqueID)
+}
+
+// AccountBlobValidator answers AccountBlobValid for many accounts without
+// re-resolving the vault state for each one.
+//
+// Before it can check anything, AccountBlobValid must ask whether saved-account
+// encryption is on and unwrap the master key. That first question costs a
+// security-file read, a quarantine directory scan and a restore-journal scan,
+// and paid once per account it dwarfs the decrypt it is guarding. A caller
+// validating a whole account list takes one validator instead.
+//
+// It holds an unwrapped master key, so keep it to the length of one list build
+// and Close it afterwards. Valid is safe to call from several goroutines.
+type AccountBlobValidator struct {
+	encrypted bool
+	key       []byte
+}
+
+// NewAccountBlobValidator resolves the vault state once.
+func NewAccountBlobValidator() *AccountBlobValidator {
 	if !SavedAccountDataEncrypted() {
-		return true
+		return &AccountBlobValidator{}
 	}
 	key, err := defaultManager.unlockedMasterKey()
 	if err != nil {
+		// Encrypted but locked: nothing can be validated, and reporting every
+		// account intact would be the wrong way to be wrong.
+		return &AccountBlobValidator{encrypted: true}
+	}
+	return &AccountBlobValidator{encrypted: true, key: key}
+}
+
+// Encrypted reports whether saved-account data is encrypted at all.
+func (v *AccountBlobValidator) Encrypted() bool { return v != nil && v.encrypted }
+
+// Valid reports whether the account's saved data still decrypts. It is always
+// true when saved-account data is not encrypted, matching AccountBlobValid.
+func (v *AccountBlobValidator) Valid(platformKey, uniqueID string) bool {
+	if v == nil || !v.encrypted {
+		return true
+	}
+	if len(v.key) == 0 {
 		return false
 	}
-	defer wipeBytes(key)
 	p, err := accountBlobPath(platformKey, uniqueID)
 	if err != nil {
 		return false
 	}
-	plaintext, err := decryptAccountBlobFile(key, p, platformKey, uniqueID)
+	plaintext, err := decryptAccountBlobFile(v.key, p, platformKey, uniqueID)
 	wipeBytes(plaintext)
 	return err == nil
+}
+
+// Close wipes the validator's copy of the master key.
+func (v *AccountBlobValidator) Close() {
+	if v == nil {
+		return
+	}
+	wipeBytes(v.key)
+	v.key = nil
 }
 
 func EnableSavedAccountEncryption(password string) error {

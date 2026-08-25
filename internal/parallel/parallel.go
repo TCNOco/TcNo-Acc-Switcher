@@ -46,3 +46,21 @@ func ForEachIndex(n int, fn func(i int)) {
 	}
 	wg.Wait()
 }
+
+// ForEachIndexWhen fans out only when concurrent is set, and otherwise runs the
+// plain loop.
+//
+// The fan-out costs goroutines and an atomic per item, which is a clear win
+// when each item does file or crypto work and a clear loss when it does a
+// couple of map lookups. Callers usually know which case they are in - a list
+// build knows whether the saved data is encrypted, for instance - so they say
+// so here rather than paying to find out.
+func ForEachIndexWhen(concurrent bool, n int, fn func(i int)) {
+	if !concurrent {
+		for i := range n {
+			fn(i)
+		}
+		return
+	}
+	ForEachIndex(n, fn)
+}
