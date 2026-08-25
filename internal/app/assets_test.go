@@ -3,9 +3,13 @@ package app
 import (
 	"net/http"
 	"net/http/httptest"
+	"path/filepath"
 	"strings"
 	"testing"
 	"testing/fstest"
+
+	"TcNo-Acc-Switcher/internal/paths"
+	"TcNo-Acc-Switcher/internal/platform"
 )
 
 func TestCompositeAssetHandlerSetsSecurityHeaders(t *testing.T) {
@@ -58,5 +62,39 @@ func TestWritableAssetAllowedOnlyForMediaDirectories(t *testing.T) {
 		if writableAssetAllowed(path) {
 			t.Errorf("writableAssetAllowed(%q) = true", path)
 		}
+	}
+}
+
+// benchAssetHandler serves a small embedded set with the paths pointed at a
+// temp dir, so the disk-override branch can resolve.
+func benchAssetHandler(tb testing.TB) http.Handler {
+	tb.Helper()
+	exeDir := tb.TempDir()
+	platform.ResetPathSingletonsForTest(exeDir)
+	paths.ResetForTest(filepath.Join(exeDir, "TcNo Account Switcher"))
+	return newCompositeAssetHandler(fstest.MapFS{
+		"index.html":          &fstest.MapFile{Data: []byte("<!doctype html><title>t</title>")},
+		"assets/index.js":     &fstest.MapFile{Data: []byte("export default 1;")},
+		"img/placeholder.png": &fstest.MapFile{Data: []byte("png")},
+	})
+}
+
+// BenchmarkAssetRequest covers both shapes the handler sees. Scripts,
+// stylesheets and fonts can never be served from disk; avatars can, and an
+// account page asks for one per row.
+func BenchmarkAssetRequest(b *testing.B) {
+	handler := benchAssetHandler(b)
+
+	for _, tc := range []struct{ name, path string }{
+		{"Embedded", "/assets/index.js"},
+		{"Image", "/img/placeholder.png"},
+	} {
+		b.Run(tc.name, func(b *testing.B) {
+			b.ReportAllocs()
+			for b.Loop() {
+				req := httptest.NewRequest(http.MethodGet, "http://wails.localhost"+tc.path, nil)
+				handler.ServeHTTP(httptest.NewRecorder(), req)
+			}
+		})
 	}
 }

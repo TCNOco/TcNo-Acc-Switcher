@@ -44,6 +44,11 @@
   height: 32px;
   box-sizing: border-box;
   overflow: hidden;
+  // The tile is capped at 30px by `.shortcuts button`, so without this it
+  // anchors to the cell's top-left corner instead of its middle.
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   button {
     display: flex;
