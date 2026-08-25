@@ -17,6 +17,15 @@ export default defineConfig({
     },
   },
   plugins: [svelte(), wails("./bindings")],
+  json: {
+    // Nothing imports a named export from a .json file - the locales come in
+    // through import.meta.glob and are read off .default - so emitting one
+    // export per key only inflates every locale chunk. stringify lets the
+    // browser parse them with JSON.parse instead of evaluating an object
+    // literal, which is markedly faster at this size.
+    namedExports: false,
+    stringify: true,
+  },
   css: {
     preprocessorOptions: {
       scss: {
