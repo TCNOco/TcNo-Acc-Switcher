@@ -1,0 +1,142 @@
+package steam
+
+import (
+	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
+	"testing"
+
+	"TcNo-Acc-Switcher/internal/paths"
+	"TcNo-Acc-Switcher/internal/platform"
+	"TcNo-Acc-Switcher/internal/profileimage"
+)
+
+// benchSteamEnv mirrors newSteamTestEnv for benchmarks, which get a testing.B.
+// Do NOT run these in parallel - they set global path singletons.
+func benchSteamEnv(tb testing.TB) string {
+	tb.Helper()
+	exeDir := tb.TempDir()
+	steamDir := tb.TempDir()
+	platform.ResetPathSingletonsForTest(exeDir)
+	paths.ResetForTest(filepath.Join(exeDir, "TcNo Account Switcher"))
+	if err := os.MkdirAll(filepath.Join(steamDir, "config"), 0o755); err != nil {
+		tb.Fatal(err)
+	}
+	userData := platform.UserDataDir(exeDir)
+	if err := os.MkdirAll(userData, 0o755); err != nil {
+		tb.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(userData, platform.PlatformsFileName()),
+		[]byte(`{"Version":"test","Platforms":{"Steam":{"ExeLocationDefault":[]}}}`), 0o644); err != nil {
+		tb.Fatal(err)
+	}
+	st, err := LoadSettings()
+	if err != nil {
+		tb.Fatalf("LoadSettings: %v", err)
+	}
+	st.FolderPath = steamDir
+	st.SteamShowMiniProfile = true
+	if err := SaveSettings(st); err != nil {
+		tb.Fatalf("SaveSettings: %v", err)
+	}
+	return steamDir
+}
+
+// seedSteamAccounts writes a loginusers.vdf with n accounts plus the cached
+// miniprofile HTML and avatar files the enrichment pass reads per account.
+func seedSteamAccounts(tb testing.TB, steamDir string, n int) []string {
+	tb.Helper()
+
+	var vdf strings.Builder
+	vdf.WriteString("\"users\"\n{\n")
+	ids := make([]string, 0, n)
+	for i := 0; i < n; i++ {
+		id := fmt.Sprintf("765611980000%05d", i)
+		ids = append(ids, id)
+		fmt.Fprintf(&vdf, "\t%q\n\t{\n\t\t\"AccountName\"\t\t\"acct_%d\"\n\t\t\"PersonaName\"\t\t\"Persona %d\"\n\t\t\"Timestamp\"\t\t\"1700000000\"\n\t}\n", id, i, i)
+	}
+	vdf.WriteString("}\n")
+	if err := os.WriteFile(filepath.Join(steamDir, "config", "loginusers.vdf"), []byte(vdf.String()), 0o644); err != nil {
+		tb.Fatal(err)
+	}
+
+	cacheRoot, err := paths.LoginCacheDir(PlatformKey)
+	if err != nil {
+		tb.Fatal(err)
+	}
+	miniDir := filepath.Join(cacheRoot, "MiniProfileCache")
+	if err := os.MkdirAll(miniDir, 0o755); err != nil {
+		tb.Fatal(err)
+	}
+	profDir, err := profileimage.ProfileDir(PlatformKey)
+	if err != nil {
+		tb.Fatal(err)
+	}
+	if err := os.MkdirAll(profDir, 0o755); err != nil {
+		tb.Fatal(err)
+	}
+	for i, id := range ids {
+		html := fmt.Sprintf(`<div class="miniprofile_container"><div class="playersection_avatar"><img src="https://avatars.example/%s.jpg"></div><span class="persona online">Persona %d</span><div class="miniprofile_gamename">Some Game</div></div>`, id, i)
+		if err := os.WriteFile(filepath.Join(miniDir, id+".html"), []byte(html), 0o644); err != nil {
+			tb.Fatal(err)
+		}
+		if err := os.WriteFile(filepath.Join(profDir, id+".jpg"), []byte("jpegbytes"), 0o644); err != nil {
+			tb.Fatal(err)
+		}
+	}
+	return ids
+}
+
+func benchSteamSizes() []int { return []int{10, 50, 200} }
+
+// BenchmarkBuildSteamListContext is the shared setup both GetSteamAccountsList
+// and GetSteamAccountsEnrichment run. Opening a Steam account page calls both,
+// so the page pays this cost twice.
+func BenchmarkBuildSteamListContext(b *testing.B) {
+	for _, n := range benchSteamSizes() {
+		b.Run(fmt.Sprintf("%daccounts", n), func(b *testing.B) {
+			steamDir := benchSteamEnv(b)
+			seedSteamAccounts(b, steamDir, n)
+			svc := &SteamService{}
+			if _, err := svc.buildSteamListContext(); err != nil {
+				b.Fatalf("buildSteamListContext: %v", err)
+			}
+
+			b.ReportAllocs()
+			b.ResetTimer()
+			for i := 0; i < b.N; i++ {
+				if _, err := svc.buildSteamListContext(); err != nil {
+					b.Fatal(err)
+				}
+			}
+		})
+	}
+}
+
+// BenchmarkSteamEnrichment is the per-account pass: cached miniprofile HTML,
+// avatar URLs, bans, tags and notes for every account on the page.
+func BenchmarkSteamEnrichment(b *testing.B) {
+	for _, n := range benchSteamSizes() {
+		b.Run(fmt.Sprintf("%daccounts", n), func(b *testing.B) {
+			steamDir := benchSteamEnv(b)
+			seedSteamAccounts(b, steamDir, n)
+			svc := &SteamService{}
+			got, err := svc.GetSteamAccountsEnrichment()
+			if err != nil {
+				b.Fatalf("GetSteamAccountsEnrichment: %v", err)
+			}
+			if len(got) != n {
+				b.Fatalf("enrichment returned %d accounts, want %d", len(got), n)
+			}
+
+			b.ReportAllocs()
+			b.ResetTimer()
+			for i := 0; i < b.N; i++ {
+				if _, err := svc.GetSteamAccountsEnrichment(); err != nil {
+					b.Fatal(err)
+				}
+			}
+		})
+	}
+}
