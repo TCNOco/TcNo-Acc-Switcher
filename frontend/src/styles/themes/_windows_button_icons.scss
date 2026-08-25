@@ -131,6 +131,7 @@ $icon-next: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
   .paginationButton--next { --windows-icon-mask: #{$icon-next}; }
 
   .actionbar__login::after { margin: 0 0 0 0.42em; }
+  #shortcutDropdownBtn::before { transition: transform var(--dur-normal) var(--ease-out); }
   #shortcutDropdownBtn.flip::before { transform: rotate(180deg); }
   .acc-img-overlay__x { font-size: 0; }
 

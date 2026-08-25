@@ -4,6 +4,7 @@
   import { t } from "../stores/i18n";
   import { controllerSpatialNavigation } from "../lib/actions/controllerSpatialNavigation";
   import { settingsFilter } from "../lib/settingsFilter";
+  import { DUR, fadeUp } from "../lib/animation";
   import SettingsSearch from "../components/settings/SettingsSearch.svelte";
   import GeneralSettingsBlock from "../components/GeneralSettingsBlock.svelte";
   import "../styles/Settings.scss";
@@ -31,6 +32,8 @@
   </div>
 
   {#if visibleGroups === 0}
-    <p class="settings-empty">{$t("Settings_SearchNoResults", { query })}</p>
+    <p class="settings-empty" in:fadeUp={{ y: 6, duration: DUR.normal }}>
+      {$t("Settings_SearchNoResults", { query })}
+    </p>
   {/if}
 </div>

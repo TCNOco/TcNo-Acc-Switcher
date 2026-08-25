@@ -173,12 +173,21 @@ input[type="checkbox"] + label {
   height: 20px;
   overflow: hidden;
   cursor: pointer;
-  -moz-transition: 0.5s ease all;
-  -webkit-transition: 0.5s ease all;
   border: 1px solid var(--form-checkbox-border);
   background: none;
-  transition: 0.5s ease all;
+  /* Was `0.5s ease all`. Half a second is a long time to wait for a checkbox to
+     admit it was ticked, and `all` swept the focus ring's box-shadow into the
+     same half-second fade. */
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
   vertical-align: middle;
+}
+
+/* Outranks the `:checked` border below on purpose: under the cursor the box
+   should say it is about to change, whichever state it is in. */
+input[type="checkbox"]:not(:disabled) + label:hover {
+  border-color: var(--accent);
 }
 
 input[type="checkbox"]:checked + label {

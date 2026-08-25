@@ -77,6 +77,7 @@
   import { fileDropAcceptor } from "../stores/fileDrop";
   import { runShortcut, closeShortcut, hideShortcut, openShortcutFolder, buildShortcutContextMenu, buildPlatformContextMenu } from "../lib/shortcutActions";
   import { tooltip } from "../lib/actions/tooltip";
+  import { DUR, scaleFade } from "../lib/animation";
   import { platformIconSrc } from "../lib/platformIcon";
   import { contextMenu } from "../lib/actions/contextMenu";
   import {
@@ -592,7 +593,13 @@
     </button>
 
     {#if ddOpen}
-      <div bind:this={dropdownEl} class="shortcutDropdown gameShortcuts open" id="shortcutDropdown">
+      <div
+        bind:this={dropdownEl}
+        class="shortcutDropdown gameShortcuts open"
+        id="shortcutDropdown"
+        in:scaleFade={{ start: 0.94, duration: DUR.fast }}
+        out:scaleFade={{ start: 0.96, duration: DUR.instant }}
+      >
         <ShortcutZone
           bind:el={dropListEl}
           zone="dropdown"

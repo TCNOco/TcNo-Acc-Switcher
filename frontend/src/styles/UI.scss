@@ -647,14 +647,14 @@ button .caret, .button .caret {
     max-height: 36px;
     margin: 0 .25em 0 0;
 
-    i {
-        transition: all 150ms ease-out;
+    svg {
+        transition: transform var(--dur-normal) var(--ease-out);
     }
 
     &.flip {
         border-color: var(--shortcut-active-border, var(--accent)) !important;
 
-        i {
+        svg {
             transform: rotate(180deg);
         }
     }

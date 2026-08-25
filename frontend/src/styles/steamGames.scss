@@ -278,6 +278,9 @@
   flex-direction: column;
   bottom: calc(100% + 10px);
   left: 50%;
-  transform: translateX(-50%);
+  /* `translate`, not `transform`: the open/close transition animates `transform`
+     and would otherwise drop the panel half its width to the right. */
+  translate: -50% 0;
+  transform-origin: bottom center;
   min-width: 168px;
 }

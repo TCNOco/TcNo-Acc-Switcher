@@ -1,6 +1,7 @@
 <script lang="ts">
   import { t } from "../stores/i18n";
   import { tooltip } from "../lib/actions/tooltip";
+  import { DUR, scaleFade } from "../lib/animation";
   import { platformActionBusy } from "../stores/platformPage";
   import {
     pickSteamGamesAccount,
@@ -121,7 +122,11 @@
       </button>
 
       {#if ddOpen}
-        <div class="shortcutDropdown steamGamesBar__dropdown open">
+        <div
+          class="shortcutDropdown steamGamesBar__dropdown open"
+          in:scaleFade={{ start: 0.94, duration: DUR.fast }}
+          out:scaleFade={{ start: 0.96, duration: DUR.instant }}
+        >
           <div class="shortcutDropdownItems shortcutDndGrid" role="list" aria-label={$t("Steam_Games_MoreAccounts")}>
             {#each overflow as account (account.steamId64)}
               <div class="shortcutDndCell" role="listitem">

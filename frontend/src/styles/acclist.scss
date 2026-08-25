@@ -297,11 +297,9 @@ input.acc {
 }
 
 label.acc {
-  -moz-transition: all 50ms ease-in;
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-touch-callout: none;
-  -webkit-transition: all 50ms ease-in;
   -webkit-user-select: none;
   user-select: none;
   min-width: 100px;
@@ -316,8 +314,28 @@ label.acc {
   color: var(--whiteSecondary);
   text-align: center;
   cursor: pointer;
-  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, all 50ms ease-in;
+  /* The `all 50ms` that used to close this list overrode every property named
+     before it, so the transform and shadow never got their own timing. */
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
   line-height: 1em;
+
+  /* Platform tiles lift under the cursor and account tiles did not, which made
+     the account grid read as a static picture rather than a row of controls. */
+  &:hover:not(.acc--broken) {
+    border-color: var(--accent-border-strong);
+    background: var(--code-background);
+    box-shadow: 0 4px 14px var(--shadow-color-35);
+    transform: translateY(-2px);
+  }
+
+  &:active:not(.acc--broken) {
+    transform: translateY(0) scale(0.985);
+    box-shadow: none;
+  }
 
   &.acc--broken {
     cursor: not-allowed;
