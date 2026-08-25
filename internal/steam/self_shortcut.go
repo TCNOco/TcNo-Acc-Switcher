@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"slices"
 	"strings"
+	"sync/atomic"
 
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/platform"
@@ -136,6 +137,37 @@ func SyncSelfShortcut(enabled bool) error {
 	}
 	_, _, err := applySelfShortcut(true)
 	return err
+}
+
+// selfShortcutSyncing keeps the account list, which can be reloaded in bursts,
+// from stacking up passes over every user's shortcut file.
+var selfShortcutSyncing atomic.Bool
+
+// SyncSelfShortcutInBackground re-runs the sync off the caller's path, reading
+// the preference itself.
+//
+// Steam creates userdata/<id32> when an account first signs in, which is after
+// the startup sync has already listed the users there were. Without a later
+// pass the entry exists for every account but the newly added one, for as long
+// as the app keeps running.
+func SyncSelfShortcutInBackground() {
+	if !selfShortcutSyncing.CompareAndSwap(false, true) {
+		return
+	}
+	go func() {
+		defer selfShortcutSyncing.Store(false)
+		exeDir, err := platform.ResolveExeDir()
+		if err != nil {
+			return
+		}
+		app, err := platform.LoadAppSettings(exeDir)
+		if err != nil || !app.AddToSteam {
+			return
+		}
+		if err := SyncSelfShortcut(true); err != nil {
+			steamLog().Warn("steam shortcut sync", slog.Any("err", err))
+		}
+	}()
 }
 
 // applySelfShortcut writes or removes the entry across every Steam install and
