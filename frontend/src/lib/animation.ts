@@ -1,5 +1,5 @@
 import { fade, fly, scale } from "svelte/transition";
-import { cubicOut, quartOut } from "svelte/easing";
+import { cubicOut } from "svelte/easing";
 import type { TransitionConfig } from "svelte/transition";
 import { get } from "svelte/store";
 import { animationsEnabled } from "../stores/animationSettings";
@@ -14,7 +14,6 @@ export const DUR = {
 
 export const EASE = {
   default: cubicOut,
-  snappy: quartOut,
 } as const;
 
 /**

@@ -1,13 +1,13 @@
-/* One set of curves and speeds for the whole UI, matching the values the Svelte
-   transitions use in lib/animation.ts. --ease-out is cubicOut; --ease-snap
-   overshoots slightly and belongs on presses and toggles, not on layout. */
+/* One scale of speeds and one curve for the whole UI, matching what the Svelte
+   transitions use in lib/animation.ts - `--ease-out` is that file's cubicOut.
+   Reach for these rather than writing a duration inline, so CSS-driven motion
+   and transition-driven motion stay the same speed. */
 :root {
   --dur-instant: 90ms;
   --dur-fast: 120ms;
   --dur-normal: 200ms;
   --dur-slow: 300ms;
   --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
-  --ease-snap: cubic-bezier(0.34, 1.4, 0.64, 1);
 }
 
 @mixin reduce-motion {
