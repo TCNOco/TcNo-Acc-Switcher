@@ -2,8 +2,11 @@ package shortcuts
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 	"strings"
+	"sync"
+	"time"
 
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/winutil"
@@ -13,6 +16,20 @@ import (
 // starts something that is not a program. A .url opens a web or protocol
 // address and a .lnk may point at a folder or a document, and none of those
 // leave a process to close.
+// targetExeCache remembers what a .lnk points at, keyed on its path and the
+// modification time it had when read.
+//
+// Resolving one goes through the shell, and buildDTOs resolves every shortcut a
+// platform has - twice or three times when a page opens, and again on every
+// change event. A stat is what it costs to find out the answer is still good.
+var targetExeCache sync.Map // string -> targetExeEntry
+
+type targetExeEntry struct {
+	modTime time.Time
+	size    int64
+	exe     string
+}
+
 func shortcutTargetExe(platformKey, fileName string) string {
 	if !strings.HasSuffix(strings.ToLower(fileName), ".lnk") {
 		return ""
@@ -21,16 +38,33 @@ func shortcutTargetExe(platformKey, fileName string) string {
 	if err != nil {
 		return ""
 	}
-	target, _, _, err := winutil.ReadLnkShortcut(full)
+
+	st, statErr := os.Stat(full)
+	if statErr == nil {
+		if cached, ok := targetExeCache.Load(full); ok {
+			if e := cached.(targetExeEntry); e.modTime.Equal(st.ModTime()) && e.size == st.Size() {
+				return e.exe
+			}
+		}
+	}
+
+	target, _, _, err := readLnkShortcut(full)
 	if err != nil {
 		return ""
 	}
 	base := filepath.Base(strings.TrimSpace(target))
 	if !strings.HasSuffix(strings.ToLower(base), ".exe") {
-		return ""
+		base = ""
+	}
+	if statErr == nil {
+		targetExeCache.Store(full, targetExeEntry{modTime: st.ModTime(), size: st.Size(), exe: base})
 	}
 	return base
 }
+
+// readLnkShortcut is winutil.ReadLnkShortcut behind a variable so tests can
+// count resolves without needing the shell and real .lnk files.
+var readLnkShortcut = winutil.ReadLnkShortcut
 
 // CloseShortcut ends the program a shortcut started, using the platform's own
 // closing method so exiting a game behaves like exiting its platform.
