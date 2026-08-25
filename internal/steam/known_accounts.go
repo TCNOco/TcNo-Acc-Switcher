@@ -67,30 +67,27 @@ func knownAccountsForRoot(steamRoot string) []LoginUser {
 // list and the background profile refresh go through it, so a truncated
 // loginusers.vdf costs the user nothing.
 func syncKnownAccounts(users []LoginUser) []LoginUser {
-	stored, err := accountstore.Load()
-	if err != nil {
-		// A store we cannot parse must neither blank the list nor be written
-		// over - it is the only copy of accounts Steam has already forgotten.
-		steamLog().Warn("Steam account store unavailable", slog.Any("err", err))
-		return users
-	}
-
-	known := make(map[string]struct{}, len(stored))
-	for _, rec := range stored {
-		known[rec.SteamID64] = struct{}{}
-	}
-
 	incoming := recordsFromLoginUsers(users)
 	incoming = append(incoming, recordsFromSteamGuardRegistry()...)
-	if changed, err := accountstore.UpsertMany(incoming); err != nil {
+
+	// One load, inside the store's write lock, answers both "what was there"
+	// and "what is there now". The upsert can add accounts a load before it
+	// could not see - a Steam Guard folder swapped in behind the app's back is
+	// exactly that - and they belong in this build of the list, not the next.
+	res, err := accountstore.UpsertMany(incoming)
+	if err != nil {
 		steamLog().Warn("could not update the Steam account store", slog.Any("err", err))
-	} else if changed {
-		// The upsert can add accounts the load above could not see - a Steam
-		// Guard folder swapped in behind the app's back is exactly that - and
-		// they belong in this build of the list, not only the next one.
-		if reloaded, err := accountstore.Load(); err == nil {
-			stored = reloaded
-		}
+	}
+	if res.After == nil {
+		// A store we cannot parse must neither blank the list nor be written
+		// over - it is the only copy of accounts Steam has already forgotten.
+		return users
+	}
+	stored := res.After
+
+	known := make(map[string]struct{}, len(res.Before))
+	for _, rec := range res.Before {
+		known[rec.SteamID64] = struct{}{}
 	}
 
 	discovered := 0

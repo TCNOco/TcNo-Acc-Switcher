@@ -184,30 +184,50 @@ func Save(records []Record) error {
 
 // Upsert merges one record into the store, reporting whether it moved.
 func Upsert(rec Record) (changed bool, err error) {
-	return UpsertMany([]Record{rec})
+	res, err := UpsertMany([]Record{rec})
+	return res.Changed, err
 }
 
-// UpsertMany merges records in a single load-save cycle and reports whether the
-// file actually changed. The account list rebuilds on every window focus, so
-// the unchanged case must not touch the disk.
-func UpsertMany(records []Record) (bool, error) {
-	if len(records) == 0 {
-		return false, nil
-	}
+// UpsertResult is the store on both sides of one merge.
+type UpsertResult struct {
+	// Before is the store as it was read. Nil only when it could not be read at
+	// all, which tells the caller there is nothing trustworthy to show.
+	Before []Record
+	// After is the store as the merge left it, whether or not it reached disk.
+	After []Record
+	// Changed reports whether the merge altered anything.
+	Changed bool
+}
+
+// UpsertMany merges records into the store and reports it on both sides of the
+// merge.
+//
+// Callers want to know what the store now holds, and usually what it held
+// before. Both come from the single load this already does under writeMu, which
+// saves the caller a Load either side - the Steam list build was reading the
+// same file three times, and it builds the list twice per page load. Taking
+// "before" from inside the lock also makes it consistent with the merge rather
+// than a separate read a concurrent writer could land between.
+func UpsertMany(records []Record) (UpsertResult, error) {
 	writeMu.Lock()
 	defer writeMu.Unlock()
 	stored, err := Load()
 	if err != nil {
-		return false, err
+		return UpsertResult{}, err
+	}
+	if len(records) == 0 {
+		return UpsertResult{Before: stored, After: stored}, nil
 	}
 	next, changed := mergeRecords(stored, records, time.Now().Unix())
 	if !changed {
-		return false, nil
+		return UpsertResult{Before: stored, After: stored}, nil
 	}
 	if err := save(next); err != nil {
-		return false, err
+		// The merged view is still the best answer available, so hand it back
+		// with the error rather than leaving the caller with nothing.
+		return UpsertResult{Before: stored, After: next, Changed: true}, err
 	}
-	return true, nil
+	return UpsertResult{Before: stored, After: next, Changed: true}, nil
 }
 
 // Remove drops one account. Forgetting an account is the only way it leaves.

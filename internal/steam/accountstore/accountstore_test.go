@@ -58,20 +58,67 @@ func TestUpsertManyReportsChangeOnlyWhenSomethingMoved(t *testing.T) {
 	useTempRoot(t)
 	rec := Record{SteamID64: idA, AccountName: "acct_a", PersonaName: "A", Source: SourceVDF}
 
-	changed, err := UpsertMany([]Record{rec})
+	res, err := UpsertMany([]Record{rec})
 	if err != nil {
 		t.Fatalf("first UpsertMany: %v", err)
 	}
-	if !changed {
+	if !res.Changed {
 		t.Fatal("inserting a new account should report a change")
 	}
 
-	changed, err = UpsertMany([]Record{rec})
+	res, err = UpsertMany([]Record{rec})
 	if err != nil {
 		t.Fatalf("second UpsertMany: %v", err)
 	}
-	if changed {
+	if res.Changed {
 		t.Fatal("re-syncing an identical account should not report a change")
+	}
+}
+
+// The Steam list build counts accounts it has not seen by diffing Before
+// against After, so a merge has to report both sides of itself rather than just
+// the result.
+func TestUpsertManyReportsBothSidesOfTheMerge(t *testing.T) {
+	useTempRoot(t)
+	first := Record{SteamID64: idA, AccountName: "acct_a", Source: SourceVDF}
+	second := Record{SteamID64: idB, AccountName: "acct_b", Source: SourceVDF}
+
+	if _, err := UpsertMany([]Record{first}); err != nil {
+		t.Fatalf("seed: %v", err)
+	}
+
+	res, err := UpsertMany([]Record{first, second})
+	if err != nil {
+		t.Fatalf("UpsertMany: %v", err)
+	}
+	if !res.Changed {
+		t.Fatal("adding a second account should report a change")
+	}
+	if len(res.Before) != 1 || res.Before[0].SteamID64 != idA {
+		t.Fatalf("Before = %#v, want only %s", res.Before, idA)
+	}
+	if len(res.After) != 2 {
+		t.Fatalf("After has %d records, want 2", len(res.After))
+	}
+}
+
+// An empty merge still has to say what the store holds: the caller uses that
+// instead of a Load of its own.
+func TestUpsertManyWithNoRecordsStillReportsTheStore(t *testing.T) {
+	useTempRoot(t)
+	if _, err := Upsert(Record{SteamID64: idA, AccountName: "acct_a", Source: SourceVDF}); err != nil {
+		t.Fatalf("seed: %v", err)
+	}
+
+	res, err := UpsertMany(nil)
+	if err != nil {
+		t.Fatalf("UpsertMany(nil): %v", err)
+	}
+	if res.Changed {
+		t.Fatal("an empty merge must not report a change")
+	}
+	if len(res.After) != 1 || res.After[0].SteamID64 != idA {
+		t.Fatalf("After = %#v, want the stored account", res.After)
 	}
 }
 
