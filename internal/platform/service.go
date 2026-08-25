@@ -178,8 +178,7 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 	}
 	sortStringsFold(disList)
 	nav := ConsumeStartupNavigateHint()
-	accountCounts := resolveStartupAccountCounts(names, settings.StatsEnabled)
-	tagCounts := resolveStartupTagCounts(names, settings.StatsEnabled)
+	accountCounts, tagCounts := resolveStartupCounts(names, settings.StatsEnabled)
 	return PlatformStartup{
 		HomePlatformOrder:        home,
 		AllPlatformNames:         names,

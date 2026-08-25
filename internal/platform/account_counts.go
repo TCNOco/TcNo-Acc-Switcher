@@ -1,32 +1,21 @@
 package platform
 
-// startupAccountCountResolver returns per-platform saved account totals for UI skeleton hints.
-// When nil, GetStartup omits disk-backed counts.
-var startupAccountCountResolver func(platformNames []string, statsEnabled bool) map[string]int
+// startupCountResolver returns per-platform saved account totals and tag totals
+// for UI skeleton hints.
+//
+// Accounts and tags come back from one hook rather than two so the resolver can
+// answer both from a single read of each platform's ids.json. When nil,
+// GetStartup omits disk-backed counts.
+var startupCountResolver func(platformNames []string, statsEnabled bool) (map[string]int, map[string]PlatformTagCountInfo)
 
-// SetStartupAccountCountResolver wires startup account totals from basic/steam (registered from main).
-func SetStartupAccountCountResolver(fn func(platformNames []string, statsEnabled bool) map[string]int) {
-	startupAccountCountResolver = fn
+// SetStartupCountResolver wires startup account and tag totals from basic/steam (registered from main).
+func SetStartupCountResolver(fn func(platformNames []string, statsEnabled bool) (map[string]int, map[string]PlatformTagCountInfo)) {
+	startupCountResolver = fn
 }
 
-func resolveStartupAccountCounts(platformNames []string, statsEnabled bool) map[string]int {
-	if startupAccountCountResolver == nil {
-		return map[string]int{}
+func resolveStartupCounts(platformNames []string, statsEnabled bool) (map[string]int, map[string]PlatformTagCountInfo) {
+	if startupCountResolver == nil {
+		return map[string]int{}, map[string]PlatformTagCountInfo{}
 	}
-	return startupAccountCountResolver(platformNames, statsEnabled)
-}
-
-// startupTagCountResolver returns per-platform tag & tagged-account totals for UI skeleton hints.
-var startupTagCountResolver func(platformNames []string, statsEnabled bool) map[string]PlatformTagCountInfo
-
-// SetStartupTagCountResolver wires startup tag totals from basic/steam (registered from main).
-func SetStartupTagCountResolver(fn func(platformNames []string, statsEnabled bool) map[string]PlatformTagCountInfo) {
-	startupTagCountResolver = fn
-}
-
-func resolveStartupTagCounts(platformNames []string, statsEnabled bool) map[string]PlatformTagCountInfo {
-	if startupTagCountResolver == nil {
-		return map[string]PlatformTagCountInfo{}
-	}
-	return startupTagCountResolver(platformNames, statsEnabled)
+	return startupCountResolver(platformNames, statsEnabled)
 }

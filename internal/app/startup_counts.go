@@ -1,7 +1,10 @@
 package app
 
 import (
+	"runtime"
 	"strings"
+	"sync"
+	"sync/atomic"
 
 	"TcNo-Acc-Switcher/internal/basic"
 	"TcNo-Acc-Switcher/internal/platform"
@@ -10,51 +13,96 @@ import (
 	"TcNo-Acc-Switcher/internal/steam"
 )
 
-// RegisterStartupAccountCounts wires per-platform account totals for GetStartup skeleton hints.
+// startupCountWorkerCap bounds the fan-out below. The work is one small file
+// read per platform, so it saturates the disk queue long before it saturates
+// the CPU; more workers than this just adds scheduling noise.
+const startupCountWorkerCap = 8
+
+// RegisterStartupAccountCounts wires per-platform account and tag totals for GetStartup skeleton hints.
 func RegisterStartupAccountCounts() {
-	platform.SetStartupAccountCountResolver(resolveStartupAccountCounts)
-	platform.SetStartupTagCountResolver(resolveStartupTagCounts)
+	platform.SetStartupCountResolver(resolveStartupCounts)
 }
 
-func resolveStartupAccountCounts(platformNames []string, statsEnabled bool) map[string]int {
-	out := make(map[string]int, len(platformNames))
+type startupPlatformCounts struct {
+	name     string
+	accounts int
+	tags     platform.PlatformTagCountInfo
+}
+
+// resolveStartupCounts gathers the account and tag totals GetStartup shows as
+// skeleton hints. It runs before the window is drawn, so it visits every
+// platform in Platforms.json whether or not the user has accounts on it.
+//
+// Each platform is independent and its cost is dominated by the ids.json read,
+// so the platforms are resolved concurrently and each one reads that file once.
+func resolveStartupCounts(platformNames []string, statsEnabled bool) (map[string]int, map[string]platform.PlatformTagCountInfo) {
+	accounts := make(map[string]int, len(platformNames))
+	tagCounts := make(map[string]platform.PlatformTagCountInfo, len(platformNames))
 	if security.AppLocked() {
-		return out
+		return accounts, tagCounts
 	}
+
+	names := make([]string, 0, len(platformNames))
 	for _, name := range platformNames {
-		name = strings.TrimSpace(name)
-		if name == "" {
-			continue
+		if name = strings.TrimSpace(name); name != "" {
+			names = append(names, name)
 		}
-		if statsEnabled {
-			if count, ok := stats.LookupPlatformAccountCount(name); ok {
-				out[name] = count
-				continue
+	}
+	if len(names) == 0 {
+		return accounts, tagCounts
+	}
+
+	workers := min(min(len(names), runtime.NumCPU()), startupCountWorkerCap)
+	results := make([]startupPlatformCounts, len(names))
+	var next atomic.Int64
+	var wg sync.WaitGroup
+	wg.Add(workers)
+	for w := 0; w < workers; w++ {
+		go func() {
+			defer wg.Done()
+			for {
+				i := int(next.Add(1)) - 1
+				if i >= len(names) {
+					return
+				}
+				results[i] = resolvePlatformCounts(names[i], statsEnabled)
 			}
-		}
-		if strings.EqualFold(name, steam.PlatformKey) {
-			out[name] = steam.CountSavedAccounts()
-		} else {
-			out[name] = basic.CountSavedAccounts(name)
-		}
+		}()
 	}
-	return out
+	wg.Wait()
+
+	for _, r := range results {
+		accounts[r.name] = r.accounts
+		tagCounts[r.name] = r.tags
+	}
+	return accounts, tagCounts
 }
 
-func resolveStartupTagCounts(platformNames []string, statsEnabled bool) map[string]platform.PlatformTagCountInfo {
-	out := make(map[string]platform.PlatformTagCountInfo, len(platformNames))
-	if security.AppLocked() {
-		return out
+func resolvePlatformCounts(name string, statsEnabled bool) startupPlatformCounts {
+	out := startupPlatformCounts{name: name}
+
+	// Steam keeps its accounts outside ids.json, but its tags do not.
+	isSteam := strings.EqualFold(name, steam.PlatformKey)
+
+	accountsKnown := false
+	if statsEnabled {
+		if count, ok := stats.LookupPlatformAccountCount(name); ok {
+			out.accounts = count
+			accountsKnown = true
+		}
 	}
-	for _, name := range platformNames {
-		name = strings.TrimSpace(name)
-		if name == "" {
-			continue
-		}
-		out[name] = platform.PlatformTagCountInfo{
-			TagCount:           basic.CountTags(name),
-			TaggedAccountCount: basic.CountTaggedAccounts(name),
-		}
+	if !accountsKnown && isSteam {
+		out.accounts = steam.CountSavedAccounts()
+		accountsKnown = true
+	}
+
+	c := basic.CountsFor(name)
+	if !accountsKnown {
+		out.accounts = c.Accounts
+	}
+	out.tags = platform.PlatformTagCountInfo{
+		TagCount:           c.Tags,
+		TaggedAccountCount: c.TaggedAccounts,
 	}
 	return out
 }
