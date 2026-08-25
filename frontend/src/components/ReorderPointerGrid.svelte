@@ -426,7 +426,16 @@
   }}
 >
   <!-- One element for both slot kinds: `animate:flip` only works on the
-       immediate child of a keyed each, and a branch in between disqualifies it. -->
+       immediate child of a keyed each, and a branch in between disqualifies it.
+
+       `|global` on the entrance is load-bearing. Svelte 5 transitions are local
+       by default (the reverse of Svelte 4), and a local intro is skipped while
+       its enclosing block is still initialising - which is exactly the case that
+       matters here, the grid rendering with a full list of ids already in hand.
+       Without it the tiles only ever animated when one was added to a list that
+       was already on screen, so a whole page of accounts arrived on one frame.
+       The exit stays local on purpose: a tile should shrink away when it is
+       removed, not when the page it lives on is being navigated away from. -->
   {#each displaySlots as slot, i (slot === null ? `gap-${i}` : slot)}
     <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
@@ -447,7 +456,7 @@
       on:keydown={(e) => { if (slot !== null) onCellKeyDown(e, slot); }}
       on:click={() => { if (slot !== null) onCellClick(slot); }}
       animate:flip={flipParams}
-      in:tileIn={{ enabled: slot !== null && tileMotion, delay: staggerDelay(i, 18, 160) }}
+      in:tileIn|global={{ enabled: slot !== null && tileMotion, delay: staggerDelay(i) }}
       out:tileOut={{ enabled: slot !== null && dragIndex === null }}
     >
       {#if slot !== null}

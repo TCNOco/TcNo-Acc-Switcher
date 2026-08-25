@@ -121,23 +121,24 @@ export function collapse(node: Element, params?: MotionParams): TransitionConfig
   };
 }
 
-type TileParams = MotionParams & { enabled?: boolean; y?: number; start?: number };
+type TileParams = MotionParams & { enabled?: boolean; start?: number };
 
 /**
- * Grid tiles arriving: rise a little and settle to full size. `scale` alone
- * reads as a pop and `fly` alone as a slide; together they read as the tile
- * coming forward into place.
+ * Grid tiles arriving: settle forward to full size.
+ *
+ * Scale and opacity only, deliberately - no vertical drift. Page navigation
+ * flies the whole `<main>` sideways, and a tile that also travels down turns the
+ * page's horizontal slide into a diagonal one. Scaling is on the axis the slide
+ * has no opinion about, so the two compose instead of fighting.
  */
 export function tileIn(node: Element, params?: TileParams): TransitionConfig {
   if (!motionEnabled() || params?.enabled === false) return noOpTransition();
-  const y = params?.y ?? 6;
-  const start = params?.start ?? 0.94;
+  const start = params?.start ?? 0.9;
   return {
     delay: params?.delay ?? 0,
-    duration: params?.duration ?? DUR.normal,
+    duration: params?.duration ?? DUR.slow,
     easing: EASE.default,
-    css: (t, u) =>
-      `opacity: ${t}; transform: translateY(${u * y}px) scale(${start + (1 - start) * t});`,
+    css: (t) => `opacity: ${t}; transform: scale(${start + (1 - start) * t});`,
   };
 }
 
@@ -154,12 +155,18 @@ export function tileOut(node: Element, params?: TileParams): TransitionConfig {
 }
 
 /**
- * Staggered entrance delay. Capped so a long list still finishes promptly
- * rather than trickling in for seconds.
+ * Staggered entrance delay, approaching `maxMs` instead of hitting it.
+ *
+ * A linear delay with a hard cap looks fine for six tiles and bad for sixty:
+ * everything past the cap starts on the same frame, so a long list cascades and
+ * then dumps its tail all at once. This eases off instead - the first few tiles
+ * are `baseMs` apart, later ones bunch up gently, and nothing ever waits longer
+ * than `maxMs`.
  */
-export function staggerDelay(index: number, baseMs = 22, maxMs = 240): number {
+export function staggerDelay(index: number, baseMs = 38, maxMs = 420): number {
   if (!motionEnabled()) return 0;
-  return Math.min(Math.max(index, 0) * baseMs, maxMs);
+  const i = Math.max(index, 0);
+  return Math.round(maxMs * (1 - Math.exp((-i * baseMs) / maxMs)));
 }
 
 /**

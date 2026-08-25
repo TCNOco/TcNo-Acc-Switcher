@@ -437,7 +437,7 @@
   });
 </script>
 
-<div class="main-content platform-accounts-root" class:steamGames--hidden={!active}>
+<div class="main-content platform-accounts-root steamGames__view" class:steamGames--hidden={!active}>
 <div class="platformTableHost steamGames__host">
   <div class="steamGames__search">
     <label class="sr-only" for={SEARCH_INPUT_ID}>{$t("Steam_Games_SearchLabel")}</label>

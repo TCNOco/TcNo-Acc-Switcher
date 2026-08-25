@@ -7,6 +7,55 @@
   display: none;
 }
 
+/* Tab swaps happen in one frame - this view by losing `display: none`, the
+   switcher by mounting - which reads as a flicker. An element under
+   `display: none` runs no animation, so this replays on every swap back rather
+   than only on first paint, which is exactly what is wanted.
+
+   Opacity only, and only on this view. The switcher tab gets its reveal from the
+   account tiles cascading in, and putting a reveal on the shared shell instead
+   meant it also ran on page entry - a second opacity ramp on top of the page's
+   own, and a page-wide vertical nudge that turned the horizontal page slide
+   into a diagonal one. */
+.steamGames__view {
+  animation: steamGamesViewReveal var(--dur-fast) var(--ease-out) both;
+}
+
+@keyframes steamGamesViewReveal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Only the first chunk, and only its first rows: everything else is below the
+   fold, and `content-visibility: auto` would otherwise start each chunk's
+   animation as it scrolled into view - rows fading in under the cursor as you
+   scroll a 2000-game library. Twenty rows is one screenful and twenty
+   animations, rather than two thousand. */
+.steamGames__chunk:first-child .steamGames__row {
+  animation: steamGamesRowReveal var(--dur-normal) var(--ease-out) both;
+}
+
+@for $i from 1 through 20 {
+  .steamGames__chunk:first-child .steamGames__row:nth-child(#{$i}) {
+    animation-delay: #{($i - 1) * 26}ms;
+  }
+}
+
+.steamGames__chunk:first-child .steamGames__row:nth-child(n + 21) {
+  animation: none;
+}
+
+@keyframes steamGamesRowReveal {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* Same chain as the account list: host → table → scroller, every level a flex
    column that may shrink, so the list keeps the only scrollbar on the page. */
 .steamGames__host {

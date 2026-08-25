@@ -143,18 +143,24 @@
 
   /**
    * The page leaving and the page arriving overlap for the length of the
-   * crossfade. Neutralise the outgoing copy for that window: `inert` takes it
-   * out of hit-testing and the tab order, and dropping the id keeps the skip
-   * link pointed at the page that is actually arriving. The z-index is set
-   * inline rather than by class: Svelte scopes its stylesheet at compile time,
-   * so a class added from script would never match a scoped rule.
+   * crossfade, so the arriving one has to paint on top.
+   *
+   * Both halves matter. Svelte reuses a branch's DOM when it re-enters while
+   * still fading out - navigate away and straight back and the same `<main>` is
+   * handed over - so anything set on the way out has to be undone on the way in,
+   * or it sticks forever. Set inline rather than by class: Svelte scopes its
+   * stylesheet at compile time, so a class added from script matches nothing.
+   *
+   * Taking the leaving page out of hit-testing is not done here: Svelte already
+   * sets `inert` on an element it is transitioning out, and clears it again if
+   * the element comes back.
    */
+  function onPageEnter(event: Event): void {
+    (event.currentTarget as HTMLElement).style.zIndex = "2";
+  }
+
   function onPageLeave(event: Event): void {
-    const el = event.currentTarget as HTMLElement;
-    el.style.zIndex = "0";
-    el.removeAttribute("id");
-    el.setAttribute("inert", "");
-    el.setAttribute("aria-hidden", "true");
+    (event.currentTarget as HTMLElement).style.zIndex = "1";
   }
 
   let restoreRepairPromptOpen = false;
@@ -569,6 +575,7 @@
             opacity: 0,
             easing: EASE.default,
           }}
+          on:introstart={onPageEnter}
           on:outrostart={onPageLeave}
         >
           {#await loadPageModule($route) then { default: Page }}

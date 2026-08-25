@@ -27,25 +27,6 @@
   flex: 1;
 }
 
-/* Both Steam tabs hang off the shell and swap in a single frame: the games list
-   by losing `display: none`, the switcher by mounting. A reveal on whichever one
-   turns up keeps the tab change from reading as a flicker. An element under
-   `display: none` runs no animation, so the games list replays this every time
-   it comes back rather than only on first paint. */
-.platform-page-shell > * {
-  animation: platformTabReveal var(--dur-normal) var(--ease-out) both;
-}
-
-@keyframes platformTabReveal {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
 
 .platform-accounts-hint {
   margin: 0.75rem 1rem 0;
