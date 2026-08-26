@@ -513,22 +513,23 @@ html.input-modality-controller[data-controller-scheme="generic"] {
 .input-modality-controller .shortcutDndCell:focus-within,
 .input-modality-controller .searchOverlay_resultItem.searchOverlay_selected {
   position: relative;
-  overflow: visible;
 }
 
 .input-modality-controller .acc_list_item:focus > .acc_list_item_inner {
   position: relative;
-  overflow: visible;
 }
 
+/* Inside the corner, not over it. Every list this prompt lands in scrolls, so
+   a prompt that hung past the edge tile pushed out a scrollbar the list never
+   needed, and the row against the top edge had its prompt cut off instead. */
 .input-modality-controller .platform_list_item:focus::after,
 .input-modality-controller .acc_list_item:focus > .acc_list_item_inner::after,
 .input-modality-controller .shortcutDndCell:focus-within::after,
 .input-modality-controller .searchOverlay_resultItem.searchOverlay_selected::after {
   content: var(--controller-action-prompt-glyph);
   position: absolute;
-  top: -0.55rem;
-  right: -0.55rem;
+  top: 0.2rem;
+  right: 0.2rem;
   z-index: 20;
   width: 1.45rem;
   height: 1.45rem;
@@ -552,8 +553,8 @@ html.input-modality-controller[data-controller-scheme="generic"] {
 }
 
 .input-modality-controller .shortcutDndCell:focus-within::after {
-  top: -0.65rem;
-  right: -0.65rem;
+  top: 0;
+  right: 0;
   width: 1.2rem;
   height: 1.2rem;
   min-width: 1.2rem;
