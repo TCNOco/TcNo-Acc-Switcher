@@ -290,7 +290,6 @@ export function createDragReorderController(cbs: DragReorderCallbacks) {
     document.body.style.userSelect = "none";
     document.body.dataset.dragging = "true";
     syncState();
-    hitTestDragOver(e.clientX, e.clientY);
   }
 
   function moveWithinZone(
@@ -492,6 +491,10 @@ export function createDragReorderController(cbs: DragReorderCallbacks) {
       const dy = e.clientY - state.pendingDrag.startY;
       if (dx * dx + dy * dy < dragThresholdPx * dragThresholdPx) return;
       beginPointerDrag(e, state.pendingDrag);
+      // The gap it just opened is not in the document until the next render, so
+      // hit-testing now reads the pre-drag layout. beginPointerDrag has already
+      // placed the ghost, and the next move is a frame away.
+      return;
     }
 
     if (state.dragSourceZone !== null && state.pendingDrag) {

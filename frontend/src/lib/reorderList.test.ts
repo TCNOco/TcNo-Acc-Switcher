@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { reorderShortcutByCommand, stripCellForGhostClone } from "./dragReorderShortcuts";
-import { reorderItemByCommand } from "./reorderList";
+import { insertionIndexFromTileHover, previewSlots, reorderItemByCommand } from "./reorderList";
 
 class FakeElement {
   readonly children: FakeElement[] = [];
@@ -184,5 +184,36 @@ describe("stripCellForGhostClone", () => {
       objectFit: "contain",
       objectPosition: "center",
     });
+  });
+});
+
+/** Only getBoundingClientRect is read, so a tile is just its horizontal span. */
+function tileSpanning(left: number, width: number): HTMLElement {
+  return {
+    getBoundingClientRect: () => ({ left, width, right: left + width }),
+  } as unknown as HTMLElement;
+}
+
+describe("insertionIndexFromTileHover", () => {
+  const order = ["a", "b", "c", "d"];
+
+  it("drops before the tile when the pointer is on its left half", () => {
+    expect(insertionIndexFromTileHover(order, 3, "b", 210, tileSpanning(200, 100))).toBe(1);
+  });
+
+  it("drops after the tile when the pointer is on its right half", () => {
+    expect(insertionIndexFromTileHover(order, 3, "b", 290, tileSpanning(200, 100))).toBe(2);
+  });
+
+  // A drag begins and the hit test runs before the preview gap has been
+  // rendered, so it still finds the dragged tile - which is no longer in the
+  // list being hit-tested. Answering 0 there threw the whole list one place to
+  // the right for a frame.
+  it("leaves the gap alone when the hit lands on the dragged tile", () => {
+    for (const clientX of [210, 290]) {
+      const index = insertionIndexFromTileHover(order, 2, "c", clientX, tileSpanning(200, 100));
+      expect(index).toBe(2);
+      expect(previewSlots(order, 2, index)).toEqual(["a", "b", null, "d"]);
+    }
   });
 });

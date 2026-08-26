@@ -227,6 +227,10 @@
       const dy = e.clientY - pendingDrag.startY;
       if (dx * dx + dy * dy < dragThresholdPx * dragThresholdPx) return;
       beginPointerDrag(e, pendingDrag);
+      // The gap it just opened is not in the document until Svelte flushes, so
+      // hit-testing now reads the pre-drag layout. beginPointerDrag has already
+      // placed the ghost, and the next move is a frame away.
+      return;
     }
 
     if (dragIndex !== null && pendingDrag) {

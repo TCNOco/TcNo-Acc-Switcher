@@ -91,7 +91,13 @@ export function insertionIndexFromTileHover(
 ): number {
   const short = order.filter((_, i) => i !== dragIndex);
   const refInShort = short.indexOf(slotId);
-  if (refInShort < 0) return 0;
+  if (refInShort < 0) {
+    // Not a tile the gap can be placed against - the dragged tile itself, hit
+    // through a DOM that has not caught up with the drag starting. Leaving the
+    // gap where it is says nothing, which is the only honest answer; the front
+    // of the list is a claim, and it threw every tile one place across.
+    return Math.max(0, Math.min(dragIndex, short.length));
+  }
   const rect = cell.getBoundingClientRect();
   const after = clientX >= rect.left + rect.width / 2;
   let pos = after ? refInShort + 1 : refInShort;
