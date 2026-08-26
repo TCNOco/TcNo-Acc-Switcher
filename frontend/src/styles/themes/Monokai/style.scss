@@ -533,8 +533,6 @@ button#LocateProgramExe,
 }
 
 label.acc {
-    height: 101.9%;
-
     &.currentAcc {
         border-color: var(--shortcut-active-border, var(--accent));
         border-style: dashed;

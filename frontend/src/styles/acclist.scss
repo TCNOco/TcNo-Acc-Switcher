@@ -7,33 +7,16 @@
   flex-direction: column;
 }
 
-.steam-acclist :global(.acc_list.reorder-pointer-grid) {
+// This is a plain stylesheet, not a Svelte <style> block, so `:global(...)` is
+// not a selector the browser understands - the four rules that used to live
+// here were dropped whole. The drag and ghost ones only repeated what
+// ReorderPointerGrid already styles; the grid needs to fill the column left
+// over after the tag filter bar and scroll inside it.
+.steam-acclist .acc_list.reorder-pointer-grid {
   flex: 1 1 auto;
   min-height: 0;
   height: auto;
   max-height: none;
-}
-
-.steam-acclist :global(.acc_list .reorder-pointer-grid__cell) {
-  min-height: 0;
-  height: 100%;
-}
-
-.steam-acclist :global(.acc_list_item--drag) {
-  cursor: grab;
-  touch-action: none;
-}
-
-.steam-acclist :global(.acc_list_item--ghost) {
-  position: fixed;
-  margin: 0;
-  z-index: 10000;
-  pointer-events: none;
-  opacity: 0.96;
-  cursor: grabbing;
-  box-shadow: 0 12px 36px var(--shadow-color-50);
-  left: 0;
-  top: 0;
 }
 
 .steam-acclist .steam_meta_badge.dim {
@@ -114,10 +97,19 @@
   overflow-y: auto;
 }
 
+// Rows are only as even as the tile inside them. The grid already sizes each
+// row to its tallest account, and the cell stretches to that - but the tile the
+// eye actually sees is `label.acc`, two levels down, and a percentage height
+// against an auto-height wrapper collapses to the content. So the cell and the
+// wrapper hand their height down by stretching, and an account carrying ranks,
+// a cooldown and three tags sets the height for everything beside it. Nothing
+// to recompute on drop, insert or resize: the row track is the source of truth.
 .acc_list_item {
   border: 0.1em solid transparent;
   cursor: pointer;
   position: relative;
+  display: flex;
+  min-width: 0;
 
   .input-modality-keyboard &:focus,
   .input-modality-controller &:focus {
@@ -171,9 +163,15 @@
   opacity: 1;
 }
 
+.acc_list_item_inner {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .placeHolderAcc {
   width: 100px;
-  height: 135px;
+  min-height: 135px;
   border: 2px dashed var(--accent-border-strong);
   background: var(--code-background);
 }
@@ -305,7 +303,9 @@ label.acc {
   min-width: 100px;
   max-width: 100px;
   min-height: 135px;
-  height: 100%;
+  // Stretched by .acc_list_item_inner to the row's height; a percentage here
+  // would resolve against a wrapper that has none.
+  height: auto;
   margin: -0.1em;
   padding: 0.5em;
   border-width: 0.1em;
