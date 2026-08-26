@@ -202,10 +202,14 @@ func (s *SteamService) GetSteamAccountsList() ([]SteamAccountListItemDTO, error)
 	if len(out) > 0 {
 		syncSteamPlatformCounts(len(out))
 	}
-	// The list is reloaded when the window regains focus, which is what someone
-	// coming back from signing a new account into Steam does. That sign-in is
-	// what created the userdata folder the shortcut entry has to go in.
-	SyncSelfShortcutForNewUsers()
+	// Opening the Steam page, and every reload after it, is the only thing that
+	// drives the shortcut pass - it is not on the startup path, where it would
+	// cost every launch a walk of every Steam user's shortcut list for a feature
+	// most people never turn on. The list is also reloaded when the window
+	// regains focus, which is what someone coming back from signing a new
+	// account into Steam does: that sign-in is what created the userdata folder
+	// the entry has to go in.
+	SyncSelfShortcutsInBackground()
 	return out, nil
 }
 

@@ -112,7 +112,7 @@ func (s *SteamService) SetAddToSteam(enabled bool) (SteamShortcutApplyResult, er
 	// The preference is saved even when some users failed. applySelfShortcut
 	// carries on past a user it cannot write, so a failure still leaves entries
 	// behind - and not recording what was asked for would hide those from the
-	// startup repair for good, with the toggle drawn off over a Steam library
+	// background pass for good, with the toggle drawn off over a Steam library
 	// that has the app in it.
 	exeDir, err := platform.ResolveExeDir()
 	if err != nil {
@@ -123,21 +123,13 @@ func (s *SteamService) SetAddToSteam(enabled bool) (SteamShortcutApplyResult, er
 		return result, errors.Join(applyErr, err)
 	}
 	app.AddToSteam = enabled
-	return result, errors.Join(applyErr, platform.SaveAppSettings(exeDir, app))
-}
-
-// SyncSelfShortcut re-points Steam's entry at wherever the app is now. The entry
-// stores an absolute path, so an installer update or an AppImage dragged
-// somewhere else leaves it launching nothing until this runs.
-//
-// Safe with Steam open: Steam only writes the shortcut list back when its own
-// copy changes, so this cannot lose what is already there.
-func SyncSelfShortcut(enabled bool) error {
-	if !enabled {
-		return nil
+	// Turning it on is what puts entries in other users' lists, so it is also
+	// what signs the background pass up to keep every user in line from here on
+	// - including taking the entry back out after the option goes off again.
+	if enabled {
+		app.AddToSteamManaged = true
 	}
-	_, _, err := applySelfShortcut(true, nil)
-	return err
+	return result, errors.Join(applyErr, platform.SaveAppSettings(exeDir, app))
 }
 
 // selfShortcutSyncing keeps the account list, which is reloaded on every window
@@ -147,20 +139,34 @@ var selfShortcutSyncing atomic.Bool
 // selfShortcutSynced remembers which shortcut files this process has already
 // brought in line with the preference, so the repeat passes cost one directory
 // listing per Steam install instead of a read and a parse of every user's list.
+//
+// It does not record which way round that was, and does not need to: the only
+// thing that flips the preference mid-process is the toggle, and that runs a
+// full pass, which clears this first.
 var selfShortcutSynced sync.Map
 
-// SyncSelfShortcutForNewUsers writes the entry for Steam users that have turned
-// up since the last pass, off the caller's goroutine.
+// SyncSelfShortcutsInBackground brings every local Steam user's shortcut list in
+// line with the saved preference, off the caller's goroutine.
 //
-// Steam creates userdata/<id32> when an account first signs in, which is after
-// the startup sync has already listed the users there were. Without a later
-// pass the entry exists for every account but the newly added one, for as long
-// as the app keeps running.
+// Both directions run. On, so an account that signed in after the last pass gets
+// the entry too - Steam creates userdata/<id32> at first sign-in, so the set of
+// users to write to grows underneath a running app, and the entry would
+// otherwise exist for every account except the one just added. Off, so an entry
+// a removal could not reach at the time - a Steam install on a drive that was
+// not plugged in, a second client that was not installed yet, settings carried
+// over from another PC - is cleared the next time the app can see it.
+//
+// It does nothing until the option has been turned on once. Before that nothing
+// of ours is in anyone's list, and reading and rewriting shortcut files for a
+// feature the user has never touched is not something to do on the way to
+// drawing a page.
 //
 // This is not a poll: callers hang it off things that only happen after a
-// sign-in could have. Users already done are skipped without opening their
-// file, so a pass that finds nothing new is a handful of stats.
-func SyncSelfShortcutForNewUsers() {
+// sign-in could have. Users already brought in line are skipped without opening
+// their file, so a repeat pass is a handful of stats. The memo starts empty, so
+// the first pass of a process is a full one - which is also what re-points every
+// entry at the app's new path after an update or a move.
+func SyncSelfShortcutsInBackground() {
 	if !selfShortcutSyncing.CompareAndSwap(false, true) {
 		return
 	}
@@ -172,10 +178,10 @@ func SyncSelfShortcutForNewUsers() {
 		}
 		// Cached in-process, so this is not a settings file read per call.
 		app, err := platform.LoadAppSettings(exeDir)
-		if err != nil || !app.AddToSteam {
+		if err != nil || !app.AddToSteamManaged {
 			return
 		}
-		if _, _, err := applySelfShortcut(true, skipAlreadySynced); err != nil {
+		if _, _, err := applySelfShortcut(app.AddToSteam, skipAlreadySynced); err != nil {
 			steamLog().Warn("steam shortcut sync", slog.Any("err", err))
 		}
 	}()
@@ -273,8 +279,8 @@ func upsertSelfShortcut(list []*shortcutsvdf.Node, target shortcutTarget) ([]*sh
 //
 // Only the fields this code owns are touched. AppName, the icon and the launch
 // options are all things a user can set from Steam's own properties dialog, and
-// the startup repair runs on every launch - rewriting them would undo the
-// change every time they made it.
+// the repair pass runs every time the Steam page is opened - rewriting them
+// would undo the change every time they made it.
 func pointEntryAtTarget(entry *shortcutsvdf.Node, target shortcutTarget) bool {
 	changed := false
 	set := func(key, want string) {

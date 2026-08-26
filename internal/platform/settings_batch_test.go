@@ -169,3 +169,31 @@ func TestNormalizeCommandPaletteHotkey(t *testing.T) {
 		})
 	}
 }
+
+func TestAddToSteamManagedInheritsAnAlreadyEnabledOption(t *testing.T) {
+	// Upgraders' files predate the flag. Reading them as never-managed would
+	// stop the background pass for the people who already use the feature.
+	settings := AppSettings{AddToSteam: true}
+
+	normalizeAppSettingsDefaults(&settings, map[string]json.RawMessage{
+		"addToSteam": json.RawMessage("true"),
+	})
+
+	if !settings.AddToSteamManaged {
+		t.Fatal("an option already turned on should read as managed")
+	}
+}
+
+func TestAddToSteamManagedSurvivesTheOptionBeingOff(t *testing.T) {
+	// Turning the option off is exactly when the pass has to keep running, so a
+	// stored true must not be recomputed from AddToSteam.
+	settings := AppSettings{AddToSteamManaged: true}
+
+	normalizeAppSettingsDefaults(&settings, map[string]json.RawMessage{
+		"addToSteamManaged": json.RawMessage("true"),
+	})
+
+	if !settings.AddToSteamManaged {
+		t.Fatal("a stored AddToSteamManaged should survive the option being off")
+	}
+}

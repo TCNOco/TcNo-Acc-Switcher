@@ -318,7 +318,7 @@ func hasSelfShortcut(t *testing.T, root, id32 string) bool {
 
 func TestApplyReachesAUserThatSignedInAfterTheFirstPass(t *testing.T) {
 	// Steam creates userdata/<id32> at first sign-in, so an account added while
-	// the app is running is not in the list the startup pass walked.
+	// the app is running is not in the list the first pass walked.
 	root := steamInstallWithUsers(t, "111")
 	prev := steamRootCandidatesFn
 	steamRootCandidatesFn = func() []string { return []string{root} }
@@ -392,5 +392,31 @@ func TestFullPassRedoesUsersAMemoisedPassWouldSkip(t *testing.T) {
 
 	if hasSelfShortcut(t, root, "111") {
 		t.Error("turning the option off left the entry behind")
+	}
+}
+
+func TestRemovalPassReachesAUserTheMemoNeverSaw(t *testing.T) {
+	// An entry outlives the option being turned off whenever the removal could
+	// not reach it - a Steam install on a drive that was not plugged in, a
+	// settings file carried over from another PC. The preference is saved
+	// regardless, so the pass that runs when the Steam page opens is the only
+	// thing left that clears it, and it starts with an empty memo.
+	root := steamInstallWithUsers(t, "111")
+	prev := steamRootCandidatesFn
+	steamRootCandidatesFn = func() []string { return []string{root} }
+	t.Cleanup(func() { steamRootCandidatesFn = prev })
+	forgetSyncedSelfShortcuts()
+	t.Cleanup(forgetSyncedSelfShortcuts)
+
+	if _, _, err := applySelfShortcut(true, nil); err != nil {
+		t.Fatal(err)
+	}
+	forgetSyncedSelfShortcuts()
+
+	if _, _, err := applySelfShortcut(false, skipAlreadySynced); err != nil {
+		t.Fatal(err)
+	}
+	if hasSelfShortcut(t, root, "111") {
+		t.Error("an entry left over from an earlier run survived the pass")
 	}
 }

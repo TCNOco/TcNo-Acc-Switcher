@@ -79,6 +79,13 @@ type AppSettings struct {
 	// launched from Big Picture and Game Mode.
 	AddToSteam bool `json:"addToSteam,omitempty"`
 
+	// AddToSteamManaged records that the toggle above has been turned on at
+	// least once, which is what licenses the background pass to touch Steam's
+	// shortcut files at all. It is never cleared: turning the option back off is
+	// exactly when the pass still has to run, to take the entry out of accounts
+	// a failed or missed removal left it in.
+	AddToSteamManaged bool `json:"addToSteamManaged,omitempty"`
+
 	// StartProgramCentered places the main window in the center of the screen when the app opens.
 	StartProgramCentered bool `json:"startProgramCentered,omitempty"`
 
@@ -259,6 +266,12 @@ func normalizeAppSettingsDefaults(s *AppSettings, raw map[string]json.RawMessage
 	}
 	if _, ok := raw["animationsEnabled"]; !ok {
 		s.AnimationsEnabled = true
+	}
+	// A file from before the flag existed, with the option already on, is a user
+	// who has turned it on - which is what the flag records. Without this their
+	// entries would never be repaired or extended to a new Steam account again.
+	if _, ok := raw["addToSteamManaged"]; !ok {
+		s.AddToSteamManaged = s.AddToSteam
 	}
 	if _, ok := raw["controllerSupportEnabled"]; !ok {
 		s.ControllerSupportEnabled = true

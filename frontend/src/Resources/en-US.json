@@ -313,7 +313,7 @@
   "Settings_AlwaysAdmin": "Always start as admin",
   "Settings_AlwaysAdmin_Tooltip": "Starts the switcher elevated every time, so closing stubborn games and platforms never needs a separate restart. With \"Start Tray with Windows\" on as well, a scheduled task handles startup so there is no UAC prompt at sign-in.",
   "Settings_AddToSteam": "Add to Steam",
-  "Settings_AddToSteam_Tooltip": "Adds the switcher to Steam as a non-Steam game, so you can start it from Big Picture or Game Mode without dropping to the desktop.",
+  "Settings_AddToSteam_Tooltip": "Adds the switcher to Steam as a non-Steam game, so you can start it from Big Picture or Game Mode without dropping to the desktop. It goes into every Steam account on this PC, including ones you sign into later.",
   "Settings_AddToSteam_RestartSteam": "Steam reads its shortcut list when it starts, so the switcher appears the next time you restart Steam.",
   "Settings_AddToSteam_NoUsers": "Steam is installed but has not been signed into on this PC yet, so there is nowhere to add the shortcut. Sign in to Steam and turn this on again.",
   "Settings_AddToSteam_Flatpak": "Your Steam is a Flatpak, which cannot start anything outside its sandbox until you allow it. In Flatseal, give Steam the \"org.freedesktop.Flatpak\" session bus permission.",
