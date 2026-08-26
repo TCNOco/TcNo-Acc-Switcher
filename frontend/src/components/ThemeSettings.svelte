@@ -77,7 +77,7 @@
     </ThemePickerControls>
   </div>
 
-  <div class="theme-controls">
+  <div class="settings-grid">
     <SettingsToggle
       id="theme-reduce-motion"
       checked={!$animationsEnabled}
@@ -116,8 +116,10 @@
     height: 38px;
   }
 
+  /* The same gutter every settings row carries, taken from the variable rather
+     than repeated, so a theme that widens it moves these with the toggles. */
   .theme-controls,
   .theme-bg-row {
-    padding-inline: 0.4rem;
+    padding-inline: var(--settings-toggle-pad-x, 0.4rem);
   }
 </style>

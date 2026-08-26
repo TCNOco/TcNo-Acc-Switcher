@@ -10,7 +10,10 @@
      Themes that resize that box override this, so the connector drawn under a
      parent toggle stays centred on its checkbox. */
   --settings-checkbox-size: 20px;
-  /* `.settings-toggle`'s own inline padding — the connector offset starts here. */
+  /* The gutter every settings row is inset by - toggles, fields, subheaders,
+     notes, action rows - so a theme that widens it moves them together instead
+     of leaving some rows proud of the rest. The connector under a nested toggle
+     starts from here too. */
   --settings-toggle-pad-x: 0.4rem;
   /* Content column. Caps the toggle grid at three columns and, once the window
      is wider than this, is what the page centres on. */
@@ -113,7 +116,7 @@
 
 .settings-subheader {
   margin: 1.1rem 0 0.4rem;
-  padding: 0 0.4rem;
+  padding: 0 var(--settings-toggle-pad-x, 0.4rem);
   color: var(--whiteSecondary);
   font-size: 1rem;
   font-weight: 600;
@@ -121,7 +124,7 @@
 
 .settings-note {
   margin: 0 0 0.5rem;
-  padding: 0 0.4rem;
+  padding: 0 var(--settings-toggle-pad-x, 0.4rem);
   color: var(--text-body-muted);
   font-size: 0.85em;
   line-height: 1.45;
@@ -193,7 +196,7 @@
   align-items: center;
   gap: 0.35rem 0.85rem;
   min-height: 2.5rem;
-  padding: 0.2rem 0.4rem;
+  padding: 0.2rem var(--settings-toggle-pad-x, 0.4rem);
 }
 
 .settings-field__label {
@@ -293,7 +296,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  padding: 0.35rem 0.4rem;
+  padding: 0.35rem var(--settings-toggle-pad-x, 0.4rem);
 }
 
 .settings-actions > button,
@@ -307,7 +310,7 @@
   flex-wrap: wrap;
   gap: 0.2rem 1.1rem;
   margin: 0 0 0.6rem;
-  padding: 0 0.4rem;
+  padding: 0 var(--settings-toggle-pad-x, 0.4rem);
 }
 
 /* ── Callout cards ──────────────────────────────────────────────────── */
