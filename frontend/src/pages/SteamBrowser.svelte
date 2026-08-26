@@ -262,10 +262,26 @@
   // The shell's border is a themed width in CSS pixels; the strip the content
   // view leaves clear is the system's resize border, in physical ones. Neither
   // knows the other, so whichever is narrower would leave a hairline of ordinary
-  // background between the red border and the page. Painting this element red
-  // fills it, whatever the two widths turn out to be.
-  .sb--untrusted {
-    background: var(--danger, #d9534f);
+  // background between the red border and the page.
+  //
+  // Drawn as a frame around the page area rather than as a fill behind it. A
+  // fill covers the seam just as well, but everything it covers is where the
+  // content view lands - so until that view's first paint the window was a sheet
+  // of red rather than a red border, which is the one thing the border is meant
+  // to distinguish itself from. Left transparent inside, the page area shows the
+  // same background as every other page until the view arrives to cover it.
+  //
+  // Width is a fixed margin over the widest seam that can open up: the resize
+  // strip is around eight physical pixels and the shell's frame is three to
+  // seven CSS pixels of it, and a scaled display only ever closes the gap. No
+  // top edge - the content view starts flush against the toolbar, so there is no
+  // seam there to back.
+  .sb--untrusted::after {
+    content: "";
+    flex: 1 1 auto;
+    min-height: 0;
+    border: 8px solid var(--danger, #d9534f);
+    border-top: 0;
   }
 
   // Everything the window draws for itself. Its bottom edge is where the
