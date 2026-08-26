@@ -38,21 +38,38 @@
     margin: 0 0 0.5rem;
     padding: 0.4rem 0.5rem;
     border: 0px solid transparent;
-    background: var(--backdrop-dark-20);
-    color: inherit;
+    /* An opaque surface, not a scrim. `--backdrop-dark-20` is literally
+       rgba(0,0,0,0.2) in all 22 themes, so the bar was only ever a 20% shade of
+       whatever sat behind it - unreadable on a light theme (WinVista measured
+       1.69:1) and at the mercy of the picture on the themes that ship a
+       wallpaper, which is every Windows one bar 95.
+
+       `--surface-row-dark` is the pairing `.acc_list_actionbar` already uses for
+       the other bar in this same list, it is opaque in all 22, and with
+       `--whiteSecondary` on top the worst case across them is 5.17:1. */
+    background: var(--surface-row-dark);
+    color: var(--whiteSecondary);
     font: inherit;
     cursor: pointer;
     box-sizing: border-box;
-    transition: background-color var(--dur-fast) var(--ease-out);
+    /* The Windows themes bevel every `button`; this bar is a band in a list, not
+       a control to press, so it declines the bevel. */
+    box-shadow: none;
+    transition:
+      box-shadow var(--dur-fast) var(--ease-out),
+      filter var(--dur-fast) var(--ease-out);
 
+    /* An accent ring rather than a fill change: a fill has to move in a
+       different direction on light themes than on dark ones, and the accent is
+       the one colour every theme guarantees will read against its own surfaces.
+       Inset, so neither state costs a pixel of layout shift. */
     &:hover:not(:disabled) {
-      background: var(--overlay-white-08);
+      box-shadow: inset 0 0 0 1px var(--accent);
     }
 
-    /* Inset ring rather than a border: a real border is a pixel of layout shift
-       on every press. */
     &:active:not(:disabled) {
-      box-shadow: inset 0 0 0 1px var(--overlay-white-12);
+      box-shadow: inset 0 0 0 1px var(--accent);
+      filter: brightness(0.92);
     }
   }
 

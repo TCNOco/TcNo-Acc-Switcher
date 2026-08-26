@@ -154,12 +154,17 @@ button,
    rather than having to out-specify it. */
 .btnicontext,
 button:not(.fancyLink) {
-  /* border-colour belongs in the list: hover and :active both change it. */
+  /* border-colour belongs in the list: hover and :active both change it.
+
+     No `transform: scale()` on press. A percentage scale is a fixed proportion,
+     not a fixed distance, so what reads as a tap on a 90px button is an 18px
+     lurch on a 600px one - and most buttons here are row-shaped: the tag filter
+     bar, context menu items, dropdown items, search results, game rows. The
+     brightness dim is the press gesture, and it reads the same at any width. */
   transition:
     filter var(--dur-fast) var(--ease-out),
     background-color var(--dur-fast) var(--ease-out),
-    border-color var(--dur-fast) var(--ease-out),
-    transform var(--dur-instant) var(--ease-out);
+    border-color var(--dur-fast) var(--ease-out);
 
   /* Buttons are sized for one line; a wrapped label overflows the height
      instead of growing the control. */
@@ -167,7 +172,6 @@ button:not(.fancyLink) {
 
   &:active:not(:disabled) {
     filter: brightness(0.85);
-    transform: scale(0.97);
   }
 }
 
