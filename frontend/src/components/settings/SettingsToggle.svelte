@@ -27,12 +27,19 @@
   }
 </script>
 
-<div class="rowSetting settings-toggle" class:is-span={span} class:is-disabled={disabled}>
+<!-- Tooltip on the row, not the label: it should cover the checkbox too, and it
+     anchors on whatever it is attached to. -->
+<div
+  class="rowSetting settings-toggle"
+  class:is-span={span}
+  class:is-disabled={disabled}
+  use:tooltipAction={tooltip || undefined}
+>
   <div class="form-check">
     <input type="checkbox" {id} {checked} {disabled} on:click={onClick} on:change={onChange} />
     <label class="form-check-label" for={id}></label>
   </div>
-  <label class="settings-toggle__label" for={id} use:tooltipAction={tooltip || undefined}>
+  <label class="settings-toggle__label" for={id}>
     {label}
   </label>
 </div>

@@ -148,10 +148,15 @@
   align-items: start;
 }
 
+/* Hugs its content rather than stretching to the grid cell: the hover highlight,
+   the click target and the rect a tooltip anchors to are all this one box, so it
+   has to be the width of the checkbox and its label, not of the column. */
 .settings-toggle {
   display: flex;
   align-items: center;
   gap: 0.1rem;
+  width: fit-content;
+  max-width: 100%;
   min-height: 2.15rem;
   padding: 0.15rem var(--settings-toggle-pad-x, 0.4rem);
   border-radius: 3px;
@@ -181,11 +186,26 @@
   align-items: center;
 }
 
-.settings-toggle__label {
-  flex: 1 1 auto;
+/* Element+class for the reason at the top of this file: `Settings.scss` pads
+   every bare `label` and `rtl.scss` gives every one a start margin, either of
+   which walks the checkbox off the shared gutter or hangs padding off the end of
+   a row that hugs its content. A lone class loses to `html[dir="rtl"] label`. */
+.settings-toggle > .form-check label {
+  margin: 0;
+}
+
+.settings-toggle > label.settings-toggle__label {
+  display: flex;
+  /* Stretched to the row so the box that lights up is the box that takes a
+     click; centred inside it so the text still sits on the checkbox's midline. */
+  flex: 0 1 auto;
+  align-self: stretch;
+  align-items: center;
   min-width: 0;
-  padding-inline-start: 0.5rem;
+  margin: 0;
+  padding-inline: 0.5rem 0;
   line-height: 1.3;
+  cursor: pointer;
 }
 
 /* ── Label + control fields ─────────────────────────────────────────── */
