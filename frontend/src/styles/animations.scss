@@ -1,3 +1,6 @@
+@use "sass:list";
+@use "sass:string";
+
 /* One scale of speeds and one curve for the whole UI; `--ease-out` is the
    cubicOut the Svelte transitions in lib/animation.ts use. Reach for these
    rather than an inline duration, so both kinds of motion stay in step. */
@@ -42,10 +45,10 @@ $motion-essential:
   $self: ();
   $inside: ();
   @each $selector in $motion-essential {
-    $self: append($self, unquote($selector), comma);
-    $inside: append($inside, unquote("#{$selector} *"), comma);
+    $self: list.append($self, string.unquote($selector), comma);
+    $inside: list.append($inside, string.unquote("#{$selector} *"), comma);
   }
-  @return unquote(":not(#{$self}):not(#{$inside})");
+  @return string.unquote(":not(#{$self}):not(#{$inside})");
 }
 
 @mixin reduce-motion-tree {
