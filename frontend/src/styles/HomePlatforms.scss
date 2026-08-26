@@ -60,8 +60,12 @@
   flex: 0 0 $tile;
   background: linear-gradient(145deg, var(--overlay-white-08), var(--black-alpha-15));
 
-  .input-modality-keyboard &:focus,
-  .input-modality-controller &:focus {
+  /* The doubled class is deliberate: a plain `&:focus` here ties `&:hover` below
+     at (0,3,0), and a theme sheet - which loads last - then wins that tie and
+     paints its hover over the focus ring. Doubling matches the same elements at
+     (0,4,0), which no hover rule reaches. */
+  .input-modality-keyboard &.platform_list_item:focus,
+  .input-modality-controller &.platform_list_item:focus {
     outline: 2px solid transparent;
     outline-offset: 3px;
     border-color: var(--accent);

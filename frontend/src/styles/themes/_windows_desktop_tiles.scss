@@ -1,0 +1,134 @@
+/* Account and platform tiles as Explorer draws desktop icons.
+   Included only by the Windows themes; every other theme keeps its own tiles.
+
+   At rest a tile is bare - icon and label, no surface, no border, no bevel. The
+   box is a *selection*, the translucent rectangle Explorer paints over icons you
+   have marquee-selected, and it appears on hover and press as well so the tile
+   still answers the pointer.
+
+   Cascade notes, because the tiles are painted from three places at once:
+   - The theme sheet is appended to <head> at runtime, so it wins every tie
+     against the app's own sheets. This mixin is included at the END of each
+     theme file, so it also wins ties against that theme's earlier rules.
+   - `label.acc:hover` in acclist.scss is `:hover:not(.acc--broken)` (0,3,1) and
+     lifts the tile. Matching that specificity is the only way to cancel the
+     lift - so `:active` is restated here too, or the hover rule would tie the
+     base press rule and swallow the press state.
+   - The selection rules stay at (0,2,2) so acclist.scss's
+     `input.acc:checked + label.acc.currentAcc` (0,3,2) still wins: a selected
+     tile that is also the live session keeps the green border that says so.
+   - The drag ghost and the drop placeholder are restated below rather than
+     excluded with `:not()`. They are a shadow and an empty slot, not icons, but
+     excluding them would push the bare rule to (0,3,0) - where it would start
+     beating the keyboard focus ring instead. */
+
+@mixin desktop-tiles($era) {
+  /* Explorer's marquee fill, as alpha over the theme accent. */
+  $hover-fill: 0.14;
+  $press-fill: 0.22;
+  $select-fill: 0.32;
+  $radius: 0;
+  /* 95 and XP paint the label's own highlight bar; Aero washes the whole tile. */
+  $label-highlight: true;
+  $gloss: none;
+
+  @if $era == xp {
+    $radius: 3px;
+  }
+
+  @if $era == vista or $era == win7 {
+    $radius: 3px;
+    $label-highlight: false;
+    $gloss: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+    $hover-fill: 0.12;
+    $select-fill: 0.28;
+  }
+
+  /* ── At rest: no box ───────────────────────────────────────────────── */
+  .platform_list_item,
+  label.acc {
+    border-color: transparent;
+    border-radius: $radius;
+    background: transparent;
+    box-shadow: none;
+    filter: none;
+  }
+
+  /* A drag shadow and an empty slot are not icons, and the rule above outranks
+     HomePlatforms.scss purely by source order. Restated here rather than excluded
+     with `:not()`: the exclusions would push the bare rule to (0,3,0), where it
+     would start beating the keyboard focus ring instead. */
+  .platform_list_item.platform_list_placeholder {
+    border: 1px dashed var(--accent);
+    background: var(--black-alpha-12);
+  }
+
+  .platform_list_item.platform_list_item--ghost {
+    box-shadow: 0 12px 36px var(--shadow-color-50);
+  }
+
+  /* These themes are dark ink on light chrome, and three of the four ship a
+     wallpaper that the tiles now sit directly on. A white halo keeps the label
+     legible over the dark parts of a photo; over the flat chrome it is invisible. */
+  label.acc .displayName,
+  label.acc p,
+  .platform_list_item .fgText p {
+    text-shadow:
+      0 0 3px rgba(255, 255, 255, 0.9),
+      0 1px 0 rgba(255, 255, 255, 0.75);
+  }
+
+  /* ── Hover and press: the marquee, lightly ─────────────────────────── */
+  label.acc:hover:not(.acc--broken) {
+    border-color: rgba(var(--accentInt), 0.55);
+    background: rgba(var(--accentInt), $hover-fill);
+    /* Cancels the lift acclist.scss gives every other theme. Desktop icons do
+       not rise off the desktop. */
+    transform: none;
+    box-shadow: $gloss;
+  }
+
+  label.acc:active:not(.acc--broken) {
+    transform: none;
+    background: rgba(var(--accentInt), $press-fill);
+    box-shadow: none;
+  }
+
+  .platform_list_item:hover:not(:active) {
+    border-color: rgba(var(--accentInt), 0.55);
+    background: rgba(var(--accentInt), $hover-fill);
+    transform: none;
+    filter: none;
+    box-shadow: $gloss;
+  }
+
+  .platform_list_item:active {
+    transform: none;
+    filter: none;
+    background: rgba(var(--accentInt), $press-fill);
+    box-shadow: none;
+  }
+
+  /* ── Selected: the full marquee rectangle ──────────────────────────── */
+  input.acc:checked + label.acc {
+    border-color: var(--accent) !important;
+    background: rgba(var(--accentInt), $select-fill);
+    box-shadow: $gloss;
+  }
+
+  @if $label-highlight {
+    /* The signature of a selected icon in 95 and XP: the caption gets the
+       highlight colour and reverses out of it, while the tile keeps the wash. */
+    input.acc:checked + label.acc .displayName {
+      padding: 0 0.25em;
+      background: var(--accent);
+      color: #ffffff;
+      text-shadow: none;
+    }
+  }
+
+  /* Hovering the selected tile must not wash out the fact that it is selected. */
+  input.acc:checked + label.acc:hover:not(.acc--broken) {
+    background: rgba(var(--accentInt), $select-fill + 0.08);
+  }
+}

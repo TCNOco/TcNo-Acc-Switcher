@@ -1,5 +1,6 @@
 @use "../overlay_surfaces" as overlay;
 @use "../windows_button_icons" as windows-icons;
+@use "../windows_desktop_tiles" as windows-tiles;
 
 :root {
   color-scheme: light;
@@ -999,6 +1000,7 @@ button.confirmations-trade__item {
 
 @include overlay.overlay-component-overrides;
 @include windows-icons.themed-button-icons(vista);
+@include windows-tiles.desktop-tiles(vista);
 
 /* Server picker grid: Vista's glass list - white rows, cool header, soft edge. */
 :root {
