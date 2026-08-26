@@ -83,8 +83,6 @@
   "Settings_Shortcut": "Atalho no ambiente de trabalho do alternador {platform}",
   "Settings_Admin": "Executar {platform} como Administrador",
   "Settings_ImageExpiry": "Dias restantes até as imagens de perfil expirarem:",
-  "Settings_SteamAPIKey": "Chave API da Steam Web (opcional)",
-  "Settings_SteamAPIKey_Note": "Definir uma chave de API fará com que o indicador Limitada (nome de conta a amarelo) apareça para contas banidas da Comunidade.",
   "Settings_Header_AppWide": "Definições gerais da aplicação",
   "Settings_Header_GeneralSettings": "Definições gerais",
   "Settings_Header_Privacy": "Privacidade",

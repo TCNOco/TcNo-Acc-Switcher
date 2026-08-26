@@ -83,8 +83,6 @@
   "Settings_Shortcut": "إنشاء اختصار لـ{platform} على سطح المكتب",
   "Settings_Admin": "تشغيل {platform} كمسؤول",
   "Settings_ImageExpiry": "عدد الايام قبل تحديث صور البروفايل:",
-  "Settings_SteamAPIKey": "مفتاح Steam Web API ‏ (اختياري)",
-  "Settings_SteamAPIKey_Note": "تعيين مفتاح API سيجعل مؤشر «محدود» (اسم الحساب الأصفر) يظهر بدلاً من ذلك للحسابات المحظورة من المجتمع.",
   "Settings_Header_AppWide": "إعدادات التطبيق",
   "Settings_Header_GeneralSettings": "إعدادات عامة",
   "Settings_Header_Privacy": "الخصوصية",

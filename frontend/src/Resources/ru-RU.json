@@ -83,8 +83,6 @@
   "Settings_Shortcut": "Создать ярлык {platform} на рабочем столе",
   "Settings_Admin": "Запускать {platform} от имени администратора",
   "Settings_ImageExpiry": "Дней до исчезновения изображений профиля:",
-  "Settings_SteamAPIKey": "Steam Web API ключ (необязательно)",
-  "Settings_SteamAPIKey_Note": "При заданном ключе API индикатор «Ограниченный» (жёлтое имя аккаунта) будет показываться для аккаунтов с баном сообщества.",
   "Settings_Header_AppWide": "Основные настройки",
   "Settings_Header_GeneralSettings": "Основные настройки",
   "Settings_Header_Privacy": "Конфиденциальность",

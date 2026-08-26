@@ -83,8 +83,6 @@
   "Settings_Shortcut": "{platform} ทางลัดไปยังเดสก์ท็อปของ Switcher",
   "Settings_Admin": "เรียกใช้ {platform} ในฐานะผู้ดูแลระบบ",
   "Settings_ImageExpiry": "วันก่อนที่ภาพโปรไฟล์จะหมดอายุ:",
-  "Settings_SteamAPIKey": "คีย์ API ของเว็บ Steam (ไม่บังคับ)",
-  "Settings_SteamAPIKey_Note": "การตั้งค่า API key จะทำให้ตัวบ่งชี้ถูกจำกัด (ชื่อบัญชีสีเหลือง) แสดงสำหรับบัญชีที่ถูกแบนจากชุมชนแทน",
   "Settings_Header_AppWide": "การตั้งค่าทั้งแอพ",
   "Settings_Header_GeneralSettings": "การตั้งค่าทั่วไป",
   "Settings_Header_Privacy": "ความเป็นส่วนตัว",

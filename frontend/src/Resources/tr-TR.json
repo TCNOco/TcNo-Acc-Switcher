@@ -83,8 +83,6 @@
   "Settings_Shortcut": "{platform} Anahtarlayıcı Masaüstü kısayolu",
   "Settings_Admin": "{platform} platformunu Yönetici olarak çalıştır",
   "Settings_ImageExpiry": "Profil resimlerinin süresi dolmadan önceki günler:",
-  "Settings_SteamAPIKey": "Steam Web API anahtarı (isteğe bağlı)",
-  "Settings_SteamAPIKey_Note": "Bir API anahtarı ayarlamak, Sınırlı göstergesinin (sarı hesap adı) bunun yerine Topluluk Yasaklı hesaplar için görünmesini sağlar.",
   "Settings_Header_AppWide": "Uygulama genelinde ayarlar",
   "Settings_Header_GeneralSettings": "Genel Ayarlar",
   "Settings_Header_Privacy": "Gizlilik",

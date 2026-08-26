@@ -83,8 +83,6 @@
   "Settings_Shortcut": "{platform} Ярлик Switcher(а) на робочому столі",
   "Settings_Admin": "Запускати {platform} від імені адміністратора",
   "Settings_ImageExpiry": "Дні до закінчення терміну дії зображень профілю:",
-  "Settings_SteamAPIKey": "Ключ API Steam Web (необов'язково)",
-  "Settings_SteamAPIKey_Note": "Якщо вказати ключ API, індикатор «Обмежений» (жовте ім'я акаунта) натомість показуватиметься для акаунтів із баном спільноти.",
   "Settings_Header_AppWide": "Налаштування всієї програми",
   "Settings_Header_GeneralSettings": "Загальні налаштування",
   "Settings_Header_Privacy": "Приватність",

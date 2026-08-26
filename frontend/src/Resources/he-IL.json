@@ -83,8 +83,6 @@
   "Settings_Shortcut": "קיצור דרך לשולחן העבודה עבור מחליף {platform}",
   "Settings_Admin": "הפעל {platform} כמנהל",
   "Settings_ImageExpiry": "ימים לפני פקיעת תוקף תמונות הפרופיל:",
-  "Settings_SteamAPIKey": "מפתח Steam Web API (אופציונלי)",
-  "Settings_SteamAPIKey_Note": "הגדרת מפתח API תגרום למחוון החשבון המוגבל (שם חשבון צהוב) להופיע עבור חשבונות עם חסימת קהילה במקום.",
   "Settings_Header_AppWide": "הגדרות רחבות של האפליקציה",
   "Settings_Header_GeneralSettings": "הגדרות כלליות",
   "Settings_Header_Privacy": "פרטיות",

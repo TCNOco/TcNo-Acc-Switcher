@@ -83,8 +83,6 @@
   "Settings_Shortcut": "{platform} Atalho do Switcher Desktop",
   "Settings_Admin": "Executar {platform} como Admin",
   "Settings_ImageExpiry": "Dias para as fotos de perfil expirarem:",
-  "Settings_SteamAPIKey": "Chave da API da Web do Steam (opcional)",
-  "Settings_SteamAPIKey_Note": "Definir uma chave de API fará com que o indicador Limitada (nome da conta em amarelo) apareça para contas com banimento da Comunidade.",
   "Settings_Header_AppWide": "Configurações em todo o aplicativo",
   "Settings_Header_GeneralSettings": "Configurações gerais",
   "Settings_Header_Privacy": "Privacidade",

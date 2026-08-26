@@ -83,8 +83,6 @@
   "Settings_Shortcut": "{platform} Прекъсвач на работния плот",
   "Settings_Admin": "Стартиране на {platform} като администратор",
   "Settings_ImageExpiry": "Дни преди изтичането на профилните изображения:",
-  "Settings_SteamAPIKey": "Steam Web API ключ (незадължително)",
-  "Settings_SteamAPIKey_Note": "Задаването на API ключ ще накара индикаторът „Ограничен“ (жълто име на акаунта) да се показва вместо това за акаунти с бан от общността.",
   "Settings_Header_AppWide": "Настройки за цялото приложение",
   "Settings_Header_GeneralSettings": "Общи настройки",
   "Settings_Header_Privacy": "Поверителност",

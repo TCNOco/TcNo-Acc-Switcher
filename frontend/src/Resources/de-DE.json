@@ -83,8 +83,6 @@
   "Settings_Shortcut": "{platform} Switcher Desktop-Verknüpfung",
   "Settings_Admin": "{platform} als Admin ausführen",
   "Settings_ImageExpiry": "Tage vor Löschung der Profilbilder:",
-  "Settings_SteamAPIKey": "Steam-Web-API-Schlüssel (optional)",
-  "Settings_SteamAPIKey_Note": "Mit einem API-Schlüssel zeigt der Eingeschränkt-Indikator (gelber Kontoname) stattdessen Konten an, die Community-gebannt sind.",
   "Settings_Header_AppWide": "Programm-weite Einstellungen",
   "Settings_Header_GeneralSettings": "Allgemeine Einstellungen",
   "Settings_Header_Privacy": "Privatsphäre",

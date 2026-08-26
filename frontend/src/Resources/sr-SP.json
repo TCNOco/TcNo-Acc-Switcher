@@ -83,8 +83,6 @@
   "Settings_Shortcut": "Пречица на радној површини за {platform} Switcher",
   "Settings_Admin": "Покрени {platform} као администратор",
   "Settings_ImageExpiry": "Дани пре истека профила:",
-  "Settings_SteamAPIKey": "Steam Web API кључ (опционо)",
-  "Settings_SteamAPIKey_Note": "Подешавање API кључа ће учинити да се ознака Ограничен (жуто име налога) уместо тога приказује за налоге са забраном заједнице.",
   "Settings_Header_AppWide": "Подешавања широм апликације",
   "Settings_Header_GeneralSettings": "Општа подешавања",
   "Settings_Header_Privacy": "Приватност",

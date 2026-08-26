@@ -83,8 +83,6 @@
   "Settings_Shortcut": "{platform} Pintasan Desktop Switcher",
   "Settings_Admin": "Jalankan {platform} sebagai Admin",
   "Settings_ImageExpiry": "Hari sebelum gambar profil kedaluwarsa:",
-  "Settings_SteamAPIKey": "Kunci api Web Steam (opsional)",
-  "Settings_SteamAPIKey_Note": "Mengatur kunci API akan membuat indikator Terbatas (nama akun kuning) tampil untuk akun yang kena Ban Komunitas.",
   "Settings_Header_AppWide": "Pengaturan seluruh aplikasi",
   "Settings_Header_GeneralSettings": "Pengaturan umum",
   "Settings_Header_Privacy": "Privasi",

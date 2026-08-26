@@ -183,23 +183,6 @@
     />
   </div>
 
-  <!-- Lives with the Limited indicator it changes the meaning of, not with the
-       network settings it superficially resembles. -->
-  <SettingsField
-    label={$t("Settings_SteamAPIKey")}
-    forId="ps-api-key"
-    note={$t("Settings_SteamAPIKey_Note")}
-    wide
-  >
-    <input
-      id="ps-api-key"
-      type="text"
-      spellcheck="false"
-      autocomplete="off"
-      bind:value={steamSettings.SteamWebApiKey}
-      on:change={() => dispatch("save")}
-    />
-  </SettingsField>
 </SettingsGroup>
 
 <!-- Everything here needs an authenticated Steam session, so it is grouped apart

@@ -83,8 +83,6 @@
   "Settings_Shortcut": "Acceso directo de escritorio de {platform} Switcher",
   "Settings_Admin": "Ejecutar {platform} como administrador",
   "Settings_ImageExpiry": "Días antes de que caduquen las imágenes de perfil:",
-  "Settings_SteamAPIKey": "Clave API de Steam Web (opcional)",
-  "Settings_SteamAPIKey_Note": "Al establecer una clave de API, el indicador de cuenta limitada (nombre de cuenta en amarillo) se mostrará en su lugar para las cuentas baneadas de la Comunidad.",
   "Settings_Header_AppWide": "Configuración de toda la aplicación",
   "Settings_Header_GeneralSettings": "Ajustes generales",
   "Settings_Header_Privacy": "Privacidad",

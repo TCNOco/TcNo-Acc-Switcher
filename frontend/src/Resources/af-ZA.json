@@ -83,8 +83,6 @@
   "Settings_Shortcut": "{platform} Switcher Desktop kortpad",
   "Settings_Admin": "Begin {platform} as Admin",
   "Settings_ImageExpiry": "Dae voordat profielprente verval:",
-  "Settings_SteamAPIKey": "Steam Web API-sleutel (opsioneel)",
-  "Settings_SteamAPIKey_Note": "Deur 'n API-sleutel te stel, sal die Beperk-aanwyser (geel rekeningnaam) eerder wys vir rekeninge wat gemeenskapsverban is.",
   "Settings_Header_AppWide": "App-wye instellings",
   "Settings_Header_GeneralSettings": "Algemene instellings",
   "Settings_Header_Privacy": "Privaatheid",

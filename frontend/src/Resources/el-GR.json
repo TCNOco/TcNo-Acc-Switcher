@@ -83,8 +83,6 @@
   "Settings_Shortcut": "{platform} Συντόμευση επιφάνειας εργασίας εναλλαγής",
   "Settings_Admin": "Εκτέλεση {platform} ως διαχειριστής",
   "Settings_ImageExpiry": "Ημέρες πριν από τη λήξη των εικόνων προφίλ:",
-  "Settings_SteamAPIKey": "Κλειδί API ιστού Steam (προαιρετικό)",
-  "Settings_SteamAPIKey_Note": "Ο ορισμός κλειδιού API θα κάνει την ένδειξη Περιορισμένος (κίτρινο όνομα λογαριασμού) να εμφανίζεται για λογαριασμούς που είναι αποκλεισμένοι από την Κοινότητα.",
   "Settings_Header_AppWide": "Ρυθμίσεις για ολόκληρη την εφαρμογή",
   "Settings_Header_GeneralSettings": "Γενικές ρυθμίσεις",
   "Settings_Header_Privacy": "Απόρρητο",

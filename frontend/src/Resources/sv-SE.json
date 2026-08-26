@@ -83,8 +83,6 @@
   "Settings_Shortcut": "{platform} Kortkommando för switcherskrivbord",
   "Settings_Admin": "Kör {platform} som administratör",
   "Settings_ImageExpiry": "Dagar innan profilbilder löper ut:",
-  "Settings_SteamAPIKey": "Steam Web API-nyckel (tillval)",
-  "Settings_SteamAPIKey_Note": "Om du anger en API-nyckel visas Begränsat-indikatorn (gult kontonamn) i stället för konton som är community-avstängda.",
   "Settings_Header_AppWide": "Appomfattande inställningar",
   "Settings_Header_GeneralSettings": "Allmänna inställningar",
   "Settings_Header_Privacy": "Integritet",

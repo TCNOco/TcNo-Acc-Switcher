@@ -83,8 +83,6 @@
   "Settings_Shortcut": "{platform}-vaihtajan työpöydän pikakuvake",
   "Settings_Admin": "Suorita {platform} ylläpitäjänä",
   "Settings_ImageExpiry": "Päivää ennen profiilikuvien vanhentumista:",
-  "Settings_SteamAPIKey": "Steam Web API -avain (valinnainen)",
-  "Settings_SteamAPIKey_Note": "API-avaimen asettaminen saa Rajoitettu-merkinnän (keltainen tilin nimi) näkymään sen sijaan tileillä, joilla on yhteisöporttikielto.",
   "Settings_Header_AppWide": "Sovelluksen laajuiset asetukset",
   "Settings_Header_GeneralSettings": "Yleiset asetukset",
   "Settings_Header_Privacy": "Yksityisyys",

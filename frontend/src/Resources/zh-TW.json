@@ -83,8 +83,6 @@
   "Settings_Shortcut": "{platform} Switcher 桌面捷徑",
   "Settings_Admin": "以 Admin 執行 {platform}",
   "Settings_ImageExpiry": "個人檔案圖片到期前的天數：",
-  "Settings_SteamAPIKey": "Steam Web API 金鑰（選用）",
-  "Settings_SteamAPIKey_Note": "設定 API 金鑰後，受限指示（黃色帳戶名稱）將改為顯示遭社群封鎖的帳戶。",
   "Settings_Header_AppWide": "應用程式設定",
   "Settings_Header_GeneralSettings": "一般設定",
   "Settings_Header_Privacy": "隱私",

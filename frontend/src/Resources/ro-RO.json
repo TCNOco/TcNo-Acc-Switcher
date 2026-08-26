@@ -83,8 +83,6 @@
   "Settings_Shortcut": "Scurtătură desktop pentru comutatorul {platform}",
   "Settings_Admin": "Execută {platform} ca administrator",
   "Settings_ImageExpiry": "Zile înainte de expirarea imaginilor de profil:",
-  "Settings_SteamAPIKey": "Cheie API web Steam (opțional)",
-  "Settings_SteamAPIKey_Note": "Setarea unei chei API va face ca indicatorul Limitat (numele de cont galben) să apară în schimb pentru conturile cu interdicție comunitară.",
   "Settings_Header_AppWide": "Setări pentru întreaga aplicație",
   "Settings_Header_GeneralSettings": "Setări generale",
   "Settings_Header_Privacy": "Confidențialitate",

@@ -83,8 +83,6 @@
   "Settings_Shortcut": "Skratka prepínača {platform} na pracovnej ploche",
   "Settings_Admin": "Spustite {platform} ako správca",
   "Settings_ImageExpiry": "Počet dní pred uplynutím platnosti profilových obrázkov:",
-  "Settings_SteamAPIKey": "Kľúč webového rozhrania API Steam (voliteľné)",
-  "Settings_SteamAPIKey_Note": "Nastavenie API kľúča spôsobí, že indikátor Obmedzený (žlté meno účtu) sa namiesto toho zobrazí pre účty s komunitným banom.",
   "Settings_Header_AppWide": "Nastavenia pre celú aplikáciu",
   "Settings_Header_GeneralSettings": "Všeobecné nastavenia",
   "Settings_Header_Privacy": "Súkromie",

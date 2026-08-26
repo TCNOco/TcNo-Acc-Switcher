@@ -83,8 +83,6 @@
   "Settings_Shortcut": "Raccourci bureau du sélecteur {platform}",
   "Settings_Admin": "Exécuter {platform} en tant qu'administrateur",
   "Settings_ImageExpiry": "Jours avant l'expiration des images de profil :",
-  "Settings_SteamAPIKey": "Clé de l'API Web Steam (facultatif)",
-  "Settings_SteamAPIKey_Note": "Définir une clé API fera apparaître l'indicateur Limité (nom de compte en jaune) pour les comptes bannis de la communauté à la place.",
   "Settings_Header_AppWide": "Paramètres de l'application",
   "Settings_Header_GeneralSettings": "Paramètres généraux",
   "Settings_Header_Privacy": "Confidentialité",

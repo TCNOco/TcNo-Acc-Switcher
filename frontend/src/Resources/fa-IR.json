@@ -83,8 +83,6 @@
   "Settings_Shortcut": "میانبر دسکتاپ تعویض‌کننده {platform}",
   "Settings_Admin": "اجرای {platform} به عنوان مدیر",
   "Settings_ImageExpiry": "چند روز قبل از انقضای تصاویر نمایه:",
-  "Settings_SteamAPIKey": "کلید Steam Web API (اختیاری)",
-  "Settings_SteamAPIKey_Note": "با تنظیم کلید API، نشانگر «محدود» (نام حساب زردرنگ) برای حساب‌هایی که مسدودیت انجمن دارند نمایش داده می‌شود.",
   "Settings_Header_AppWide": "تنظیمات در سطح برنامه",
   "Settings_Header_GeneralSettings": "تنظیمات عمومی",
   "Settings_Header_Privacy": "حریم خصوصی",

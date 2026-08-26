@@ -33,8 +33,6 @@ type Settings struct {
 
 	ShortcutsJSON map[string]string `json:"ShortcutsJson,omitempty"`
 
-	SteamWebAPIKey string `json:"SteamWebApiKey"`
-
 	ShowSteamSwitcher bool `json:"ShowSteamSwitcher"`
 	CollectInfo       bool `json:"CollectInfo"`
 
@@ -149,10 +147,9 @@ func LoadSettings() (Settings, error) {
 		return Settings{}, err
 	}
 
-	// Onto the defaults, not onto a zero value. A key absent from the file
-	// otherwise decodes to false and is then written back, which is how a
-	// settings file that predates a flag silently turns the feature off - it took
-	// AutoStart and four Steam_Show* flags with it.
+	// Onto the defaults, not onto a zero value: a key absent from the file
+	// otherwise decodes to false and is then written back, so a settings file
+	// older than a flag would silently turn that feature off.
 	s := defaultSettings()
 	if err := json.Unmarshal(data2, &s); err != nil {
 		return defaultSettings(), err

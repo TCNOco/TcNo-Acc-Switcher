@@ -83,8 +83,6 @@
   "Settings_Shortcut": "{platform} スイッチャーデスクトップのショートカット",
   "Settings_Admin": "{platform} を管理者として実行",
   "Settings_ImageExpiry": "プロフィール画像が期限切れになるまでの日数:",
-  "Settings_SteamAPIKey": "Steam Web APIキー(オプション)",
-  "Settings_SteamAPIKey_Note": "APIキーを設定すると、制限付きインジケーター（黄色のアカウント名）はコミュニティBANされたアカウントに対して表示されるようになります。",
   "Settings_Header_AppWide": "アプリ全体の設定",
   "Settings_Header_GeneralSettings": "一般設定",
   "Settings_Header_Privacy": "プライバシー",

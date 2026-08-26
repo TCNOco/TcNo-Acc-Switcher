@@ -83,8 +83,6 @@
   "Settings_Shortcut": "{platform} Collegamento Switcher Desktop",
   "Settings_Admin": "Esegui {platform} come Amministratore",
   "Settings_ImageExpiry": "Giorni alla scadenza delle immagini del profilo:",
-  "Settings_SteamAPIKey": "Chiave API Web di Steam (opzionale)",
-  "Settings_SteamAPIKey_Note": "Impostando una chiave API, l'indicatore Limitato (nome account in giallo) verrà mostrato invece per gli account bannati dalla Community.",
   "Settings_Header_AppWide": "Impostazioni generali dell'app",
   "Settings_Header_GeneralSettings": "Impostazioni generali",
   "Settings_Header_Privacy": "Privacy",

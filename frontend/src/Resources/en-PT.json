@@ -83,8 +83,6 @@
   "Settings_Shortcut": "{platform} Swapper Captain's table map marker",
   "Settings_Admin": "Run {platform} as Captain",
   "Settings_ImageExpiry": "Days afore yer profile paintin' expire:",
-  "Settings_SteamAPIKey": "Steam Web API key (if ye wish)",
-  "Settings_SteamAPIKey_Note": "Settin' an API key makes th' Landlubber flag (yellow account name) fly fer accounts that be Community Banned instead.",
   "Settings_Header_AppWide": "App-wide settings",
   "Settings_Header_GeneralSettings": "All hands config",
   "Settings_Header_Privacy": "Secrecy",

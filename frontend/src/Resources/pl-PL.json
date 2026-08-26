@@ -83,8 +83,6 @@
   "Settings_Shortcut": " Skrót do pulpitu switchera kont {platform}",
   "Settings_Admin": "Uruchom {platform} jako administrator",
   "Settings_ImageExpiry": "Dni do wygaśnięcia zdjęć profilowych:",
-  "Settings_SteamAPIKey": "Klucz API Steam Web (opcjonalnie)",
-  "Settings_SteamAPIKey_Note": "Ustawienie klucza API sprawi, że wskaźnik Ograniczone (żółta nazwa konta) będzie zamiast tego pokazywany dla kont z banem społeczności.",
   "Settings_Header_AppWide": "Ustawienia całej aplikacji",
   "Settings_Header_GeneralSettings": "Ustawienia ogólne",
   "Settings_Header_Privacy": "Prywatność",

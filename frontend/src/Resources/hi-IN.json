@@ -83,8 +83,6 @@
   "Settings_Shortcut": "{platform} स्विचर डेस्कटॉप शॉर्टकट",
   "Settings_Admin": "व्यवस्थापक के रूप में {platform} चलाएं",
   "Settings_ImageExpiry": "प्रोफ़ाइल छवियाँ समाप्त होने के कुछ दिन पहले:",
-  "Settings_SteamAPIKey": "Steam Web API कुंजी (वैकल्पिक)",
-  "Settings_SteamAPIKey_Note": "API कुंजी सेट करने पर सीमित संकेतक (पीला खाता नाम) उन खातों के लिए दिखेगा जो Community Banned हैं।",
   "Settings_Header_AppWide": "ऐप - वाइड सेटिंग्स",
   "Settings_Header_GeneralSettings": "सामान्य सेटिंग",
   "Settings_Header_Privacy": "गोपनीयता",

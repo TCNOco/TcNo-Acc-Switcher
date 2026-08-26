@@ -83,8 +83,6 @@
   "Settings_Shortcut": "{platform} Switcher Desktop-snarvei",
   "Settings_Admin": "Kjør {platform} som Admin",
   "Settings_ImageExpiry": "Dager før profilbildene utløper:",
-  "Settings_SteamAPIKey": "Steam Web API-nøkkel (valgfritt)",
-  "Settings_SteamAPIKey_Note": "Med en API-nøkkel vises Begrenset-indikatoren (gult kontonavn) i stedet for kontoer som er utestengt fra fellesskapet.",
   "Settings_Header_AppWide": "Innstillinger for hele appen",
   "Settings_Header_GeneralSettings": "Generelle innstillinger",
   "Settings_Header_Privacy": "Personvern",

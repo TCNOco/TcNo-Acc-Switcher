@@ -83,8 +83,6 @@
   "Settings_Shortcut": "{platform} Drecera d'escriptori del commutador",
   "Settings_Admin": "Executa {platform} com a administrador",
   "Settings_ImageExpiry": "Dies abans que caduquin les imatges del perfil:",
-  "Settings_SteamAPIKey": "Clau de l'API web de Steam (opcional)",
-  "Settings_SteamAPIKey_Note": "Si establiu una clau d'API, l'indicador de compte limitat (nom del compte en groc) es mostrarà per als comptes bandejats de la comunitat.",
   "Settings_Header_AppWide": "Configuració de tota l'aplicació",
   "Settings_Header_GeneralSettings": "Paràmetres generals",
   "Settings_Header_Privacy": "Privadesa",

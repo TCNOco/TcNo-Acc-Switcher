@@ -83,8 +83,6 @@
   "Settings_Shortcut": "{platform} Kapcsoló Asztal parancsikon",
   "Settings_Admin": "{platform} futtatása rendszergazdaként",
   "Settings_ImageExpiry": "A profilképek lejárta előtti napok száma:",
-  "Settings_SteamAPIKey": "Steam Web API kulcs (opcionális)",
-  "Settings_SteamAPIKey_Note": "API-kulcs beállítása esetén a Korlátozott jelzés (sárga fióknév) a közösségi tiltás alatt álló fiókoknál jelenik meg helyette.",
   "Settings_Header_AppWide": "Alkalmazásszintű beállítások",
   "Settings_Header_GeneralSettings": "Általános beállítások",
   "Settings_Header_Privacy": "Adatvédelem",

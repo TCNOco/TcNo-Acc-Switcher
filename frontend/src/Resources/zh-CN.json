@@ -83,8 +83,6 @@
   "Settings_Shortcut": "{platform} Switcher 桌面快捷方式",
   "Settings_Admin": "以 Admin 运行 {platform}",
   "Settings_ImageExpiry": "个人资料图片过期前的天数：",
-  "Settings_SteamAPIKey": "Steam Web API 密钥（可选）",
-  "Settings_SteamAPIKey_Note": "设置 API 密钥后，“受限”指示（黄色账户名）将改为显示社区封禁的账户。",
   "Settings_Header_AppWide": "应用设置",
   "Settings_Header_GeneralSettings": "常规设置",
   "Settings_Header_Privacy": "隐私",

@@ -83,8 +83,6 @@
   "Settings_Shortcut": " Přidat zástupce {platform} přepínače na plochu",
   "Settings_Admin": "Spustit {platform} jako správce",
   "Settings_ImageExpiry": "Dny před vypršením platnosti profilových obrázků:",
-  "Settings_SteamAPIKey": "Steam Web API klíč (volitelný)",
-  "Settings_SteamAPIKey_Note": "Nastavením API klíče se indikátor Omezený účet (žluté jméno účtu) zobrazí místo toho u účtů s Community Banem.",
   "Settings_Header_AppWide": "Nastavení celé aplikace",
   "Settings_Header_GeneralSettings": "Obecná nastavení",
   "Settings_Header_Privacy": "Soukromí",

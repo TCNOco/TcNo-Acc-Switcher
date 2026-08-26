@@ -83,8 +83,6 @@
   "Settings_Shortcut": "Lối tắt màn hình nền cho {platform} Switcher",
   "Settings_Admin": "Chạy {platform} với quyền Admin",
   "Settings_ImageExpiry": "Số ngày trước khi ảnh hồ sơ hết hạn:",
-  "Settings_SteamAPIKey": "Khóa Steam Web API (tùy chọn)",
-  "Settings_SteamAPIKey_Note": "Đặt khóa API sẽ khiến chỉ báo Giới hạn (tên tài khoản màu vàng) hiển thị cho các tài khoản bị Cấm Cộng đồng thay thế.",
   "Settings_Header_AppWide": "Cài đặt ứng dụng",
   "Settings_Header_GeneralSettings": "Cài đặt chung",
   "Settings_Header_Privacy": "Quyền riêng tư",
