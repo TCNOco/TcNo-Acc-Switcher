@@ -23,6 +23,7 @@ type Service struct {
 	cancel  context.CancelFunc
 	enabled bool
 	visible bool
+	focused bool
 	state   pollState
 	reader  stateReader
 	clock   func() time.Time
@@ -32,9 +33,10 @@ type Service struct {
 func NewService() *Service {
 	return &Service{
 		state: newPollState(),
-		// Starts true so a caller that never reports window visibility polls
+		// Both start true so a caller that never reports window state polls
 		// exactly as it did before.
 		visible: true,
+		focused: true,
 		clock:   time.Now,
 		emit:    emitAction,
 	}
@@ -81,10 +83,30 @@ func (s *Service) SetWindowVisible(visible bool) {
 	s.syncLoop()
 }
 
-// syncLoop brings the poll goroutine in line with enabled && visible.
+// SetWindowFocused suspends polling while another application is in front.
+// XInput has no notion of focus, so without this a stick pushed in a game or a
+// browser would still be walking the account list behind it.
+func (s *Service) SetWindowFocused(focused bool) {
+	s.mu.Lock()
+	if s.focused == focused {
+		s.mu.Unlock()
+		return
+	}
+	s.focused = focused
+	s.mu.Unlock()
+	s.syncLoop()
+}
+
+// shouldPollLocked reports whether anyone can act on what the poll reads. The
+// caller holds s.mu.
+func (s *Service) shouldPollLocked() bool {
+	return s.enabled && s.visible && s.focused
+}
+
+// syncLoop brings the poll goroutine in line with shouldPollLocked.
 func (s *Service) syncLoop() {
 	s.mu.Lock()
-	if !s.enabled || !s.visible {
+	if !s.shouldPollLocked() {
 		s.state = newPollState()
 		cancel := s.cancel
 		s.cancel = nil
@@ -133,7 +155,7 @@ func (s *Service) pollOnce(reader stateReader) {
 
 	s.mu.Lock()
 	s.state = nextState
-	active := s.enabled && s.visible
+	active := s.shouldPollLocked()
 	emit := s.emit
 	s.mu.Unlock()
 
@@ -162,7 +184,7 @@ func (s *Service) clearCancel() {
 	defer s.mu.Unlock()
 	// Only when nothing wants a loop: a hide/show pair that outran this goroutine
 	// has already installed a newer cancel that must not be dropped.
-	if !s.enabled || !s.visible {
+	if !s.shouldPollLocked() {
 		s.cancel = nil
 	}
 }

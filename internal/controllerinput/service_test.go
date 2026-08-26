@@ -61,6 +61,33 @@ func TestHidingTheWindowStopsPolling(t *testing.T) {
 	}
 }
 
+func TestLosingFocusStopsPolling(t *testing.T) {
+	s := newTestService(t)
+	s.SetEnabled(true)
+
+	s.SetWindowFocused(false)
+	if s.hasLoop() {
+		t.Fatal("a window sitting behind another application must not poll")
+	}
+
+	s.SetWindowFocused(true)
+	if !s.hasLoop() {
+		t.Fatal("coming back to the front must resume the poll")
+	}
+}
+
+func TestFocusDoesNotPollAHiddenWindow(t *testing.T) {
+	s := newTestService(t)
+	s.SetEnabled(true)
+	s.SetWindowVisible(false)
+
+	s.SetWindowFocused(false)
+	s.SetWindowFocused(true)
+	if s.hasLoop() {
+		t.Fatal("focus must not override a hidden window")
+	}
+}
+
 func TestShowingTheWindowDoesNotPollWhileControllerSupportIsOff(t *testing.T) {
 	s := newTestService(t)
 	s.SetEnabled(false)

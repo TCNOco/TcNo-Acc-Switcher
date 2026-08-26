@@ -86,6 +86,7 @@ vi.mock("../stores/security", () => ({
 }));
 import {
   CONTROLLER_ACTION_EVENT,
+  adoptControllerPollState,
   advanceControllerPollState,
   createControllerInputController,
   createInitialControllerPollState,
@@ -395,14 +396,16 @@ describe("controller input polling", () => {
     expect(requestAnimationFrame).not.toHaveBeenCalled();
 
     getGamepads.mockReturnValue([snapshot()]);
+    // Regaining focus reads the pads twice: once to adopt what they are holding
+    // right now, then again for the connection check.
     window.dispatchEvent(new Event("focus"));
-    expect(getGamepads).toHaveBeenCalledTimes(4);
+    expect(getGamepads).toHaveBeenCalledTimes(5);
     expect(requestAnimationFrame).toHaveBeenCalledTimes(1);
 
     requestAnimationFrame.mockClear();
     getGamepads.mockReturnValue([]);
     document.dispatchEvent(new Event("visibilitychange"));
-    expect(getGamepads).toHaveBeenCalledTimes(5);
+    expect(getGamepads).toHaveBeenCalledTimes(6);
     expect(requestAnimationFrame).not.toHaveBeenCalled();
 
     uninstall();
@@ -642,6 +645,71 @@ describe("controller input polling", () => {
 
     expect(checkbox.click).toHaveBeenCalledTimes(1);
     uninstall();
+  });
+
+  it("ignores controller actions while another window has focus", () => {
+    const target = new FakeHTMLButtonElement({ left: 20, top: 20, width: 40, height: 40 });
+    const env = installFocusableBrowserEnv(() => [], [target]);
+    let focused = false;
+    Object.assign(env.document, { hasFocus: () => focused });
+    target.focus();
+
+    const uninstall = installControllerInput();
+    emitNativeControllerAction("activate");
+    expect(target.click).not.toHaveBeenCalled();
+
+    focused = true;
+    emitNativeControllerAction("activate");
+    expect(target.click).toHaveBeenCalledTimes(1);
+    uninstall();
+  });
+
+  it("does not act on a button that was already held when focus came back", () => {
+    let pads: MockGamepad[] = [snapshot()];
+    let focused = true;
+    let frame: FrameRequestCallback | null = null;
+    const target = new FakeHTMLButtonElement({ left: 20, top: 20, width: 40, height: 40 });
+    const env = installFocusableBrowserEnv(() => pads, [target]);
+    Object.assign(env.document, { hasFocus: () => focused });
+    target.focus();
+    vi.spyOn(env.window, "requestAnimationFrame").mockImplementation((callback) => {
+      frame = callback;
+      return 1;
+    });
+
+    const uninstall = installControllerInput();
+    const runFrame = (): void => {
+      expect(frame).not.toBeNull();
+      (frame as unknown as FrameRequestCallback)(0);
+    };
+    runFrame();
+
+    focused = false;
+    env.window.dispatchEvent(new Event("blur"));
+    pads = [snapshot({ buttons: { 0: button(true) } })];
+
+    focused = true;
+    env.window.dispatchEvent(new Event("focus"));
+    runFrame();
+    runFrame();
+    expect(target.click).not.toHaveBeenCalled();
+
+    pads = [snapshot()];
+    runFrame();
+    pads = [snapshot({ buttons: { 0: button(true) } })];
+    runFrame();
+    expect(target.click).toHaveBeenCalledTimes(1);
+    uninstall();
+  });
+
+  it("adopts held buttons without acting on them, and holds off repeats", () => {
+    const held = snapshot({ buttons: { 15: button(true) } });
+    const adopted = adoptControllerPollState(createInitialControllerPollState(), [held], 1000);
+
+    expect(adopted.held.right).toBe(true);
+    expect(advance(adopted, 1000, [held]).actions).toEqual([]);
+    expect(advance(adopted, 1200, [held]).actions).toEqual([]);
+    expect(advance(adopted, 1281, [held]).actions).toEqual(["right"]);
   });
 
   it("passes the connected gamepad glyph scheme when polling actions", () => {

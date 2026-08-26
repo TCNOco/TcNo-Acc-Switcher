@@ -292,7 +292,7 @@ func RunGUI(params RunGUIParams) {
 	applyGameModeZoom(win)
 	screenprivacy.Follow(win)
 	registerNotificationResponseHandler(wailsApp, win, notifier)
-	registerControllerInputVisibility(win, params.ControllerInput, !winOpts.Hidden)
+	registerControllerInputGating(win, params.ControllerInput, !winOpts.Hidden)
 	win.OnWindowEvent(events.Common.WindowFilesDropped, func(event *application.WindowEvent) {
 		files := event.Context().DroppedFiles()
 		if len(files) == 0 {
@@ -397,14 +397,15 @@ func handleForwardedCLI(app *application.App, disp *Dispatch, argv []string) {
 	})
 }
 
-// registerControllerInputVisibility keeps the gamepad poll off while the window
-// is in the tray or minimised, where nothing can act on what it reads.
+// registerControllerInputGating keeps the gamepad poll off while the window is
+// in the tray, minimised, or sitting behind whatever the user is actually
+// using - in each case nothing can act on what the poll reads.
 //
 // The starting state comes from the window options rather than win.IsVisible():
 // that call dispatches to the main thread, which is not pumping until Run().
 // WindowFocus is in the resume set as a backstop — whichever route brought the
 // window back, one the user is interacting with is on screen.
-func registerControllerInputVisibility(win *application.WebviewWindow, svc *controllerinput.Service, initiallyVisible bool) {
+func registerControllerInputGating(win *application.WebviewWindow, svc *controllerinput.Service, initiallyVisible bool) {
 	if win == nil || svc == nil {
 		return
 	}
@@ -424,6 +425,8 @@ func registerControllerInputVisibility(win *application.WebviewWindow, svc *cont
 	} {
 		win.OnWindowEvent(back, func(*application.WindowEvent) { svc.SetWindowVisible(true) })
 	}
+	win.OnWindowEvent(events.Common.WindowLostFocus, func(*application.WindowEvent) { svc.SetWindowFocused(false) })
+	win.OnWindowEvent(events.Common.WindowFocus, func(*application.WindowEvent) { svc.SetWindowFocused(true) })
 }
 
 func registerNotificationResponseHandler(app *application.App, win *application.WebviewWindow, notifier *notifications.NotificationService) {

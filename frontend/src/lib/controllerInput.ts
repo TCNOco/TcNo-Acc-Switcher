@@ -213,6 +213,37 @@ export function advanceControllerPollState(
   return { state: nextState, actions };
 }
 
+// The Go poller reads XInput whether or not this window is in front, and the
+// web Gamepad API hands back whatever state the pads were left in, so both
+// paths have to ask who has focus before they act on anything.
+function isWindowFocused(): boolean {
+  return typeof document.hasFocus !== "function" || document.hasFocus();
+}
+
+// Take the pads as they are without acting on them. Used while the window is
+// out of focus: a button still held on the way back is not a fresh press, and a
+// direction held meanwhile must not repeat the moment focus returns.
+export function adoptControllerPollState(
+  state: ControllerPollState,
+  gamepads: readonly (GamepadLike | null | undefined)[],
+  now: number,
+): ControllerPollState {
+  const signals = readSignals(gamepads);
+  const next: ControllerPollState = {
+    held: { ...state.held },
+    nextRepeatAt: { ...state.nextRepeatAt },
+  };
+
+  for (const action of ACTIONS) {
+    next.held[action] = signals[action];
+  }
+  for (const action of REPEATABLE_ACTIONS) {
+    next.nextRepeatAt[action] = signals[action] ? now + INITIAL_REPEAT_MS : 0;
+  }
+
+  return next;
+}
+
 function controllerSchemeForGamepads(gamepads: readonly (GamepadLike | null | undefined)[]): ControllerGlyphScheme | undefined {
   const connected = gamepads.find((gamepad) => gamepad?.connected && gamepad.id);
   return connected?.id ? inferControllerGlyphScheme(connected.id) : undefined;
@@ -531,6 +562,9 @@ export function installControllerInput(): () => void {
     source: ControllerActionSource,
     now = performance.now(),
   ): void => {
+    if (!isWindowFocused()) {
+      return;
+    }
     const last = lastHandledByAction[action];
     if (last.source !== null && last.source !== source && now - last.at < CROSS_SOURCE_DUPLICATE_ACTION_SUPPRESS_MS) {
       return;
@@ -585,6 +619,11 @@ export function installControllerInput(): () => void {
     }
     const now = performance.now();
     const pads = getPads();
+    if (!isWindowFocused()) {
+      state = adoptControllerPollState(state, pads, now);
+      frameId = window.requestAnimationFrame(tick);
+      return;
+    }
     const scheme = controllerSchemeForGamepads(pads);
     const next = advanceControllerPollState(state, pads, now);
     state = next.state;
@@ -613,6 +652,16 @@ export function installControllerInput(): () => void {
     ensureTicking();
   };
 
+  const onWindowBlur = (): void => {
+    state = adoptControllerPollState(state, getPads(), performance.now());
+    stopTicking();
+  };
+
+  const onWindowFocus = (): void => {
+    state = adoptControllerPollState(state, getPads(), performance.now());
+    onGamepadStateChange();
+  };
+
   refreshConnectionState();
   onGamepadStateChange();
 
@@ -627,7 +676,8 @@ export function installControllerInput(): () => void {
 
   window.addEventListener("gamepadconnected", onGamepadStateChange);
   window.addEventListener("gamepaddisconnected", onGamepadStateChange);
-  window.addEventListener("focus", onGamepadStateChange);
+  window.addEventListener("focus", onWindowFocus);
+  window.addEventListener("blur", onWindowBlur);
   document.addEventListener("visibilitychange", onGamepadStateChange);
 
   return () => {
@@ -637,7 +687,8 @@ export function installControllerInput(): () => void {
     stopTicking();
     window.removeEventListener("gamepadconnected", onGamepadStateChange);
     window.removeEventListener("gamepaddisconnected", onGamepadStateChange);
-    window.removeEventListener("focus", onGamepadStateChange);
+    window.removeEventListener("focus", onWindowFocus);
+    window.removeEventListener("blur", onWindowBlur);
     document.removeEventListener("visibilitychange", onGamepadStateChange);
   };
 }
