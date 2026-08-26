@@ -43,6 +43,7 @@
     splitGameOwners,
     type OwnedGameRow,
   } from "../lib/steam/ownedGames";
+  import { orderByAccountRank, rankAccountsByRecency } from "../lib/steam/accountRecency";
   import "../styles/platformAccountsShared.scss";
   import "../styles/steamGames.scss";
 
@@ -105,6 +106,11 @@
   // 2000 blocks and thousands of attributes to conclude nothing moved.
   let gamesSig = "";
   let accountsSig = "";
+  // Where each account sits in the strip's order. Kept apart from the rows above
+  // rather than folded into them: a last-login date moves on every login, and only
+  // a change in the order it produces means anything to the strip.
+  let accountRank = new Map<string, number>();
+  let accountRankSig = "";
 
   $: accountById = new Map(accounts.map((a) => [a.steamId64, a]));
   $: hasVaultAccounts = accounts.some((a) => a.inVault);
@@ -114,7 +120,10 @@
   $: gameChunks = chunkOwnedGames(visibleGames, ROWS_PER_CHUNK);
   $: selectedGame = sortedGames.find((g) => g.appId === selectedAppId) ?? null;
 
-  $: barTiles = gameOwnerAccounts(selectedGame, accountById).map(
+  // Reordered here and nowhere else. The rows keep reading `game.owners` as it
+  // arrived, because `ownedGamesSignature` hashes it: re-sorting it there would
+  // rebuild two thousand rows every time a login moved, to shift four tiles.
+  $: barTiles = orderByAccountRank(gameOwnerAccounts(selectedGame, accountById), accountRank).map(
     ({ steamId64, displayName, avatarUrl }): SteamGamesBarAccount => ({
       steamId64,
       displayName,
@@ -194,9 +203,13 @@
   }
 
   async function loadAccounts(): Promise<void> {
-    const [list, enrichment] = await Promise.all([
+    const [list, enrichment, hasSavedOrder] = await Promise.all([
       SteamService.GetSteamAccountsList(),
       SteamService.GetSteamAccountsEnrichment().catch(() => [] as SteamAccountEnrichmentDTO[]),
+      // Unanswerable counts as "yes": an order the user arranged is the one thing
+      // here that must not be overridden, and leaving the list alone is what the
+      // strip did before it ordered anything at all.
+      SteamService.HasSavedAccountOrder().catch(() => true),
     ]);
     const enrichById = new Map(
       enrichment.map((row: SteamAccountEnrichmentDTO) => [row.steamId64, row]),
@@ -228,6 +241,19 @@
     if (sig !== accountsSig) {
       accountsSig = sig;
       accounts = next;
+    }
+
+    const ranked = rankAccountsByRecency(
+      list.map((row: SteamAccountListItemDTO) => ({
+        steamId64: row.steamId64,
+        lastLogin: enrichById.get(row.steamId64)?.lastLogin ?? "",
+      })),
+      hasSavedOrder,
+    );
+    const rankSig = ranked.join(",");
+    if (rankSig !== accountRankSig) {
+      accountRankSig = rankSig;
+      accountRank = new Map(ranked.map((id, index) => [id, index]));
     }
     accountsLoaded = true;
   }

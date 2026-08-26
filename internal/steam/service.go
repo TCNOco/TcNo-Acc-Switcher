@@ -378,6 +378,23 @@ func (s *SteamService) SaveSteamAccountOrder(ids []string) error {
 	return SaveOrder(ids)
 }
 
+// HasSavedAccountOrder reports whether the account list is sitting in an order
+// the user chose - by dragging an account, moving one from its menu, or picking
+// a sort - rather than the one Steam's own file happens to be in.
+//
+// The games strip asks because it offers the newest logins first, and an order
+// the user arranged by hand has to outrank that for good: a later login must not
+// quietly undo it.
+func (s *SteamService) HasSavedAccountOrder() (bool, error) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	order, err := LoadOrder()
+	if err != nil {
+		return false, err
+	}
+	return len(order) > 0, nil
+}
+
 func (s *SteamService) GetSteamSettings() (Settings, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
