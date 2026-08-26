@@ -10,8 +10,39 @@
   import ThemePickerControls from "./ThemePickerControls.svelte";
   import BackgroundSettings from "./BackgroundSettings.svelte";
   import SettingsGroup from "./settings/SettingsGroup.svelte";
+  import SettingsToggle from "./settings/SettingsToggle.svelte";
+  import { animationsEnabled, setAnimationsEnabled } from "../stores/animationSettings";
 
   $: showResetToThemeBg = !!$currentThemeBgUrl && ($appBgInfo.hasImage || $userOverriddenAppBg);
+
+  let savingReduceMotion = false;
+
+  /* Stored as "animations enabled" and shown as its opposite: the switch people
+     look for is the one that calms the interface down, and inverting it here
+     costs nothing next to migrating the setting. */
+  async function toggleReduceMotion(): Promise<void> {
+    if (savingReduceMotion) return;
+    savingReduceMotion = true;
+    const label = get(t)("Settings_ReduceMotion");
+    const previous = get(animationsEnabled);
+    /* Optimistic, and reverted below if the save fails. The box is rendered from
+       the store, so waiting for the round trip leaves it sitting on the state the
+       user just clicked away from - and the interface keeps moving meanwhile. */
+    animationsEnabled.set(!previous);
+    try {
+      await setAnimationsEnabled(!previous);
+      pushToast({ type: "success", message: get(t)("Toast_SavedItem", { item: label }), duration: 4000 });
+    } catch (e) {
+      animationsEnabled.set(previous);
+      pushToast({
+        type: "error",
+        message: formatToastWithError(get(t)("Toast_SaveFailed"), e),
+        duration: 8000,
+      });
+    } finally {
+      savingReduceMotion = false;
+    }
+  }
 
   async function resetToThemeBg(): Promise<void> {
     try {
@@ -44,6 +75,18 @@
         {$t("PreviewCss")}
       </button>
     </ThemePickerControls>
+  </div>
+
+  <div class="theme-controls">
+    <SettingsToggle
+      id="theme-reduce-motion"
+      checked={!$animationsEnabled}
+      disabled={savingReduceMotion}
+      label={$t("Settings_ReduceMotion")}
+      tooltip={$t("Settings_ReduceMotion_Tooltip")}
+      span
+      on:change={() => void toggleReduceMotion()}
+    />
   </div>
 
   {#if $appBgInfo.hasImage || showResetToThemeBg}

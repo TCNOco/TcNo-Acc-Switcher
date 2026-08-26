@@ -17,7 +17,7 @@
     streamerState,
   } from "../stores/streamerMode";
   import { openConfirm, openFeedbackModal, openPasswordSetupModal, openPrompt } from "../stores/modal";
-  import { animationsEnabled, loadAnimationsEnabled, setAnimationsEnabled } from "../stores/animationSettings";
+  import { animationsEnabled, loadAnimationsEnabled } from "../stores/animationSettings";
   import SettingsGroup from "./settings/SettingsGroup.svelte";
   import SettingsToggle from "./settings/SettingsToggle.svelte";
   import SettingsField from "./settings/SettingsField.svelte";
@@ -234,27 +234,6 @@
     }
   };
 
-  const animations = createToggle(
-    async () => { await loadAnimationsEnabled(); return get(animationsEnabled); },
-    (v) => setAnimationsEnabled(v),
-    get(t)("Settings_AnimationsEnabled"),
-  );
-  animations.toggle = async () => {
-    if (get(animations.loading)) return;
-    const next = !get(animations.value);
-    animations.value.set(next);
-    animations.loading.set(true);
-    try {
-      await setAnimationsEnabled(next);
-      pushToast({ type: "success", message: get(t)("Toast_SavedItem", { item: get(t)("Settings_AnimationsEnabled") }), duration: 3000 });
-    } catch (e) {
-      animations.value.set(get(animationsEnabled));
-      pushToast({ type: "error", message: formatToastWithError($t("Toast_SaveFailed"), e), duration: 8000 });
-    } finally {
-      animations.loading.set(false);
-    }
-  };
-
   const controllerSupport = createToggle(
     () => loadControllerSupportEnabled(),
     (v) => setControllerSupportEnabled(v),
@@ -358,7 +337,6 @@
     autoStreamerMode.value.set(settings.autoStreamerMode);
     hideFromScreenshots.value.set(settings.hideFromScreenshots);
     animationsEnabled.set(settings.animationsEnabled);
-    animations.value.set(settings.animationsEnabled);
     controllerSupport.value.set(applyControllerSupportEnabled(settings.controllerSupportEnabled));
     commandPaletteHotkey.set(normalizeCommandPaletteHotkey(settings.commandPaletteHotkey));
     currentVersion = settings.appVersion || "";
@@ -380,7 +358,7 @@
     if ($capabilities.screenCaptureExclusion) {
       void hideFromScreenshots.init();
     }
-    void animations.init();
+    void loadAnimationsEnabled();
     void controllerSupport.init();
     void loadCommandPaletteHotkey();
     void PlatformService.GetAppVersion()
@@ -626,13 +604,6 @@
       disabled={$startProgramCentered.loading}
       label={$t("Settings_StartCentered")}
       on:change={() => void startProgramCentered.toggle()}
-    />
-    <SettingsToggle
-      id="settings-animations"
-      checked={$animations.value}
-      disabled={$animations.loading}
-      label={$t("Settings_AnimationsEnabled")}
-      on:change={() => void animations.toggle()}
     />
     {#if $capabilities.controllerInput}
       <SettingsToggle

@@ -346,6 +346,8 @@
   "Settings_Protocol": "Enable tcno:\\\\ protocol (Recommended)",
   "Settings_StartCentered": "Start program centered",
   "Settings_AnimationsEnabled": "Enable animations",
+  "Settings_ReduceMotion": "Reduce motion",
+  "Settings_ReduceMotion_Tooltip": "Turns off decorative animations and transitions. Loading spinners, progress bars and the Steam Guard code timer keep moving.",
   "Settings_ControllerSupport": "Controller support",
   "Settings_CommandPaletteHotkey": "Command palette hotkey",
   "Settings_CommandPaletteHotkey_Prompt": "Press hotkey...",
