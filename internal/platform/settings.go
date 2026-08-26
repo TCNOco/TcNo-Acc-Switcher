@@ -82,6 +82,19 @@ type AppSettings struct {
 	// StartProgramCentered places the main window in the center of the screen when the app opens.
 	StartProgramCentered bool `json:"startProgramCentered,omitempty"`
 
+	// WindowWidth and WindowHeight are the main window's last un-maximised size,
+	// in device-independent pixels. Either being zero means no size has been
+	// recorded yet, and WindowX/WindowY are not read: a stored 0 is a real
+	// coordinate, so the size is what says whether a placement exists at all.
+	WindowWidth  int `json:"windowWidth,omitempty"`
+	WindowHeight int `json:"windowHeight,omitempty"`
+	WindowX      int `json:"windowX,omitempty"`
+	WindowY      int `json:"windowY,omitempty"`
+
+	// WindowMaximised reopens the main window maximised, over the restored size
+	// above so that un-maximising still lands on the size the user chose.
+	WindowMaximised bool `json:"windowMaximised,omitempty"`
+
 	// StreamerMode censors account identifiers and profile images unconditionally.
 	StreamerMode bool `json:"streamerMode,omitempty"`
 

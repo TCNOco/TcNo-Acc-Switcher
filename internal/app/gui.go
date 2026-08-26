@@ -67,12 +67,17 @@ func ResolvedLogLevel(p cli.Parsed) slog.Level {
 	return lvl
 }
 
+const (
+	mainWindowMinWidth  = 760
+	mainWindowMinHeight = 520
+)
+
 func mainWindowOptions(guiSettings platform.AppSettings, parsed cli.Parsed) application.WebviewWindowOptions {
 	winOpts := application.WebviewWindowOptions{
 		Name:      "main",
 		Title:     "TcNo Account Switcher",
-		MinWidth:  760,
-		MinHeight: 520,
+		MinWidth:  mainWindowMinWidth,
+		MinHeight: mainWindowMinHeight,
 		Mac: application.MacWindow{
 			InvisibleTitleBarHeight: 50,
 			Backdrop:                application.MacBackdropTranslucent,
@@ -97,6 +102,9 @@ func mainWindowOptions(guiSettings platform.AppSettings, parsed cli.Parsed) appl
 		winOpts.X = 96
 		winOpts.Y = 96
 	}
+	// After the placement branches so a remembered size survives either of them,
+	// and a remembered position only overrides the fixed corner.
+	applySavedWindowPlacement(&winOpts, platform.SavedWindowPlacement(guiSettings), guiSettings.StartProgramCentered)
 	if parsed.StartInTray {
 		winOpts.Hidden = true
 	}
@@ -287,6 +295,9 @@ func RunGUI(params RunGUIParams) {
 
 	winOpts := mainWindowOptions(guiSettings, parsed)
 	win := wailsApp.Window.NewWithOptions(winOpts)
+	if !platform.InGamescopeSession() {
+		registerWindowPlacement(wailsApp, win, disp.PlatformSvc, platform.SavedWindowPlacement(guiSettings))
+	}
 	applyGameModeZoom(win)
 	screenprivacy.Follow(win)
 	registerNotificationResponseHandler(wailsApp, win, notifier)
