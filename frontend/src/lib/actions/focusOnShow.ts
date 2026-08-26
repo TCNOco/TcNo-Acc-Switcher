@@ -1,33 +1,21 @@
 /**
- * How long after the field appears the caret is still claimed for it, and when
- * inside that window it is tried. The screen it belongs to is opened by a click
- * elsewhere - a context menu item, a button - and several things settle focus
- * over the frames that follow: the modal's focus trap choosing a first element,
- * the menu handing focus back to the row it was opened from, the screen's own
- * transition. All of them are done well inside this window, and none of them is
- * the user.
+ * Focus settles over several frames after the screen opens - the modal's focus
+ * trap choosing a first element, the menu handing focus back to the row it was
+ * opened from, the screen's own transition - and all of that lands well inside
+ * this window. None of it is the user.
  */
 const ATTEMPT_DELAYS_MS = [40, 100, 200, 350];
 const WINDOW_MS = 500;
 
 /**
- * Puts the caret in a field as the screen it belongs to appears, and keeps it
- * there for the moment it takes everything else to settle.
+ * Puts the caret in a field as the screen it belongs to appears, retrying for a
+ * few hundred milliseconds while everything else settles focus.
  *
- * Focusing once, from the screen transition, means guessing when the field will
- * exist, when it will stop being disabled, and whether anything will move focus
- * afterwards - and a guess that loses leaves the user typing into nothing. This
- * waits for the field, checks that the caret actually arrived, and tries again
- * for a few hundred milliseconds if it did not.
+ * Stops the instant the user presses a key or a pointer, so it can never take
+ * the caret off something they chose themselves.
  *
- * It stops the instant the user does anything - a key, a pointer - so it can
- * never take the caret off something they chose themselves. That is the whole
- * safety rule: no window, no heuristic about which element is "allowed" to hold
- * focus, just "if they have not touched anything yet, this field is still what
- * they are about to type into".
- *
- * The parameter is whether the field can take focus yet; pass `!busy` for one
- * that is disabled while work is in flight.
+ * `enabled` is whether the field can take focus yet; pass `!busy` for one that
+ * is disabled while work is in flight.
  */
 export function focusOnShow(node: HTMLElement, enabled = true) {
   const doc = node.ownerDocument;

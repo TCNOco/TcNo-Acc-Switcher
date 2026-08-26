@@ -24,11 +24,9 @@ type pathToken struct {
 
 // userHomeDir resolves the home directory the placeholder tables are built on.
 //
-// USERPROFILE is preferred over os.UserHomeDir even off Windows, and both
-// pathTokens and the cache-path safety check must call this: the two have to
-// agree or a delete aimed at the real Desktop passes the check meant to stop it.
-// Off Windows USERPROFILE is unset, so without the fallback every
-// %UserProfile%-rooted path would fail the safety check as having no base.
+// Both pathTokens and the cache-path safety check must resolve it through here:
+// the two have to agree, or a delete aimed at the real Desktop passes the check
+// meant to stop it. USERPROFILE wins over os.UserHomeDir even off Windows.
 func userHomeDir() string {
 	home := strings.TrimSpace(os.Getenv("USERPROFILE"))
 	if home == "" {

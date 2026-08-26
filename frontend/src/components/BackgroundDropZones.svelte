@@ -146,8 +146,8 @@
 
 {#if dragActive}
   <!-- svelte-ignore a11y-no-static-element-interactions -->
-  <!-- The zones used to slide in from a CSS keyframe and then vanish on a frame
-       when the drag ended, because a keyframe only has one direction. -->
+  <!-- Svelte transitions, not a CSS keyframe: a keyframe only runs one
+       direction, leaving the zones to vanish on a frame when the drag ends. -->
   <div
     class="bg-drop-zones"
     aria-hidden="true"

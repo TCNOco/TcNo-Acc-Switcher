@@ -4,9 +4,8 @@ import { focusOnShow } from "./focusOnShow";
 type Listener = () => void;
 
 /**
- * Enough of a document and an element to drive the action's decisions. jsdom is
- * not configured for this project, and what is worth testing here is the policy
- * - when it tries again and when it gives up - not that the DOM focuses things.
+ * Enough of a document and an element to drive the action's decisions - jsdom is
+ * not configured for this project.
  */
 function harness(options: { disabled?: boolean } = {}) {
   const listeners = new Map<string, Set<Listener>>();
@@ -43,7 +42,6 @@ function harness(options: { disabled?: boolean } = {}) {
     setDisabled(value: boolean) {
       node.disabled = value;
     },
-    /** Something else on the page takes the caret. */
     stealFocus() {
       active = { other: true };
     },
@@ -76,8 +74,8 @@ describe("focusOnShow", () => {
     vi.advanceTimersByTime(1);
     expect(dom.isFocused()).toBe(true);
 
-    // The modal's focus trap, or the context menu restoring focus to the row the
-    // screen was opened from. Both land a frame or two after the field appears.
+    // Stands in for a modal focus trap or a context menu restoring focus, both of
+    // which land a frame or two after the field appears.
     dom.stealFocus();
     vi.advanceTimersByTime(100);
     expect(dom.isFocused()).toBe(true);

@@ -20,14 +20,10 @@
 {/if}
 
 <style lang="scss">
-  /* Marks the account whose session is live right now. The tile's dashed border
-     says the same thing, but only to someone who already knows what a dashed
-     border means here - and it is the same green whether or not the tile is also
-     the selected one, so at a glance the two states looked identical.
-
-     Anchored to `.acc_list_item`, the nearest positioned ancestor: `label.acc`
-     is deliberately left unpositioned, since the profile-image drop overlay
-     inside it already resolves against the same box. */
+  /* Marks the account whose session is live right now. Anchored to
+     `.acc_list_item`, the nearest positioned ancestor: `label.acc` is
+     deliberately left unpositioned, since the profile-image drop overlay inside
+     it already resolves against the same box. */
   .live-session-badge {
     position: absolute;
     top: 6px;

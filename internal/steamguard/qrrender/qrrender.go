@@ -1,8 +1,7 @@
 // Package qrrender draws a Steam sign-in challenge URL as a QR code.
 //
-// The sibling qrimage package reads QR codes out of screenshots; this one writes
-// them. Both sit on github.com/makiuchi-d/gozxing, which is pure Go, so nothing
-// here reaches the network or the filesystem.
+// Encoding is pure Go (github.com/makiuchi-d/gozxing), so nothing here reaches
+// the network or the filesystem.
 package qrrender
 
 import (
@@ -42,20 +41,18 @@ var ErrNothingToEncode = errors.New("qrrender: nothing to encode")
 // room for, and a resampled PNG of a QR code is exactly the thing phone cameras
 // struggle with.
 //
-// The markup is written here rather than by a library. It is a background rect
-// and one path of module squares, and owning it means the colours are always
-// spelled out: a library that wrote a transparent light colour as an empty fill
-// attribute once turned the whole code black, because an invalid presentation
-// attribute falls back to the property's initial value.
+// The markup is written here so both colours are always spelled out: an empty
+// or invalid fill attribute falls back to the property's initial value, which
+// turns the whole code black.
 func SVGDataURI(text string) (string, error) {
 	text = strings.TrimSpace(text)
 	if text == "" || len(text) > maxTextBytes {
 		return "", ErrNothingToEncode
 	}
-	// Medium correction: enough to survive a little glare or a fingerprint on the
-	// screen, without the module count that makes a code harder to focus on.
-	// The zero size asks the writer for the symbol's natural module count, and
-	// the quiet zone is drawn here, so it asks for none of its own.
+	// Medium correction survives a little glare or a fingerprint on the screen
+	// without the module count that makes a code harder to focus on. The zero
+	// size asks for the symbol's natural module count, and the quiet zone is
+	// drawn below, so the writer adds none of its own.
 	matrix, err := qrcode.NewQRCodeWriter().Encode(text, gozxing.BarcodeFormat_QR_CODE, 0, 0,
 		map[gozxing.EncodeHintType]interface{}{
 			gozxing.EncodeHintType_ERROR_CORRECTION: decoder.ErrorCorrectionLevel_M,

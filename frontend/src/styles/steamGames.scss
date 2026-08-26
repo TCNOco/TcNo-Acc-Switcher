@@ -7,16 +7,12 @@
   display: none;
 }
 
-/* Tab swaps happen in one frame - this view by losing `display: none`, the
-   switcher by mounting - which reads as a flicker. An element under
-   `display: none` runs no animation, so this replays on every swap back rather
-   than only on first paint, which is exactly what is wanted.
+/* Replays on every swap back, not only on first paint: an element under
+   `display: none` runs no animation, and a tab swap that lands in one frame
+   reads as a flicker.
 
-   Opacity only, and only on this view. The switcher tab gets its reveal from the
-   account tiles cascading in, and putting a reveal on the shared shell instead
-   meant it also ran on page entry - a second opacity ramp on top of the page's
-   own, and a page-wide vertical nudge that turned the horizontal page slide
-   into a diagonal one. */
+   Opacity only, and only on this view - a reveal on the shared shell would run
+   on page entry too, on top of the page's own transition. */
 .steamGames__view {
   animation: steamGamesViewReveal var(--dur-fast) var(--ease-out) both;
 }
@@ -26,11 +22,9 @@
   to { opacity: 1; }
 }
 
-/* Only the first chunk, and only its first rows: everything else is below the
-   fold, and `content-visibility: auto` would otherwise start each chunk's
-   animation as it scrolled into view - rows fading in under the cursor as you
-   scroll a 2000-game library. Twenty rows is one screenful and twenty
-   animations, rather than two thousand. */
+/* Only the first chunk's first rows: everything else is below the fold, and
+   `content-visibility: auto` would otherwise start each chunk's animation as it
+   scrolled into view, fading rows in under the cursor. Twenty is one screenful. */
 .steamGames__chunk:first-child .steamGames__row {
   animation: steamGamesRowReveal var(--dur-normal) var(--ease-out) both;
 }

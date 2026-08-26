@@ -4,8 +4,8 @@ import { formatLastLoginForLocale } from "./formatLastLogin";
 const INSTANT = "2026-01-15T10:30:00Z";
 
 describe("formatLastLoginForLocale", () => {
-  // The formatter is cached per language, so the cache key has to be the
-  // language - a shared formatter would render every locale the first way.
+  // The formatter is cached per language: one shared cache would render every
+  // locale the first way it was asked for.
   it("keeps locales apart", () => {
     const us = formatLastLoginForLocale(INSTANT, "en-US");
     const de = formatLastLoginForLocale(INSTANT, "de-DE");

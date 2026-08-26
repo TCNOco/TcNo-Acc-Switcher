@@ -10,8 +10,7 @@ import (
 )
 
 // escapeVDF lives in vdfsafe alongside the unescaping ReadBytes applies, so the
-// two cannot drift apart. When they did, every value holding a backslash doubled
-// it on each write.
+// two cannot drift apart.
 func escapeVDF(s string) string { return vdfsafe.Escape(s) }
 
 // KeyValueToText serializes a KeyValue tree to Steam text VDF (tab-indented).

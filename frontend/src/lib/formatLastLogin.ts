@@ -8,8 +8,8 @@ const DATE_FORMAT: Intl.DateTimeFormatOptions = {
 };
 
 // Building an Intl.DateTimeFormat is the expensive part of formatting a date,
-// and this runs once per account row per render pass. There is one formatter
-// per language, and the app has one active language at a time.
+// and this runs once per account row per render pass. Keyed by app language,
+// of which only one is active at a time, so it needs no eviction.
 const formatters = new Map<string, Intl.DateTimeFormat>();
 
 function formatterFor(locale: string): Intl.DateTimeFormat {

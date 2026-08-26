@@ -17,12 +17,10 @@ import (
 // switching an account does - so the entry in Steam's library is only worth
 // having if the process leaves that tree before it does anything else.
 //
-// Measured on a Bazzite VM against a real Steam, in the order they were tried:
-// launching directly dies; setsid dies, so the reaper is not signalling a
-// process group; setsid --fork dies too, with the orphan reparented back onto
-// the reaper rather than to init, which is PR_SET_CHILD_SUBREAPER. Nothing
-// forked from inside that tree can get out of it. Being started by something
-// outside it works, and on Linux that is the user's systemd manager.
+// Nothing forked from inside that tree can get out of it: the reaper is a
+// PR_SET_CHILD_SUBREAPER, so even `setsid --fork` reparents onto it rather than
+// onto init. Only being started by something outside the tree works, and on
+// Linux that is the user's systemd manager.
 const (
 	// steamClientLaunchEnv is set to 1 by the Steam client for anything it
 	// starts, on both Windows and Linux.
@@ -98,10 +96,8 @@ var steamLaunchEnvKeys = []string{
 	"DISPLAY",
 }
 
-// steamLaunchEnvAttrs records what the process was handed. Without it a log
-// showing a healthy startup and a log showing a startup that was about to hand
-// over and exit read exactly the same, which is how "it launches but no window
-// appears" stayed ambiguous across three rounds of testing on a handheld.
+// steamLaunchEnvAttrs records what the process was handed, so a log of a healthy
+// startup can be told apart from one that was about to hand over and exit.
 func steamLaunchEnvAttrs() []any {
 	attrs := make([]any, 0, len(steamLaunchEnvKeys)*2)
 	for _, key := range steamLaunchEnvKeys {

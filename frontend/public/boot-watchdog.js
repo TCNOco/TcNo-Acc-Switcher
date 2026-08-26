@@ -1,9 +1,7 @@
 /*
  * Loaded as a classic script before the app's module graph, so it still runs
- * when that graph fails. A module that 404s - the dev server re-optimising
- * dependencies mid-load is the usual cause - leaves a frameless window painted
- * in nothing but its background colour: no title bar to close, no console to
- * open, no clue what went wrong. Retry once, then put the failure on screen.
+ * when that graph fails and leaves a frameless window with nothing painted in
+ * it. Retries once, then puts the failure on screen.
  *
  * Runs before i18n exists, so its text is English only.
  */
@@ -53,9 +51,8 @@
   }
 
   /**
-   * A script that failed to fetch usually arrives on the next attempt. The
-   * reload is spent only once, and only if the marker that says so survives -
-   * without storage there is nothing to stop the second attempt reloading again.
+   * Reloads at most once, and only while the marker that says so can be stored -
+   * without storage there is nothing to stop the next attempt reloading again.
    */
   function retryOnce() {
     if (booted || panel || retried()) return;

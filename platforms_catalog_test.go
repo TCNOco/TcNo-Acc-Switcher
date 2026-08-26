@@ -25,7 +25,7 @@ func clearTargetPath(entry string) (string, bool) {
 	return rest, true
 }
 
-// allCatalogs checks every shipped catalog, not just the running OS's.
+// allCatalogs returns every shipped catalog, not just the running OS's.
 func allCatalogs() map[string][]byte {
 	return map[string][]byte{
 		"Platforms.json":       windowsPlatformsJSON,
@@ -97,8 +97,8 @@ func assertPlatformsClearOnlyOwnPaths(t *testing.T, file string, raw []byte) {
 // WM_CLOSE - its main window close means minimise to tray - so without this argument the
 // graceful window expires on every switch and the client is force-killed ~5s later.
 //
-// Windows only: off it, SIGTERM is the native quit and a shutdown argument measurably makes
-// closing slower, so the Unix catalogs deliberately carry no QuitArgs.
+// Windows only: elsewhere SIGTERM is the native quit and a shutdown argument only slows
+// closing down, so the Unix catalogs carry no QuitArgs.
 func TestSteamDeclaresQuitArgs(t *testing.T) {
 	t.Parallel()
 

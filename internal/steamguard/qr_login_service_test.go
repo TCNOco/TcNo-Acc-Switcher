@@ -7,10 +7,8 @@ import (
 	"TcNo-Acc-Switcher/internal/steam/accountstore"
 )
 
-// The screen this feature exists for runs before the account has a vault record:
-// choosing Login Only signs in precisely so there is something to store. Reading
-// the name from the vault and stopping there refused every one of those with
-// "Steam Guard account not found", and no code was ever drawn.
+// Login Only signs in before the account has a vault record, so the vault
+// cannot be the only place the name is read from.
 func TestExpectedQRAccountNameFallsBackToTheSwitchersOwnList(t *testing.T) {
 	service, _, _ := newAuthServiceFixture(t)
 	const unheldID = "76561198000000200"

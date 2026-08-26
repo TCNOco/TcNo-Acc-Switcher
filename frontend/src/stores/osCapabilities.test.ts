@@ -11,9 +11,7 @@ function startup(over: Partial<PlatformStartup>): PlatformStartup {
 describe("osCapabilities", () => {
   beforeEach(() => homeScreenData.set(null));
 
-  // A Windows-only control must not appear during the gap before startup data
-  // lands: showing it and then withdrawing it is worse than a late reveal, and
-  // clicking it in that window would hit an ErrUnsupported backend.
+  // Offering a control and then withdrawing it is worse than a late reveal.
   it("reports everything unsupported before startup data arrives", () => {
     const c = get(capabilities);
     expect(c.shortcuts).toBe(false);
@@ -34,8 +32,6 @@ describe("osCapabilities", () => {
     expect(get(currentOS)).toBe("linux");
   });
 
-  // The Linux/macOS split is the whole reason this exists rather than an
-  // isWindows boolean: process control is real on one and stubbed on the other.
   it("distinguishes linux from darwin", () => {
     homeScreenData.set(startup({ os: "darwin", capabilities: { processControl: false } as never }));
     expect(getCapabilities().processControl).toBe(false);

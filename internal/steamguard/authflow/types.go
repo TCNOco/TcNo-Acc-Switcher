@@ -70,9 +70,8 @@ type Binding struct {
 	CapabilityID    string
 	// ExpectedAccountName is required for a QR session and ignored otherwise.
 	// Which account a QR code signs in is decided by whoever scans it, and the
-	// poll answers with a name rather than a SteamID, so this is the only thing
-	// standing between "somebody signed in" and "the account we were asked to
-	// sign in signed in". Compared case-insensitively: Steam account names are.
+	// poll answers with a name rather than a SteamID, so this is the only check
+	// on who signed in. Compared case-insensitively: Steam account names are.
 	ExpectedAccountName string
 }
 

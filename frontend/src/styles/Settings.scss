@@ -175,9 +175,8 @@ input[type="checkbox"] + label {
   cursor: pointer;
   border: 1px solid var(--form-checkbox-border);
   background: none;
-  /* Was `0.5s ease all`. Half a second is a long time to wait for a checkbox to
-     admit it was ticked, and `all` swept the focus ring's box-shadow into the
-     same half-second fade. */
+  /* Name the properties; never `all`. The `:focus-visible` rule below draws its
+     ring with box-shadow, which must appear instantly rather than fade in. */
   transition:
     background-color var(--dur-fast) var(--ease-out),
     border-color var(--dur-fast) var(--ease-out);

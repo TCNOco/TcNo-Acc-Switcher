@@ -143,9 +143,8 @@
         {titleLabel}
     </span>
     <span class="window-controls" role="toolbar">
-        <!-- Game Mode has no window management to minimise into and nothing to
-             restore to: the app fills the screen and the only way out is to close
-             it, so offering the other two would be offering nothing. -->
+        <!-- Game Mode fills the screen and the only way out is to close it, so
+             there is nothing to minimise into and nothing to restore to. -->
         {#if !$gameMode}
         <button type="button" class="win-btn win-btn-min" aria-label={$t("Aria_WindowMinimize")} on:click={() => Window.Minimise()}>
             <svg class="win-btn__glyph win-btn__glyph--min" viewBox="0 0 10 10" aria-hidden="true">
@@ -306,9 +305,9 @@
         --wails-draggable: no-drag;
         z-index: 1;
         display: grid;
-        /* Sized to however many buttons are rendered, not to three. Game Mode
-           shows only close, and a fixed three-slot grid left it sitting in the
-           first slot with two empty ones between it and the corner. */
+        /* Sized to however many buttons are rendered: Game Mode shows only
+           close, and a fixed three-slot grid would strand it away from the
+           corner. */
         grid-auto-flow: column;
         grid-auto-columns: 46px;
         top: 0;

@@ -93,9 +93,9 @@
   let suppressClickExpire: ReturnType<typeof setTimeout> | null = null;
 
   /**
-   * The dragged tile is genuinely destroyed while a drag runs - `previewSlots`
-   * swaps it for a gap - and rebuilt on drop. Without this the tile would play
-   * its full entrance, staggered delay and all, at the moment it lands.
+   * The dragged tile is destroyed while a drag runs - `previewSlots` swaps it for
+   * a gap - and rebuilt on drop; without this it would play its full staggered
+   * entrance at the moment it lands.
    */
   let suppressEntry = false;
   let suppressEntryExpire: ReturnType<typeof setTimeout> | null = null;
@@ -432,14 +432,12 @@
   <!-- One element for both slot kinds: `animate:flip` only works on the
        immediate child of a keyed each, and a branch in between disqualifies it.
 
-       `|global` on the entrance is load-bearing. Svelte 5 transitions are local
-       by default (the reverse of Svelte 4), and a local intro is skipped while
-       its enclosing block is still initialising - which is exactly the case that
-       matters here, the grid rendering with a full list of ids already in hand.
-       Without it the tiles only ever animated when one was added to a list that
-       was already on screen, so a whole page of accounts arrived on one frame.
-       The exit stays local on purpose: a tile should shrink away when it is
-       removed, not when the page it lives on is being navigated away from. -->
+       `|global` on the entrance is load-bearing: Svelte 5 transitions are local
+       by default, and a local intro is skipped while its enclosing block is
+       still initialising - which is the case that matters here, the grid
+       rendering with a full list of ids already in hand. The exit stays local
+       on purpose: a tile should shrink away when it is removed, not when the
+       page it lives on is being navigated away from. -->
   {#each displaySlots as slot, i (slot === null ? `gap-${i}` : slot)}
     <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <!-- svelte-ignore a11y-no-noninteractive-tabindex -->

@@ -9,8 +9,7 @@ var procGetSystemMetricsTray = modUser32.NewProc("GetSystemMetrics")
 // at the current DPI: 16 at 100%, 24 at 150%, 32 at 200%.
 //
 // Wails converts whatever PNG it is handed with CreateIconFromResourceEx at
-// exactly this size, so a source of any other size is rescaled by GDI. Feeding
-// it a bitmap already at this size makes that a straight copy instead.
+// exactly this size, so a source of any other size is rescaled by GDI.
 func TrayIconSize() int {
 	v, _, _ := procGetSystemMetricsTray.Call(uintptr(smCXSMICON))
 	return int(int32(v))

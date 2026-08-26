@@ -8,11 +8,6 @@ import (
 
 // catalogIndex holds one catalog's per-platform JSON, split out once.
 //
-// Pulling a single platform out of Platforms.json meant unmarshalling all of it
-// into map[string]json.RawMessage first - roughly 214us of pure JSON scanning
-// for the 36KB catalog that ships - and every descriptor, entry and name lookup
-// paid that again. Opening an account page did it twice over.
-//
 // The index is keyed on the catalog bytes rather than on a path or a
 // generation counter, so a rewritten or swapped-out Platforms.json rebuilds it
 // on the next lookup without anything having to remember to invalidate.

@@ -53,15 +53,13 @@ type PlatformStartup struct {
 	AppVersion               string `json:"appVersion"`
 
 	// OS and Capabilities let the UI hide a control because the capability
-	// behind it is missing, instead of sniffing navigator.userAgent - which
-	// could only ever answer "is this Windows" and never Linux from macOS.
+	// behind it is missing, rather than sniffing the user agent for a platform.
 	OS           string         `json:"os"`
 	Capabilities OSCapabilities `json:"capabilities"`
 
 	// GameMode reports a gamescope session: one app on screen, no window
-	// management, no tray. Not a capability of the build but of the session it
-	// was started in, which is why it sits beside OS rather than inside
-	// Capabilities.
+	// management, no tray. A property of the session rather than of the build,
+	// which is why it sits outside Capabilities.
 	GameMode bool `json:"gameMode"`
 }
 
@@ -229,12 +227,9 @@ func (p *PlatformService) GetStartup() (PlatformStartup, error) {
 	return p.startupSnapshot(true)
 }
 
-// ReadSettings returns the same payload without those counts.
-//
-// Resolving them reads every platform's ids.json, and no caller of ReadSettings
-// looks at them - each wants one scalar setting. Two of those callers run during
-// the first paint, so the sweep was happening four times a launch instead of
-// twice.
+// ReadSettings returns the same payload without those counts: resolving them
+// reads every platform's ids.json, and callers of ReadSettings each want one
+// scalar setting.
 func (p *PlatformService) ReadSettings() (PlatformStartup, error) {
 	return p.startupSnapshot(false)
 }

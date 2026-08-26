@@ -464,10 +464,9 @@ func (s *Service) pollLogin(authorize steamFlowAuthorizer, key, handle string, v
 		steamID := authorizedSteamID
 		if viaQR {
 			// A QR poll never answers with a SteamID - Steam names the account
-			// instead - so there is nothing here to compare. The identity was
+			// instead - so there is nothing here to compare. Identity was
 			// settled in authflow, which refuses to authorise a QR session for
-			// any account name but the one its binding expects, so the account
-			// this session was opened for is the account that signed in.
+			// any account name but the one its binding expects.
 			if authorizedSteamID != 0 && authorizedSteamID != expectedSteamID {
 				return ErrSteamAuthenticationState
 			}

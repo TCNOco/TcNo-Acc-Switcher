@@ -68,15 +68,10 @@ func (p *signedGitHubProvider) Download(ctx context.Context, r *updater.Release,
 }
 
 // fetchSignature finds the detached signature for the artifact this platform is
-// about to download.
-//
-// The signature belongs to that specific file, so its name is derived from it
-// rather than from a fixed suffix. On Windows both agree - the artifact is
-// TcNo-Acc-Switcher.exe and its signature TcNo-Acc-Switcher.exe.sig - but a
-// suffix pinned to ".exe.sig" would find nothing beside a Linux tarball or a
-// macOS zip, and the fail-closed check would then refuse every update on those
-// platforms rather than only unverified ones. sigSuffix stays as the fallback
-// for a release whose artifact name is not known here.
+// about to download: "<artifact>.sig", because a suffix pinned to ".exe.sig"
+// would match nothing beside a Linux tarball or macOS zip and the fail-closed
+// check would then refuse every update there. sigSuffix is the fallback for a
+// release whose artifact name is not known here.
 func (p *signedGitHubProvider) fetchSignature(ctx context.Context, version, artifactName string) ([]byte, error) {
 	tag := "v" + version
 	url := fmt.Sprintf("%s/repos/%s/%s/releases/tags/%s", p.apiBase, p.owner, p.repo, tag)

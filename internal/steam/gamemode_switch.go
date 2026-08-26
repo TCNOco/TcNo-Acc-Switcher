@@ -14,14 +14,10 @@ import (
 
 // Switching an account closes Steam, and in Game Mode the switcher is inside
 // Steam's process tree, so closing Steam kills the switcher before it can write
-// the account it was asked to switch to. Measured on an ROG Ally: Steam came
-// back on the old account every time, restarted by
-// gamescope-session-plus@steam.service rather than by us, because we were gone.
+// the account it was asked to switch to.
 //
 // So in Game Mode the swap is handed to a process the user's systemd manager
-// starts. That one is outside Steam's reach and lives long enough to finish -
-// verified on the same device, where a transient unit survived a full Steam
-// restart with both its timestamps intact.
+// starts. That one is outside Steam's reach and lives long enough to finish.
 const (
 	// switchHelperEnv marks the helper, so it performs the swap rather than
 	// handing it off again.
@@ -47,13 +43,11 @@ func MarkSwitchHelper() { _ = os.Setenv(switchHelperEnv, "1") }
 
 func runningAsSwitchHelper() bool { return strings.TrimSpace(os.Getenv(switchHelperEnv)) != "" }
 
-// shouldHandOffSwitch is the whole decision: hand the swap to a helper only in a
-// gamescope session, and only from a process that is not already that helper.
 func shouldHandOffSwitch(inGamescope, isHelper bool) bool { return inGamescope && !isHelper }
 
 // switchHelperArgs is the helper's argv. It speaks the CLI grammar the headless
 // swap already understands, so the helper runs the same code a scripted switch
-// does rather than a second implementation of it.
+// does.
 func switchHelperArgs(steamID64 string, personaState int) []string {
 	id := strings.TrimSpace(steamID64)
 	if id == "" {
@@ -72,9 +66,8 @@ func switchHelperArgs(steamID64 string, personaState int) []string {
 // app for no reason; waiting means the window stays up until whatever is going
 // to happen has happened.
 func handOffSwitch(steamID64 string, personaState int) error {
-	// The helper is a fresh process with the vault closed, and nothing may open
-	// it without the user. Better to say so now than to hand over and have the
-	// switch fail somewhere the user cannot see it.
+	// Refuse here rather than handing over and having the switch fail somewhere
+	// the user cannot see it.
 	if status, err := security.GetStatus(); err == nil && status.AppPasswordSet {
 		return ErrGameModeSwitchLocked
 	}

@@ -513,13 +513,8 @@ func (m *manager) remove(path string) error {
 	return os.Remove(path)
 }
 
-// lockState answers the lock and encryption predicates without the two
-// directory scans status() runs for its UI-only fields.
-//
-// QuarantineCount costs a ReadDir and InterruptedRestorePending costs a Glob,
-// and nothing that merely asks "is the app locked" or "is saved data
-// encrypted" ever looks at either. requireUnlocked guards every account-list
-// call, so both scans were being paid on a path that discards them.
+// lockState answers the lock and encryption predicates without the quarantine
+// and restore-journal directory scans status() runs for its UI-only fields.
 func (m *manager) lockState() (passwordSet, locked, encrypted bool, err error) {
 	sf, ok, err := loadSecurityFile()
 	if err != nil {

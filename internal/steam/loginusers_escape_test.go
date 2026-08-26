@@ -7,9 +7,8 @@ import (
 	"testing"
 )
 
-// Regression: parse and write were not inverse, so a persona name holding one
-// backslash measurably reached 16 of them across three switches. A switch
-// rewrites this whole file, so the round trip has to be lossless.
+// A switch rewrites this whole file, so parse and write have to be inverse:
+// otherwise every backslash in a persona name doubles on every switch.
 func TestLoginUsersRoundTripKeepsEscaping(t *testing.T) {
 	t.Parallel()
 

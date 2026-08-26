@@ -95,7 +95,7 @@ export function buildSharedItems(
     },
     // Shortcut creation goes through winutil.WriteShortcutLnk, which is
     // ErrUnsupported off Windows. Null rather than a disabled entry: the menus
-    // already drop nulls, and an entry that can only ever fail is noise.
+    // already drop nulls.
     createShortcut: !getCapabilities().shortcuts
       ? null
       : {

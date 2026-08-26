@@ -53,9 +53,8 @@ type Entry struct {
 	Sub  *Node
 }
 
-// Node is an ordered map. Order is kept because Steam writes a fixed field order,
-// and a rewritten file that diffs clean against Steam's own output is the whole
-// point of the exercise.
+// Node is an ordered map. Order is kept because Steam writes a fixed field order
+// and a rewritten file has to come back out matching it.
 type Node struct {
 	Entries []Entry
 }

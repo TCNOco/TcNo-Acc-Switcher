@@ -13,8 +13,7 @@ import (
 	"github.com/Jleagle/steam-go/steamvdf"
 )
 
-// escapes is used in both directions. Escape and Unescape have to stay exact
-// inverses - see [ReadBytes].
+// escapes drives both directions: [Escape] and [Unescape] must stay exact inverses.
 var escapes = []struct {
 	plain   string
 	escaped string
@@ -35,12 +34,9 @@ var escapes = []struct {
 // "unreadable" from "absent" to decide whether overwriting it is safe, and a
 // panic answers neither question.
 //
-// The unescaping matters as much. steamvdf's text parser tracks backslashes only
-// well enough to find the closing quote, then hands back the raw bytes between
-// them - still escaped. Writing a parsed tree back escaped it a second time, so
-// one backslash became two, then four: a Steam persona name measurably went to
-// 16 backslashes across three account switches. Resolving escapes here is what
-// makes [Escape] a true inverse.
+// steamvdf's text parser hands back the raw bytes between the quotes, still
+// escaped, so writing a parsed tree back doubles every backslash. Resolving
+// escapes here is what makes [Escape] a true inverse.
 //
 // Binary VDF carries no escapes; the same pass would eat backslashes that belong
 // to the data.

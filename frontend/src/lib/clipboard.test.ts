@@ -1,8 +1,7 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { copyText } from "./clipboard";
 
-// These tests run without a DOM, so the fallback's document is stubbed the same
-// way the other suites stub navigator.
+// No DOM in this environment, so document and navigator are stubbed per test.
 const realDocument = (globalThis as { document?: unknown }).document;
 const realNavigator = Object.getOwnPropertyDescriptor(globalThis, "navigator");
 
@@ -49,8 +48,6 @@ describe("copyText", () => {
   });
 
   // A WebKitGTK webview outside a secure context has no navigator.clipboard.
-  // The old copyPath returned silently there, so the button did nothing and
-  // reported nothing.
   it("falls back to execCommand and removes the element it added", async () => {
     setNavigator({});
     const f = fakeDocument(true);
@@ -70,7 +67,6 @@ describe("copyText", () => {
     (globalThis as { document?: unknown }).document = f.doc;
 
     await expect(copyText("nope")).rejects.toThrow();
-    // Still cleaned up on the failure path.
     expect(f.removed).toHaveLength(1);
   });
 });

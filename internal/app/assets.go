@@ -50,10 +50,8 @@ func newCompositeAssetHandler(embedded fs.FS) http.Handler {
 			embedHandler.ServeHTTP(w, r)
 			return
 		}
-		// Classify before touching the filesystem. Only img/ and backgrounds/
-		// can be served from disk, so every script, stylesheet and font - and
-		// there are far more of those than there are avatars - was resolving the
-		// wwwroot path and running MkdirAll for a branch it could never take.
+		// Classify before touching the filesystem: only img/ and backgrounds/ can be
+		// served from disk, so anything else can skip the wwwroot lookup entirely.
 		upath := strings.TrimPrefix(filepath.ToSlash(r.URL.Path), "/")
 		if upath == "" {
 			upath = "."
@@ -68,9 +66,8 @@ func newCompositeAssetHandler(embedded fs.FS) http.Handler {
 			embedHandler.ServeHTTP(w, r)
 			return
 		}
-		// Once per process: the directory does not come and go, and everything
-		// that writes into it creates what it needs itself. An account page asks
-		// for one avatar per row, and each of those was a syscall.
+		// Once per process: the directory does not come and go, and everything that
+		// writes into it creates what it needs itself.
 		ensureWwwroot(wwwroot)
 		diskPath := filepath.Join(wwwroot, filepath.FromSlash(upath))
 		wwwClean := filepath.Clean(wwwroot)

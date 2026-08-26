@@ -76,9 +76,8 @@ func EnsureShortcutCached(platformKey, exeBase, shortcutPath, wwwroot string) (p
 	dir := filepath.Join(www, "img", "shortcuts", SafeFolderName(platformKey))
 	out := filepath.Join(dir, strings.TrimSuffix(strings.ToLower(exeBase), ".exe")+".png")
 
-	// The same guard EnsureCached applies. Without it this resolved the shortcut
-	// through the shell, reloaded the exe's icon resources and re-encoded the PNG
-	// on every page open, throwing away the file it wrote last time.
+	// Same guard as EnsureCached: resolving the shortcut through the shell and
+	// re-encoding the PNG is too expensive to repeat on every page open.
 	if cachedIconIsFresh(out, shortcutPath) {
 		return PublicURL(platformKey, exeBase), nil
 	}

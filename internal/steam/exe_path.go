@@ -61,11 +61,10 @@ func steamExeFromCatalog() string {
 
 // SteamExePath resolves the launcher for an already-resolved install root.
 //
-// The root wins when it holds the launcher: a user who pointed the switcher at
-// one of several Steam installs must get that one, not whichever the catalog
-// lists first. The catalog's absolute paths only get a say when the root has no
-// launcher in it - the normal case on macOS, where Steam.app lives in
-// /Applications and only its data sits under the root.
+// The root wins when it holds the launcher, so a switcher pointed at one of
+// several Steam installs gets that one. The catalog's absolute paths only get a
+// say when the root has no launcher in it - the normal case on macOS, where
+// Steam.app lives in /Applications and only its data sits under the root.
 //
 // The result is not guaranteed to exist; when nothing is found the expected path
 // comes back so the failure names something useful.

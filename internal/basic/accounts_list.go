@@ -117,10 +117,9 @@ func (b *BasicService) GetAccountsList(platformKey string) ([]AccountListItemDTO
 		return nil, nil
 	}
 
-	// With saved-account encryption on, SavedDataBroken reads and AEAD-decrypts
-	// that account's whole blob, which dwarfs everything else here and scales
-	// with the account count, so the rows are built concurrently. Without it the
-	// row is a few map lookups and the fan-out would cost more than it saves.
+	// Fan out only when encryption is on: SavedDataBroken then reads and
+	// AEAD-decrypts each account's whole blob. Without it a row is a few map
+	// lookups and the fan-out would cost more than it saves.
 	out := make([]AccountListItemDTO, len(ctx.keys))
 	blobs := security.NewAccountBlobValidator()
 	defer blobs.Close()
@@ -164,8 +163,7 @@ func (b *BasicService) GetAccountsEnrichment(platformKey string) ([]AccountEnric
 		return nil, err
 	}
 
-	// Same as GetAccountsList: worth fanning out exactly when SavedDataBroken
-	// costs a blob decrypt per account.
+	// Same conditional fan-out as GetAccountsList, for the same reason.
 	out := make([]AccountEnrichmentDTO, len(ctx.keys))
 	blobs := security.NewAccountBlobValidator()
 	defer blobs.Close()

@@ -14,8 +14,6 @@ import (
 func TestWriteFileAtomic_LockedFile(t *testing.T) {
 	t.Parallel()
 	if runtime.GOOS != "windows" {
-		// POSIX rename replaces a path whatever else holds it open, so there is
-		// no failure here to assert on.
 		t.Skip("only Windows refuses to replace a file another handle has open")
 	}
 	dir := t.TempDir()
@@ -118,7 +116,7 @@ func TestSetPersonaStateLocalConfig_BadSteamID(t *testing.T) {
 
 func TestWriteLoginUsersAndAutoLogin_FieldSwapping(t *testing.T) {
 	// Off Windows the AutoLoginUser half writes registry.vdf under $HOME, not
-	// under the root passed in, so the test needs a home of its own.
+	// under the root passed in.
 	t.Setenv("HOME", t.TempDir())
 	dir := t.TempDir()
 	configDir := filepath.Join(dir, "config")

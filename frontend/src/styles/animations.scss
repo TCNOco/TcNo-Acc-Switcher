@@ -1,7 +1,6 @@
-/* One scale of speeds and one curve for the whole UI, matching what the Svelte
-   transitions use in lib/animation.ts - `--ease-out` is that file's cubicOut.
-   Reach for these rather than writing a duration inline, so CSS-driven motion
-   and transition-driven motion stay the same speed. */
+/* One scale of speeds and one curve for the whole UI; `--ease-out` is the
+   cubicOut the Svelte transitions in lib/animation.ts use. Reach for these
+   rather than an inline duration, so both kinds of motion stay in step. */
 :root {
   --dur-instant: 90ms;
   --dur-fast: 120ms;
@@ -17,13 +16,11 @@
 }
 
 /* Motion that reports rather than decorates: busy spinners, indeterminate bars,
-   the Steam Guard code countdown. Freezing these does not calm the interface
-   down, it strands a spinner mid-turn and leaves the app looking hung - and it
-   takes the only reading of how long an auth code has left with it.
-   `.motion-essential` is the marker for anything new; the rest are listed
-   because they are pseudo-elements, or one class repeated across dozens of call
-   sites, with no single element worth marking. Each entry covers the element and
-   everything inside it. */
+   the Steam Guard countdown. Freezing these strands a spinner mid-turn and takes
+   away the only reading of how long an auth code has left. Mark anything new
+   with `.motion-essential`; the entries below are pseudo-elements or classes
+   with no single element worth marking. Each covers the element and its
+   subtree. */
 $motion-essential:
   ".motion-essential",
   ".gamestats-spinner",
@@ -39,9 +36,8 @@ $motion-essential:
   ".confirmations-refresh[aria-busy='true']",
   ".actionbar[data-busy='true']";
 
-/* Exclusion rather than an override, because the rules below are `!important`
-   on a universal selector: a component that tried to win one back would need
-   both `!important` and more specificity than a selector it cannot see. */
+/* Exclusion rather than an override: the rules below are `!important` on a
+   universal selector, so nothing downstream could win one back. */
 @function motion-exempt() {
   $self: ();
   $inside: ();

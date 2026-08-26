@@ -176,9 +176,8 @@
   let iconBroken = false;
   let artBroken = false;
 
-  // The executable's own icon when we could read it, otherwise the platform's
-  // bundled artwork. Only Windows keeps an icon inside the executable, so on
-  // every other OS the exe icon is always empty and the artwork is the answer.
+  // Only Windows keeps an icon inside the executable, so on every other OS the
+  // exe icon is always empty and the platform's bundled artwork is the answer.
   $: launchIconSrc = $platformExeIconUrl && !iconBroken
     ? $platformExeIconUrl
     : artBroken

@@ -5,8 +5,7 @@ package winutil
 import "time"
 
 // Neither Windows nor a Unix: no process table this package knows how to read.
-// Kept so the package still builds for a target the app does not ship to, rather
-// than to describe anything real.
+// Stubs, so the package still builds for a target the app does not ship to.
 
 func KillByName(names []string, method ClosingMethod, _ func() error) error {
 	return ErrUnsupported

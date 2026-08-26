@@ -131,9 +131,8 @@ func decodeCandidates(
 				return candidates, nil
 			}
 		}
-		// Only when the frame as it arrived held nothing. A screenshot decodes on
-		// the first pass and never pays for this; a photograph of a screen is the
-		// input that needs redrawing before it can be read at all.
+		// A screenshot decodes on the first pass and never pays for this; a
+		// photograph of a screen is the input that needs redrawing to be read.
 		if len(candidates) == 0 {
 			found, err := decodeVariants(ctx, frame, decoder, now, started, maxDuration)
 			if err != nil {
@@ -151,9 +150,8 @@ func decodeCandidates(
 	return candidates, nil
 }
 
-// decodeVariants reads re-drawn copies of a frame, whole rather than in regions:
-// this is the second attempt at one photograph of one code, and splitting the
-// frame was not what stopped the first attempt.
+// decodeVariants reads re-drawn copies of a frame whole rather than in regions:
+// splitting the frame was not what stopped the first attempt.
 func decodeVariants(
 	ctx context.Context,
 	frame *Frame,
@@ -293,11 +291,8 @@ func checkDecodeBudget(ctx context.Context, started time.Time, now decodeClock, 
 	return nil
 }
 
-// decodeFrame reads the first symbol in one region.
-//
-// A fresh reader per call: the decoder holds per-decode state, and this is
-// reached from a service whose operations are only bounded per account, so two
-// windows can decode at once.
+// decodeFrame reads the first symbol in one region. A fresh reader per call:
+// the decoder holds per-decode state, and two windows can decode at once.
 func decodeFrame(frame image.Image) (payload string, err error) {
 	defer func() {
 		if recover() != nil {

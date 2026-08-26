@@ -1174,14 +1174,7 @@ async function runSteamGuardPasswordChange(
   }
 }
 
-/**
- * The Steam Guard modal's back end.
- *
- * Exported so a test can check that the capability-gated entries below are
- * decided when they are read rather than when this module is imported - the
- * startup payload they ask about has not arrived at import, and freezing them
- * there left the controls they back dead for the whole session.
- */
+/** The Steam Guard modal's back end. */
 export const controller: SteamGuardModalController = {
 	requestSensitiveView,
 	endSensitiveView: (capability, lease) => SteamGuardService.EndSensitiveView(capability, lease),
@@ -1195,10 +1188,8 @@ export const controller: SteamGuardModalController = {
 	// The clipboard write is Win32: secureclipboard/platform_other.go returns
 	// UnsupportedError, so the button would only ever raise an error toast.
 	//
-	// A getter, not a conditional spread: this object is built when the module is
-	// imported, and the capabilities it asks about arrive later, on the startup
-	// payload. Spread, every one of these read false and stayed missing for the
-	// life of the app, so the controls they back were greyed out on Windows too.
+	// A getter, not a conditional spread: this object is built at import, and the
+	// capabilities it asks about only arrive later, on the startup payload.
 	get copyCode() {
 		return getCapabilities().secureClipboard
 			? (accountId: string, capability: string) => SteamGuardService.CopyCode(accountId, capability)

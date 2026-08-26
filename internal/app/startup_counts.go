@@ -26,8 +26,8 @@ type startupPlatformCounts struct {
 // skeleton hints. It runs before the window is drawn, so it visits every
 // platform in Platforms.json whether or not the user has accounts on it.
 //
-// Each platform is independent and its cost is dominated by the ids.json read,
-// so the platforms are resolved concurrently and each one reads that file once.
+// Platforms are independent and dominated by the ids.json read, so they resolve
+// concurrently with one read each.
 func resolveStartupCounts(platformNames []string, statsEnabled bool) (map[string]int, map[string]platform.PlatformTagCountInfo) {
 	accounts := make(map[string]int, len(platformNames))
 	tagCounts := make(map[string]platform.PlatformTagCountInfo, len(platformNames))

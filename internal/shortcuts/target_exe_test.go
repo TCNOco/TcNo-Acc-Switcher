@@ -69,7 +69,6 @@ func TestShortcutTargetExeResolvesOncePerShortcut(t *testing.T) {
 	}
 }
 
-// A shortcut repointed at another program has to be picked up.
 func TestShortcutTargetExeReResolvesWhenTheShortcutChanges(t *testing.T) {
 	calls := 0
 	countingLnkReader(t, `C:\Games\Doom\doom.exe`, &calls)
@@ -93,8 +92,6 @@ func TestShortcutTargetExeReResolvesWhenTheShortcutChanges(t *testing.T) {
 	}
 }
 
-// A .lnk pointing at something that is not a program resolves to "" - and that
-// answer has to be remembered too, not re-resolved every time.
 func TestShortcutTargetExeRemembersANonProgramTarget(t *testing.T) {
 	calls := 0
 	countingLnkReader(t, `C:\Users\someone\Documents`, &calls)

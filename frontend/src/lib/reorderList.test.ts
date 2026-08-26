@@ -205,10 +205,8 @@ describe("insertionIndexFromTileHover", () => {
     expect(insertionIndexFromTileHover(order, 3, "b", 290, tileSpanning(200, 100))).toBe(2);
   });
 
-  // A drag begins and the hit test runs before the preview gap has been
-  // rendered, so it still finds the dragged tile - which is no longer in the
-  // list being hit-tested. Answering 0 there threw the whole list one place to
-  // the right for a frame.
+  // The hit test can run before the preview gap has rendered, so it still finds
+  // the dragged tile - which is not in the list being hit-tested.
   it("leaves the gap alone when the hit lands on the dragged tile", () => {
     for (const clientX of [210, 290]) {
       const index = insertionIndexFromTileHover(order, 2, "c", clientX, tileSpanning(200, 100));

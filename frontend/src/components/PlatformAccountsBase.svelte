@@ -359,10 +359,9 @@
   }
 
   /**
-   * The list is not the only view of these accounts - the Steam Guard vault draws
-   * the same faces - and a view left on an older counter asks for an older URL,
-   * so every write goes to the shared store as well as to the local copy. The
-   * local copy stays because callers read it back in the same tick.
+   * Writes go to the shared store as well as the local copy: other views of these
+   * accounts would otherwise sit on an older counter and ask for an older URL.
+   * The local copy stays because callers read it back in the same tick.
    */
   function setAvatarEpoch(next: Record<string, number>): void {
     avatarEpoch = next;

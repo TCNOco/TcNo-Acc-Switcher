@@ -7,10 +7,9 @@ import (
 	"TcNo-Acc-Switcher/internal/steamguard/protocol"
 )
 
-// EResult 9 is FileNotFound. For an auth-session call it means the sign-in the
+// EResult 9 is FileNotFound: for an auth-session call it means the sign-in the
 // challenge names is gone, which is what every QR code becomes about a minute
-// after it is drawn - so it has to read as an expired code rather than as a
-// failure, or the user is told to sign in again for no reason.
+// after it is drawn - so it has to read as expired rather than as a failure.
 func TestSteamDroppedSessionRecognisesAnExpiredChallenge(t *testing.T) {
 	expired := &protocol.Error{Code: protocol.CodeSteamResult, EResult: 9, HasEResult: true}
 	if !steamDroppedSession(expired) {

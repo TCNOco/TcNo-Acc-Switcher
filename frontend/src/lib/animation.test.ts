@@ -34,9 +34,7 @@ describe("staggerDelay", () => {
   });
 
   it("separates the tiles a person can actually watch arrive", () => {
-    // The point of the curve over a linear delay with a hard cap: the old one
-    // put everything past item 8 on the same frame. A screenful still has to
-    // read as a cascade - only the far tail is allowed to bunch up.
+    // A screenful has to read as a cascade; only the far tail may bunch up.
     for (let index = 1; index < 24; index += 1) {
       expect(staggerDelay(index, 38, 420)).toBeGreaterThan(staggerDelay(index - 1, 38, 420));
     }

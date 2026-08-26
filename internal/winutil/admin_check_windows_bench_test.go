@@ -9,9 +9,8 @@ import (
 	"golang.org/x/sys/windows"
 )
 
-// firstPIDForImageNameLegacy is the per-name scan CanKillProcesses used before
-// snapshotFirstPIDs replaced it: a whole-machine process snapshot for one image
-// name. Kept here as the benchmark baseline.
+// firstPIDForImageNameLegacy is the benchmark baseline: a whole-machine process
+// snapshot for one image name.
 func firstPIDForImageNameLegacy(want string) (pid uint32, found bool, err error) {
 	want = strings.TrimSpace(want)
 	if want == "" {
@@ -45,15 +44,15 @@ func firstPIDForImageNameLegacy(want string) (pid uint32, found bool, err error)
 }
 
 // benchExeNames mirrors the ExesToEnd lists in Platforms.json: the median
-// platform names two executables, the largest name six. None of these are
-// running, which is the normal case and the one that costs a full walk.
+// platform names two executables, the largest six. None are running - the normal
+// case, and the one that costs a full walk.
 var benchExeNames = []string{
 	"RiotClientServices.exe", "LeagueClient.exe", "VALORANT.exe",
 	"RiotClientUx.exe", "RiotClientUxRender.exe", "RiotClientCrashHandler.exe",
 }
 
-// BenchmarkProcessLookupPerName is the shape CanKillProcesses had: one whole
-// process-table snapshot per executable it asks about.
+// BenchmarkProcessLookupPerName compares one process-table snapshot per
+// executable against a single shared snapshot.
 func BenchmarkProcessLookupPerName(b *testing.B) {
 	for _, n := range []int{2, 6} {
 		names := benchExeNames[:n]

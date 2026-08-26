@@ -27,9 +27,8 @@ const (
 // options the main window is built from.
 //
 // The maximised flag is deliberately not turned into a StartState: the platform
-// layer maximises before it applies X/Y, so the window would come up maximised
-// with no restored bounds underneath it. registerWindowPlacement re-applies it
-// once the window exists instead.
+// layer maximises before it applies X/Y, leaving no restored bounds underneath.
+// registerWindowPlacement re-applies it once the window exists instead.
 func applySavedWindowPlacement(opts *application.WebviewWindowOptions, saved platform.WindowPlacement, centered bool) {
 	if opts == nil || !saved.HasSize() {
 		return
@@ -74,17 +73,14 @@ func registerWindowPlacement(app *application.App, win *application.WebviewWindo
 	}
 }
 
-// newPlacementFinisher returns the half of the restore that cannot happen at
-// window creation, and cannot wait on ApplicationStarted either: the platform
-// window does not exist at either point. Until it does, the screen list is
-// empty, Bounds() reads back zero, and Maximise() only records a start state
-// that the platform layer applies *before* the saved X and Y — which is how a
-// restored-maximised window ends up maximised-sized at the saved coordinates
-// with no bounds to restore down to.
+// newPlacementFinisher returns the half of the restore that needs a platform
+// window to exist, which it does not at window creation nor at
+// ApplicationStarted: until then the screen list is empty, Bounds() reads back
+// zero, and Maximise() only records a start state applied before the saved X/Y.
 //
-// The work is idempotent rather than once-only, because the events it hangs off
-// can arrive while creation is still in flight and a call that finds nothing to
-// read has to leave the job for the next one.
+// Idempotent rather than once-only: the events it hangs off can arrive while
+// creation is still in flight, and a call that finds nothing to read has to
+// leave the job for the next one.
 func newPlacementFinisher(app *application.App, win *application.WebviewWindow, saved platform.WindowPlacement) func() {
 	var (
 		mu     sync.Mutex
@@ -160,8 +156,8 @@ func fitWindowBounds(bounds application.Rect, areas []application.Rect, minWidth
 	fitted.Width = min(bounds.Width, max(target.Width, minWidth))
 	fitted.Height = min(bounds.Height, max(target.Height, minHeight))
 	if overlap == 0 {
-		// None of the window is on a screen any more. Nothing about the old
-		// position is worth keeping, so it starts centred.
+		// None of the window is on a screen any more, so nothing about the old
+		// position is worth keeping.
 		fitted.X = target.X + (target.Width-fitted.Width)/2
 		fitted.Y = target.Y + (target.Height-fitted.Height)/2
 		return fitted, fitted != bounds

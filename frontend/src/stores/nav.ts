@@ -57,10 +57,9 @@ export const previousPage = {
 export const appBarTitle = writable("TcNo Account Switcher");
 
 /**
- * Which way the last navigation went: 1 deeper into the app, -1 back out.
- * Page transitions read it so content enters from the side it came from. It is
- * written before every `route.set`, and this store's subscribers run before
- * Svelte flushes the DOM, so a transition never reads a stale direction.
+ * Which way the last navigation went: 1 deeper into the app, -1 back out, read
+ * by page transitions. Must be set before the matching `route.set` — subscribers
+ * here run before Svelte flushes the DOM, so the transition sees it in time.
  */
 export const navDirection = writable<1 | -1>(1);
 

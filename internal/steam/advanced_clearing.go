@@ -167,16 +167,11 @@ func (s *SteamService) RunAdvancedClearingAction(action string) (AdvancedClearRe
 // steamLocalHTMLCachePath locates the CEF cache for an already-resolved install
 // root.
 //
-// Only Windows keeps it away from the client's data: there it is under
-// %LocalAppData% while the install sits in Program Files. Everywhere else it
-// lives inside the root, which is what makes this work for a Flatpak or Snap
-// Steam - deriving it from $HOME instead would clear the native install's cache,
-// or nothing at all, on a machine that only has the sandboxed one.
-//
-// Measured on Linux the directory is <root>/config/htmlcache; older clients put
-// it directly under the root. Both are checked so neither layout is missed, and
-// when neither exists the config path is returned so the "skipped, missing"
-// line names the one to expect.
+// Only Windows keeps it away from the client's data, under %LocalAppData%.
+// Everywhere else it lives inside the root, so a Flatpak or Snap Steam resolves
+// to its own cache rather than the native install's. Current Linux clients use
+// <root>/config/htmlcache, older ones <root>/htmlcache; when neither exists the
+// config path is returned so the "skipped, missing" line names the one to expect.
 func steamLocalHTMLCachePath(root string) (string, error) {
 	if runtime.GOOS == "windows" {
 		la := strings.TrimSpace(os.Getenv("LOCALAPPDATA"))

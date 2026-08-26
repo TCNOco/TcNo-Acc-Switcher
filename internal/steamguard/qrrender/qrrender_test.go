@@ -29,9 +29,8 @@ func TestSVGDataURIDrawsTheChallengeURL(t *testing.T) {
 	if !strings.Contains(string(svg), "<svg") || !strings.Contains(string(svg), "viewBox") {
 		t.Fatalf("payload is not an SVG: %.120q", svg)
 	}
-	// A transparent light colour is written as fill="", which browsers resolve to
-	// the initial value - black - across the whole background rect, so the code
-	// arrived as a solid black square.
+	// An empty fill resolves to the initial value - black - across the whole
+	// background rect.
 	if !strings.Contains(string(svg), `fill="#FFFFFF"`) {
 		t.Fatal("the quiet zone was left without a colour to paint it")
 	}
@@ -57,9 +56,7 @@ func TestSVGDataURIRefusesNothingToDraw(t *testing.T) {
 	}
 }
 
-// The path is written by hand here rather than by a library, so the geometry is
-// this package's to get wrong: one square per dark module, and a viewBox that
-// leaves the quiet zone room on all four sides.
+// The path is written by hand, so the geometry is this package's to get wrong.
 func TestSVGDataURIDrawsEveryModuleAndNothingElse(t *testing.T) {
 	t.Parallel()
 

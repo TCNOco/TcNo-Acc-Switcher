@@ -17,9 +17,8 @@ func benchPlatformsJSON(tb testing.TB) []byte {
 	return raw
 }
 
-// BenchmarkParseDescriptor is one descriptor lookup. Every caller that wants a
-// single platform's descriptor pays a full unmarshal of the whole catalog to
-// get it, so this is the unit that repeats.
+// BenchmarkParseDescriptor is one descriptor lookup: a caller wanting a single
+// platform's descriptor pays a full unmarshal of the whole catalog for it.
 func BenchmarkParseDescriptor(b *testing.B) {
 	raw := benchPlatformsJSON(b)
 	b.SetBytes(int64(len(raw)))

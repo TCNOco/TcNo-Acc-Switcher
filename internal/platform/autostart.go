@@ -45,8 +45,7 @@ func syncWindowsAutostart(app *application.App, enabled, elevated bool) error {
 	wantTask := enabled && elevated
 	// Registering and removing the task both need elevation, so this fails on
 	// every unelevated run. That is not an error to report: the Run entry below
-	// covers it, and the next elevated start reconciles the pair. Logged only so
-	// a permanent failure - policy, a locked-down Task Scheduler - is traceable.
+	// covers it, and the next elevated start reconciles the pair.
 	taskErr := winutil.SetStartupTrayTask(self, wantTask)
 	if taskErr != nil {
 		log.Printf("autostart: scheduled task (elevated startup): %v", taskErr)

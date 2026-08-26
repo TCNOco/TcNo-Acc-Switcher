@@ -18,7 +18,7 @@ var defaultSteamQuitArgs = []string{"-shutdown"}
 //
 // Steam treats WM_CLOSE on its main window as minimise-to-tray, so the generic graceful path can
 // never make it exit: it expires its whole deadline and then force-kills, on every switch. The
-// shutdown argument drains steam.exe and its steamwebhelper children in ~1.6-2.5s.
+// shutdown argument drains steam.exe and its steamwebhelper children instead.
 func steamNativeQuit(root string) func() error {
 	root = strings.TrimSpace(root)
 	if root == "" {
@@ -34,9 +34,9 @@ func steamNativeQuit(root string) func() error {
 	args := descriptorQuitArgs()
 	if len(args) == 0 {
 		// A catalog too old to carry QuitArgs, or one a user has trimmed, would otherwise
-		// silently put every Steam switch back on the 5s graceful window that never works.
-		// Choosing no native quit at all is still available through the closing method:
-		// TaskKill and Electron never reach this path.
+		// put every Steam switch back on the graceful window that never works. Opting out
+		// of a native quit entirely is done through the closing method: TaskKill and
+		// Electron never invoke it, Combined and Close do.
 		steamLog().Debug("steam descriptor has no QuitArgs; using built-in default", "args", defaultSteamQuitArgs)
 		args = defaultSteamQuitArgs
 	}
@@ -55,10 +55,9 @@ func steamNativeQuit(root string) func() error {
 	}
 }
 
-// descriptorQuitArgs reads Extras.QuitArgs from the Steam descriptor so the argument lives in
-// Platforms.json alongside every other platform's, and a user can correct it without a rebuild.
-// Steam resolves its install folder through its own code path rather than the basic flow, which
-// is why it reads the field here instead of going through descriptorNativeQuit.
+// descriptorQuitArgs reads Extras.QuitArgs from the Steam descriptor, so a user can correct the
+// argument without a rebuild. Steam resolves its install folder through its own code path rather
+// than the basic flow, which is why it reads the field here and not through descriptorNativeQuit.
 func descriptorQuitArgs() []string {
 	exeDir, err := platform.ResolveExeDir()
 	if err != nil {

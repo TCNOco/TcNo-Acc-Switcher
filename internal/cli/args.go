@@ -55,8 +55,7 @@ type Parsed struct {
 
 	// GameModeSwitch marks this process as the helper a Game Mode switch handed
 	// its swap to, so the swap runs here instead of being handed off again.
-	// Internal, like --clean-legacy-install: set by the app, not by a user, and
-	// deliberately absent from HelpText.
+	// Internal: set by the app, not by a user, so it stays out of HelpText.
 	GameModeSwitch bool // --gamescope-switch
 }
 

@@ -60,12 +60,9 @@ func TestIsDefaultUserDataDir(t *testing.T) {
 	}
 }
 
-// setTestUserConfig points the user config directory at dir.
-//
-// All three variables, because DefaultSearchDirs goes through os.UserConfigDir:
-// that reads APPDATA on Windows but XDG_CONFIG_HOME, then HOME, elsewhere. With
-// only APPDATA set these tests find the real user's settings file, so they pass
-// only on a machine where the app is not installed.
+// setTestUserConfig points the user config directory at dir. All three
+// variables, because DefaultSearchDirs goes through os.UserConfigDir, which
+// reads APPDATA on Windows but XDG_CONFIG_HOME, then HOME, elsewhere.
 func setTestUserConfig(t *testing.T, dir string) {
 	t.Helper()
 	if err := os.MkdirAll(dir, 0o755); err != nil {

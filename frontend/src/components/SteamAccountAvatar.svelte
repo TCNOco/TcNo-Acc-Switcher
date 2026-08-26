@@ -14,9 +14,8 @@
 
   export let account: SteamAccountRow;
   /**
-   * Cache-bust counter. Null, not 0: 0 is a real and different URL, and a view
-   * that quietly settled for it drew the avatar from before the last refresh.
-   * Left unset, the account's shared counter is used, which is what every other
+   * Cache-bust counter. Null rather than 0, which is itself a real epoch: unset
+   * means fall back to the account's shared counter, which is what every other
    * view of the same account is drawing.
    */
   export let epoch: number | null = null;

@@ -137,12 +137,9 @@ func resolveLevelDBReference(raw string, ctx platform.PathTokenContext) (string,
 	}
 	dbPath := platform.ExpandPathTokens(platform.ExpandWindowsPath(ref.Path), ctx)
 	slog.Debug("leveldb resolve reference", "dbPath", dbPath, "key", ref.Key, "jsonPath", ref.JSONPath != "")
-	// readValue, not readValueFresh: an account page resolves one of these per
-	// account against the same live database, and the fresh path reopened it
-	// every time. Handle lifetime is already scoped by the
-	// closeSharedLevelDBHandles calls bracketing every flow phase, so a handle
-	// never outlives the operation that opened it or survives a phase that
-	// rewrites the database.
+	// Shared handles are safe here: closeSharedLevelDBHandles brackets every flow
+	// phase, so a handle never outlives the operation that opened it or survives a
+	// phase that rewrites the database.
 	return sharedLevelDBStore.readValue(dbPath, ref.Key, ref.JSONPath)
 }
 
@@ -180,8 +177,7 @@ func openReadOnlyLevelDBWithTempCopyFallback(dbPath string) (db *leveldb.DB, cle
 	return db2, func() { _ = os.RemoveAll(tmp) }, nil
 }
 
-// readValueFresh opens the database, reads one value and closes it again,
-// bypassing the shared handle cache.
+// readValueFresh bypasses the shared handle cache: open, read one value, close.
 func (s *levelDBStore) readValueFresh(dbPath, key, jsonPath string) (string, error) {
 	dbPath = filepath.Clean(strings.TrimSpace(dbPath))
 	if dbPath == "" {

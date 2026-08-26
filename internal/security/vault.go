@@ -208,12 +208,6 @@ func AccountBlobValid(platformKey, uniqueID string) bool {
 // AccountBlobValidator answers AccountBlobValid for many accounts without
 // re-resolving the vault state for each one.
 //
-// Before it can check anything, AccountBlobValid must ask whether saved-account
-// encryption is on and unwrap the master key. That first question costs a
-// security-file read, a quarantine directory scan and a restore-journal scan,
-// and paid once per account it dwarfs the decrypt it is guarding. A caller
-// validating a whole account list takes one validator instead.
-//
 // It holds an unwrapped master key, so keep it to the length of one list build
 // and Close it afterwards. Valid is safe to call from several goroutines.
 type AccountBlobValidator struct {
@@ -228,8 +222,8 @@ func NewAccountBlobValidator() *AccountBlobValidator {
 	}
 	key, err := defaultManager.unlockedMasterKey()
 	if err != nil {
-		// Encrypted but locked: nothing can be validated, and reporting every
-		// account intact would be the wrong way to be wrong.
+		// Encrypted but locked: nothing can be validated, so report nothing
+		// valid rather than claiming every account is intact.
 		return &AccountBlobValidator{encrypted: true}
 	}
 	return &AccountBlobValidator{encrypted: true, key: key}

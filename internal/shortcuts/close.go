@@ -12,16 +12,10 @@ import (
 	"TcNo-Acc-Switcher/internal/winutil"
 )
 
-// shortcutTargetExe returns the executable a shortcut starts, or "" when it
-// starts something that is not a program. A .url opens a web or protocol
-// address and a .lnk may point at a folder or a document, and none of those
-// leave a process to close.
 // targetExeCache remembers what a .lnk points at, keyed on its path and the
-// modification time it had when read.
-//
-// Resolving one goes through the shell, and buildDTOs resolves every shortcut a
-// platform has - twice or three times when a page opens, and again on every
-// change event. A stat is what it costs to find out the answer is still good.
+// modification time and size it had when read. Resolving one goes through the
+// shell, and buildDTOs resolves every shortcut a platform has, several times
+// over a page open; a stat is what it costs to confirm the answer still holds.
 var targetExeCache sync.Map // string -> targetExeEntry
 
 type targetExeEntry struct {
@@ -30,6 +24,10 @@ type targetExeEntry struct {
 	exe     string
 }
 
+// shortcutTargetExe returns the executable a shortcut starts, or "" when it
+// starts something that is not a program. A .url opens a web or protocol
+// address and a .lnk may point at a folder or a document, and none of those
+// leave a process to close.
 func shortcutTargetExe(platformKey, fileName string) string {
 	if !strings.HasSuffix(strings.ToLower(fileName), ".lnk") {
 		return ""

@@ -9,12 +9,9 @@ type PlatformCounts struct {
 	TaggedAccounts int
 }
 
-// CountsFor reads ids.json once and derives all three counts from it.
-//
-// Startup wants all three for every platform in Platforms.json. Asking through
-// the single-purpose helpers below re-reads and re-parses the same file three
-// times, and that read is ~70% syscall time on Windows, so collapsing it to one
-// read per platform removes most of the cost.
+// CountsFor reads ids.json once and derives all three counts from it. Prefer it
+// over the single-purpose helpers below when more than one count is wanted: each
+// of those re-reads and re-parses the whole file.
 func CountsFor(platformKey string) PlatformCounts {
 	platformKey = strings.TrimSpace(platformKey)
 	if platformKey == "" {

@@ -435,8 +435,8 @@
         {#if isOpen}
           {#each group.members as member (member.id)}
             {@const p = pings[member.id]}
-            <!-- The group's own row stays put while its members unroll under it,
-                 so the table never jumps the row you just clicked off-screen. -->
+            <!-- Only the members animate: the group row must stay put so the
+                 row just clicked never moves out from under the cursor. -->
             <div
               class="serverpicker-row serverpicker-row--member"
               role="row"

@@ -3,11 +3,8 @@ import { parse as parseYaml } from "yaml";
 import type { Plugin } from "vite";
 
 /**
- * Loads .yaml files as pre-parsed JSON modules.
- *
- * The themes are authored as YAML, and parsing them in the browser meant
- * shipping the whole `yaml` package and running a parse per theme at module
- * evaluation - before the first paint. Doing it here costs nothing at runtime.
+ * Loads .yaml files as pre-parsed JSON modules, keeping the `yaml` package and a
+ * parse-per-theme out of the browser.
  *
  * Shared by vite.config.ts and vitest.config.ts so the two cannot drift: a test
  * that imports a theme has to see the same module shape the build produces.

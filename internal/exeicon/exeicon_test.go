@@ -8,7 +8,7 @@ import (
 )
 
 // countingExtractor replaces the real icon extraction, which needs the shell and
-// a real shortcut. It records how many times it ran and writes a stand-in PNG.
+// a real shortcut.
 func countingExtractor(tb testing.TB, calls *int) {
 	tb.Helper()
 	previousShortcut, previousExe := extractShortcutIcon, extractExeIcon
@@ -33,8 +33,7 @@ func writeSource(tb testing.TB, path string) {
 	}
 }
 
-// The account page asks for the platform icon on every mount, and the extraction
-// behind it resolves a shortcut through the shell and re-encodes a PNG.
+// The account page asks for the platform icon on every mount.
 func TestEnsureShortcutCachedExtractsOnlyOnce(t *testing.T) {
 	calls := 0
 	countingExtractor(t, &calls)
@@ -89,8 +88,6 @@ func TestEnsureShortcutCachedReExtractsWhenTheShortcutIsNewer(t *testing.T) {
 	}
 }
 
-// The guard EnsureShortcutCached was missing is the one EnsureCached already
-// had; both must keep it.
 func TestEnsureCachedExtractsOnlyOnce(t *testing.T) {
 	calls := 0
 	countingExtractor(t, &calls)

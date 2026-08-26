@@ -3,16 +3,11 @@ import { get, writable } from "svelte/store";
 /**
  * Avatar cache-bust counters, per platform, keyed by the platform's account id.
  *
- * Refetching an avatar means asking for its URL with a different `_tcv=`, so the
- * counter is part of the URL, and every view drawing the same account has to
- * agree on it. That is why this is a store rather than account-list state: the
- * list is not the only view. The Steam Guard vault draws the same faces at the
- * same time, and while it kept its own counters it drew them at zero - the URL
- * from before the refresh, which the webview still had cached.
- *
- * Session-lifetime rather than page-lifetime for the same reason: counters that
- * restarted at zero when the platform page was rebuilt asked for `_tcv=0` again
- * and got back the avatar from before the refresh.
+ * The counter goes into the avatar URL as `_tcv=`, so every view drawing the
+ * same account has to agree on it - the account list is not the only one, the
+ * Steam Guard vault draws the same faces at the same time. Counters last for the
+ * session, not the page: one that restarts at zero asks for a URL the webview
+ * still has cached from before the refresh.
  */
 export const avatarEpochs = writable<Record<string, Record<string, number>>>({});
 

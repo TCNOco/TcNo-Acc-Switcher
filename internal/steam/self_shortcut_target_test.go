@@ -91,12 +91,11 @@ func TestSelfShortcutTargetForEachInstallMethod(t *testing.T) {
 			wantBinary:   "/Applications/TcNo-Acc-Switcher.app/Contents/MacOS/TcNo-Acc-Switcher",
 		},
 		{
-			name:      "flatpak steam has to be told to leave its sandbox",
-			goos:      "linux",
-			exePath:   "/usr/local/bin/tcno-acc-switcher",
-			steamRoot: flatpakRoot,
-			present:   []string{"/usr/local/share/icons/hicolor/256x256/apps/tcno-acc-switcher.png"},
-			// Exe names flatpak-spawn; the app itself moves into LaunchOptions.
+			name:         "flatpak steam has to be told to leave its sandbox",
+			goos:         "linux",
+			exePath:      "/usr/local/bin/tcno-acc-switcher",
+			steamRoot:    flatpakRoot,
+			present:      []string{"/usr/local/share/icons/hicolor/256x256/apps/tcno-acc-switcher.png"},
 			wantExe:      `"/usr/bin/flatpak-spawn"`,
 			wantStartDir: `"/usr/bin/"`,
 			wantLaunch:   `--host "/usr/local/bin/tcno-acc-switcher"`,

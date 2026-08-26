@@ -79,11 +79,10 @@ type AppSettings struct {
 	// launched from Big Picture and Game Mode.
 	AddToSteam bool `json:"addToSteam,omitempty"`
 
-	// AddToSteamManaged records that the toggle above has been turned on at
-	// least once, which is what licenses the background pass to touch Steam's
-	// shortcut files at all. It is never cleared: turning the option back off is
-	// exactly when the pass still has to run, to take the entry out of accounts
-	// a failed or missed removal left it in.
+	// AddToSteamManaged records that the toggle above has been on at least once,
+	// which is what licenses the background pass to touch Steam's shortcut files.
+	// It is never cleared: turning the option back off is exactly when the pass
+	// still has to run, to remove the entry from the accounts it is still in.
 	AddToSteamManaged bool `json:"addToSteamManaged,omitempty"`
 
 	// StartProgramCentered places the main window in the center of the screen when the app opens.
@@ -203,9 +202,8 @@ func defaultSettings() AppSettings {
 // normalizeAppSettingsShape enforces what has to hold of any settings value,
 // whatever produced it: a version and a language, a map rather than nil, values
 // inside the set their field allows, and the interlocks between related fields.
-//
-// It says nothing about what a setting should default to, so it is safe to run
-// over settings on their way out to disk as well as on the way in.
+// It applies no defaults, so it is safe to run on settings heading out to disk
+// as well as on ones read in.
 func normalizeAppSettingsShape(s *AppSettings) {
 	if s == nil {
 		return
@@ -239,12 +237,10 @@ func normalizeAppSettingsShape(s *AppSettings) {
 // normalizeAppSettingsDefaults turns on the settings that default to on for a
 // file written before they existed, then applies the shape rules.
 //
-// raw is the decoded JSON object, and it is only ever consulted to tell a key
-// that was absent from one the user explicitly set to false. That makes this a
-// function about reading a file, and only about reading one: on the way out
-// every field already holds the value the user chose, so asking "was this key in
-// the JSON" of a struct that never came from JSON answers no for all of them and
-// turns each one back on.
+// raw is the decoded JSON object, consulted only to tell a key that was absent
+// from one the user explicitly set to false. Only call this on settings read
+// from disk: for a struct that never came from JSON every key reads as absent,
+// and every setting that defaults to on is turned back on.
 func normalizeAppSettingsDefaults(s *AppSettings, raw map[string]json.RawMessage) {
 	if s == nil {
 		return
@@ -268,8 +264,7 @@ func normalizeAppSettingsDefaults(s *AppSettings, raw map[string]json.RawMessage
 		s.AnimationsEnabled = true
 	}
 	// A file from before the flag existed, with the option already on, is a user
-	// who has turned it on - which is what the flag records. Without this their
-	// entries would never be repaired or extended to a new Steam account again.
+	// who has turned it on - which is what the flag records.
 	if _, ok := raw["addToSteamManaged"]; !ok {
 		s.AddToSteamManaged = s.AddToSteam
 	}
@@ -385,10 +380,8 @@ func loadSettings(exeDir string) (AppSettings, error) {
 }
 
 func saveSettingsAtomic(exeDir string, s AppSettings) error {
-	// Shape only. This used to call normalizeAppSettingsDefaults with a
-	// hand-written map of "keys to pretend were present", which had to list every
-	// field that defaults to on and silently turned back on any it missed - which
-	// is what happened to crashReportAutoSubmit, on every single save.
+	// Shape only: never the defaults pass, which would read every absent JSON key
+	// as a default-on setting and turn back on the ones the user switched off.
 	normalizeAppSettingsShape(&s)
 	path, err := resolveSettingsSavePath(exeDir, s)
 	if err != nil {

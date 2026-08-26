@@ -154,16 +154,15 @@ button,
    rather than having to out-specify it. */
 .btnicontext,
 button:not(.fancyLink) {
-  /* border-colour is in the list because hover and :active both change it; left
-     out, the fill eased in while the outline snapped. */
+  /* border-colour belongs in the list: hover and :active both change it. */
   transition:
     filter var(--dur-fast) var(--ease-out),
     background-color var(--dur-fast) var(--ease-out),
     border-color var(--dur-fast) var(--ease-out),
     transform var(--dur-instant) var(--ease-out);
 
-  /* A button label never wraps. Buttons are sized for one line, so a second one
-     overflows the height instead of growing the control. */
+  /* Buttons are sized for one line; a wrapped label overflows the height
+     instead of growing the control. */
   white-space: nowrap;
 
   &:active:not(:disabled) {
@@ -316,8 +315,7 @@ button .caret, .button .caret {
   }
 }
 
-/* The caret points at where the list will appear, so it turns when the list is
-   already there - same gesture as the shortcut bar's expand chevron. */
+/* The caret points at where the list will appear, so it turns once it is. */
 .show > .dropdown-toggle::after {
   transform: rotate(180deg);
 }
@@ -685,10 +683,6 @@ button .caret, .button .caret {
     justify-content: flex-end;
     border-right: none;
 
-    /* No `&:hover { padding: 1px }`. Nothing paired with it - no border appeared,
-       no theme compensated - so all it did was shove every tile in the strip a
-       pixel sideways whenever the pointer crossed it. */
-
     &:empty {
         padding: 0;
         border: none;
@@ -831,9 +825,8 @@ button .caret, .button .caret {
     white-space: normal;
     word-wrap: break-word;
     opacity: 0;
-    /* Drifts the last few pixels out of the element it belongs to rather than
-       materialising beside it. `translate`, not `transform`: the arrow child
-       uses `transform` and the root is placed with inline left/top. */
+    /* `translate`, not `transform`: the arrow child uses `transform` and the
+       root is placed with inline left/top. */
     transition:
         opacity var(--dur-fast) var(--ease-out),
         translate var(--dur-fast) var(--ease-out);

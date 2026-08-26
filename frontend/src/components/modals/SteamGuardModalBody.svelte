@@ -120,10 +120,9 @@
 	let qrRegionSelecting = false;
 	let qrNeedsLogin = false;
 	/**
-	 * The scan-to-sign-in code shown beside the password form. Its own state,
-	 * because it is its own sign-in: the two are live at the same time and either
-	 * can finish first, so sharing authStage/authHandle would have one wipe the
-	 * other's session out from under it.
+	 * Kept apart from authStage/authHandle: the scan and the password form are live
+	 * at the same time and either can finish first, so a shared stage would have one
+	 * wipe the other's session out from under it.
 	 */
 	let qrLoginStage: "idle" | "starting" | "waiting" | "unavailable" = "idle";
 	let qrLoginHandle = "";
@@ -468,11 +467,9 @@
 		void loadVaultStatusForUnlock();
 	}
 
-	// Signing in by scanning is offered on the login-only form only. That screen
-	// exists to store a session, which is exactly what a scan produces; the
-	// enrollment form beside it needs the password itself, to add an
-	// authenticator. Started once per account, because re-running it would throw
-	// away a code the user may already have their phone pointed at.
+	// Login-only form only: that screen exists to store a session, which is what a
+	// scan produces, while enrollment needs the password itself. Started once per
+	// account, so a re-run cannot discard a code a phone is already pointed at.
 	$: showQRLogin = state.screen === "login-only-setup" && qrLoginStage !== "unavailable";
 	$: if (state.screen === "login-only-setup" && authStage === "credentials" && state.account) {
 		if (qrLoginStartedFor !== state.account.id) {
@@ -1891,11 +1888,8 @@
 
 	/**
 	 * Opens the scan-to-sign-in code for the account whose form is on screen.
-	 *
-	 * Failure is deliberately quiet. This is the second of two ways to sign in on
-	 * the same screen, so a Steam that will not open a QR session, or a build
-	 * whose backend has no such call, should leave the user with the password
-	 * form rather than an error over the top of it.
+	 * Failure is quiet: the password form beside it is still a way in, so a Steam
+	 * that will not open a QR session must not put an error over the top of it.
 	 */
 	async function startQRLogin(currentAccount: SteamGuardAccountRef, purpose: SteamAuthPurpose): Promise<void> {
 		const begin = controller.beginQRLogin;
@@ -1908,10 +1902,8 @@
 		qrLoginStage = "starting";
 		qrLoginImage = "";
 		qrLoginHandle = "";
-		// Steam holds one scan session per account, so the previous code has to
-		// be closed before the next can open. Leaving and coming straight back
-		// used to race that cancel and be refused as a conflict, which left the
-		// screen with no code on it at all.
+		// Steam holds one scan session per account, so the previous code's close has
+		// to finish before the next can open; racing it is refused as a conflict.
 		if (qrLoginClosing) {
 			await qrLoginClosing;
 			qrLoginClosing = null;
@@ -3197,11 +3189,9 @@
 				     sign-in progress text, which would replace this the moment the
 				     form is submitted. -->
 				<p>{credentialsHint || $t("SteamGuard_Enrollment_CredentialsBody")}</p>
-				<!-- Steam's own login page puts the code beside the password box, and it
-				     is the quicker way in for anyone whose phone is already signed in.
-				     Beside rather than above: stacked, the two together made the screen
-				     tall enough to scroll. Hidden entirely when it is not on offer, so
-				     the fields simply take the whole width back. -->
+				<!-- Beside the password box rather than above it: stacked, the two
+				     together make the screen tall enough to scroll. Hidden entirely when
+				     not on offer, so the fields take the whole width back. -->
 				<div class="steam-guard__signin" class:steam-guard__signin--split={showQRLogin}>
 					{#if showQRLogin}
 						<div class="steam-guard__qr-login">
@@ -4155,10 +4145,8 @@
 	   steps derive a key and the Steam steps wait on the network, both long
 	   enough that a button which only greys out reads as a click that did
 	   nothing. currentColor keeps it legible on any button in any theme. */
-	/*
-	 * The scan-to-sign-in code, drawn beside the sign-in fields rather than above
-	 * them: stacked, the two together made the screen tall enough to scroll.
-	 */
+	/* Stacked, the sign-in fields and the scan code together make the screen tall
+	   enough to scroll, so the split modifier below puts them side by side. */
 	.steam-guard__signin {
 		display: flex;
 		flex-direction: column;
@@ -4167,9 +4155,8 @@
 
 	.steam-guard__signin--split {
 		flex-direction: row;
-		/* The code column is taller than the two fields beside it. Centred, that
-		   difference sat above the first label as a band of nothing; from the top
-		   the leftover falls under the fields, where there is nothing to push down. */
+		/* The code column is taller than the fields beside it; from the top that
+		   leftover falls under the fields, where there is nothing to push down. */
 		align-items: flex-start;
 		gap: $sg-2;
 	}
@@ -4220,8 +4207,7 @@
 	.steam-guard__qr-login-caption {
 		margin: 0;
 		/* The line break lives in the resource, so a translation can put it where
-		   its own wording needs it rather than wherever this column happens to
-		   wrap. */
+		   its own wording needs it rather than wherever this column wraps. */
 		white-space: pre-line;
 		font-size: 0.8em;
 		opacity: 0.75;

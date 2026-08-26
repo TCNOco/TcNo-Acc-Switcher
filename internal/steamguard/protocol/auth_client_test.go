@@ -84,10 +84,8 @@ func TestBeginAuthSessionViaCredentials(t *testing.T) {
 	}
 }
 
-// Live shape: Steam refuses a wrong account name or password with HTTP 200, a
-// non-OK EResult and an empty body, which the response parser can only read as a
-// malformed response. Without the header the body is all there is, so the parser
-// has to name the check that refused it.
+// Steam refuses a wrong account name or password with HTTP 200, a non-OK
+// EResult and an empty body; without the header the body is all there is.
 func TestBeginAuthSessionViaCredentialsReportsRefusal(t *testing.T) {
 	t.Parallel()
 
@@ -148,8 +146,8 @@ func TestUpdateAuthSessionWithSteamGuardCode(t *testing.T) {
 	}
 }
 
-// Steam adds fields to this response without notice, and rejecting them turned an
-// accepted code into invalid_response. An empty body is the ordinary success shape.
+// Steam adds fields to this response without notice, and an empty body is the
+// ordinary success shape. Neither may fail an accepted code.
 func TestUpdateAuthSessionWithSteamGuardCodeToleratesUnknownAndEmptyBodies(t *testing.T) {
 	t.Parallel()
 
@@ -281,10 +279,8 @@ func TestPollAuthSessionStatus(t *testing.T) {
 	}
 }
 
-// Live shape: a session Steam has dropped answers with an empty body, the same
-// bytes a session still waiting for approval sends. Only the EResult separates
-// them, and reading a dropped session as waiting leaves the caller polling a
-// session that can never authorize.
+// A dropped session answers with the same empty body a session still waiting for
+// approval sends; only the EResult separates them.
 func TestPollAuthSessionStatusSeparatesWaitingFromDroppedSession(t *testing.T) {
 	t.Parallel()
 

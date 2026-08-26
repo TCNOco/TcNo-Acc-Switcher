@@ -1,9 +1,8 @@
 package platform
 
-// macOS shares the POSIX process layer with Linux - winutil/process_unix.go -
-// and differs only in how the process table is read, which is a kern.proc.all
-// sysctl here rather than a /proc walk. So closing and relaunching a client
-// works, and with it the switch itself.
+// macOS shares the POSIX process layer with Linux (winutil/process_unix.go),
+// reading the process table through a kern.proc.all sysctl rather than /proc, so
+// closing and relaunching a client works.
 //
 // ScreenCaptureExclusion is true here and false on Linux: Wails implements
 // setContentProtection for NSWindow and leaves the GTK one an empty function.

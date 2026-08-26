@@ -253,10 +253,8 @@ export function buildPlatformContextMenu(
     const tr = get(t);
     const busy = get(platformActionBusy).busy;
     return [
-      // Elevation is a Windows concept here: off it RunSelfElevatedAndWait is
-      // unimplemented, so the entry would launch un-elevated while claiming
-      // otherwise. Silently ignoring a request to elevate is worse than not
-      // offering it.
+      // Off Windows RunSelfElevatedAndWait is unimplemented, so the entry would
+      // launch un-elevated while claiming otherwise.
       ...(!getCapabilities().elevation
         ? []
         : [

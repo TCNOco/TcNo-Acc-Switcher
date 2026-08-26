@@ -194,20 +194,16 @@ type UpsertResult struct {
 	// all, which tells the caller there is nothing trustworthy to show.
 	Before []Record
 	// After is the store as the merge left it, whether or not it reached disk.
-	After []Record
-	// Changed reports whether the merge altered anything.
+	After   []Record
 	Changed bool
 }
 
 // UpsertMany merges records into the store and reports it on both sides of the
 // merge.
 //
-// Callers want to know what the store now holds, and usually what it held
-// before. Both come from the single load this already does under writeMu, which
-// saves the caller a Load either side - the Steam list build was reading the
-// same file three times, and it builds the list twice per page load. Taking
-// "before" from inside the lock also makes it consistent with the merge rather
-// than a separate read a concurrent writer could land between.
+// Both sides come from the single load this already does under writeMu, which
+// saves the caller a Load either side and makes "before" consistent with the
+// merge rather than a separate read a concurrent writer could land between.
 func UpsertMany(records []Record) (UpsertResult, error) {
 	writeMu.Lock()
 	defer writeMu.Unlock()

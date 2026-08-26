@@ -9,9 +9,8 @@ import (
 )
 
 // The cache belongs to whichever install the user resolved, so it has to come
-// off that root. Deriving it from $HOME cleared the native install's cache on a
-// machine whose Steam is a Flatpak - or nothing at all, since the native path
-// does not exist there.
+// off that root rather than off $HOME, which on a Flatpak machine names a
+// different install or a path that does not exist.
 func TestHTMLCachePathFollowsTheResolvedRoot(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("HOME", home)
@@ -21,7 +20,7 @@ func TestHTMLCachePathFollowsTheResolvedRoot(t *testing.T) {
 	if err := os.MkdirAll(want, 0o755); err != nil {
 		t.Fatal(err)
 	}
-	// A native install alongside it, which the old $HOME-derived path would pick.
+	// A native install alongside it, which a $HOME-derived path would pick.
 	native := filepath.Join(home, ".local", "share", "Steam", "config", "htmlcache")
 	if err := os.MkdirAll(native, 0o755); err != nil {
 		t.Fatal(err)

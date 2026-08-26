@@ -13,9 +13,8 @@ describe("avatarEpochs", () => {
     resetAvatarEpochs();
   });
 
-  // The Steam Guard vault reads the counter the account list writes. While it
-  // kept its own it drew every avatar at zero, which is the URL from before the
-  // refresh and the reason the vault showed a stale face.
+  // The Steam Guard vault reads the counter the account list writes; a view with
+  // its own counters draws the URL from before the refresh.
   it("hands a counter written by one view to another", () => {
     setPlatformAvatarEpochs("Steam", { "76561198000000001": 3 });
 

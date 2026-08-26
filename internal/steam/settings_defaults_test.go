@@ -10,10 +10,8 @@ import (
 	"TcNo-Acc-Switcher/internal/platform"
 )
 
-// A settings file missing a key must keep that key's default. Decoding onto a
-// zero value instead turned every absent bool off and then wrote it back, which
-// is how a partial file silently disabled AutoStart, the VAC and limited badges,
-// the account username, the last-login date and profile info collection.
+// A settings file missing a key must keep that key's default: decoding onto a
+// zero value would turn every absent bool off and write it back.
 func TestLoadSettingsKeepsDefaultsForAbsentKeys(t *testing.T) {
 	exeDir := t.TempDir()
 	platform.ResetPathSingletonsForTest(exeDir)
@@ -62,7 +60,7 @@ func TestLoadSettingsKeepsDefaultsForAbsentKeys(t *testing.T) {
 }
 
 // A key the file sets explicitly still wins, including when the value is the
-// zero one - that is the whole reason it cannot just be merged over.
+// zero one.
 func TestLoadSettingsHonoursExplicitFalseAndZero(t *testing.T) {
 	exeDir := t.TempDir()
 	platform.ResetPathSingletonsForTest(exeDir)

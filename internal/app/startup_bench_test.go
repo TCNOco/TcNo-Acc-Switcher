@@ -68,8 +68,7 @@ func seedStartupEnv(tb testing.TB) {
 	RegisterStartupAccountCounts()
 }
 
-// BenchmarkGetStartup is the full startup payload the home screen asks for,
-// including the per-platform account and tag totals it paints as skeleton hints.
+// BenchmarkGetStartup is the full startup payload, per-platform counts included.
 func BenchmarkGetStartup(b *testing.B) {
 	seedStartupEnv(b)
 	svc := &platform.PlatformService{}
@@ -86,9 +85,7 @@ func BenchmarkGetStartup(b *testing.B) {
 	}
 }
 
-// BenchmarkReadSettings is the same payload without those counts. Two of the
-// four startup-snapshot calls a cold start makes come through here, and both
-// want a single scalar setting.
+// BenchmarkReadSettings is the same payload without those counts.
 func BenchmarkReadSettings(b *testing.B) {
 	seedStartupEnv(b)
 	svc := &platform.PlatformService{}

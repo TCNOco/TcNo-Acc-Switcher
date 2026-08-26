@@ -252,8 +252,7 @@ func steamAppNameMapCacheAge() (time.Duration, bool) {
 }
 
 // setSteamAppNameMapMemory publishes m as the in-memory catalogue. It takes
-// ownership: every producer builds a fresh map, and nothing mutates one after
-// publishing, so the map is replaced wholesale rather than copied into.
+// ownership: callers must not mutate m after publishing.
 func setSteamAppNameMapMemory(m map[string]string) {
 	steamAppNameMapMu.Lock()
 	steamAppNameMapMem = m
@@ -262,10 +261,6 @@ func setSteamAppNameMapMemory(m map[string]string) {
 
 // getSteamAppNameMapCached returns the Steam app catalogue. The result is
 // read-only and shared - do not write to it.
-//
-// It used to hand back a copy, which for the ~180k-entry catalogue is around
-// 10MB and 180k hash inserts per call, on a map every caller only reads.
-// appinfo.go's cache already returns its map uncopied for the same reason.
 func getSteamAppNameMapCached() (map[string]string, error) {
 	steamAppNameMapMu.RLock()
 	if steamAppNameMapLooksValid(steamAppNameMapMem) {

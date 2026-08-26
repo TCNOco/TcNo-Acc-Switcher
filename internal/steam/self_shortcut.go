@@ -95,11 +95,9 @@ func (s *SteamService) GetSteamShortcutState() (SteamShortcutState, error) {
 // SetAddToSteam adds the switcher to every local Steam user's shortcut list, or
 // takes it back out, and remembers which was asked for.
 //
-// Steam is not closed first. It only writes shortcuts.vdf when its own list
-// changes, so a write underneath a running client survives - measured, against
-// the claim that it rewrites the file on exit. What a running Steam does mean is
-// that the entry will not appear until it restarts, which is what SteamRunning
-// in the result is for.
+// Steam is not closed first: it only writes shortcuts.vdf when its own list
+// changes, so a write underneath a running client survives. The entry will not
+// appear until Steam restarts, which is what SteamRunning in the result is for.
 func (s *SteamService) SetAddToSteam(enabled bool) (SteamShortcutApplyResult, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -109,11 +107,9 @@ func (s *SteamService) SetAddToSteam(enabled bool) (SteamShortcutApplyResult, er
 	result.Users = users
 	result.FlatpakSteam = flatpak
 
-	// The preference is saved even when some users failed. applySelfShortcut
-	// carries on past a user it cannot write, so a failure still leaves entries
-	// behind - and not recording what was asked for would hide those from the
-	// background pass for good, with the toggle drawn off over a Steam library
-	// that has the app in it.
+	// The preference is saved even when some users failed: applySelfShortcut
+	// carries on past a user it cannot write, so entries can be left behind that
+	// the background pass would never clear if the preference went unrecorded.
 	exeDir, err := platform.ResolveExeDir()
 	if err != nil {
 		return result, errors.Join(applyErr, err)
@@ -123,9 +119,8 @@ func (s *SteamService) SetAddToSteam(enabled bool) (SteamShortcutApplyResult, er
 		return result, errors.Join(applyErr, err)
 	}
 	app.AddToSteam = enabled
-	// Turning it on is what puts entries in other users' lists, so it is also
-	// what signs the background pass up to keep every user in line from here on
-	// - including taking the entry back out after the option goes off again.
+	// Set on enable and never cleared: once entries exist, the background pass
+	// has to keep running to take them back out after the option goes off again.
 	if enabled {
 		app.AddToSteamManaged = true
 	}
@@ -137,35 +132,29 @@ func (s *SteamService) SetAddToSteam(enabled bool) (SteamShortcutApplyResult, er
 var selfShortcutSyncing atomic.Bool
 
 // selfShortcutSynced remembers which shortcut files this process has already
-// brought in line with the preference, so the repeat passes cost one directory
-// listing per Steam install instead of a read and a parse of every user's list.
+// brought in line with the preference, so a repeat pass costs one directory
+// listing per Steam install instead of parsing every user's list.
 //
-// It does not record which way round that was, and does not need to: the only
-// thing that flips the preference mid-process is the toggle, and that runs a
-// full pass, which clears this first.
+// It does not record which way round that was: the only thing that flips the
+// preference mid-process is the toggle, and that runs a full pass, which clears
+// this first.
 var selfShortcutSynced sync.Map
 
 // SyncSelfShortcutsInBackground brings every local Steam user's shortcut list in
 // line with the saved preference, off the caller's goroutine.
 //
-// Both directions run. On, so an account that signed in after the last pass gets
-// the entry too - Steam creates userdata/<id32> at first sign-in, so the set of
-// users to write to grows underneath a running app, and the entry would
-// otherwise exist for every account except the one just added. Off, so an entry
-// a removal could not reach at the time - a Steam install on a drive that was
-// not plugged in, a second client that was not installed yet, settings carried
-// over from another PC - is cleared the next time the app can see it.
+// Both directions run. Steam creates userdata/<id32> at first sign-in, so the set
+// of users to write to grows underneath a running app; and an entry a removal
+// could not reach at the time - an install on a drive that was not plugged in, a
+// second client, settings carried over from another PC - is cleared the next time
+// the app can see it.
 //
-// It does nothing until the option has been turned on once. Before that nothing
-// of ours is in anyone's list, and reading and rewriting shortcut files for a
-// feature the user has never touched is not something to do on the way to
-// drawing a page.
+// It does nothing until the option has been turned on once, so nothing is read or
+// rewritten for a user who has never touched the feature.
 //
-// This is not a poll: callers hang it off things that only happen after a
-// sign-in could have. Users already brought in line are skipped without opening
-// their file, so a repeat pass is a handful of stats. The memo starts empty, so
-// the first pass of a process is a full one - which is also what re-points every
-// entry at the app's new path after an update or a move.
+// Users already brought in line are skipped without opening their file. The memo
+// starts empty, so the first pass of a process is a full one - which is also what
+// re-points every entry at the app's new path after an update or a move.
 func SyncSelfShortcutsInBackground() {
 	if !selfShortcutSyncing.CompareAndSwap(false, true) {
 		return
@@ -275,12 +264,12 @@ func upsertSelfShortcut(list []*shortcutsvdf.Node, target shortcutTarget) ([]*sh
 }
 
 // pointEntryAtTarget updates an existing entry and reports whether anything
-// actually changed, so a startup that finds nothing to fix writes nothing.
+// actually changed, so a pass that finds nothing to fix writes nothing.
 //
 // Only the fields this code owns are touched. AppName, the icon and the launch
-// options are all things a user can set from Steam's own properties dialog, and
-// the repair pass runs every time the Steam page is opened - rewriting them
-// would undo the change every time they made it.
+// options are user-settable from Steam's own properties dialog, and this pass
+// reruns on every Steam page open, so rewriting them would undo that edit every
+// time it was made.
 func pointEntryAtTarget(entry *shortcutsvdf.Node, target shortcutTarget) bool {
 	changed := false
 	set := func(key, want string) {
@@ -433,9 +422,8 @@ func readShortcuts(path string) ([]*shortcutsvdf.Node, error) {
 
 // writeShortcuts replaces one user's list, keeping a copy of what was there.
 //
-// Both halves matter more here than usual. Steam answers a shortcuts.vdf it
-// cannot parse by clearing it, so a half-written file loses every shortcut the
-// user has - which is also why the previous contents are kept next to it.
+// Steam answers a shortcuts.vdf it cannot parse by clearing it, so a half-written
+// file loses every shortcut the user has - hence the atomic write and the backup.
 func writeShortcuts(path string, list []*shortcutsvdf.Node) error {
 	if previous, err := os.ReadFile(path); err == nil {
 		if err := fsutil.WriteFileAtomic(path+".tcnobak", previous, 0o644); err != nil {

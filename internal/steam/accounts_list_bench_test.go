@@ -13,8 +13,8 @@ import (
 	"TcNo-Acc-Switcher/internal/profileimage"
 )
 
-// benchSteamEnv mirrors newSteamTestEnv for benchmarks, which get a testing.B.
-// Do NOT run these in parallel - they set global path singletons.
+// benchSteamEnv mirrors newSteamTestEnv for benchmarks. Do NOT run these in
+// parallel - they set global path singletons.
 func benchSteamEnv(tb testing.TB) string {
 	tb.Helper()
 	exeDir := tb.TempDir()
@@ -91,9 +91,9 @@ func seedSteamAccounts(tb testing.TB, steamDir string, n int) []string {
 
 func benchSteamSizes() []int { return []int{10, 50, 200} }
 
-// BenchmarkBuildSteamListContext is the shared setup both GetSteamAccountsList
-// and GetSteamAccountsEnrichment run. Opening a Steam account page calls both,
-// so the page pays this cost twice.
+// BenchmarkBuildSteamListContext measures the shared setup both
+// GetSteamAccountsList and GetSteamAccountsEnrichment run, so opening a Steam
+// account page pays it twice.
 func BenchmarkBuildSteamListContext(b *testing.B) {
 	for _, n := range benchSteamSizes() {
 		b.Run(fmt.Sprintf("%daccounts", n), func(b *testing.B) {
@@ -166,8 +166,7 @@ func seedTrayUsers(tb testing.TB, ids []string, n int) {
 }
 
 // BenchmarkSyncTrayKnownAccounts is the Steam tray prune that runs before the
-// window is created. The tray keeps three accounts by default however many the
-// install has.
+// window is created; the tray keeps three accounts however many the install has.
 func BenchmarkSyncTrayKnownAccounts(b *testing.B) {
 	for _, n := range []int{50, 200} {
 		b.Run(fmt.Sprintf("%daccounts", n), func(b *testing.B) {

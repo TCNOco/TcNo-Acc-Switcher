@@ -81,9 +81,8 @@ type QRApprovalView struct {
 	PreviouslyUsedLocation   bool   `json:"previouslyUsedLocation"`
 	RequestorDeviceTrustCode int32  `json:"requestorDeviceTrustCode,omitempty"`
 	// Expired means Steam has no such sign-in waiting. A QR challenge lives about
-	// a minute, so this is the ordinary answer for a code photographed earlier,
-	// or one left on screen while the user found the scan button - not a failure
-	// of the scan, and not a reason to make the user sign in again.
+	// a minute, so this is an ordinary answer for a code scanned late, not a
+	// failed scan and not a reason to make the user sign in again.
 	Expired bool `json:"expired,omitempty"`
 }
 
@@ -106,19 +105,16 @@ func qrLogger() *slog.Logger {
 	return slog.Default().With("component", "steamguard.qr")
 }
 
-// logQRFailure records the underlying error before it collapses into a
-// QRScanState the UI can render.
-// logQRAttempt records what the decoder was actually handed.
-//
-// A scan that finds nothing says only "no-code", which is the same answer for a
-// photograph too blurred to read and for a capture that grabbed sixty pixels
-// because the screen is scaled. The size tells those apart, and it is the one
-// thing about the image that is safe to write down.
+// logQRAttempt records the frame size handed to the decoder: it tells a
+// photograph too blurred to read apart from a capture that grabbed sixty
+// pixels, and it is the one thing about the image that is safe to write down.
 func logQRAttempt(step, accountID string, width, height int) {
 	qrLogger().Debug("Steam QR decode attempt",
 		"step", step, "steamId64", accountID, "width", width, "height", height)
 }
 
+// logQRFailure records the underlying error before it collapses into a
+// QRScanState the UI can render.
 func logQRFailure(step, accountID string, state QRScanState, err error) {
 	attributes := []any{"step", step, "steamId64", accountID, "state", string(state)}
 	if err != nil {
@@ -353,9 +349,7 @@ func (s *Service) GetQRApproval(accountID, attempt, token string) (QRApprovalVie
 	if err != nil {
 		if steamDroppedSession(err) {
 			// Reported rather than raised: the scan worked, the code is simply
-			// too old to sign anything in. Raising it put a red "Binding call
-			// failed: Steam result 9" in the log and told the user their session
-			// needed a new login, which was never true.
+			// too old to sign anything in, and the account's session is fine.
 			qrLogger().Debug("Steam QR code is no longer live",
 				"step", "approval-info", "steamId64", binding.AccountID)
 			return QRApprovalView{Expired: true}, nil

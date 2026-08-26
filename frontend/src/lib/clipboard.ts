@@ -2,10 +2,9 @@
  * Copy text to the clipboard, falling back for webviews without the async API.
  *
  * `navigator.clipboard` needs a secure context, which the app's asset server is
- * not guaranteed to be on every platform - it is absent in WebKitGTK often
- * enough that callers were each inventing their own answer, and one of them
- * silently did nothing at all. Throws when the copy did not happen, so a caller
- * can say so instead of pretending it worked.
+ * not guaranteed to be on every platform - it is absent in WebKitGTK. Throws
+ * when the copy did not happen, so a caller can say so instead of pretending it
+ * worked.
  */
 export async function copyText(text: string): Promise<void> {
   if (navigator.clipboard?.writeText) {

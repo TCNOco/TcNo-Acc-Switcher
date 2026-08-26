@@ -20,13 +20,9 @@ const (
 	discordSmallImageKey = "switcher_small"
 
 	// connectRetryMin and connectRetryMax bound the wait after a failed connect.
-	//
-	// Connecting to a Discord that is not running is not cheap: the IPC dial
-	// retries a named pipe for a full two seconds before giving up, and neither
-	// rich-go nor this manager remembers that it failed, so every refresh paid
-	// it again. Backing off keeps an absent Discord from costing two seconds out
-	// of every thirty for the whole session, while still picking presence up
-	// within a few minutes of Discord starting.
+	// Connecting to an absent Discord costs a two-second named-pipe dial, which
+	// every refresh would otherwise pay again. The cap is also the worst-case lag
+	// before a newly started Discord picks up presence, so keep it to minutes.
 	connectRetryMin = 30 * time.Second
 	connectRetryMax = 5 * time.Minute
 )
@@ -73,9 +69,8 @@ func (m *Manager) Start() {
 
 	logRPC().Info("manager started", "refreshPeriod", refreshPeriod.String())
 	go m.runPeriodic(stopCh)
-	// Asynchronous deliberately. Start runs before the window exists, and the
-	// first refresh connects to Discord - a dial that takes two seconds to fail
-	// when Discord is not running. Nothing on screen waits for presence.
+	// Async deliberately: the first connect takes two seconds to fail when
+	// Discord is not running, and nothing on screen waits for presence.
 	m.RefreshAsync()
 }
 

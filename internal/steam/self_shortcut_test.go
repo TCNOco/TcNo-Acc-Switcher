@@ -71,8 +71,7 @@ func TestUpsertRepairsAMovedAppWithoutLosingWhatSteamPutThere(t *testing.T) {
 	if got := list[0].GetString("Exe"); got != moved.Exe {
 		t.Fatalf("Exe = %s, want %s", got, moved.Exe)
 	}
-	// Steam files a user's artwork under the appid, so recomputing it would
-	// orphan whatever they set.
+	// Steam files a user's artwork under the appid, so recomputing it orphans it.
 	if got := list[0].GetInt32("appid"); got != appID {
 		t.Fatalf("appid = %d, want the original %d", got, appID)
 	}
@@ -148,9 +147,8 @@ func TestRemoveWhenAbsentReportsNoChange(t *testing.T) {
 }
 
 func TestSelfShortcutRootsCountsOneInstallOnce(t *testing.T) {
-	// A Linux Steam answers to three paths: ~/.local/share/Steam, and
-	// ~/.steam/root and ~/.steam/steam symlinked to it. Left undeduplicated,
-	// every shortcut file gets written - and backed up over - once per alias.
+	// A Linux Steam answers to three paths: ~/.local/share/Steam, with
+	// ~/.steam/root and ~/.steam/steam symlinked to it.
 	real := filepath.Join(t.TempDir(), "Steam")
 	if err := os.MkdirAll(filepath.Join(real, "config"), 0o755); err != nil {
 		t.Fatal(err)
@@ -186,8 +184,8 @@ func TestSelfShortcutRootsSkipsAnInstallNeverSignedInto(t *testing.T) {
 }
 
 func TestUpsertKeepsWhatTheUserSetInSteamsProperties(t *testing.T) {
-	// The startup repair runs on every launch, so anything it overwrites here is
-	// overwritten every launch - a customisation the user can never make stick.
+	// The startup repair runs on every launch, so a customisation it overwrites
+	// here is one the user can never make stick.
 	list, _ := upsertSelfShortcut(nil, linuxTarget())
 	list[0].SetString("LaunchOptions", "mangohud %command%")
 	list[0].SetString("icon", "/home/u/Pictures/my-own-icon.png")
@@ -317,8 +315,8 @@ func hasSelfShortcut(t *testing.T, root, id32 string) bool {
 }
 
 func TestApplyReachesAUserThatSignedInAfterTheFirstPass(t *testing.T) {
-	// Steam creates userdata/<id32> at first sign-in, so an account added while
-	// the app is running is not in the list the first pass walked.
+	// Steam creates userdata/<id32> at first sign-in, so a user can appear after
+	// the first pass has already walked the list.
 	root := steamInstallWithUsers(t, "111")
 	prev := steamRootCandidatesFn
 	steamRootCandidatesFn = func() []string { return []string{root} }
@@ -343,8 +341,7 @@ func TestApplyReachesAUserThatSignedInAfterTheFirstPass(t *testing.T) {
 }
 
 func TestRepeatPassLeavesSyncedUsersUnopened(t *testing.T) {
-	// The trigger is every account list load, which is every window focus. A
-	// pass that finds no new user must not read and rewrite what is already done.
+	// The trigger is every account list load, which is every window focus.
 	root := steamInstallWithUsers(t, "111")
 	prev := steamRootCandidatesFn
 	steamRootCandidatesFn = func() []string { return []string{root} }
@@ -374,8 +371,8 @@ func TestRepeatPassLeavesSyncedUsersUnopened(t *testing.T) {
 }
 
 func TestFullPassRedoesUsersAMemoisedPassWouldSkip(t *testing.T) {
-	// Toggling the option or moving the app has to reach every user, including
-	// the ones an earlier pass recorded as done.
+	// Toggling the option or moving the app has to reach users an earlier pass
+	// recorded as done.
 	root := steamInstallWithUsers(t, "111")
 	prev := steamRootCandidatesFn
 	steamRootCandidatesFn = func() []string { return []string{root} }
@@ -396,11 +393,9 @@ func TestFullPassRedoesUsersAMemoisedPassWouldSkip(t *testing.T) {
 }
 
 func TestRemovalPassReachesAUserTheMemoNeverSaw(t *testing.T) {
-	// An entry outlives the option being turned off whenever the removal could
-	// not reach it - a Steam install on a drive that was not plugged in, a
-	// settings file carried over from another PC. The preference is saved
-	// regardless, so the pass that runs when the Steam page opens is the only
-	// thing left that clears it, and it starts with an empty memo.
+	// An entry outlives the option being turned off whenever the removal could not
+	// reach it, so the pass that runs when the Steam page opens starts with an
+	// empty memo.
 	root := steamInstallWithUsers(t, "111")
 	prev := steamRootCandidatesFn
 	steamRootCandidatesFn = func() []string { return []string{root} }

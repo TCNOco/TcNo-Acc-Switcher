@@ -202,13 +202,11 @@ func (s *SteamService) GetSteamAccountsList() ([]SteamAccountListItemDTO, error)
 	if len(out) > 0 {
 		syncSteamPlatformCounts(len(out))
 	}
-	// Opening the Steam page, and every reload after it, is the only thing that
-	// drives the shortcut pass - it is not on the startup path, where it would
-	// cost every launch a walk of every Steam user's shortcut list for a feature
-	// most people never turn on. The list is also reloaded when the window
-	// regains focus, which is what someone coming back from signing a new
-	// account into Steam does: that sign-in is what created the userdata folder
-	// the entry has to go in.
+	// This is the only thing that drives the shortcut pass: on the startup path
+	// it would cost every launch a walk of every Steam user's shortcut list for
+	// a feature most people never turn on. The list also reloads when the window
+	// regains focus, which is when a newly signed-in account's userdata folder
+	// appears.
 	SyncSelfShortcutsInBackground()
 	return out, nil
 }
@@ -268,8 +266,7 @@ func (s *SteamService) GetSteamAccountsEnrichment() ([]SteamAccountEnrichmentDTO
 	now := time.Now()
 	out := make([]SteamAccountEnrichmentDTO, len(ctx.users))
 	// Each row costs a cached-miniprofile file read plus an HTML parse over it,
-	// and the rows share nothing writable. A profile of a 200-account list put
-	// 72% of this call in file syscalls, so the rows are built concurrently.
+	// and the rows share nothing writable, so they are built concurrently.
 	rows := ctx.users
 	parallel.ForEachIndex(len(rows), func(i int) {
 		out[i] = steamEnrichmentFor(ctx, rows[i], avatars, now)
@@ -277,11 +274,8 @@ func (s *SteamService) GetSteamAccountsEnrichment() ([]SteamAccountEnrichmentDTO
 	return out, nil
 }
 
-// steamEnrichmentFor builds one account's enrichment row.
-//
-// It reads ctx and avatars and writes nothing shared, so rows can be built
-// concurrently - which is worth doing because most of the cost here is the
-// per-account miniprofile file read rather than anything CPU-bound.
+// steamEnrichmentFor builds one account's enrichment row. It reads ctx and
+// avatars and writes nothing shared, so rows can be built concurrently.
 func steamEnrichmentFor(ctx *steamListContext, u LoginUser, avatars *profileimage.Snapshot, now time.Time) SteamAccountEnrichmentDTO {
 	v := ctx.vacMap[u.SteamID64]
 	primaryURL, _ := avatars.FindCached(u.SteamID64)

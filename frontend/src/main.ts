@@ -16,10 +16,9 @@ import { initTheme } from './lib/themes'
 import { installNavigationGuard } from './lib/navigationGuard'
 
 /**
- * Nothing before mount() may decide whether the app paints. The window is
- * frameless, so an app that never mounts is a bare rectangle of background
- * colour with no title bar and no way to report what happened - a step that
- * fails or hangs degrades to its defaults instead.
+ * Nothing before mount() may decide whether the app paints: the window is
+ * frameless, so an app that never mounts is a bare rectangle with no title bar
+ * and no way to report why. Each step degrades to its defaults instead.
  */
 const STEP_TIMEOUT_MS = 8000
 

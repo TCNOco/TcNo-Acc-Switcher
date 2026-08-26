@@ -15,8 +15,8 @@ import (
 // The Windows arm is `cmd.exe /c start` with an empty title argument: start
 // treats a lone quoted argument as the window title, so dropping it would open a
 // console instead of the target. On Linux xdg-open resolves the scheme through
-// the desktop's handler registry - which is how steam:// reaches whichever Steam
-// is installed, native, Flatpak or Snap, without this code knowing which.
+// the desktop's handler registry, so steam:// reaches whichever Steam is
+// installed - native, Flatpak or Snap - without this code knowing which.
 func openWithDefaultHandler(uri string) error {
 	switch runtime.GOOS {
 	case "windows":

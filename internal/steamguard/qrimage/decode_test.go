@@ -514,9 +514,8 @@ func makeQRFrame(t testing.TB, payload string) *Frame {
 	return frame
 }
 
-// matrixImage paints a symbol at module-sized squares, which is what the
-// decoder's fixtures were before and what makes them independent of any one
-// library's own renderer.
+// matrixImage paints a symbol at module-sized squares, which keeps the fixtures
+// independent of any one library's own renderer.
 func matrixImage(matrix *gozxing.BitMatrix, module int) image.Image {
 	width := matrix.GetWidth() * module
 	height := matrix.GetHeight() * module

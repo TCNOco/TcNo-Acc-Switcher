@@ -50,8 +50,7 @@
     }
 
     /* Inset ring rather than a border: a real border is a pixel of layout shift
-       on every press. The rule this replaces used `::active`, which is not a
-       selector that matches anything. */
+       on every press. */
     &:active:not(:disabled) {
       box-shadow: inset 0 0 0 1px var(--overlay-white-12);
     }

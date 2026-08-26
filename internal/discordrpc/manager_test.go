@@ -11,10 +11,8 @@ import (
 	"TcNo-Acc-Switcher/internal/platform"
 )
 
-// slowConnect stands in for a Discord that is not running: the real IPC dial
-// retries a named pipe for a full two seconds before failing. The stub keeps
-// the test off any real Discord and returns an error, so the manager never
-// reaches richgo's logout path.
+// slowConnect stands in for a Discord that is not running. It fails rather than
+// succeeding, so the manager never reaches richgo's logout path.
 func slowConnect(tb testing.TB, d time.Duration, calls *atomic.Int32) {
 	tb.Helper()
 	previous := discordLogin
@@ -26,8 +24,8 @@ func slowConnect(tb testing.TB, d time.Duration, calls *atomic.Int32) {
 	tb.Cleanup(func() { discordLogin = previous })
 }
 
-// newManagerTestEnv points the settings loader at a temp dir, where the
-// defaults apply - and DiscordRpc defaults to true.
+// newManagerTestEnv points the settings loader at a temp dir, where DiscordRpc
+// defaults to true.
 func newManagerTestEnv(tb testing.TB) {
 	tb.Helper()
 	exeDir := tb.TempDir()
@@ -73,7 +71,6 @@ func TestConnectBacksOffAfterAFailure(t *testing.T) {
 		t.Fatalf("made %d connect attempts across three refreshes, want 1 - the failure should back off", got)
 	}
 
-	// Once the backoff has elapsed, the next refresh tries again.
 	m.mu.Lock()
 	m.connectBackoffUntil = time.Now().Add(-time.Second)
 	m.mu.Unlock()
@@ -83,7 +80,6 @@ func TestConnectBacksOffAfterAFailure(t *testing.T) {
 	}
 }
 
-// Each failure should wait longer than the last, up to the cap.
 func TestConnectBackoffGrowsAndIsCapped(t *testing.T) {
 	m := NewManager()
 	m.mu.Lock()
@@ -121,7 +117,6 @@ func TestStopIsNotBlockedByAQueuedRefresh(t *testing.T) {
 		t.Fatalf("Stop took %s", elapsed)
 	}
 
-	// A refresh arriving after Stop must do nothing rather than reconnect.
 	before := calls.Load()
 	m.Refresh()
 	if got := calls.Load(); got != before {

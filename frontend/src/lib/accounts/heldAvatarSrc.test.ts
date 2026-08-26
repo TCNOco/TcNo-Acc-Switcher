@@ -113,8 +113,6 @@ describe("heldAvatarKey", () => {
     expect(heldAvatarSrc(vault, "/img/a.jpg?_tcv=0")).toBe("/img/a.jpg?_tcv=0");
 
     // The vault settling on its own src must not take the list's away from it.
-    // Sharing one slot, each swap re-rendered the other view, which asked for its
-    // own src back: the pair alternated a frame at a time until one view closed.
     expect(loader.pending).toHaveLength(0);
     expect(heldAvatarSrc(list, "/img/a.jpg?_tcv=1")).toBe("/img/a.jpg?_tcv=1");
   });

@@ -39,12 +39,10 @@ type beginQRWireResult struct {
 
 // BeginAuthSessionViaQR opens an unauthenticated session for a QR sign-in.
 //
-// The session it returns carries no SteamID. A credentials session is bound to
-// one account from the first call, and everything downstream leans on that; a QR
-// session cannot be, because the account is whichever one scans the code. The
-// session is marked so only polling accepts it - see validatePollableSession -
-// and the caller has to check the account the poll reports before it trusts the
-// tokens for anyone.
+// The session it returns carries no SteamID - the account is whichever one
+// scans the code - so it is marked to be accepted only by polling (see
+// validatePollableSession), and the caller has to check the account the poll
+// reports before it trusts the tokens for anyone.
 func (a *AuthenticationClient) BeginAuthSessionViaQR(ctx context.Context, request BeginQRRequest, timeout time.Duration) (BeginQRResult, error) {
 	if a == nil || a.client == nil || a.entropy == nil {
 		return BeginQRResult{}, protocolError(CodeInvalidRequest, StateInvalid)
@@ -166,9 +164,8 @@ func unmarshalBeginQRResponse(data []byte) (beginQRWireResult, *Error) {
 	if result.interval == 0 {
 		return beginQRWireResult{}, invalidResponseDetail("qr_begin_missing_interval")
 	}
-	// The URL is the whole point of the call, and it is about to be turned into
-	// an image the user is asked to trust. Steam's own format is the only one
-	// accepted, and it has to name the session that was just opened.
+	// The URL becomes an image the user is asked to trust, so only Steam's own
+	// format is accepted and it has to name the session that was just opened.
 	if !validChallengeURL(string(challengeURL)) || !challengeURLNamesClient(string(challengeURL), result.clientID) {
 		return beginQRWireResult{}, invalidResponseDetail("qr_begin_challenge_url")
 	}

@@ -79,9 +79,8 @@ func benchAssetHandler(tb testing.TB) http.Handler {
 	})
 }
 
-// BenchmarkAssetRequest covers both shapes the handler sees. Scripts,
-// stylesheets and fonts can never be served from disk; avatars can, and an
-// account page asks for one per row.
+// BenchmarkAssetRequest covers both shapes the handler sees: a path that can
+// never be served from disk, and an image that can.
 func BenchmarkAssetRequest(b *testing.B) {
 	handler := benchAssetHandler(b)
 

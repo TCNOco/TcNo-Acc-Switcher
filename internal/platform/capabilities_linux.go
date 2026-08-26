@@ -1,8 +1,7 @@
 package platform
 
 // Linux has the process layer - winutil/process_linux.go implements start, the
-// SIGTERM/SIGKILL ladder and /proc snapshots - so switching works. What is
-// missing is the Win32-specific decoration around it.
+// SIGTERM/SIGKILL ladder and /proc snapshots - so switching works.
 //
 // ScreenCaptureExclusion is false here and true on macOS: Wails implements
 // setContentProtection for NSWindow but leaves the GTK one an empty function.

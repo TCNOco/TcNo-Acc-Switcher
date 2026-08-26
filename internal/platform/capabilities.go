@@ -6,17 +6,9 @@ import "runtime"
 // control is hidden because the capability behind it is missing rather than
 // because of what OS the webview thinks it is on.
 //
-// The UI used to sniff navigator.userAgent for "windows" in three separate
-// places. That answers only "is this Windows", and the port needs finer
-// distinctions than that: process control works on Linux and not macOS, screen
-// capture exclusion works on macOS and not Linux. A boolean per capability says
-// what each control needs to know without every caller having to remember which
-// OS implements what.
-//
-// Values live in the per-OS files beside this one, so they are set where the
-// build tags that decide them are visible. A capability is true only when the
-// action behind it actually happens - a stub that returns nil without doing
-// anything is false, not true.
+// Values live in the per-OS files beside this one. A capability is true only
+// when the action behind it actually happens - a stub that returns nil without
+// doing anything is false, not true.
 type OSCapabilities struct {
 	// Shortcuts covers desktop and game shortcuts. Off Windows,
 	// winutil.WriteShortcutLnk returns ErrUnsupported: .lnk is the only format
@@ -90,7 +82,6 @@ type OSCapabilities struct {
 func Capabilities() OSCapabilities { return osCapabilities }
 
 // CurrentOS is the GOOS the UI is running against: "windows", "linux" or
-// "darwin". Capabilities answer nearly every question the UI has, but wording
-// sometimes has to differ where the capability does not - naming the startup
-// entry "Start with Windows" on Linux, for instance.
+// "darwin". Prefer Capabilities; use this only where wording must differ on an
+// OS that has the capability.
 func CurrentOS() string { return runtime.GOOS }

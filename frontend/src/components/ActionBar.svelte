@@ -17,9 +17,8 @@
   import { steamGuardActionAccount } from "../stores/steamGuardAction";
   import { emitSteamGuardMenuRequest } from "../lib/steam/steamGuardMenuRequest";
   import "../styles/actionbar.scss";
-  // Neither of these ever renders on the home screen, which is the page the
-  // startup bundle has to paint. They are fetched the first time a platform
-  // page asks for them; the platform page chunk pulls them in anyway.
+  // Lazy: neither renders on the home screen, which is the page the startup
+  // bundle has to paint, and the platform page chunk pulls them in anyway.
   type Lazy = typeof import("./GameShortcutBar.svelte")["default"] | null;
   type LazySteamBar = typeof import("./SteamGamesAccountBar.svelte")["default"] | null;
   let GameShortcutBar: Lazy = null;

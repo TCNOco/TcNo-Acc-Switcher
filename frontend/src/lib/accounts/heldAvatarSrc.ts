@@ -29,12 +29,12 @@ export const avatarSwapped = writable(0);
  * Key for one account's avatar *in one view*.
  *
  * The hold has to outlive the component, so it cannot be keyed by the element -
- * but it must not be keyed by the account alone either. A slot holds one src, and
- * two views wanting different srcs for the same account take it from each other
- * on every swap, each swap re-rendering the other: the pair then alternates a
- * frame at a time for as long as both views are open.
+ * and not by the account alone either: a slot holds one src, so two views wanting
+ * different srcs for the same account would take it from each other on every
+ * swap, each swap re-rendering the other.
  *
- * An account with no id gets no hold at all; a scope on its own is every account.
+ * An account with no id gets no hold at all, rather than one keyed on the scope
+ * alone - that slot would be shared by every account in the view.
  */
 export function heldAvatarKey(scope: string, accountId: string): string {
   const id = accountId.trim();

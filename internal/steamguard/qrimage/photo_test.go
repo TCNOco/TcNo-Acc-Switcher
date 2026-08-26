@@ -12,11 +12,9 @@ import (
 
 // photographed degrades a clean symbol the way a phone camera pointed at a
 // screen does: fewer pixels per module, grey-on-grey instead of black-on-white,
-// and the softness of a lens that never quite focused.
-//
-// The numbers come from a real photo that this package could not read - its
-// luminance ran 99..255 rather than 0..255, at about four and a half pixels per
-// module.
+// and the softness of a lens that never quite focused. The levels match a real
+// photo whose luminance ran 99..255 rather than 0..255, at about four and a half
+// pixels per module.
 func photographed(t testing.TB, source *Frame) *Frame {
 	t.Helper()
 	src := source.Image()
@@ -73,10 +71,7 @@ func photographed(t testing.TB, source *Frame) *Frame {
 	return frame
 }
 
-// A photo of a sign-in code on a screen is a thing people actually try, and the
-// decoder this package used before could not read one: it located the finder
-// patterns and then failed Reed-Solomon, because it fits the module grid with an
-// affine transform and a photograph is not an affine view of a screen.
+// A photo of a sign-in code on a screen is a thing people actually try.
 func TestDecodeCandidatesReadsAPhotographedCode(t *testing.T) {
 	payload := "https://s.team/q/1/1234567890123456789"
 	frame := photographed(t, makeQRFrame(t, payload))
@@ -90,8 +85,8 @@ func TestDecodeCandidatesReadsAPhotographedCode(t *testing.T) {
 	}
 }
 
-// The redraw is a second attempt, not a first one. A screenshot decodes as it
-// arrives and must not pay for thresholding it never needed.
+// A screenshot decodes as it arrives and must not pay for thresholding it never
+// needed.
 func TestDecodeCandidatesOnlyRedrawsWhenTheFrameItselfHeldNothing(t *testing.T) {
 	payload := "https://s.team/q/1/1234567890123456789"
 
@@ -121,9 +116,8 @@ func TestDecodeCandidatesOnlyRedrawsWhenTheFrameItselfHeldNothing(t *testing.T) 
 	}
 }
 
-// Both variants are thresholds, so every pixel they hand the decoder is black or
-// white. A variant that still carried the photograph's greys would only be
-// asking the same question twice.
+// A variant that still carried the photograph's greys would only be asking the
+// decoder the same question twice.
 func TestNormalizedVariantsAreBinaryAndTheSameSize(t *testing.T) {
 	frame := photographed(t, makeQRFrame(t, "https://s.team/q/1/1234567890123456789"))
 	source := frame.Image()

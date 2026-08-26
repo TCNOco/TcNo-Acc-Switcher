@@ -14,9 +14,9 @@
 
   button {
     height: 36px;
-    /* The status text is the flexible element here - it has min-width:0 and an
-       ellipsis. Buttons keep their content width so a wider font (any Linux
-       default) cannot squeeze a label into two lines inside a fixed height. */
+    /* The status text is the flexible element here; buttons keep their content
+       width so a wider font (any Linux default) cannot wrap a label inside a
+       fixed height. */
     flex-shrink: 0;
   }
 

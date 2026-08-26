@@ -314,8 +314,6 @@ label.acc {
   color: var(--whiteSecondary);
   text-align: center;
   cursor: pointer;
-  /* The `all 50ms` that used to close this list overrode every property named
-     before it, so the transform and shadow never got their own timing. */
   transition:
     transform var(--dur-fast) var(--ease-out),
     box-shadow var(--dur-fast) var(--ease-out),
@@ -323,12 +321,9 @@ label.acc {
     background-color var(--dur-fast) var(--ease-out);
   line-height: 1em;
 
-  /* Platform tiles lift under the cursor and account tiles did not, which made
-     the account grid read as a static picture rather than a row of controls.
-
-     Lift and shadow only. Border and fill are what mark the selected account and
-     the live one, and a hover rule is specific enough to outrank both - repaint
-     either here and pointing at a tile would erase the state it is in. */
+  /* Lift and shadow only: border and fill are what mark the selected account
+     and the live one, and this hover rule outranks both - repaint either here
+     and pointing at a tile would erase the state it is in. */
   &:hover:not(.acc--broken) {
     box-shadow: 0 4px 14px var(--shadow-color-35);
     transform: translateY(-2px);

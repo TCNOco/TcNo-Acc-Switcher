@@ -72,9 +72,8 @@ func SyncTrayKnownAccounts() {
 	if err != nil || root == "" {
 		return
 	}
-	// SyncPlatformUsers only prunes entries the tray already has, and keeps at
-	// most TrayAccNumber of them, so an install with no Steam tray entries needs
-	// none of the work below.
+	// SyncPlatformUsers only prunes entries the tray already has, so an install
+	// with no Steam tray entries needs none of the work below.
 	trayUsers, err := tray.LoadUsers()
 	if err != nil {
 		return

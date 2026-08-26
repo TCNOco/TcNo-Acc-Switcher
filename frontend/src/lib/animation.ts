@@ -28,11 +28,9 @@ const reducedMotionQuery =
 /**
  * Global guard: true when motion is enabled.
  *
- * The OS preference counts as well as the app setting. animations.scss already
- * neutralises CSS animations under `prefers-reduced-motion`, and every
- * transition here compiles down to one - but Svelte still holds a leaving
- * element for the length of the duration it was handed. Answering false here is
- * what actually removes it on the frame it was told to go.
+ * The OS preference counts as well as the app setting. Neutralising the CSS is
+ * not enough on its own - Svelte holds a leaving element for the length of the
+ * duration it was handed, so only answering false here removes it immediately.
  */
 export function motionEnabled(): boolean {
   if (reducedMotionQuery?.matches) return false;
@@ -85,12 +83,11 @@ export function scaleFade(
 
 /**
  * Height collapse for bars and sections that open in place. Padding, margin and
- * border travel with the height so the surrounding layout never jumps at the
- * endpoints.
+ * border travel with the height so the surrounding layout never jumps.
  *
- * Not `svelte/transition`'s `slide`: that one animates `height` alone, and a bar
- * carrying its own `min-height` - the action bar does - simply refuses to
- * shrink past it. Zeroing `min-height` for the duration is the whole difference.
+ * Not `svelte/transition`'s `slide`: that animates `height` alone, so an element
+ * carrying its own `min-height` refuses to shrink past it. Zeroing `min-height`
+ * for the duration is the difference.
  */
 export function collapse(node: Element, params?: MotionParams): TransitionConfig {
   if (!motionEnabled()) return noOpTransition();
@@ -126,10 +123,9 @@ type TileParams = MotionParams & { enabled?: boolean; start?: number };
 /**
  * Grid tiles arriving: settle forward to full size.
  *
- * Scale and opacity only, deliberately - no vertical drift. Page navigation
- * flies the whole `<main>` sideways, and a tile that also travels down turns the
- * page's horizontal slide into a diagonal one. Scaling is on the axis the slide
- * has no opinion about, so the two compose instead of fighting.
+ * Scale and opacity only, no vertical drift: page navigation flies the whole
+ * `<main>` sideways, and a tile that also travels down turns that horizontal
+ * slide into a diagonal one.
  */
 export function tileIn(node: Element, params?: TileParams): TransitionConfig {
   if (!motionEnabled() || params?.enabled === false) return noOpTransition();
@@ -157,11 +153,9 @@ export function tileOut(node: Element, params?: TileParams): TransitionConfig {
 /**
  * Staggered entrance delay, approaching `maxMs` instead of hitting it.
  *
- * A linear delay with a hard cap looks fine for six tiles and bad for sixty:
- * everything past the cap starts on the same frame, so a long list cascades and
- * then dumps its tail all at once. This eases off instead - the first few tiles
- * are `baseMs` apart, later ones bunch up gently, and nothing ever waits longer
- * than `maxMs`.
+ * Under a linear delay with a hard cap, everything past the cap starts on the
+ * same frame, so a long list dumps its tail all at once. Here the first few
+ * tiles are `baseMs` apart, later ones bunch up, and none waits past `maxMs`.
  */
 export function staggerDelay(index: number, baseMs = 38, maxMs = 420): number {
   if (!motionEnabled()) return 0;

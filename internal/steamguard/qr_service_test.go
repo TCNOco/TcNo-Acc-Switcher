@@ -454,8 +454,6 @@ func setupQRService(t *testing.T) (*Service, SensitiveViewGrant) {
 	return service, issueSensitiveGrant(t, service, qrTestAccountID, "request-qr-service-0001")
 }
 
-// qrTestImage paints a symbol at six pixels a module with a four-module quiet
-// zone, which is what these fixtures have always been.
 func qrTestImage(t *testing.T, payload string) image.Image {
 	t.Helper()
 	const (

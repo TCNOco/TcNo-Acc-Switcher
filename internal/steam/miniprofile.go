@@ -430,10 +430,9 @@ func ApplySteamManualAvatarMiniprofile(fragment, steamID64 string) string {
 }
 
 // applyManualAvatarToMiniprofile swaps in a manual avatar the caller has already
-// resolved. A caller building a whole account list holds a profileimage snapshot
-// that answered "is it manual" and "where is it" for every account in one
-// directory read, and re-asking the filesystem per account is what the snapshot
-// exists to avoid. cachedURL empty means there is nothing to swap in.
+// resolved; an empty cachedURL means there is nothing to swap in. List builders
+// pass a URL from their own directory snapshot, so keep this separate from
+// ApplySteamManualAvatarMiniprofile, which costs two filesystem lookups per account.
 func applyManualAvatarToMiniprofile(fragment, steamID64, cachedURL string) string {
 	if strings.TrimSpace(fragment) == "" || steamID64 == "" || cachedURL == "" {
 		return fragment

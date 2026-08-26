@@ -16,8 +16,7 @@ import (
 const benchLevelDBKey = "_https://discord.comMultiAccountStore"
 
 // seedBenchLevelDB writes a database roughly the size of a real Discord Local
-// Storage: the account blob plus a few hundred other keys, so opening it costs
-// what opening the real one costs.
+// Storage, so opening it costs what opening the real one costs.
 func seedBenchLevelDB(tb testing.TB) string {
 	tb.Helper()
 	dbPath := filepath.Join(tb.TempDir(), "leveldb")
@@ -43,16 +42,12 @@ func seedBenchLevelDB(tb testing.TB) string {
 	return dbPath
 }
 
-// BenchmarkLevelDBReadPerAccount is the shape a Discord account page takes:
-// descriptor variable resolution resolves a leveldb reference per account, and
-// the operation ends with closeSharedLevelDBHandles.
-//
-// Fresh reopens the database for every reference. Cached opens it once for the
-// whole operation and hands the same handle to each read, which is what the
-// begin/end closeSharedLevelDBHandles calls around every flow phase already
-// assume. On Windows the gap is wider than this: with the platform running its
-// LOCK forces the open down the temp-copy path, which byte-copies the entire
-// Local Storage directory - once per read on the fresh path.
+// BenchmarkLevelDBReadPerAccount is the shape a Discord account page takes: one
+// leveldb reference resolved per account, ending with closeSharedLevelDBHandles.
+// Fresh reopens the database per reference; Cached reuses one handle for the whole
+// operation. On Windows the gap is wider than measured here: with the platform
+// running, its LOCK forces the open down the temp-copy path, which byte-copies the
+// entire Local Storage directory once per read.
 func BenchmarkLevelDBReadPerAccount(b *testing.B) {
 	for _, accounts := range []int{1, 10, 50} {
 		dbPath := seedBenchLevelDB(b)

@@ -142,18 +142,15 @@
   }
 
   /**
-   * The page leaving and the page arriving overlap for the length of the
-   * crossfade, so the arriving one has to paint on top.
+   * The leaving and arriving pages overlap for the length of the crossfade, so
+   * the arriving one has to paint on top. Svelte hands the same `<main>` back
+   * when a branch re-enters mid-fade, so whatever the leave sets has to be
+   * undone on enter or it sticks. Inline rather than by class: Svelte scopes
+   * its stylesheet at compile time, so a class added from script matches
+   * nothing.
    *
-   * Both halves matter. Svelte reuses a branch's DOM when it re-enters while
-   * still fading out - navigate away and straight back and the same `<main>` is
-   * handed over - so anything set on the way out has to be undone on the way in,
-   * or it sticks forever. Set inline rather than by class: Svelte scopes its
-   * stylesheet at compile time, so a class added from script matches nothing.
-   *
-   * Taking the leaving page out of hit-testing is not done here: Svelte already
-   * sets `inert` on an element it is transitioning out, and clears it again if
-   * the element comes back.
+   * Hit-testing needs nothing here - Svelte sets `inert` on an element it is
+   * transitioning out, and clears it again if the element comes back.
    */
   function onPageEnter(event: Event): void {
     (event.currentTarget as HTMLElement).style.zIndex = "2";
@@ -629,9 +626,9 @@
   .container.busyCursor * {
     cursor: progress !important;
   }
-  /* Clipped rather than translated out of view. Translating by its own height
-     lands the bottom edge on exactly y=0, so any sub-pixel rounding leaves a
-     sliver of the accent border drawn across the top of the window. */
+  /* Clipped rather than translated out of view: translating by its own height
+     lands the bottom edge on exactly y=0, where sub-pixel rounding leaves a
+     sliver of the accent border across the top of the window. */
   .skip-link {
     position: absolute;
     left: 1rem;

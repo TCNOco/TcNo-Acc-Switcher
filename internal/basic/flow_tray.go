@@ -40,8 +40,8 @@ func recordBasicTrayRecent(platformKey, uniqueID string) {
 	tray.RefreshMenuIfSet()
 }
 
-// syncBasicTrayKnownAccountsFor is the single-platform entry point, for callers
-// acting on one account rather than sweeping every platform.
+// syncBasicTrayKnownAccountsFor is the single-platform entry point for callers
+// that do not already hold a platform index.
 func syncBasicTrayKnownAccountsFor(platformKey string, ids map[string]string) {
 	idx, err := cli.LoadPlatformIndex()
 	if err != nil {
@@ -51,8 +51,7 @@ func syncBasicTrayKnownAccountsFor(platformKey string, ids map[string]string) {
 }
 
 // syncBasicTrayKnownAccounts takes the platform index rather than loading one:
-// building it parses the whole catalog, and the caller sweeping every platform
-// would otherwise pay that once per platform.
+// building it parses the whole catalog, which a sweep would pay per platform.
 func syncBasicTrayKnownAccounts(idx *cli.PlatformIndex, platformKey string, ids map[string]string) {
 	platformKey = strings.TrimSpace(platformKey)
 	if platformKey == "" {
@@ -79,17 +78,15 @@ func syncBasicTrayKnownAccounts(idx *cli.PlatformIndex, platformKey string, ids 
 }
 
 // SyncAllTrayKnownAccounts prunes the tray's recent-account lists against what
-// each platform still has saved. It runs before the window is created.
+// each platform still has saved.
 func SyncAllTrayKnownAccounts() {
 	idx, err := cli.LoadPlatformIndex()
 	if err != nil {
 		return
 	}
-	// One read of the tray file for the whole sweep. SyncPlatformUsers only ever
-	// prunes a list that already exists - it returns without doing anything when
-	// a platform has no tray entries - so a platform missing from here needs
-	// none of the per-platform work below, and most installs have entries for
-	// only one or two of the two dozen platforms.
+	// One read of the tray file for the whole sweep: SyncPlatformUsers only prunes
+	// lists that already exist, so a platform with no tray entries needs none of the
+	// per-platform work below.
 	trayUsers, err := tray.LoadUsers()
 	if err != nil {
 		return

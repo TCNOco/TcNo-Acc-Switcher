@@ -6,28 +6,19 @@ import (
 )
 
 // InGamescopeSession reports that this is a gamescope session - Steam's Game
-// Mode on a handheld - rather than a desktop with Steam running on it.
-//
-// It lives here rather than with the Steam code because it is a fact about the
-// session, not about Steam: there is one app on screen, no other compositor, no
-// window management and no tray. What follows from it is the same whoever
-// launched us - fill the screen, drop the window buttons that cannot work, and
-// do not walk out of the process tree that owns the only window there is.
+// Mode on a handheld - rather than a desktop with Steam running on it: one app
+// on screen, no other compositor, no window management and no tray.
 func InGamescopeSession() bool { return inGamescopeSession(os.Getenv) }
 
 // GamescopeSessionEnv carries the verdict to a process this app starts through
 // the user's systemd manager. Such a process inherits the manager's environment,
-// which has none of the session variables the verdict is read from - so it has
-// to be decided here and passed on explicitly, or the helper concludes it is on
-// a desktop and behaves like one.
+// which has none of the session variables the verdict is read from, so it has to
+// be decided here and passed on explicitly.
 const GamescopeSessionEnv = "TCNO_GAMESCOPE_SESSION"
 
 // inGamescopeSession takes its environment so the shapes can be checked
-// off-device.
-//
-// The values are the ones a Game Mode launch on Bazzite 43 actually carries,
-// read out of a real launch on an ROG Ally: GAMESCOPE_WAYLAND_DISPLAY=gamescope-0,
-// XDG_CURRENT_DESKTOP=gamescope, DESKTOP_SESSION=gamescope-session.
+// off-device. A Game Mode launch carries GAMESCOPE_WAYLAND_DISPLAY=gamescope-0,
+// XDG_CURRENT_DESKTOP=gamescope and DESKTOP_SESSION=gamescope-session.
 //
 // SteamGamepadUI is deliberately not one of them. Big Picture sets it on an
 // ordinary desktop too, where the window belongs to a real compositor and none
@@ -39,8 +30,8 @@ func inGamescopeSession(env func(string) string) bool {
 	if strings.TrimSpace(env("GAMESCOPE_WAYLAND_DISPLAY")) != "" {
 		return true
 	}
-	// XDG_SESSION_DESKTOP was not among the three the Ally carried, but session
-	// files on other distributions set it and not always the others.
+	// XDG_SESSION_DESKTOP is set by some distributions' session files and not the
+	// others.
 	for _, key := range []string{"XDG_CURRENT_DESKTOP", "DESKTOP_SESSION", "XDG_SESSION_DESKTOP"} {
 		if strings.Contains(strings.ToLower(env(key)), "gamescope") {
 			return true

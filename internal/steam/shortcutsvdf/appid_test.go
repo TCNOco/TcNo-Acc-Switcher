@@ -3,8 +3,7 @@ package shortcutsvdf
 import "testing"
 
 func TestShortcutAppIDMatchesTheCommunityVector(t *testing.T) {
-	// The vector every community implementation agrees on, with the quote bytes
-	// inside the hashed string.
+	// The vector every community implementation agrees on, quote bytes included.
 	got := ShortcutAppID(`"C:\Program Files (x86)\XBMC\XBMC.exe"`, "XBMC")
 	if want := int32(-2119177653); got != want {
 		t.Fatalf("ShortcutAppID = %d, want %d", got, want)
@@ -12,8 +11,7 @@ func TestShortcutAppIDMatchesTheCommunityVector(t *testing.T) {
 }
 
 func TestQuotesAreInsideTheHash(t *testing.T) {
-	// Hashing the unquoted path yields a different id, which orphans the artwork
-	// Steam files under the old one.
+	// A different id orphans the artwork Steam filed under the old one.
 	quoted := ShortcutAppID(`"/usr/bin/app"`, "App")
 	bare := ShortcutAppID("/usr/bin/app", "App")
 	if quoted == bare {

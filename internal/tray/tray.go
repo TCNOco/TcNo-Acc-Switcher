@@ -119,11 +119,10 @@ func MaybeHideMainWindow() {
 
 // fitTrayIcon renders iconPNG at the size this OS wants a tray icon to be.
 //
-// The shipped art is deliberately larger than any tray draws it, so that every
-// host scales down rather than up. Windows then rescales it again to
-// SM_CXSMICON, and doing that here with Lanczos instead beats letting GDI
-// stretch it at the fractional DPIs where the result looked softest. Hosts that
-// want the source untouched report no size and get the original bytes back.
+// The shipped art is deliberately larger than any tray draws it, so every host
+// scales down rather than up. Downscaling to SM_CXSMICON here with Lanczos
+// beats letting GDI stretch it at fractional DPIs. Hosts that want the source
+// untouched report no size and get the original bytes back.
 func fitTrayIcon(iconPNG []byte) []byte {
 	size := winutil.TrayIconSize()
 	if size <= 0 || len(iconPNG) == 0 {

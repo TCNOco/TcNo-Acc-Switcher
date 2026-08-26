@@ -1,12 +1,11 @@
 /**
  * The Linux and macOS catalogs name one app once per install method: "Discord",
  * "Discord (Flatpak)" and "Discord (Snap)" are three platforms with three
- * separate sets of login files. The suffix is plumbing - it only earns a place
- * on screen where more than one of them is present.
+ * separate sets of login files.
  *
- * A parenthetical that is not an install method stays put: "Heroic (Epic)" and
- * "Heroic (GOG)" are different account stores behind one launcher, and dropping
- * that would say something untrue about which accounts a tile holds.
+ * Only an install-method suffix may be dropped. "Heroic (Epic)" and "Heroic
+ * (GOG)" are different account stores behind one launcher, so the allowlist
+ * below is what keeps those two cases apart.
  */
 
 const INSTALL_METHODS = new Set([

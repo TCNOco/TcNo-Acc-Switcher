@@ -179,8 +179,8 @@ func TestWriteAutoLoginClearsForAddNew(t *testing.T) {
 	}
 }
 
-// Regression: read and write were not inverse, so Steam's SourceModInstallPath
-// went from two backslashes to eight across two switches.
+// Read and write must be inverse, or Steam's escaped paths gain another layer of
+// backslashes on every switch.
 func TestWriteAutoLoginDoesNotStackEscapes(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("HOME", home)

@@ -50,10 +50,9 @@ type shortcutTarget struct {
 	Flatpak bool
 }
 
-// selfShortcutTargetFor builds the launch fields for one Steam root. It is pure
-// so that every OS and install method can be checked from one table: goos names
-// the target platform rather than the host, env reads the environment, and
-// exists probes the filesystem.
+// selfShortcutTargetFor builds the launch fields for one Steam root. goos names
+// the target platform rather than the host, and env and exists are injected, so
+// every OS and install method can be checked from one table.
 func selfShortcutTargetFor(goos, exePath, steamRoot string, env func(string) string, exists func(string) bool) shortcutTarget {
 	binary := resolveSelfBinaryPath(goos, exePath, env, exists)
 	dir := pathDir(goos, binary)
@@ -89,8 +88,7 @@ func resolveSelfShortcutTarget(steamRoot string) (shortcutTarget, error) {
 
 // resolveSelfBinaryPath answers what a shortcut should point at, which is not
 // always os.Executable(). Inside an AppImage that is a path under an ephemeral
-// /tmp mount which is gone the moment the app exits, so the AppImage runtime's
-// own $APPIMAGE is preferred - a shortcut to the mount would be broken by design.
+// /tmp mount that is gone once the app exits, so $APPIMAGE is preferred.
 func resolveSelfBinaryPath(goos, exePath string, env func(string) string, exists func(string) bool) string {
 	if goos != "windows" {
 		if appImage := strings.TrimSpace(env("APPIMAGE")); appImage != "" && exists(appImage) {
@@ -179,8 +177,7 @@ func pathSeparator(goos string) string {
 	return "/"
 }
 
-// pathDir is filepath.Dir for a named platform rather than the host one, so the
-// Windows, Linux and macOS shapes can all be checked from one test table.
+// pathDir is filepath.Dir for a named platform rather than the host one.
 func pathDir(goos, p string) string {
 	sep := pathSeparator(goos)
 	i := strings.LastIndexAny(p, `/\`)

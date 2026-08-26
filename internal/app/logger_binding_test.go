@@ -10,11 +10,11 @@ import (
 )
 
 // Package-level vars capture whatever slog.Default() is at package-init time,
-// which runs before main configures the real handler. Records from such a
-// logger reach the configured handler only via the log package bridge: the
-// level collapses to INFO, attributes arrive flattened into the message, and
-// anything below INFO is dropped. Nothing fails visibly, so only a scan catches
-// a reintroduction. Resolve the default inside a function instead.
+// before main configures the real handler. Records from such a logger reach the
+// configured handler only via the log package bridge: the level collapses to
+// INFO, attributes arrive flattened into the message, and anything below INFO
+// is dropped. Resolve the default inside a function instead. Nothing fails
+// visibly when that happens, so only a source scan catches a reintroduction.
 var earlyDefaultLogger = regexp.MustCompile(`(?m)^var\s+\w+\s*=\s*slog\.Default\(\)`)
 
 func TestNoPackageLevelSlogDefault(t *testing.T) {

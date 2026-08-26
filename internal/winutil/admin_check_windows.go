@@ -63,13 +63,12 @@ func CanKillProcesses(names []string, method ClosingMethod) (blocker string, ok 
 		if !strings.HasSuffix(strings.ToLower(base), ".exe") {
 			image = strings.TrimSpace(raw) + ".exe"
 		}
-		// One walk of the process table answers for every name. Taken lazily, so
-		// a list of nothing but SERVICE: entries never pays for it.
+		// One walk answers for every name, and is taken lazily so a list of
+		// nothing but SERVICE: entries never pays for it.
 		if pids == nil {
 			p, err := snapshotFirstPIDs()
 			if err != nil {
-				// Same outcome as before, when each name swallowed this error
-				// separately: nothing can be shown to need elevation.
+				// Without a snapshot nothing can be shown to need elevation.
 				return "", true
 			}
 			pids = p
@@ -117,10 +116,6 @@ func processImageRequiresElevationToKill(image string, pids map[string]uint32) (
 
 // snapshotFirstPIDs walks the process table once and records the first PID seen
 // for each image name, lowercased.
-//
-// This used to be one snapshot per name looked up, and CanKillProcesses asks
-// about every executable a platform lists - so a platform naming six of them
-// walked the same process table six times.
 func snapshotFirstPIDs() (map[string]uint32, error) {
 	snap, err := windows.CreateToolhelp32Snapshot(windows.TH32CS_SNAPPROCESS, 0)
 	if err != nil {
@@ -138,7 +133,6 @@ func snapshotFirstPIDs() (map[string]uint32, error) {
 		return nil, err
 	}
 	for {
-		// First wins, matching the enumeration order the per-name scan returned.
 		if exe := strings.ToLower(utf16FixedToString(pe.ExeFile[:])); exe != "" {
 			if _, seen := out[exe]; !seen {
 				out[exe] = pe.ProcessID

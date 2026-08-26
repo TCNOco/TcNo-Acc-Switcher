@@ -69,8 +69,6 @@
   });
 
   // The backend still enforces OS support; this only decides what to offer.
-  // Reads the capability the backend reported rather than sniffing navigator,
-  // which is what the rest of the app now does.
   $: registrySupported = $capabilities.registry;
 
   function showAction(_id: string): boolean {

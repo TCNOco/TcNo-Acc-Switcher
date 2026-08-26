@@ -8,8 +8,7 @@ import (
 )
 
 // defaultOnFields are the settings that default to on for a file written before
-// they existed. Each one is a switch a user can turn off, so each one has to
-// come back off after a save.
+// they existed - each one also a switch the user can turn off.
 var defaultOnFields = []struct {
 	name string
 	get  func(AppSettings) bool
@@ -24,11 +23,6 @@ var defaultOnFields = []struct {
 	{"controllerSupportEnabled", func(s AppSettings) bool { return s.ControllerSupportEnabled }, func(s *AppSettings, v bool) { s.ControllerSupportEnabled = v }},
 }
 
-// Turning one of these off used to survive only until the next settings write of
-// any kind: the save path asked "was this key in the JSON" of a struct that had
-// never come from JSON, so every field it did not name in a hand-written list
-// was answered "no" and reset to its default. crashReportAutoSubmit was the one
-// missing from that list, and it uploads crash dumps.
 func TestSwitchingADefaultOnSettingOffSurvivesASave(t *testing.T) {
 	for _, field := range defaultOnFields {
 		t.Run(field.name, func(t *testing.T) {
@@ -63,8 +57,7 @@ func TestSwitchingADefaultOnSettingOffSurvivesASave(t *testing.T) {
 	}
 }
 
-// The save path no longer applies defaults, so it must not undo the shape rules
-// either - those are invariants, not preferences.
+// Saving applies no defaults, but the shape rules are invariants and still hold.
 func TestSavingStillNormalisesShape(t *testing.T) {
 	dir := testExeDirWithPortable(t)
 
@@ -72,8 +65,7 @@ func TestSavingStillNormalisesShape(t *testing.T) {
 	s.Version = 0
 	s.Language = ""
 	s.AppBgAlignment = "nonsense"
-	// Sharing rich presence with it switched off is not a state that means
-	// anything, so saving has to settle it.
+	// Sharing rich presence with it off is not a meaningful state to leave behind.
 	s.DiscordRpc = false
 	s.DiscordRpcShare = true
 
@@ -98,8 +90,8 @@ func TestSavingStillNormalisesShape(t *testing.T) {
 	}
 }
 
-// A file that predates a setting still gets it turned on, which is the whole
-// reason the load path looks at the raw JSON.
+// Telling this apart from an explicit false is the whole reason the load path
+// looks at the raw JSON.
 func TestASettingAbsentFromTheFileStillDefaultsOn(t *testing.T) {
 	dir := testExeDirWithPortable(t)
 	path := filepath.Join(PortableUserDataDir(dir), settingsFileName)

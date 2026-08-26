@@ -342,8 +342,6 @@
           {@const rowChecked = Boolean($confirmations.checked[row.handle])}
           <!-- Two controls, the way the Steam app splits them: the image marks the
                row for a batch decision, the rest of the row opens it. -->
-          <!-- A decided confirmation collapses out of the list and the rows below
-               it slide up, so the queue visibly shortens instead of blinking. -->
           <div
             class="confirmations-row"
             class:active={row.handle === $confirmations.selectedHandle}

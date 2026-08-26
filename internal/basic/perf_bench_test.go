@@ -17,9 +17,9 @@ import (
 	"TcNo-Acc-Switcher/internal/security"
 )
 
-// benchPlatformCount and benchAccountsPerPlatform model a well-used install:
-// Platforms.json ships 24 platforms, and the startup hint pass touches every one
-// of them regardless of how many the user actually has accounts for.
+// benchPlatformCount matches the 24 platforms Platforms.json ships: the startup
+// pass touches every one regardless of how many the user has accounts for. The
+// per-platform account and tag counts model a well-used install, not a fresh one.
 const (
 	benchPlatformCount       = 24
 	benchAccountsPerPlatform = 15
@@ -35,12 +35,9 @@ func benchResetPaths(tb testing.TB) string {
 }
 
 // seedBenchCatalog writes the real shipped Platforms.json with the benchmark's
-// platforms added to it.
-//
-// Without a catalog present readDescriptor fails, and buildAccountListContext
-// silently skips the descriptor parse and the live-unique-id read along with
-// it - so a benchmark without this measures a path no user is on. The catalog
-// keeps its real size because the descriptor parse cost scales with it.
+// platforms added to it. Without a catalog buildAccountListContext silently skips
+// the descriptor parse and the live-unique-id read; the catalog keeps its real
+// size because the descriptor parse cost scales with it.
 func seedBenchCatalog(tb testing.TB, exeDir string, platformNames []string) {
 	tb.Helper()
 	raw, err := os.ReadFile(filepath.Join("..", "..", "Platforms.json"))
@@ -85,9 +82,8 @@ func seedBenchCatalog(tb testing.TB, exeDir string, platformNames []string) {
 	}
 }
 
-// seedBenchPlatforms writes a realistic ids.json per platform: accounts, tags,
-// tag assignments and per-account expiries, so the parse and prune work in the
-// benchmark matches what a real install pays for.
+// seedBenchPlatforms writes an ids.json per platform with tags, assignments and
+// expiries, so the parse and prune work matches what a real install pays for.
 func seedBenchPlatforms(tb testing.TB, platforms, accounts int) []string {
 	tb.Helper()
 	future := time.Now().UTC().Add(90 * 24 * time.Hour).Format(time.RFC3339)
@@ -131,9 +127,8 @@ func seedBenchPlatforms(tb testing.TB, platforms, accounts int) []string {
 	return names
 }
 
-// legacyStartupCounts is the shipped-before pass: three separate ids.json reads
-// per platform, one per count, run serially. Kept here as the benchmark baseline
-// the combined and parallel variants below are measured against.
+// legacyStartupCounts is the baseline the combined and parallel variants are
+// measured against: three separate ids.json reads per platform, run serially.
 func legacyStartupCounts(names []string) (map[string]int, map[string][2]int) {
 	accounts := make(map[string]int, len(names))
 	tags := make(map[string][2]int, len(names))
@@ -158,9 +153,9 @@ func legacyStartupCounts(names []string) (map[string]int, map[string][2]int) {
 	return accounts, tags
 }
 
-// BenchmarkStartupCountsSeparate is the per-platform count pass GetStartup ran
-// before this change: three reads and parses of the same file per platform.
-// It happens before the window is drawn, so it is on the cold-start path.
+// BenchmarkStartupCountsSeparate is the per-platform count pass at three reads
+// of the same file each. It runs before the window is drawn, so it is cold-start
+// cost.
 func BenchmarkStartupCountsSeparate(b *testing.B) {
 	benchResetPaths(b)
 	names := seedBenchPlatforms(b, benchPlatformCount, benchAccountsPerPlatform)
@@ -351,9 +346,8 @@ func BenchmarkGetAccountsEnrichment(b *testing.B) {
 // benchmark below.
 const benchVaultPassword = "bench vault password Aa1!"
 
-// seedEncryptedAccounts turns on saved-account encryption and writes one
-// encrypted blob per account, so SavedDataBroken has real work to verify.
-// payloadKB sets the plaintext size of each account's saved login data.
+// seedEncryptedAccounts writes one encrypted blob per account so SavedDataBroken
+// has real work to verify. payloadKB is each account's plaintext payload size.
 func seedEncryptedAccounts(tb testing.TB, platformKey string, uids []string, payloadKB int) {
 	tb.Helper()
 	if err := security.SetAppPassword(benchVaultPassword); err != nil {
@@ -422,8 +416,7 @@ func BenchmarkGetAccountsListEncrypted(b *testing.B) {
 
 // BenchmarkGetAccountsListWithCatalog is GetAccountsList on the path a real
 // install takes: a populated Platforms.json, so the descriptor parse and the
-// live-unique-id read both happen. The plain BenchmarkGetAccountsList above
-// runs without a catalog and so skips both.
+// live-unique-id read both happen (the plain variant above skips both).
 func BenchmarkGetAccountsListWithCatalog(b *testing.B) {
 	for _, n := range benchAccountSizes() {
 		b.Run(fmt.Sprintf("%daccounts", n), func(b *testing.B) {
@@ -440,8 +433,8 @@ func BenchmarkGetAccountsListWithCatalog(b *testing.B) {
 				b.Fatalf("list returned %d rows, want %d", len(got), n)
 			}
 			if !got[0].CurrentSession && !got[len(got)-1].CurrentSession {
-				// Not fatal, but the descriptor path is what makes this
-				// benchmark different - warn loudly if it did not engage.
+				// The descriptor path is what makes this benchmark
+				// different - warn if it did not engage.
 				b.Logf("note: no row matched the live unique id")
 			}
 
@@ -456,9 +449,8 @@ func BenchmarkGetAccountsListWithCatalog(b *testing.B) {
 	}
 }
 
-// seedTrayBenchEnv builds an install with the real 24-platform catalog, an
-// ids.json for every platform, and tray entries for just one of them - which is
-// what most installs look like.
+// seedTrayBenchEnv gives every catalog platform an ids.json but tray entries for
+// only one of them, which is what most installs look like.
 func seedTrayBenchEnv(tb testing.TB, trayPlatform string) {
 	tb.Helper()
 	exeDir := benchResetPaths(tb)
@@ -523,16 +515,14 @@ func BenchmarkSyncAllTrayKnownAccounts(b *testing.B) {
 }
 
 // BenchmarkGameStatsMarkupNoStatsConfigured is the account page asking for game
-// stats on a platform that has none - which is most of the two dozen the
-// catalog ships. The answer is empty either way; the question is what it costs
-// to arrive at.
+// stats on a platform that has none, which is most of the ones the catalog ships.
 func BenchmarkGameStatsMarkupNoStatsConfigured(b *testing.B) {
 	exeDir := benchResetPaths(b)
 	names := seedBenchPlatforms(b, 1, 10)
 	seedBenchCatalog(b, exeDir, names)
 
-	// The real definitions, so the compat lookup misses for the same reason it
-	// misses on a real install: nothing is configured for this platform.
+	// The real definitions, so the lookup misses for the same reason it does on a
+	// real install: nothing is configured for this platform.
 	gameStats, err := os.ReadFile(filepath.Join("..", "..", "GameStats.json"))
 	if err != nil {
 		b.Skipf("GameStats.json unavailable: %v", err)

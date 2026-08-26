@@ -97,10 +97,8 @@ func TestSignedProviderPassesThroughUpToDate(t *testing.T) {
 	}
 }
 
-// A release carries a signature per artifact. Picking by a ".exe.sig" suffix
-// found the Windows one whatever platform asked, so a Linux or macOS client
-// would have verified its download against the wrong file - or, once no .exe
-// ships in a release, refused to update at all.
+// A release carries one signature per artifact, so matching by suffix alone can
+// pick another platform's.
 func TestSignedProviderPicksTheSignatureForItsOwnArtifact(t *testing.T) {
 	linuxSig := []byte("linux-signature-01234567890123456789012345678901234567890123456789012345678")
 	var srv *httptest.Server

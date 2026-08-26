@@ -16,10 +16,8 @@ const procNameMaxLen = 16
 //
 // macOS has no /proc, so the list comes from the kern.proc.all sysctl. That
 // yields the accounting name only - the full executable path would need
-// proc_pidpath from libproc, which means cgo for a name we do not need: the
-// clients this matches (steam_osx, Discord, OBS) are all inside the 16
-// characters the kernel keeps, and unixNameMatches compares targets against
-// their own truncation for anything longer.
+// proc_pidpath from libproc, and so cgo. Targets longer than the 16 characters
+// the kernel keeps are handled by unixNameMatches.
 func forEachProcess(fn func(pid int, names []string)) {
 	procs, err := unix.SysctlKinfoProcSlice("kern.proc.all")
 	if err != nil {

@@ -12,9 +12,8 @@
   import CrashReportModalBody from "./modals/CrashReportModalBody.svelte";
   import UpdateModalBody from "./modals/UpdateModalBody.svelte";
 
-  // The Steam Guard body is the largest component in the app and most sessions
-  // never open it, so it is fetched when the modal is first asked for rather
-  // than parsed as part of the startup bundle.
+  // The largest component in the app and most sessions never open it, so it is
+  // fetched on demand rather than parsed as part of the startup bundle.
   type SteamGuardBody = (typeof import("./modals/SteamGuardModalBody.svelte"))["default"];
   let SteamGuardModalBody: SteamGuardBody | null = null;
   let steamGuardBodyRequested = false;

@@ -2,10 +2,8 @@ import type { SteamShortcutState } from "../../bindings/TcNo-Acc-Switcher/intern
 
 /**
  * The i18n keys to show under the "Add to Steam" toggle, in the order they are
- * worth reading.
- *
- * All of these are things the entry being written correctly does not fix on its
- * own, so none of them belong in a toast that scrolls away.
+ * worth reading. Each is a condition writing the entry does not fix on its own,
+ * so they belong on screen rather than in a toast.
  */
 export function addToSteamNotices(state: SteamShortcutState | null): string[] {
   if (!state || !state.enabled) return [];

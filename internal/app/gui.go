@@ -108,10 +108,9 @@ func mainWindowOptions(guiSettings platform.AppSettings, parsed cli.Parsed) appl
 	if parsed.StartInTray {
 		winOpts.Hidden = true
 	}
-	// Game Mode is one app on a handheld screen with no window management, so
-	// the saved position and size mean nothing there: a window that opens at 96,96
-	// is a small box in the corner of a television. Last, so it wins over the
-	// centred/positioned branches above.
+	// Game Mode is one app on a screen with no window management, so a saved or
+	// centred position means nothing there. Last, so it wins over the branches
+	// above.
 	if platform.InGamescopeSession() {
 		winOpts.StartState = application.WindowStateFullscreen
 		winOpts.InitialPosition = application.WindowCentered
@@ -209,10 +208,9 @@ func RunGUI(params RunGUIParams) {
 		Mac: application.MacOptions{
 			ApplicationShouldTerminateAfterLastWindowClosed: true,
 		},
-		// GTK4 dropped gtk_window_set_icon, so Icon only reaches the about box
-		// and GTK3 builds. What actually gives the window an icon on a Linux
-		// desktop is a .desktop file matched by StartupWMClass, which is why the
-		// program name is pinned here rather than left as the executable's.
+		// GTK4 dropped gtk_window_set_icon, so Icon only reaches the about box and
+		// GTK3 builds. What gives the window an icon on a Linux desktop is a
+		// .desktop file matched by StartupWMClass; see appName.
 		Icon: params.AppIconPNG,
 		Linux: application.LinuxOptions{
 			ProgramName: linuxProgramName,
@@ -516,9 +514,8 @@ func syncProtocolRegistration() {
 }
 
 // linuxProgramName is what g_set_prgname reports. It names the process to the
-// session and is the window title Wails starts with, but it is NOT what a
-// Wayland compositor matches on: Wails builds a GtkApplication whose id wins as
-// the app_id. See appName and build/linux/desktop.
+// session, but it is NOT what a Wayland compositor matches on: Wails builds a
+// GtkApplication whose id wins as the app_id. See appName.
 const linuxProgramName = "tcno-acc-switcher"
 
 // appName is the name Wails shows and, lowercased with non-alphanumerics turned

@@ -8,36 +8,26 @@ import (
 )
 
 // Bounds on the second-attempt pass. Each variant is one extra whole-frame
-// decode, not another set of regions: this exists for an image that is one
-// photograph of one code, where splitting the frame was never the problem.
+// decode, not another set of regions.
 const (
 	maxNormalizedVariants = 2
 	// minNormalizedDimension is below the smallest QR symbol plus its quiet
 	// zone, so nothing is redrawn that could not have held a code anyway.
 	minNormalizedDimension = 21
 	// unsharpRadius and unsharpAmount put back the module edges a camera that
-	// never quite focused rounded off. Measured on photographs of a Steam
-	// sign-in code: a one-pixel radius at 1.5 recovered codes that no threshold
-	// alone could, and heavier settings started inventing edges of their own.
+	// never quite focused rounded off. Heavier settings start inventing edges
+	// of their own.
 	unsharpRadius = 1
 	unsharpAmount = 1.5
 )
 
-// normalizedVariants re-draws a frame for a second decode attempt.
+// normalizedVariants re-draws a frame for a second decode attempt. It is for a
+// photograph of a screen - soft, dim, and lit unevenly across the code - so the
+// variants are only built after the frame itself decoded to nothing.
 //
-// A screenshot needs none of this, and does not get it: the variants are only
-// built after the frame itself has been read and found to hold nothing. They are
-// for the other kind of input - a photograph of a screen, which is soft, dim,
-// and lit unevenly across the code.
-//
-// Both variants are local-mean thresholds. ZXing bins the image into fixed
-// blocks and thresholds each against its neighbours, which handles a gradient
-// across a page but still decides every pixel from one grid; a large local mean
-// decides each pixel from its own surroundings, which is what a photograph with
-// a bright corner and a dim one needs. The window sizes were measured against
-// photographs the plain decode could not read: a window around three eighths of
-// the smaller side read them, and much smaller windows started thresholding
-// inside single modules.
+// Both variants are local-mean thresholds: each pixel is decided from its own
+// surroundings rather than from one fixed block grid, which is what an image
+// with a bright corner and a dim one needs.
 func normalizedVariants(src image.Image) []image.Image {
 	if src == nil {
 		return nil
@@ -54,6 +44,9 @@ func normalizedVariants(src image.Image) []image.Image {
 	gray := grayscale(src)
 	smaller := min(width, height)
 	variants := make([]image.Image, 0, maxNormalizedVariants)
+	// Windows are fractions of the frame so they track module size: three eighths
+	// of the smaller side still spans many modules, well clear of thresholding
+	// inside a single one.
 	variants = append(variants, adaptiveThreshold(gray, thresholdWindow(smaller*3/8), 0))
 	variants = append(variants, adaptiveThreshold(unsharpMask(gray), thresholdWindow(smaller/8), 5))
 	wipeGray(gray)

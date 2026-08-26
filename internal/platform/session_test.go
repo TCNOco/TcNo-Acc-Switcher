@@ -2,7 +2,6 @@ package platform
 
 import "testing"
 
-// Named here so the test reads as the contract rather than the constant.
 const platformGamescopeMarker = GamescopeSessionEnv
 
 func TestInGamescopeSession(t *testing.T) {
@@ -50,7 +49,7 @@ func TestInGamescopeSession(t *testing.T) {
 		{
 			// The helper is started by the user's systemd manager, whose
 			// environment has none of the session variables - without the marker
-			// it would decide it is on a desktop and start a second Steam.
+			// it would start a second Steam.
 			name: "helper carrying only the marker",
 			env:  map[string]string{platformGamescopeMarker: "1"},
 			want: true,

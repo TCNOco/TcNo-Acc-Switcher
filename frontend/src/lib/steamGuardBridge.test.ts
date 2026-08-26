@@ -25,11 +25,9 @@ vi.mock("../stores/modal", () => modal);
 import { controller, mergeSteamGuardAccountRows, runImport } from "./steamGuardBridge";
 import { homeScreenData } from "../stores/homeScreenData";
 
-// The controller is built as this module is imported, and the capabilities it
-// asks about ride in on the startup payload, which is fetched later. Deciding
-// them at import meant every gated entry was missing for the life of the app -
-// Scan again, Select region, Copy code and Open in browser were greyed out on
-// Windows, where all four are supported.
+// The capabilities ride in on the startup payload, which is fetched after this
+// module is imported, so the gating has to be read per access rather than
+// decided once as the controller is built.
 describe("capability-gated controller entries", () => {
 	afterEach(() => homeScreenData.set(null));
 

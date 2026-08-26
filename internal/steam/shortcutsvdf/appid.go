@@ -2,9 +2,8 @@ package shortcutsvdf
 
 import "hash/crc32"
 
-// The CRC input is the stored Exe value - quote bytes included - followed by the
-// app name. A caller that strips the quotes gets a different id, which orphans
-// any artwork the user set.
+// The Exe value is hashed with its quote bytes included. A caller that strips
+// them gets a different id, which orphans any artwork the user set.
 
 // shortAppID is CRC-32/IEEE over Exe+AppName with the high bit forced. It names
 // artwork under userdata/<id32>/config/grid/.

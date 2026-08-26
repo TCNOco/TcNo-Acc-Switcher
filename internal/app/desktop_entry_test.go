@@ -10,8 +10,7 @@ import (
 )
 
 // invalidAppNameChars mirrors the pattern Wails uses to sanitise the app name
-// into a GtkApplication id (application_linux.go). Kept here so the expected
-// app_id is derived, not transcribed.
+// into a GtkApplication id (application_linux.go).
 var invalidAppNameChars = regexp.MustCompile(`[^a-zA-Z0-9_\-\.]`)
 
 func waylandAppID(name string) string {
@@ -52,11 +51,9 @@ func desktopEntryKey(t *testing.T, key string) string {
 	return ""
 }
 
-// A Wayland compositor has no other way to give the window an icon: GTK4 dropped
-// gtk_window_set_icon, so it matches app_id to a desktop entry and takes the
-// icon from there. Wails derives that app_id from the app name, which means
-// renaming the app silently breaks the match and the taskbar falls back to the
-// compositor's own placeholder - a plain "W" on KDE, measured on Bazzite.
+// A Wayland compositor matches app_id to a desktop entry to find the window's
+// icon, and Wails derives that app_id from the app name, so renaming the app
+// silently breaks the match.
 func TestDesktopEntryMatchesWaylandAppID(t *testing.T) {
 	want := waylandAppID(appName)
 	if got := desktopEntryKey(t, "StartupWMClass"); got != want {
@@ -64,9 +61,8 @@ func TestDesktopEntryMatchesWaylandAppID(t *testing.T) {
 	}
 }
 
-// Exec names the binary the packages install. The scaffolding these files came
-// from had the two disagreeing - a .exe suffix on Linux - which launches
-// nothing from the menu, so the names are checked against each other.
+// Exec must name the binary the packages actually install, or the menu entry
+// launches nothing.
 func TestDesktopEntryExecMatchesInstalledBinary(t *testing.T) {
 	exec := desktopEntryKey(t, "Exec")
 	execBin, _, _ := strings.Cut(exec, " ")

@@ -31,7 +31,7 @@ func KillByName(names []string, method ClosingMethod, beforeElectronSynth func()
 //
 // Close and Electron name Windows mechanics - a WM_CLOSE broadcast, synthesised
 // Alt+F4 - with no counterpart here, so every method except TaskKill collapses
-// to that one escalation rather than burning a deadline first.
+// to that one escalation.
 func KillByNameWithOpts(names []string, method ClosingMethod, opts KillOpts) error {
 	targets := unixKillTargets(names)
 	if len(targets) == 0 {

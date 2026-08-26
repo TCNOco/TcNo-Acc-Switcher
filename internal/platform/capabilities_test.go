@@ -7,13 +7,11 @@ import (
 	"TcNo-Acc-Switcher/internal/winutil"
 )
 
-// A capability table is only useful if it agrees with the code it describes.
-// These check the two that are easy to get wrong because they differ between
-// Linux and macOS, by asking the implementation rather than trusting the table.
+// The capability table is only useful if it agrees with the code it describes,
+// so this asks the implementation rather than trusting the table.
 func TestProcessControlMatchesWinutil(t *testing.T) {
-	// Start on a path that cannot exist tells the two apart without launching
-	// anything: the stub refuses with ErrUnsupported before looking at the file,
-	// while a real implementation gets far enough to fail on the exe itself.
+	// A path that cannot exist tells the two apart without launching anything: the
+	// stub refuses with ErrUnsupported before it ever looks at the file.
 	err := winutil.Start("", nil, winutil.StartOpts{})
 	stubbed := err != nil && errorIsUnsupported(err)
 	if got := Capabilities().ProcessControl; got == stubbed {
@@ -29,7 +27,6 @@ func TestCapabilitiesAgreeWithGOOS(t *testing.T) {
 		}
 		return
 	}
-	// Everything Win32-only must be off, on both Linux and macOS.
 	for name, on := range map[string]bool{
 		"Shortcuts":          c.Shortcuts,
 		"Elevation":          c.Elevation,

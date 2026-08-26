@@ -22,8 +22,8 @@ func testQRChallengeURL(clientID uint64) string {
 	return fmt.Sprintf("https://s.team/q/1/%d", clientID)
 }
 
-// newProtocolQRSession builds a real QR session, because viaQR is unexported and
-// BeginAuthSessionViaQR is the only thing that sets it - which is the point.
+// newProtocolQRSession builds a real QR session: viaQR is unexported, and
+// BeginAuthSessionViaQR is the only thing that sets it.
 func newProtocolQRSession(t *testing.T, clientID uint64) protocol.BeginQRResult {
 	t.Helper()
 	transport := roundTripFunc(func(request *http.Request) (*http.Response, error) {
@@ -109,7 +109,6 @@ func TestBeginQRRunsAlongsideThePasswordSession(t *testing.T) {
 	if password.ChallengeURL != "" {
 		t.Fatal("a password session reported a challenge URL")
 	}
-	// One QR sign-in per account is still the limit.
 	if _, err := manager.BeginQR(context.Background(), binding, testQRRequest()); err == nil {
 		t.Fatal("a second QR session for one account was allowed")
 	} else {
@@ -204,8 +203,7 @@ func TestPollAcceptsQRAuthorisationForTheExpectedAccount(t *testing.T) {
 }
 
 // Steam replaces the code while it waits to be scanned. That arrives as a
-// challenge, but there is nothing for the user to answer - the screen just has a
-// new image to draw - so the session has to stay waiting.
+// challenge with nothing for the user to answer, so the session stays waiting.
 func TestPollRotatesTheQRCodeWithoutAskingForAChallenge(t *testing.T) {
 	clock := newFakeClock()
 	rotatedClientID := testQRClientID + 1

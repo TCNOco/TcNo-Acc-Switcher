@@ -478,11 +478,9 @@ func (s *SteamService) RefreshAllSteamImages() error {
 // bought nothing - and it cost the list its faces for the whole of the round,
 // which is precisely what a refresh looked like to the user: every tile blank,
 // then slowly filling back in.
-// dropStaleMiniprofileFragment asks about five avatar variants per account, and
-// takes the answers from a Lookup so the caller can hand it one snapshot for a
-// whole refresh round. Probing per account walked the extension list for each
-// variant - upwards of thirty stats an account - for a directory one read
-// answers in full.
+//
+// It takes the answers from a Lookup, so the caller can hand one directory
+// snapshot to a whole refresh round.
 func dropStaleMiniprofileFragment(avatars profileimage.Lookup, steamID64 string, maxAgeDays int) {
 	ids := []string{
 		steamID64,
