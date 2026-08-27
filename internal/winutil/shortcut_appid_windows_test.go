@@ -19,10 +19,9 @@ func propVariantValue(pv *propVariant) *uint16 {
 
 // The AppUserModelID path binds Windows procs by name. LazyProc.Call panics
 // rather than erroring when a name is missing, so a wrong name is a crash at
-// the point of use, not a build failure — exactly how
-// propsys.dll!InitPropVariantFromString (an inline helper in propvarutil.h,
-// not a dependable export) took down shortcut creation. These tests call the
-// real procs so a bad binding fails here instead of in front of a user.
+// the point of use, not a build failure. propsys.dll!InitPropVariantFromString
+// is an inline helper in propvarutil.h, not a dependable export. These tests
+// call the real procs so a bad binding fails here instead of in front of a user.
 func TestInitPropVariantFromStringRoundTrips(t *testing.T) {
 	pv, err := initPropVariantFromString("TcNo.Test.AppID")
 	if err != nil {

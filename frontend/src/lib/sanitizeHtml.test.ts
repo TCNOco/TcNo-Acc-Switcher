@@ -5,8 +5,7 @@ import { safeUrl } from "./sanitizeHtml";
 // decision that mattered here and it is pure.
 describe("sanitized attribute URLs", () => {
   // The backend rewrites the mini profile's avatar to a local path plus a
-  // cache-busting query. Rejecting the query dropped the src entirely, which
-  // showed as a broken image in the popup while the account row stayed fine.
+  // cache-busting query. Rejecting the query drops the src entirely.
   it("keeps a cache-busted local avatar", () => {
     const url = "/img/profiles/steam/76561198000000001.jpg?_tcv=1753440000000";
     expect(safeUrl(url, { image: true })).toBe(url);

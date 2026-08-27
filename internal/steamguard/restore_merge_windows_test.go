@@ -87,7 +87,6 @@ func TestRestoreMergeReplacesOnlySelectedAccounts(t *testing.T) {
 		t.Fatalf("fresh account marked existing: %#v", byID)
 	}
 
-	// Only the conflicting account is brought across; the new one is left behind.
 	result, err := service.CommitRestoreMerge(password, "", "", "", []string{conflict64})
 	if err != nil {
 		t.Fatal(err)

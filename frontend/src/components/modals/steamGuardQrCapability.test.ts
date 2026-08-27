@@ -19,9 +19,6 @@ function functionSource(name: string): string {
 describe("Steam Guard QR scanning", () => {
   // These wait on the user — a file picker, a Steam window — so they are the
   // flows a background vault write is most likely to land in the middle of.
-  // They were calling ensureCapability directly, and the stale capability that
-  // came back surfaced as "could not be read safely", which reads as a bad
-  // image rather than the retryable refusal it is.
   it.each([
     ["scanSteamWindow", "captureQrFromSteam"],
     ["chooseQrScreenshot", "decode("],

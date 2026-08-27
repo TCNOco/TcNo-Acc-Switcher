@@ -47,9 +47,8 @@ type OpenResult struct {
 
 // SessionSource hands out a usable web session for an account.
 //
-// It is an interface so this package does not depend on the Steam Guard vault,
-// which keeps trust, session and window logic testable without one. The Steam
-// Guard service implements it.
+// It is an interface so this package does not depend on the Steam Guard vault.
+// The Steam Guard service implements it.
 type SessionSource interface {
 	// BrowserSession returns the credentials for accountID, after checking the
 	// modal token exactly as any other sensitive Steam Guard view would. It is
@@ -362,9 +361,7 @@ func (s *Service) handleNewWindow(sessionID, url string) {
 // downloads folder, their history and their prompts already are.
 //
 // The session's cookies do not go with it, so a file behind a sign-in will not
-// come down this way. That is the trade: a session window is for browsing as an
-// account, and it has nowhere to put a file or anything to show a failed
-// transfer in.
+// come down this way.
 func (s *Service) handleDownload(sessionID, url string) {
 	logger().Info("handing a download to the system browser",
 		"window", sessionID, "host", Classify(PlatformSteam, url).Host)
@@ -421,9 +418,8 @@ func (s *Service) Certificate(ctx context.Context, sessionID string) (Certificat
 	return FetchCertificate(ctx, current.state.URL)
 }
 
-// OpenDevTools opens the inspector for a window's page, which is the only way
-// to see why a site behaves differently here than in a browser. Refused unless
-// the build enabled developer tools, so a release build cannot be talked into
+// OpenDevTools opens the inspector for a window's page. Refused unless the
+// build enabled developer tools, so a release build cannot be talked into
 // handing over a page's console.
 func (s *Service) OpenDevTools(sessionID string) error {
 	if !s.devTools {

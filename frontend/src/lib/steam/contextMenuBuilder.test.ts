@@ -337,9 +337,8 @@ describe("Steam account Manage submenu", () => {
   });
 });
 
-// The switcher paints VAC and limited status on the account name. A ban on one
-// account is not something the owner necessarily wants on screen every time, so
-// it can be hidden per account - but only where it would otherwise be shown.
+// VAC and limited status are painted on the account name. Hiding one is
+// per-account, and offered only where the status would otherwise be shown.
 describe("Steam hide ban status menu item", () => {
   const shared = (): SharedMenuItems => {
     const item = (label: string): MenuItemDef => ({ label, action: vi.fn() });
@@ -475,8 +474,7 @@ describe("Personal Game Data rows", () => {
     expect(menu.children?.map((c) => c.label)).toEqual(["Context_GameData_NoFolders"]);
   });
 
-  // A game Steam has no page for is still listed only when it has local data,
-  // which is what the submenu was for before any of this.
+  // A game Steam has no page for is still listed only when it has local data.
   it("leaves a game with neither a page nor local data out", () => {
     const menu = gameDataMenu(held, deps({
       gameDataBySteamId: {

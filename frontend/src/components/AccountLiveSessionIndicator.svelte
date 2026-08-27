@@ -20,10 +20,9 @@
 {/if}
 
 <style lang="scss">
-  /* Marks the account whose session is live right now. Anchored to
-     `.acc_list_item`, the nearest positioned ancestor: `label.acc` is
-     deliberately left unpositioned, since the profile-image drop overlay inside
-     it already resolves against the same box. */
+  /* Anchored to `.acc_list_item`, the nearest positioned ancestor: `label.acc`
+     is deliberately left unpositioned, since the profile-image drop overlay
+     inside it already resolves against the same box. */
   .live-session-badge {
     position: absolute;
     top: 6px;

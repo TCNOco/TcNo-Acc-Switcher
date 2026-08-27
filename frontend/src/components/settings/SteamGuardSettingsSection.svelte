@@ -59,8 +59,7 @@
       // keyfile, so this is the only thing saying so.
       note: factor.requiresPassword ? $t("SteamGuard_Factors_AlsoNeedsPassword") : "",
       // The backup key is rotated rather than removed: "Replace backup key"
-      // issues a new one and retires the old, which is the only thing anyone
-      // sensibly wants to do to it.
+      // issues a new one and retires the old.
       action: factor.kind === "recovery" ? null : {
         label: $t("SteamGuard_Factors_Remove"),
         disabled: !factor.removable,
@@ -205,13 +204,6 @@
 
   type VaultAuth = { password: string; keyfilePath: string; backupKey: string };
 
-  // Authenticates a management action and leaves the vault open for it.
-  //
-  // One dialog offering every way in, the same as the Steam page's unlock
-  // screen. Which factors are needed depends on the vault, and asking for a
-  // password and then springing a file dialog on the user made a coherent set of
-  // options look like a sequence of unrelated demands. A security key is not a
-  // field here: the backend asks the device once nothing else fits.
   type AuthOptions = {
     intro?: string;
     /** The action cannot proceed without the keyfile, not merely open the vault. */
@@ -219,13 +211,19 @@
     requireKeyfileReason?: string;
   };
 
+  // Authenticates a management action and leaves the vault open for it.
+  //
+  // One dialog offering every way in, the same as the Steam page's unlock
+  // screen. Which factors are needed depends on the vault, and a password prompt
+  // followed by a file dialog reads as a sequence of unrelated demands. A
+  // security key is not a field here: the backend asks the device once nothing
+  // else fits.
   async function authenticateForManagement(
     title: string,
     options: AuthOptions = {},
   ): Promise<VaultAuth | null> {
-    // Retried in place. A rejected password used to close the dialog and toast,
-    // which on the password-change path meant choosing a whole new password
-    // before being told the old one was wrong.
+    // Retried in place: closing the dialog on a rejected password would mean
+    // choosing a whole new password before being told the old one was wrong.
     let error = "";
     for (;;) {
       const auth = await modalResult<VaultAuth>(title, VaultAuthModalBody, {
@@ -548,8 +546,7 @@
     <span class="steam-guard-actions">
       <!-- Changing the password lives with the other factor actions below, since
            the password is one of the ways in that block lists. -->
-      <!-- Locking is only meaningful once the vault is unlocked; showing it otherwise
-           offers an action that would do nothing. -->
+      <!-- Locking is only meaningful once the vault is unlocked. -->
       {#if configured && $steamGuardSettings.status.unlocked}
         <button type="button" class="btnicontext" disabled={busy} on:click={() => void lockNow()}>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true"><path d="M400 224h-24v-72C376 68.2 307.8 0 224 0S72 68.2 72 152v72H48c-26.5 0-48 21.5-48 48v192c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V272c0-26.5-21.5-48-48-48zm-104 0H152v-72c0-39.7 32.3-72 72-72s72 32.3 72 72v72z" /></svg>
@@ -623,8 +620,7 @@
        slots failed. -->
   {#if configured}
     <!-- One line: a heading, then the ways in as a sentence. They are
-         alternatives, and a comma-separated list says so as plainly as a bulleted
-         one did while costing a quarter of the page. -->
+         alternatives, and a comma-separated list says so. -->
     <p class="steam-guard-ways">
       <span class="steam-guard-subheading steam-guard-ways-label">{$t("SteamGuard_Factors_Title")}:</span>
       {#each waysIn as way, index (way.key)}{#if index > 0}<span class="steam-guard-ways-sep">, </span>{/if}<span

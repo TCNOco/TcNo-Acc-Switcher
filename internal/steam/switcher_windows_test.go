@@ -23,16 +23,11 @@ func setAndRecordSteamReg(t *testing.T, valueName, data string) {
 	t.Cleanup(func() { _ = winutil.RegistryDelete(k) })
 }
 
-// ---------------------------------------------------------------------------
-// writeLoginUsersAndAutoLogin — full VDF mutation + AutoLoginUser write
-// ---------------------------------------------------------------------------
-
 func TestWriteLoginUsersAndRegistry(t *testing.T) {
 	dir := t.TempDir()
 	configDir := filepath.Join(dir, "config")
 	os.MkdirAll(configDir, 0o755)
 
-	// Set up a valid loginusers.vdf with two accounts
 	loginPath := filepath.Join(configDir, "loginusers.vdf")
 	initialVDF := `"users"
 {
@@ -58,12 +53,10 @@ func TestWriteLoginUsersAndRegistry(t *testing.T) {
 `
 	os.WriteFile(loginPath, []byte(initialVDF), 0o644)
 
-	// Switch to account 2
 	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000200"); err != nil {
 		t.Fatalf("writeLoginUsersAndAutoLogin: %v", err)
 	}
 
-	// Verify loginusers.vdf was overwritten
 	users, err := ParseLoginUsers(loginPath)
 	if err != nil {
 		t.Fatalf("ParseLoginUsers: %v", err)
@@ -91,13 +84,11 @@ func TestWriteLoginUsersAndRegistry(t *testing.T) {
 		t.Errorf("selected account RememberPassword = %q, want 1", foundPassword)
 	}
 
-	// Verify .vdf_last backup was created
 	backupPath := filepath.Join(configDir, "loginusers.vdf_last")
 	if _, err := os.Stat(backupPath); err != nil {
 		t.Errorf(".vdf_last backup not created: %v", err)
 	}
 
-	// Verify registry: AutoLoginUser = "player2"
 	regAutoUser, _, err := winutil.RegistryRead(steamTestRegBase + ":AutoLoginUser")
 	if err != nil {
 		t.Errorf("RegistryRead AutoLoginUser: %v", err)
@@ -105,7 +96,6 @@ func TestWriteLoginUsersAndRegistry(t *testing.T) {
 		t.Errorf("AutoLoginUser = %q, want player2", regAutoUser)
 	}
 
-	// Verify registry: RememberPassword = 1
 	regRemPass, _, err := winutil.RegistryRead(steamTestRegBase + ":RememberPassword")
 	if err != nil {
 		t.Errorf("RegistryRead RememberPassword: %v", err)
@@ -113,14 +103,9 @@ func TestWriteLoginUsersAndRegistry(t *testing.T) {
 		t.Errorf("RememberPassword = %v, want 1", regRemPass)
 	}
 
-	// Clean up registry values
 	_ = winutil.RegistryDelete(steamTestRegBase + ":AutoLoginUser")
 	_ = winutil.RegistryDelete(steamTestRegBase + ":RememberPassword")
 }
-
-// ---------------------------------------------------------------------------
-// writeLoginUsersAndAutoLogin — "Add New" mode (empty selectedID64)
-// ---------------------------------------------------------------------------
 
 func TestWriteLoginUsersAndRegistry_AddNew(t *testing.T) {
 	dir := t.TempDir()
@@ -161,7 +146,6 @@ func TestWriteLoginUsersAndRegistry_AddNew(t *testing.T) {
 	}
 
 	// RegistryWrite("", ...) on Windows calls deleteRegistryValueIfPresent — the value is removed.
-	// This is correct behavior for Add New mode.
 	_, _, err := winutil.RegistryRead(steamTestRegBase + ":AutoLoginUser")
 	if err == nil {
 		t.Error("AutoLoginUser should not exist after AddNew (empty string write deletes)")
@@ -170,10 +154,6 @@ func TestWriteLoginUsersAndRegistry_AddNew(t *testing.T) {
 	_ = winutil.RegistryDelete(steamTestRegBase + ":AutoLoginUser")
 	_ = winutil.RegistryDelete(steamTestRegBase + ":RememberPassword")
 }
-
-// ---------------------------------------------------------------------------
-// writeLoginUsersAndAutoLogin — accounts Steam does not know about
-// ---------------------------------------------------------------------------
 
 func seedStoredAccount(t *testing.T, rec accountstore.Record) {
 	t.Helper()
@@ -399,10 +379,6 @@ func TestWriteLoginUsersAndRegistry_UnknownAccountFails(t *testing.T) {
 	}
 }
 
-// ---------------------------------------------------------------------------
-// RemoveSteamAccountFromVDF
-// ---------------------------------------------------------------------------
-
 func TestRemoveSteamAccountFromVDF(t *testing.T) {
 	dir := t.TempDir()
 	configDir := filepath.Join(dir, "config")
@@ -439,7 +415,6 @@ func TestRemoveSteamAccountFromVDF(t *testing.T) {
 		t.Errorf("wrong user kept: %v", users[0])
 	}
 
-	// .vdf_last backup should exist
 	backupPath := filepath.Join(configDir, "loginusers.vdf_last")
 	if _, err := os.Stat(backupPath); err != nil {
 		t.Errorf(".vdf_last backup not created: %v", err)

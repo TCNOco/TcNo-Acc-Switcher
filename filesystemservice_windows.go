@@ -25,7 +25,7 @@ var knownFolderIDs = map[string]*windows.KNOWNFOLDERID{
 
 // userFolderPath asks Windows where a folder actually is. Reading it from the
 // profile directory would miss the redirection OneDrive and roaming profiles
-// apply, which is exactly the case where a guessed path is wrong.
+// apply.
 func userFolderPath(kind string) (string, error) {
 	id, ok := knownFolderIDs[kind]
 	if !ok {

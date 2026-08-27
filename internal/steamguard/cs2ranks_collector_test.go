@@ -50,7 +50,6 @@ func TestCollectorServesAStoredRank(t *testing.T) {
 
 func TestCollectorDeclinesWithoutAnEntry(t *testing.T) {
 	// The chain reads this as an ordinary variant failure and moves to Leetify.
-	// That single return is the whole "signed in? authenticated : public API".
 	useCollectorRoot(t)
 	if _, err := collect(t); !errors.Is(err, basic.ErrGameStatsCollectorNoData) {
 		t.Fatalf("err = %v, want ErrGameStatsCollectorNoData", err)

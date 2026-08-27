@@ -20,8 +20,7 @@ import (
 
 const (
 	// ownedGamesSweepInterval is four times the cooldown sweep's, because a
-	// library only changes when someone buys a game. A cooldown ticks down on its
-	// own; ownership does not.
+	// library only changes when someone buys a game.
 	ownedGamesSweepInterval = 24 * time.Hour
 
 	// ownedGamesRememberedSweepInterval applies while the vault key is held under
@@ -47,8 +46,8 @@ const (
 	// ownedGamesSweepFloor is the minimum gap between whole sweeps.
 	ownedGamesSweepFloor = 90 * time.Second
 
-	// ownedGamesStagger paces the sweep. Steam is not a CDN and the protocol
-	// client has no rate limiter, so the discipline is entirely ours.
+	// ownedGamesStagger paces the sweep. The protocol client has no rate limiter,
+	// so the discipline is entirely ours.
 	ownedGamesStagger = 2 * time.Second
 
 	// Longer than the cooldown request timeout: this is the one call whose
@@ -133,11 +132,6 @@ func (s *Service) runOwnedGamesSweeper(ctx context.Context) {
 
 // ownedGamesSweepDue reports whether the interval in effect right now has passed
 // since the last sweep.
-//
-// The interval is read per poll rather than once at startup: enabling
-// remember-password mid-session moves the vault onto a ProcessLease, and the
-// shorter cadence has to reach the sweeper that is already running under the
-// longer one.
 func (s *Service) ownedGamesSweepDue(now time.Time) bool {
 	s.ownedGamesSweep.mu.Lock()
 	last := s.ownedGamesSweep.lastSweep
@@ -238,7 +232,7 @@ func (s *Service) sweepOwnedGames(ctx context.Context) {
 	if len(lapsed) > 0 {
 		s.refreshLapsedOwnedGamesSessions(ctx, lapsed)
 		// The batch rewrote the vault, so every token lifted before it is the old
-		// one. Re-collecting is what makes the renewal worth doing at all.
+		// one.
 		targets = s.collectOwnedGamesTargets(time.Now())
 	}
 
@@ -331,8 +325,7 @@ func (s *Service) refreshLapsedOwnedGamesSessions(ctx context.Context, lapsed []
 	}
 	// Carry the open windows across rather than leaving them holding a
 	// capability bound to the generation this batch just replaced. Renewing
-	// session tokens grants nobody anything they did not already have, and the
-	// user has no way to know a sweep is why their next click was refused.
+	// session tokens grants nobody anything they did not already have.
 	s.carryCapabilitiesAcross(v.Generation())
 	log.Info("owned games sessions refreshed in one vault generation",
 		"requested", len(lapsed), "refreshed", len(results))

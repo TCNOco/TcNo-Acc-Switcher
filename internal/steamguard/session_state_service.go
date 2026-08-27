@@ -66,8 +66,7 @@ func (s *Service) SteamSessionLocalState(accountID, token string) (SteamSessionS
 // being reported as lapsed, and a half-finished enrollment has no session to judge.
 //
 // The refresh token is what keeps a row from claiming a sign-in is needed every
-// time an access token ages out overnight. Judging on the access token alone let
-// the shorter of the two clocks decide how often the user was told to log in.
+// time an access token ages out overnight.
 func localSessionStatus(kind vaultrecord.Kind, accessToken, refreshToken string, now time.Time) SessionStatus {
 	if kind == vaultrecord.KindEnrollmentPending {
 		return SessionStatusUnknown

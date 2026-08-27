@@ -71,10 +71,8 @@ func newBrowserSessionFixture(t *testing.T) (*Service, string, SensitiveViewGran
 
 // Opening a browser window renews a stale session first, and that renewal writes
 // to the vault, which rotates the generation and invalidates the capability the
-// window was opened with. Authorizing a second time inside the same call rejected
-// the caller with its own side effect: the first window an account opened after
-// its token went stale always failed, and the retry always worked because there
-// was nothing left to renew.
+// window was opened with. Authorizing a second time inside the same call would
+// reject the caller with its own side effect.
 func TestBrowserSessionSurvivesItsOwnSessionRefresh(t *testing.T) {
 	service, accountID, grant := newBrowserSessionFixture(t)
 

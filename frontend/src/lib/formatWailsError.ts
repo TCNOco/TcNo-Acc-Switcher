@@ -1,7 +1,3 @@
-/**
- * Formats Wails/JS errors: `message` lines first, then other fields as "Key: value" lines
- * (e.g. `cause`, `kind`). Plain objects, JSON strings, and `{ message, cause, kind }` shapes.
- */
 export type FormatWailsErrorOptions = {
   /** If the first line of `message` is in this set, replace with `translateMessage` (i18n). */
   i18nFirstLineKeys?: Set<string>;
@@ -12,10 +8,6 @@ function isEmptyPlainObject(v: unknown): boolean {
   return v !== null && typeof v === "object" && !Array.isArray(v) && Object.keys(v as object).length === 0;
 }
 
-/**
- * @param err - Wails/runtime error
- * @param options - optional i18n for the first `message` line (when it is a known key; see Steam userdata ops)
- */
 function buildMessageLines(
   obj: Record<string, unknown>,
   options?: FormatWailsErrorOptions,
@@ -53,6 +45,10 @@ function buildMetaLines(obj: Record<string, unknown>): string[] {
   return lines;
 }
 
+/**
+ * Formats Wails/JS errors: `message` lines first, then other fields as "Key: value" lines
+ * (e.g. `cause`, `kind`). Plain objects, JSON strings, and `{ message, cause, kind }` shapes.
+ */
 export function formatWailsError(err: unknown, options?: FormatWailsErrorOptions): string {
   const obj = extractErrorObject(err);
   if (!obj) return err == null ? "" : String(err);

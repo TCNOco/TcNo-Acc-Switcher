@@ -2,11 +2,7 @@
   /**
    * The "other ways in" block: backup key and keyfile.
    *
-   * Shared by every screen that unlocks the vault. It used to exist only on the
-   * account unlock screen, so the screens that ADD an account offered a password
-   * box and nothing else - a vault protected by a keyfile or a backup key simply
-   * could not be opened from them. Keeping one copy is what stops the two
-   * drifting apart again on a path where the cost is being locked out.
+   * Shared by every screen that unlocks the vault.
    */
   import { t } from "../../stores/i18n";
 
@@ -72,9 +68,9 @@
 </details>
 
 <style lang="scss">
-  /* Moved here with the markup: Svelte scopes styles to the component that
-     declares them, so leaving these behind rendered the block unstyled. The
-     field and link rules are restated for the same reason. */
+  /* Svelte scopes styles to the component that declares them, so these rules
+     live here with the markup. The field and link rules are restated for the
+     same reason. */
   .steam-guard__other-factors summary {
     cursor: pointer;
     opacity: 0.85;

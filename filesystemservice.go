@@ -61,8 +61,7 @@ func (f *FilesystemService) StatPath(raw string) PathStat {
 	return PathStat{Exists: true, IsDir: fi.IsDir()}
 }
 
-// ListRoots returns every drive, followed by the user's own folders. The user
-// folders come last so the drives keep the order people expect to scan.
+// ListRoots returns every drive, followed by the user's own folders.
 func (f *FilesystemService) ListRoots() ([]FsRoot, error) {
 	return append(driveRoots(), userFolderRoots()...), nil
 }

@@ -6,8 +6,7 @@ export type Span = { top: number; bottom: number };
  * works, so a row just off the edge does not jump to the middle.
  */
 export function scrollDeltaIntoView(row: Span, view: Span, margin = 8): number {
-  // A row taller than the view can never fit; showing its top is the useful
-  // half, and is what the first branch does.
+  // A row taller than the view can never fit; showing its top is the useful half.
   if (row.top < view.top + margin) {
     return row.top - (view.top + margin);
   }

@@ -19,9 +19,7 @@
   let nowMs = Date.now();
   /**
    * The countdown is only ever read by the hover tooltip and the aria-label —
-   * the bubble itself shows the tag name, which does not change. Ticking once a
-   * second regardless meant every account with an expiring tag rewrote
-   * attributes nobody was looking at, on every row, forever. Tick only while
+   * the bubble itself shows the tag name, which does not change. Tick only while
    * this row is actually hovered or focused.
    */
   let countdownVisible = false;

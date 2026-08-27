@@ -94,7 +94,6 @@ func (d *gameDefinition) resolveFallbacks() error {
 	return nil
 }
 
-// variantCount is 1 (the primary definition) plus any resolved fallbacks.
 func (d gameDefinition) variantCount() int {
 	return 1 + len(d.resolved)
 }

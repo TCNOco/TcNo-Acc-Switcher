@@ -29,7 +29,6 @@
     --pink-platform-outline: rgba(158, 19, 72, 0.45);
     --pink-on-shell-border-soft: rgba(255, 248, 250, 0.35);
 
-    /* ── Semantic tokens (Pink chrome & controls) ── */
     --chrome-bg: var(--pink-shell);
     --chrome-fg: var(--pink-shell-fg);
     --button-fg: var(--pink-ink);
@@ -53,7 +52,6 @@
     --cyanSecondary: #f1dde9;
     --cyanLight: rgba(239, 115, 163, 0.18);
 
-    /* Panels / inputs (light rose tints) */
     --code: var(--pink-line);
     --code-background: #ebdeee;
     --slightly-darker-code-background: #e2d7e7;
@@ -91,7 +89,6 @@
     --yellowSecondary: #fff8e1;
     --gradientDegree: 135deg;
 
-    /* Chrome + main fills */
     --border-bar-bg: var(--pink-shell);
     --border-bar-size: 7px;
     --program-bg: #f5f5f5;
@@ -104,7 +101,6 @@
     --main-padding: 0.75rem;
     --document-canvas-bg: var(--pink-field);
 
-    /* Shadows & overlays — warm tinted, work on light bg */
     --shadow-color-heavy: rgba(40, 12, 28, 0.22);
     --shadow-color-50: rgba(50, 18, 32, 0.14);
     --shadow-color-45: rgba(50, 18, 32, 0.12);
@@ -179,7 +175,6 @@
     --ace-muted-purple: #8b6b7a;
     --ace-xml-pe: #9e8792;
 
-    /* Notifications (light cards) */
     --notification-main-bg: var(--pink-panel);
     --notification-info-border: #8d2f5a;
     --notification-info-highlight: var(--pink-muted);
@@ -216,7 +211,6 @@
   --role-status-warn: #a24e0f;
 }
 
-/* Main content — soft pink field */
 body,
 .programMain,
 .mainblock {
@@ -224,7 +218,6 @@ body,
     color: var(--white);
 }
 
-/* Chrome strips — deep rose, light text */
 .headerbar,
 .resizeTopLeft,
 .resizeTop,
@@ -266,7 +259,6 @@ body,
     filter: none;
 }
 
-/* Primary buttons — light rose fill, dark text */
 button,
 .button {
     background: var(--button-bg);
@@ -469,7 +461,6 @@ label.acc.currentAcc {
     border-style: dashed;
 }
 
-/* Steam-style account labels — dark text on light card */
 label.acc {
     color: var(--white);
 }
@@ -479,12 +470,10 @@ label.acc p {
     color: var(--white);
 }
 
-/* Tooltips: dark panel, light label text */
 .tooltip .tooltip-inner {
     color: var(--chrome-fg);
 }
 
-/* App modal title bar is deep rose — light title + controls text (tokens + fallback) */
 .modal-headerbar {
     color: var(--modal-header-fg, var(--chrome-fg)) !important;
 }
@@ -497,7 +486,6 @@ label.acc p {
     color: var(--modal-header-fg, var(--chrome-fg));
 }
 
-/* Footer / action bar uses deep rose bg — light icon & label text */
 .actionbar {
     color: var(--chrome-fg);
 }

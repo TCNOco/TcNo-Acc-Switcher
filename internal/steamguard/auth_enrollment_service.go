@@ -292,8 +292,8 @@ func refreshFailureReason(err error) (string, bool) {
 	case errors.Is(err, sessionrefresh.ErrRemote):
 		return "remote_rejected", true
 	case errors.Is(err, sessionrefresh.ErrInvalidResponse):
-		// Steam answered, but with nothing usable — an expired refresh token
-		// looks exactly like this. Signing in again is the only way forward.
+		// Steam answered, but with nothing usable: an expired refresh token
+		// looks exactly like this.
 		return "invalid_token_response", true
 	default:
 		return "", false

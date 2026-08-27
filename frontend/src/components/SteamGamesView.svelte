@@ -207,8 +207,7 @@
       SteamService.GetSteamAccountsList(),
       SteamService.GetSteamAccountsEnrichment().catch(() => [] as SteamAccountEnrichmentDTO[]),
       // Unanswerable counts as "yes": an order the user arranged is the one thing
-      // here that must not be overridden, and leaving the list alone is what the
-      // strip did before it ordered anything at all.
+      // here that must not be overridden.
       SteamService.HasSavedAccountOrder().catch(() => true),
     ]);
     const enrichById = new Map(

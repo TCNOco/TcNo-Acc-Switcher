@@ -4,9 +4,7 @@
 // An account's trade URL is only readable while authenticated as that account,
 // and Steam serves it as undocumented HTML. So the parser's job is less
 // "extract the value" than "refuse to guess": a page it does not recognise must
-// be indistinguishable, to the caller, from a page it never fetched. Handing
-// back a wrong trade URL is worse than handing back none - the user would paste
-// it somewhere and wait for items that can never arrive.
+// be indistinguishable, to the caller, from a page it never fetched.
 package tradelink
 
 import (

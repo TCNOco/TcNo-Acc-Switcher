@@ -58,8 +58,8 @@ func TestSyncKnownAccountsImportsVDFRows(t *testing.T) {
 	}
 }
 
-// The headline case: Advanced Clearing (or Steam itself) empties the file and
-// the switcher must still list every account.
+// Advanced Clearing (or Steam itself) empties the file and the switcher must
+// still list every account.
 func TestSyncKnownAccountsKeepsAccountsSteamForgot(t *testing.T) {
 	useTempAccountStore(t)
 
@@ -302,9 +302,8 @@ func TestForgetSteamAccountRemovesItFromTheStoreAndOrder(t *testing.T) {
 	}
 }
 
-// The whole point of the store, asserted through the call the UI actually
-// makes: a loginusers.vdf the parser cannot read must cost the accounts Steam
-// still knew about, not the entire list.
+// Asserted through the call the UI actually makes: a loginusers.vdf the parser
+// cannot read must cost the accounts Steam still knew about, not the entire list.
 func TestGetSteamAccountsListSurvivesABrokenLoginUsers(t *testing.T) {
 	env := newSteamTestEnv(t)
 	env.writeLoginUsers(t, oneAccountVDF)

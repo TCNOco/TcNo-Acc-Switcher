@@ -26,8 +26,6 @@ const reducedMotionQuery =
     : null;
 
 /**
- * Global guard: true when motion is enabled.
- *
  * The OS preference counts as well as the app setting. Neutralising the CSS is
  * not enough on its own - Svelte holds a leaving element for the length of the
  * duration it was handed, so only answering false here removes it immediately.
@@ -37,7 +35,6 @@ export function motionEnabled(): boolean {
   return get(animationsEnabled);
 }
 
-/** No-op transition for when motion is disabled. */
 function noOpTransition(): TransitionConfig {
   return { duration: 0, css: () => "" };
 }

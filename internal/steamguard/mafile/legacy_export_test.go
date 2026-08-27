@@ -5,9 +5,8 @@ import (
 	"testing"
 )
 
-// The export is only useful if SDA can read it back, and ImportLegacyEncrypted is
-// this repo's implementation of SDA's reader — so a round trip through it is the
-// compatibility check that matters.
+// ImportLegacyEncrypted is this repo's implementation of SDA's reader, so a round
+// trip through it is the compatibility check that matters.
 func TestExportLegacyEncryptedRoundTripsThroughTheImporter(t *testing.T) {
 	const filename = "76561198000000000.maFile"
 	const password = "canary-password"
@@ -51,8 +50,6 @@ func TestExportLegacyEncryptedRejectsTheWrongPassword(t *testing.T) {
 	}
 }
 
-// Fresh key material per export: identical output would show that two exports of
-// one account share a salt and IV.
 func TestExportLegacyEncryptedNeverReusesKeyMaterial(t *testing.T) {
 	first, err := ExportLegacyEncrypted(canaryAccount(), ExportOptions{}, "canary-password")
 	if err != nil {

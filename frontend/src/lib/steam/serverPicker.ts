@@ -31,8 +31,7 @@ export type Quality = "good" | "fair" | "poor" | "unknown";
 
 /**
  * Thresholds match the reference server picker so a user moving between the two
- * reads the same colours: under 75 ms is a server worth playing on, over 150 ms
- * is one to avoid.
+ * reads the same colours.
  */
 export function pingQuality(rttMs: number | null | undefined): Quality {
   if (rttMs === null || rttMs === undefined || !Number.isFinite(rttMs) || rttMs < 0) {

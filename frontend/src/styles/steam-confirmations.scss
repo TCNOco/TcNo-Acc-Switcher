@@ -93,8 +93,8 @@ $confirmations-avatar: 4rem;
   &:disabled { cursor: not-allowed; opacity: var(--role-disabled-opacity); }
 }
 
-// A square the same size as the avatar it sits opposite. The label lives in the
-// tooltip and the accessible name, so the icon alone carries it.
+// The label lives in the tooltip and the accessible name, so the icon alone
+// carries it.
 .confirmations-refresh {
   display: inline-flex;
   align-items: center;
@@ -159,8 +159,8 @@ $confirmations-avatar: 4rem;
 .confirmations-empty h2 { margin: 1rem 0 0.25rem; color: var(--whiteSecondary); }
 .confirmations-empty p { margin: 0; }
 
-// Just the list now: the detail pane is a bottom bar on the page itself, so this
-// has no frame of its own and takes every row the header and that bar leave.
+// The detail pane is a bottom bar on the page itself, so this has no frame of
+// its own and takes every row the header and that bar leave.
 .confirmations-workspace {
   display: flex;
   flex-direction: column;
@@ -171,8 +171,8 @@ $confirmations-avatar: 4rem;
 }
 
 .confirmations-list {
-  // Scrolls for as long as there is content. Never horizontally: long titles wrap
-  // instead, so the window has no sideways scrollbar.
+  // Never horizontally: long titles wrap instead, so the window has no sideways
+  // scrollbar.
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
@@ -189,8 +189,7 @@ $confirmations-avatar: 4rem;
 
     &:hover { background: var(--role-dropdown-hover-bg); }
     &.active { background: var(--accent-fill-very-soft); box-shadow: inset 3px 0 var(--accent); }
-    // Marked for a batch decision. Stronger than the open row's tint: open is a
-    // place, marked is something about to be acted on.
+    // Marked for a batch decision. Stronger than the open row's tint.
     &.checked { background: var(--accent-fill-soft); }
   }
 }
@@ -198,7 +197,7 @@ $confirmations-avatar: 4rem;
 // Steam sends one image per confirmation: the item for a listing, the other
 // party's avatar for a trade. Sized to the identity avatar rather than to a
 // smaller value of its own: a row is never shorter than its three lines of
-// type, title and summary, so this has the height to spend and grew into it.
+// type, title and summary, so this has the height to spend.
 //
 // Also the row's checkbox, the way the Steam app uses it: clicking the image
 // marks the row for a batch decision, and the mark is drawn over the image.
@@ -280,8 +279,7 @@ button.confirmations-row__body {
   &:focus-visible { outline: 2px solid var(--role-focus-ring); outline-offset: -2px; }
 }
 
-// The other party's avatar on a trade, the item on a listing. Either way it is
-// the picture the confirmation is about, so it is not a thumbnail.
+// The picture the confirmation is about, so it is not a thumbnail.
 .confirmations-detail__icon {
   flex: none;
   width: 4rem;
@@ -424,8 +422,7 @@ button.confirmations-row__body {
 }
 
 // Everything else is a headline and a few fields, so it sits under the list
-// rather than covering it — the list stays readable and there is no window of
-// empty space around three lines of text.
+// rather than covering it.
 .confirmations-detail--sheet {
   flex: 0 1 auto;
   margin-top: 0.9rem;

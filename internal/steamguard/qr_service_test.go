@@ -165,10 +165,8 @@ func TestSelectQRRegionIsBusyAndCapabilityRevocationCancelsActiveSelection(t *te
 }
 
 // A region drag lasts as long as the user takes over it, so a background
-// session-token sweep lands in the middle of one sooner or later. Before the
-// capabilities were carried across, the scan was refused after the pixels had
-// already been captured and decoded - the user dragged a box and was told the
-// region "could not be scanned safely".
+// session-token sweep lands in the middle of one sooner or later. The scan must
+// not be refused after the pixels have already been captured and decoded.
 func TestQRFlowSurvivesABackgroundSessionRefreshMidSelection(t *testing.T) {
 	service, grant := setupQRService(t)
 	frame, _ := makeQRRegionFrame(t, qrTestChallenge)

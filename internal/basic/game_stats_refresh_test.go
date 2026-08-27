@@ -36,9 +36,7 @@ func writeIdsFileForTest(t *testing.T, platformKey string, ids map[string]string
 	}
 }
 
-// A body that fetched and parsed but carried no metrics is what a captive portal
-// or a half-resumed network answers with, and every account hits it in the same
-// moment. Persisting the empty result wiped every tile at once.
+// A captive portal answers every account at once with a parseable body carrying no metrics; persisting that wipes every tile.
 func TestRefreshSaveKeepsPreviousStatsWhenNothingWasCollected(t *testing.T) {
 	useGameStatsRoot(t)
 

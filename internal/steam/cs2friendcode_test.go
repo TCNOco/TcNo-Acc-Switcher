@@ -2,10 +2,9 @@ package steam
 
 import "testing"
 
-// Rabscuttle's account, the vector both independent reverse-engineered
-// implementations pin themselves to (emily33901/js-csfriendcode,
-// not-wlan/csgo-friendcode). Nothing about the encoding is derivable, so a
-// wrong shuffle only shows up against a known pair.
+// The vector both independent reverse-engineered implementations pin themselves
+// to (emily33901/js-csfriendcode, not-wlan/csgo-friendcode). Nothing about the
+// encoding is derivable, so a wrong shuffle only shows up against a known pair.
 func TestCS2FriendCode(t *testing.T) {
 	cases := []struct {
 		id64 string
@@ -27,8 +26,6 @@ func TestCS2FriendCode(t *testing.T) {
 		if f.CS2FriendCode != c.want {
 			t.Errorf("FormatsFromID64(%s).CS2FriendCode = %q, want %q", c.id64, f.CS2FriendCode, c.want)
 		}
-		// The Steam friend code Steam's own "Add a Friend" page shows is the
-		// account ID, so it must stay in step with SteamID32.
 		if f.FriendCode != f.ID32 {
 			t.Errorf("FormatsFromID64(%s): FriendCode %q != ID32 %q", c.id64, f.FriendCode, f.ID32)
 		}

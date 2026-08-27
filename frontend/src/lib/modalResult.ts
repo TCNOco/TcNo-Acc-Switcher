@@ -6,9 +6,7 @@ import { openAlertNoButton } from "../stores/modal";
  * settles whichever way the modal actually closes.
  *
  * Escape and the backdrop dismiss a modal without the body ever calling
- * `onDone`, so the dialog's own promise is raced against it. Awaiting `onDone`
- * alone leaves the caller hanging on those paths, which looks like a dead
- * button rather than a cancelled dialog.
+ * `onDone`, so the dialog's own promise is raced against it.
  *
  * The body is responsible for calling `dismissModal()` itself, synchronously,
  * in the same handler that reports the result. Resolving first and dismissing

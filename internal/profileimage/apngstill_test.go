@@ -131,7 +131,6 @@ func TestStillPicksTheMedianFrameNotTheLoudest(t *testing.T) {
 	mid := solid(8, 8, color.NRGBA{80, 80, 80, 128})
 	blazing := solid(8, 8, color.NRGBA{255, 255, 255, 254})
 
-	// Frame 0 is the brightest, exactly as in the Steam frames that started this.
 	data := buildAPNG(t,
 		[]*image.NRGBA{blazing, dim, mid, dim, mid},
 		[]image.Point{{}, {}, {}, {}, {}})

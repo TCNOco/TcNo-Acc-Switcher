@@ -1,9 +1,7 @@
 // Package gzipfs presents a partially gzip-compressed asset tree as if nothing
 // were compressed: a file stored as "x.js.gz" opens, stats and lists under the
-// name "x.js" with its inflated size, and inflates as it is read. Consumers —
-// the Wails asset server, the embedded platform art lookup — need no knowledge
-// of the compression, and files that grow under gzip are simply stored raw and
-// pass straight through.
+// name "x.js" with its inflated size, and inflates as it is read. Files that
+// grow under gzip are stored raw and pass straight through.
 package gzipfs
 
 import (

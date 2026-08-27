@@ -14,7 +14,6 @@ import (
 const MaxWindows = 8
 
 var (
-	// ErrTooManyWindows reports the cap being reached.
 	ErrTooManyWindows = fmt.Errorf("steambrowser: at most %d session windows can be open at once", MaxWindows)
 	// ErrNoSuchWindow reports a command for a window that has already closed.
 	ErrNoSuchWindow = errors.New("steambrowser: session window is not open")

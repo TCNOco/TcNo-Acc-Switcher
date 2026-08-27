@@ -18,18 +18,15 @@ export const windowFocused = writable(true);
  * long as they are in the document — around a quarter of a core on a list of a
  * dozen accounts — and neither CSS nor JS can pause an animated <img>. While a
  * game has the machine, that work is worth nothing, so the list freezes each
- * frame onto a canvas instead. The decoration stays put; it just stops moving.
+ * frame onto a canvas instead.
  *
- * A running game only counts while the user is somewhere else. gameRunning is
- * read from Steam and says nothing about what is in front, so on its own it kept
- * the list frozen after the user tabbed back to it — the animations paused when
- * the game started and never came back while it was still open. Being looked at
- * is the whole justification for spending the core.
+ * A running game only counts while the user is somewhere else: gameRunning is
+ * read from Steam and says nothing about what is in front, so on its own it
+ * keeps the list frozen after the user tabs back to it.
  *
- * Coverage is not qualified the same way. A fullscreen window from another
+ * Coverage is not qualified the same way: a fullscreen window from another
  * process being in front already means we are not, and trusting the page's own
- * idea of focus over that would risk animating behind a game, which is the exact
- * waste this exists to avoid.
+ * idea of focus over that would risk animating behind a game.
  */
 export const animationsSuspended = derived(
   [screenCovered, gameRunning, windowFocused],
@@ -85,10 +82,10 @@ function trackWindowFocus(): void {
   window.addEventListener("blur", sync);
   document.addEventListener("visibilitychange", sync);
   // Backstop for coming back. Activating the host window does not always land
-  // focus inside the webview, and hasFocus would then still say no - leaving the
-  // list frozen in front of the user, which is the bug this is here to fix.
-  // Losing focus needs no equivalent: blur is reliable, and erring towards
-  // animating something nobody asked to be frozen is the cheaper mistake.
+  // focus inside the webview, and hasFocus would then still say no, leaving the
+  // list frozen in front of the user. Losing focus needs no equivalent: blur is
+  // reliable, and erring towards animating something nobody asked to be frozen
+  // is the cheaper mistake.
   Events.On("common:WindowFocus", () => windowFocused.set(true));
   sync();
 }

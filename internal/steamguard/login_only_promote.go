@@ -47,12 +47,11 @@ func isLoginOnlyRecord(v *vault.Vault, accountID string) bool {
 // PromoteLoginOnlyAccount turns a session-only record into a real Steam Guard
 // authenticator, reusing the session it already holds.
 //
-// The stored session is the whole point. A login-only record holds the same
-// tokens a fresh sign-in would produce, so enrollment starts straight from them
-// and the user is only asked for what Steam itself insists on - the emailed or
-// texted confirmation code, and the recovery code they have to keep. A lapsed
-// session is renewed from its refresh token first, exactly as opening the
-// account would have done.
+// A login-only record holds the same tokens a fresh sign-in would produce, so
+// enrollment starts straight from them and the user is only asked for what Steam
+// itself insists on - the emailed or texted confirmation code, and the recovery
+// code they have to keep. A lapsed session is renewed from its refresh token
+// first, exactly as opening the account would have done.
 //
 // Nothing is destroyed on a refusal: Steam is asked to add the authenticator
 // before anything is written, so a rejected enrollment leaves the login-only

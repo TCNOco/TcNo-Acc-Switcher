@@ -25,7 +25,6 @@ func SyncPlatformCounts(platformName string, accounts, gameShortcuts, gameShortc
 	return saveLocked()
 }
 
-// SyncPlatformTagCounts updates stored per-platform tag & tagged-account counters.
 func SyncPlatformTagCounts(platformName string, tags int, taggedAccounts int) error {
 	if !collectionEnabled() {
 		return nil

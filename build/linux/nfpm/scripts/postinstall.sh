@@ -1,7 +1,6 @@
 #!/bin/sh
 
-# Update desktop database for .desktop file changes
-# This makes the application appear in application menus and registers its capabilities.
+# Makes the application appear in application menus and registers its capabilities.
 if command -v update-desktop-database >/dev/null 2>&1; then
   echo "Updating desktop database..."
   update-desktop-database -q /usr/share/applications
@@ -10,10 +9,9 @@ else
 fi
 
 # Refresh the icon theme cache. Without this the icon named by the desktop
-# entry's Icon= key can stay unresolvable until something else rebuilds the
-# cache, and the window falls back to the compositor's placeholder icon - a
-# stale cache is preferred over a directory scan, so newly installed icons are
-# simply not seen.
+# entry's Icon= key stays unresolvable until something else rebuilds the cache,
+# and the window falls back to the compositor's placeholder icon: a stale cache
+# is preferred over a directory scan, so newly installed icons are not seen.
 if command -v gtk-update-icon-cache >/dev/null 2>&1; then
   echo "Updating icon cache..."
   gtk-update-icon-cache -q -f -t /usr/share/icons/hicolor 2>/dev/null || true
@@ -22,7 +20,6 @@ else
 fi
 
 # Update MIME database for custom URL schemes (x-scheme-handler)
-# This ensures the system knows how to handle your custom protocols.
 if command -v update-mime-database >/dev/null 2>&1; then
   echo "Updating MIME database..."
   update-mime-database -n /usr/share/mime

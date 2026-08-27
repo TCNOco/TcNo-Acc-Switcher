@@ -36,8 +36,7 @@ var (
 	// a resume queues every account-and-game pair at once, each walking a
 	// fallback chain of its own. Unbounded that is dozens of simultaneous
 	// requests to the same few hosts from a network that has only just come
-	// back - the shape most likely to be answered with the failures this
-	// refresh exists to avoid.
+	// back.
 	gameStatsRefreshSlots = make(chan struct{}, 4)
 )
 
@@ -221,9 +220,7 @@ func ForceGameStatsRefresh(platformKey string) {
 // for it when the user presses F5.
 //
 // It marks the platform active on the way through, the way StartGameStatsRefresh
-// does, so the process monitor keeps working on it afterwards - a refresh the
-// user asked for is also the clearest statement of which platform they are
-// looking at.
+// does, so the process monitor keeps working on it afterwards.
 func (b *BasicService) RefreshAllGameStats(platformKey string) error {
 	if err := security.RequireUnlocked(); err != nil {
 		return err

@@ -1,7 +1,6 @@
 #!/bin/bash
 set -e
 
-# Build configuration
 APP_NAME="tcno-acc-switcher.exe"
 BUNDLE_ID="com.example.tcnoaccswitcher"
 VERSION="0.1.0"
@@ -14,10 +13,8 @@ echo "Bundle ID: $BUNDLE_ID"
 echo "Version: $VERSION ($BUILD_NUMBER)"
 echo "Target: $TARGET"
 
-# Ensure build directory exists
 mkdir -p "$BUILD_DIR"
 
-# Determine SDK and target architecture
 if [ "$TARGET" = "simulator" ]; then
     SDK="iphonesimulator"
     ARCH="arm64-apple-ios15.0-simulator"
@@ -29,10 +26,8 @@ else
     exit 1
 fi
 
-# Get SDK path
 SDK_PATH=$(xcrun --sdk $SDK --show-sdk-path)
 
-# Compile the application
 echo "Compiling with SDK: $SDK"
 xcrun -sdk $SDK clang \
     -target $ARCH \
@@ -44,25 +39,20 @@ xcrun -sdk $SDK clang \
     -o "$BUILD_DIR/$APP_NAME" \
     "$BUILD_DIR/main.m"
 
-# Create app bundle
 echo "Creating app bundle..."
 APP_BUNDLE="$BUILD_DIR/$APP_NAME.app"
 rm -rf "$APP_BUNDLE"
 mkdir -p "$APP_BUNDLE"
 
-# Move executable
 mv "$BUILD_DIR/$APP_NAME" "$APP_BUNDLE/"
 
-# Copy Info.plist
 cp "$BUILD_DIR/Info.plist" "$APP_BUNDLE/"
 
-# Sign the app
 echo "Signing app..."
 codesign --force --sign - "$APP_BUNDLE"
 
 echo "Build complete: $APP_BUNDLE"
 
-# Deploy to simulator if requested
 if [ "$TARGET" = "simulator" ]; then
     echo "Deploying to simulator..."
     xcrun simctl terminate booted "$BUNDLE_ID" 2>/dev/null || true

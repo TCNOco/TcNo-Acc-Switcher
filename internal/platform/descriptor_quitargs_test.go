@@ -2,9 +2,7 @@ package platform
 
 import "testing"
 
-// A descriptor's QuitArgs is the only thing standing between a launcher that ignores WM_CLOSE
-// and a graceful window that expires on every switch, so the catalog-to-code wiring is worth
-// pinning: a rename or a dropped field would regress silently rather than fail a build.
+// QuitArgs is the only way to close a launcher that ignores WM_CLOSE, and a renamed or dropped field regresses silently rather than failing the build.
 func TestDescriptorQuitArgsParse(t *testing.T) {
 	raw := []byte(`{"Platforms":{
 		"WithQuit":{"ExesToEnd":["a.exe"],"Extras":{"QuitArgs":"-shutdown"}},

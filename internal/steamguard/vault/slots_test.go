@@ -40,8 +40,8 @@ func newSlotTestHeader(t *testing.T) header {
 	return header{Version: FormatVersion, VaultID: vaultID, KeyringID: keyringID}
 }
 
-// Every factor listed by a slot is required. This is the property that makes a
-// slot mean "password AND keyfile" rather than "either one".
+// Every factor listed by a slot is required: a slot means "password AND
+// keyfile", not "either one".
 func TestSlotRequiresEveryFactor(t *testing.T) {
 	h := newSlotTestHeader(t)
 	vaultKey := bytes.Repeat([]byte{0x11}, keyBytes)
@@ -185,10 +185,8 @@ func TestReissueSlotsLeavesOtherFactorsIntact(t *testing.T) {
 }
 
 // Credential handles are base64url, the encoding WebAuthn uses and the one the
-// platform driver writes. Validating them with the standard alphabet accepted
-// only handles that happened to avoid the two characters the alphabets disagree
-// on, so roughly a quarter of security keys enrolled and the rest were rejected
-// as a corrupt vault.
+// platform driver writes. Validating them with the standard alphabet rejects
+// every handle containing '-' or '_'.
 func TestSecurityKeySlotAcceptsABase64URLCredential(t *testing.T) {
 	// Encodes to "--8_AAEC..." - '-' and '_' where the standard alphabet has
 	// '+' and '/'.

@@ -88,8 +88,7 @@
     })()
 
     $: showSteamTab = $route.page === "platform" && $route.platformName === "Steam"
-    // The button names where a click goes, not where you are: with one control the
-    // destination is the only label that says what pressing it does.
+    // The button names where a click goes, not where you are.
     $: steamTabLabel = $steamPageTab === "games" ? $t("Steam_Tab_Switcher") : $t("Steam_Tab_Games")
 
     function backClick() {

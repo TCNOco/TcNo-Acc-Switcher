@@ -112,8 +112,7 @@ func TestFetchProfileXMLWithRetryPreservesPermanentError(t *testing.T) {
 
 // The metadata caches are dropped so they are read again; the images are not.
 // An avatar deleted the instant the user presses refresh leaves the tile blank
-// for as long as the round takes, which is what a refresh looked like from the
-// outside - the whole list emptying and filling back in one face at a time.
+// for as long as the round takes.
 func TestRefreshAllSteamImagesClearsMetadataButKeepsImages(t *testing.T) {
 	paths.ResetForTest(t.TempDir())
 

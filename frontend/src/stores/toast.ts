@@ -66,10 +66,8 @@ function popOneOccurrence(id: string, nextDurationMs: number): void {
 /**
  * Show or merge a toast (same type + title + message refreshes the timer and increments count).
  *
- * Returns the row's id — the merged row's id when this call merged into one — so
- * a caller announcing work in progress can dismiss it the moment the work
- * finishes, instead of leaving a stale "working on it" on screen until it times
- * out under the result that replaced it.
+ * Returns the row's id, the merged row's id when this call merged into one, so a
+ * caller can dismiss it as soon as the work it announced finishes.
  */
 export function pushToast(input: ToastInput): string {
   const durationMs = resolvedDurationMs(input)

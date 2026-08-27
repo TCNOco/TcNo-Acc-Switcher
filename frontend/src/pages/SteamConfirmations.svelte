@@ -155,14 +155,14 @@
   $: statusMessageKey = confirmationStatusMessageKey($confirmations.status);
   $: statusMessage = statusMessageKey ? $t(statusMessageKey, { seconds: retrySeconds }) : "";
 
-  /**
-   * Steam describes an item fully only on its own endpoint, so a description is
-   * loaded the first time an item is hovered and kept for the rest of the session.
-   */
   function itemKey(item: ConfirmationTradeItem): string {
     return `${item.appId}/${item.classId}/${item.instanceId}`;
   }
 
+  /**
+   * Steam describes an item fully only on its own endpoint, so a description is
+   * loaded the first time an item is hovered and kept for the rest of the session.
+   */
   async function describe(item: ConfirmationTradeItem, trigger: HTMLElement): Promise<void> {
     const key = itemKey(item);
     hoveredKey = key;
@@ -183,9 +183,8 @@
    * Places the item card against the hovered tile and keeps it inside the window.
    *
    * Above the tile by preference, then below. A card with many description lines
-   * fits neither, and stacking it vertically anyway is what pushed it off the
-   * page — so it goes beside the tile instead, where the space it needs is
-   * horizontal, and is clamped on both axes.
+   * fits neither, so it goes beside the tile instead, where the space it needs
+   * is horizontal, and is clamped on both axes.
    */
   function placeCard(node: HTMLElement, _described?: ConfirmationItem) {
     const apply = (): void => {

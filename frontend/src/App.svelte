@@ -197,7 +197,6 @@
     }
   }
 
-  /** Load/reload the platform background for the given platform name. */
   async function loadPlatformBg(platformName: string): Promise<void> {
     platformBgPending += 1;
     try {
@@ -210,7 +209,6 @@
     }
   }
 
-  // When the route changes to a platform page, reload the platform background.
   $: {
     const r = $route;
     if (r.page === "platform" || r.page === "platform-settings") {
@@ -301,8 +299,7 @@
       }
       e.preventDefault();
       // The Steam games tab has no overlay to open, so the hotkey lands on its
-      // inline bar. The overlay it used to raise there listed nothing but games
-      // anyway, and never the commands the ">" prefix asks for.
+      // inline bar.
       if (focusSteamGamesSearch()) {
         return;
       }
@@ -388,9 +385,8 @@
     // the screen. Hydrates once, then follows the backend's WinEvent hooks.
     initScreenCovered();
     void loadCommandPaletteHotkey();
-    // Load initial app background state. Loaded-or-failed both count as
-    // settled: on failure there is no user wallpaper to protect, so the theme
-    // background may show.
+    // Loaded-or-failed both count as settled: on failure there is no user
+    // wallpaper to protect, so the theme background may show.
     void PlatformService.GetAppBackground().then((info) => {
       appBgInfo.set(info);
     }).catch(() => {}).finally(() => {

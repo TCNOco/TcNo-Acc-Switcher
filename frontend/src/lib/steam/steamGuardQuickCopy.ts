@@ -67,8 +67,7 @@ export async function copySteamGuardCodeNow(steamId64: string): Promise<void> {
  *
  * Same single-call lease as the code copy, but this one spans a request to Steam
  * rather than a local read, so the main window is content-protected for as long
- * as that takes. Releasing it before the caller toasts keeps that window as short
- * as the work actually is.
+ * as that takes.
  */
 export async function fetchTradeLinkNow(steamId64: string): Promise<SteamTradeLink> {
   const current = deps;

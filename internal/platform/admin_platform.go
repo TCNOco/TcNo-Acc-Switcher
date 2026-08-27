@@ -7,7 +7,7 @@ import (
 	"TcNo-Acc-Switcher/internal/winutil"
 )
 
-// Must match steam.steamKillNames (admin pre-flight uses the same process list).
+// Must match steam.steamKillNames.
 var steamKillNamesForAdmin = []string{
 	"steam.exe",
 	"SERVICE:Steam Client Service",

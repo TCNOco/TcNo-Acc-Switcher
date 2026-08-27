@@ -9,8 +9,7 @@ import (
 // The updater's swap helper is this exe re-executed; helper mode is entered
 // via updater.HandleHelperMode, which must run before the singleton check or
 // the helper sees the still-running parent and exits without applying the
-// update. This ordering bug shipped in v4.0.1-v4.0.6 and broke every
-// auto-update apply, so the ordering is pinned here.
+// update.
 func TestHelperModeRunsBeforeSingletonCheck(t *testing.T) {
 	src, err := os.ReadFile("main.go")
 	if err != nil {

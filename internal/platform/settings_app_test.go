@@ -57,7 +57,6 @@ func TestAppSettingsJSON_UnknownFieldsIgnored(t *testing.T) {
 }
 
 func TestAppSettingsJSON_AnimationsEnabled(t *testing.T) {
-	// Round-trip: save false, reload, expect false
 	dir := testExeDirWithPortable(t)
 	s := AppSettings{
 		Version:           1,
@@ -76,7 +75,6 @@ func TestAppSettingsJSON_AnimationsEnabled(t *testing.T) {
 		t.Fatalf("expected AnimationsEnabled=false after round-trip, got %+v", loaded)
 	}
 
-	// Missing key should default to true
 	dir2 := testExeDirWithPortable(t)
 	p := filepath.Join(PortableUserDataDir(dir2), settingsFileName)
 	raw := []byte(`{"version":1,"language":"en-US"}`)

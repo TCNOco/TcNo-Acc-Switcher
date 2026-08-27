@@ -90,8 +90,7 @@ export async function initStreamerMode(): Promise<() => void> {
 }
 
 /* Neither setter recomputes the effective answer: the backend owns that rule and
-   emits the new state, so duplicating the formula here would only invent a second
-   place for the two to disagree. */
+   emits the new state. */
 
 export async function setStreamerMode(enabled: boolean): Promise<void> {
   await PlatformService.SetStreamerMode(enabled);

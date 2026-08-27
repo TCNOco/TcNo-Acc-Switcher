@@ -24,8 +24,8 @@ func TestDecidePrimeState(t *testing.T) {
 		store: parsedStore(true),
 		want:  PrimeStatePrime,
 	}, {
-		// The live case that broke the package-only rule: verified Prime, 84
-		// Premier wins, package not owned because it was granted pre-2019.
+		// Verified Prime, 84 Premier wins, package not owned because it was
+		// granted pre-2019.
 		name:        "Premier history outweighs an unowned package",
 		store:       parsedStore(false),
 		ranks:       gcpd.Ranks{Premier: gcpd.Rank{Found: true, Value: 22887, Wins: 84}},

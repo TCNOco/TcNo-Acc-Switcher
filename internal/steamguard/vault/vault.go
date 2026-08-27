@@ -503,10 +503,7 @@ func (v *Vault) SetLeaseMode(mode LeaseMode) error {
 }
 
 // LeaseMode reports how the cached vault key is currently held, or 0 when the
-// vault is locked or its fixed lease has run out. It exposes no key material -
-// the only thing it distinguishes is a five-minute FixedLease from the
-// ProcessLease a remembered password unlocks under, which is what background
-// work needs to know to pick its cadence.
+// vault is locked or its fixed lease has run out.
 func (v *Vault) LeaseMode() LeaseMode {
 	v.mu.Lock()
 	defer v.mu.Unlock()
@@ -628,11 +625,8 @@ type RecordUpdate struct {
 
 // PutRecords replaces several accounts in a single generation.
 //
-// Every write here rotates the generation, and a rotation invalidates every
-// outstanding capability. Doing that once per account turns a routine batch -
-// refreshing expired access tokens for a whole vault - into one rotation per
-// row, which is why the background sweeps are otherwise forbidden from writing
-// at all. One commit for the whole batch is what makes such a batch affordable.
+// Every write rotates the generation and invalidates every outstanding
+// capability, so the whole batch commits once.
 //
 // It is all-or-nothing: the new generation is written, verified and only then
 // made active, so a failure part-way leaves every record on the old one.
@@ -1341,9 +1335,7 @@ func (v *Vault) ChangePasswordWith(oldCreds Credentials, newPassword string) err
 		return ErrNoPasswordEnrolled
 	}
 	// Nothing is written if some way in would keep answering to the old
-	// password. Committing here would report a password change that did not
-	// happen, and the user would believe the old one was retired when anyone
-	// holding that keyfile or key could still use it.
+	// password: committing would report a change that did not happen.
 	if len(outcome.stillOnOldPassword) != 0 {
 		return fmt.Errorf("%w: %s", ErrPasswordStillInUse, strings.Join(outcome.stillOnOldPassword, ", "))
 	}

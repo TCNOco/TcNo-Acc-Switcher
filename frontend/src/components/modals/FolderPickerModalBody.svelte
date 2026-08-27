@@ -52,9 +52,8 @@
     return !pathStat.exists || pathStat.isDir;
   })();
 
-  // The indicator turns green only when Select is actually usable. Matching the
-  // name alone once let a path that no longer exists - or a folder - read as
-  // "found" while Select stayed disabled and Enter did nothing.
+  // The indicator turns green only when Select is usable: matching the name
+  // alone lets a path that no longer exists, or a folder, read as "found".
   $: soughtMismatch =
     !!soughtFilename.trim() &&
     (primaryDisabled ||

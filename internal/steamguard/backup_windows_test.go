@@ -261,9 +261,8 @@ func TestCreateVerifiedBackupAuthenticatesRecoveryWrapper(t *testing.T) {
 }
 
 // Backing up rekeys the copy to the deliberately expensive backup parameters,
-// which re-derives every factor of each slot. That derivation was password-only,
-// so a vault whose way in needed a password and a keyfile could not be backed
-// up at all - the feature that protects the vault best broke the safety net.
+// which re-derives every factor of each slot, so a vault whose way in needs a
+// password and a keyfile has to be backed up with both.
 func TestBackupAndRestoreWorkOnAVaultThatNeedsAKeyfile(t *testing.T) {
 	service, password := newFactorService(t)
 	if _, err := service.CreateVaultBackupKey(password); err != nil {

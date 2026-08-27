@@ -19,8 +19,6 @@ const CACHE_LIMIT = 512;
 
 const cache = new Map<string, string>();
 
-// ---- Seeded randomness ------------------------------------------------------
-
 /** cyrb128: string to four well-mixed 32-bit words. */
 function seedWords(text: string): [number, number, number, number] {
   let h1 = 1779033703;
@@ -80,8 +78,6 @@ interface Rng {
   sign(): number;
 }
 
-// ---- Colour -----------------------------------------------------------------
-
 /** Hue offsets that keep a set of colours looking chosen rather than collided. */
 const HARMONIES: readonly (readonly number[])[] = [
   [0, 18, -18, 36], // analogous
@@ -114,8 +110,7 @@ function buildPalette(rng: Rng): Palette {
   const harmony = rng.pick(HARMONIES);
   const light = rng.chance(0.17);
   // Ink lightness is chosen against the ground rather than absolutely, so every
-  // shape reads at 64px. An all-dark set was the first version's failure: it
-  // turned a wall of avatars into a wall of murk.
+  // shape reads at 64px. An all-dark set turns a wall of avatars into murk.
   const groundL = light ? rng.range(72, 88) : rng.range(12, 27);
   const groundS = light ? rng.range(14, 38) : rng.range(30, 62);
   const inkL: [number, number] = light ? [26, 52] : [55, 82];
@@ -138,8 +133,6 @@ function buildPalette(rng: Rng): Palette {
     light,
   };
 }
-
-// ---- Drawing helpers --------------------------------------------------------
 
 type Ctx = CanvasRenderingContext2D;
 
@@ -180,8 +173,6 @@ function roundedRect(ctx: Ctx, x: number, y: number, w: number, h: number, r: nu
   ctx.arcTo(x, y, x + w, y, radius);
   ctx.closePath();
 }
-
-// ---- Compositions -----------------------------------------------------------
 
 /**
  * Each archetype is a different way of filling the square. Picking one per seed is
@@ -512,8 +503,6 @@ const COMPOSITIONS: readonly Composition[] = [
   orbits, shards, bauhaus, strata, bloom, mesh, glyph, prism, rays, target, confetti, weave,
 ];
 
-// ---- Grain ------------------------------------------------------------------
-
 let grainTile: HTMLCanvasElement | null = null;
 
 /**
@@ -542,8 +531,6 @@ function getGrainTile(): HTMLCanvasElement | null {
   grainTile = canvas;
   return grainTile;
 }
-
-// ---- Render -----------------------------------------------------------------
 
 let scratch: HTMLCanvasElement | null = null;
 
@@ -619,8 +606,7 @@ function paintFilaments(ctx: Ctx, rng: Rng, p: Palette, s: number): void {
 
 /**
  * Two passes at different scales: a coarse one that carries the visible tooth and
- * a fine one that breaks up the gradients. Both reuse the single cached tile —
- * per-pixel noise per avatar would be the most expensive thing on the page.
+ * a fine one that breaks up the gradients.
  */
 function paintGrain(ctx: Ctx, rng: Rng, s: number): void {
   const tile = getGrainTile();
@@ -690,8 +676,7 @@ function render(seed: string): string {
     ctx.translate(-s / 2, -s / 2);
   }
   // Blend modes are picked per ground. "screen" and "soft-light" over a pale
-  // ground erase the composition entirely, which is how the first version ended
-  // up with blank tiles.
+  // ground erase the composition entirely, leaving a blank tile.
   ctx.globalCompositeOperation = palette.light
     ? rng.pick(["source-over", "source-over", "source-over", "multiply"])
     : rng.pick(["source-over", "source-over", "source-over", "screen", "overlay"]);

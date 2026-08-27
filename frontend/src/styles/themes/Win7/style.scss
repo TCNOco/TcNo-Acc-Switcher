@@ -305,8 +305,6 @@ $bar: ":is(.headerbar, .modal-headerbar, .app-lock-headerbar)";
     0 0 5px rgba(255, 255, 255, 0.95);
 }
 
-/* The aero trio is one joined block hanging off the top edge: no gaps, shared
-   1px dividers, and only the two outer bottom corners rounded. */
 #{$bar} :is(.window-controls, .modal-window-controls):is(.window-controls, .modal-window-controls) {
   grid-template-columns: 29px 27px 45px;
   gap: 0;
@@ -863,9 +861,6 @@ a:hover {
   }
 }
 
-/* ---- Steam Guard ---- */
-
-/* Confirmations window: aero buttons and glass panels. */
 .confirmations-refresh,
 .confirmations-status button,
 .confirmations-actions button,
@@ -943,7 +938,6 @@ button.confirmations-trade__item {
   box-shadow: 2px 3px 7px rgba(0, 0, 0, 0.28);
 }
 
-/* Steam Guard modal: sunken white fields, glass tile rows. */
 .modalFG .steam-guard__code {
   border: 1px solid #7f9db9;
   border-radius: 1px;
@@ -1000,7 +994,6 @@ button.confirmations-trade__item {
 @include windows-icons.themed-button-icons(win7);
 @include windows-tiles.desktop-tiles(win7);
 
-/* Server picker grid: an Aero list - white rows, glassy header, soft edge. */
 :root {
   --role-table-bg: #ffffff;
   --role-table-head-bg: linear-gradient(180deg, #f7fbfd 0%, #e9f2f8 100%);

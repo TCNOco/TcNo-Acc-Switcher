@@ -15,20 +15,17 @@ func main() {
 
 	errors := []string{}
 
-	// Check Go
 	if !checkCommand("go", "version") {
 		errors = append(errors, "Go is not installed. Install from https://go.dev/dl/")
 	} else {
 		fmt.Println("✓ Go is installed")
 	}
 
-	// Check ANDROID_HOME
 	androidHome := os.Getenv("ANDROID_HOME")
 	if androidHome == "" {
 		androidHome = os.Getenv("ANDROID_SDK_ROOT")
 	}
 	if androidHome == "" {
-		// Try common default locations
 		home, _ := os.UserHomeDir()
 		possiblePaths := []string{
 			filepath.Join(home, "Android", "Sdk"),
@@ -49,7 +46,6 @@ func main() {
 		fmt.Printf("✓ ANDROID_HOME: %s\n", androidHome)
 	}
 
-	// Check adb
 	if !checkCommand("adb", "version") {
 		if androidHome != "" {
 			platformTools := filepath.Join(androidHome, "platform-tools")
@@ -61,7 +57,6 @@ func main() {
 		fmt.Println("✓ adb is installed")
 	}
 
-	// Check emulator
 	if !checkCommand("emulator", "-list-avds") {
 		if androidHome != "" {
 			emulatorPath := filepath.Join(androidHome, "emulator")
@@ -73,10 +68,8 @@ func main() {
 		fmt.Println("✓ Android Emulator is installed")
 	}
 
-	// Check NDK
 	ndkHome := os.Getenv("ANDROID_NDK_HOME")
 	if ndkHome == "" && androidHome != "" {
-		// Look for NDK in default location
 		ndkDir := filepath.Join(androidHome, "ndk")
 		if entries, err := os.ReadDir(ndkDir); err == nil {
 			for _, entry := range entries {
@@ -94,14 +87,12 @@ func main() {
 		fmt.Printf("✓ Android NDK: %s\n", ndkHome)
 	}
 
-	// Check Java
 	if !checkCommand("java", "-version") {
 		errors = append(errors, "Java not found. Install JDK 11+ (OpenJDK recommended)")
 	} else {
 		fmt.Println("✓ Java is installed")
 	}
 
-	// Check for AVD (Android Virtual Device)
 	if checkCommand("emulator", "-list-avds") {
 		cmd := exec.Command("emulator", "-list-avds")
 		output, err := cmd.Output()

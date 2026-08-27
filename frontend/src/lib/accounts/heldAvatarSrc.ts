@@ -7,10 +7,9 @@ import { isProfileVideoUrl } from "../profileImageDrop";
  *
  * A refresh changes an avatar's URL twice over: the backend marks the row pending
  * while it fetches, and the page bumps the row's avatar epoch to defeat the
- * webview's cache. Either one used to blank the tile - the first by swapping in
- * the platform placeholder, the second by rebuilding the row around a URL the
- * browser had never seen - so a refresh emptied the whole list and filled it back
- * in one face at a time.
+ * webview's cache. Without a hold either one blanks the tile: the first swaps in
+ * the platform placeholder, the second rebuilds the row around a URL the browser
+ * has never seen.
  *
  * The state lives here rather than in the avatar component because that component
  * is destroyed and rebuilt on every epoch bump, which is precisely the moment the
@@ -74,8 +73,7 @@ export function resetHeldAvatars(): void {
  * all of them the face already on screen is the best answer available.
  *
  * `_swapTick` is unused. Callers pass the `avatarSwapped` store value so that a
- * Svelte template takes a reactive dependency on it, since the maps behind this
- * are ordinary and nothing would otherwise re-render when a swap lands.
+ * Svelte template takes a reactive dependency on it.
  */
 export function heldAvatarSrc(key: string, desired: string, _swapTick = 0): string {
   const id = key.trim();

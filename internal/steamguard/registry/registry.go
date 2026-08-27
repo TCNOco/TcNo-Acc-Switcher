@@ -215,8 +215,7 @@ func sortEntries(entries []Entry) {
 // validState gates what this build may WRITE. Reading is deliberately more
 // tolerant: Load keeps an unrecognised state verbatim and save round-trips it,
 // so an index written by a newer build degrades to "no icon" for the accounts it
-// does not understand instead of failing the whole file - which would have
-// blanked every account's Steam Guard state, not just the unfamiliar ones.
+// does not understand instead of failing the whole file.
 func validState(state State) bool {
 	return state == StatePending || state == StateActive || state == StateLoginOnly
 }

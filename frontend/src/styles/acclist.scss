@@ -1,17 +1,13 @@
-﻿/* DISABLED DRAGGING ON ITEMS: */
-
-.steam-acclist {
+﻿.steam-acclist {
   flex: 1 1 auto;
   min-height: 0;
   display: flex;
   flex-direction: column;
 }
 
-// This is a plain stylesheet, not a Svelte <style> block, so `:global(...)` is
-// not a selector the browser understands - the four rules that used to live
-// here were dropped whole. The drag and ghost ones only repeated what
-// ReorderPointerGrid already styles; the grid needs to fill the column left
-// over after the tag filter bar and scroll inside it.
+// A plain stylesheet, not a Svelte <style> block, so `:global(...)` is not a
+// selector the browser understands. The grid fills the column left over after
+// the tag filter bar and scrolls inside it.
 .steam-acclist .acc_list.reorder-pointer-grid {
   flex: 1 1 auto;
   min-height: 0;
@@ -101,9 +97,8 @@
 // row to its tallest account, and the cell stretches to that - but the tile the
 // eye actually sees is `label.acc`, two levels down, and a percentage height
 // against an auto-height wrapper collapses to the content. So the cell and the
-// wrapper hand their height down by stretching, and an account carrying ranks,
-// a cooldown and three tags sets the height for everything beside it. Nothing
-// to recompute on drop, insert or resize: the row track is the source of truth.
+// wrapper hand their height down by stretching. Nothing to recompute on drop,
+// insert or resize: the row track is the source of truth.
 .acc_list_item {
   border: 0.1em solid transparent;
   cursor: pointer;
@@ -441,10 +436,9 @@ label.acc {
   }
 }
 
-// Ban state rides on the account name. It used to be a ring around the avatar,
-// but Steam supplies the avatar frame now and the two fought for the same
-// pixels. The `label.acc` half of each selector outranks themes that repaint
-// headings inside an account tile.
+// Ban state rides on the account name: Steam's avatar frame owns the pixels a
+// ring around the avatar would need. The `label.acc` half of each selector
+// outranks themes that repaint headings inside an account tile.
 label.acc .acc_name--vac,
 .acc_name--vac {
   color: var(--red);
@@ -479,7 +473,6 @@ label.acc.currentAcc {
   overflow: hidden;
   background: var(--surface-row-dark);
   color: var(--whiteSecondary);
-  /* Status section */
   input {
     user-select: none;
     width: inherit;

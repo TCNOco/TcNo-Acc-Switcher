@@ -197,8 +197,6 @@ func measureInstalledBg(dir, name string) BackgroundLuma {
 	return luma
 }
 
-//  ---------- App-wide background ----------
-
 func (p *PlatformService) GetAppBackground() (AppBackgroundInfo, error) {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
@@ -367,8 +365,6 @@ func (p *PlatformService) SetAppBackgroundFit(fit string) error {
 	s.AppBgFit = normalizeBackgroundFit(fit)
 	return saveSettingsAtomic(exeDir, s)
 }
-
-// ---------- Per-platform background ----------
 
 func (p *PlatformService) GetPlatformBackground(platformKey string) (AppBackgroundInfo, error) {
 	p.mu.RLock()

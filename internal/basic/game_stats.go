@@ -1090,10 +1090,9 @@ func (m *gameStatsManager) refreshSaveLocked(platformName, game, accountID strin
 		// The last good numbers are kept rather than blanked. A body that
 		// fetched and parsed but carried no metrics is what a captive portal or
 		// a half-resumed network hands back, and every account hits it in the
-		// same moment - so writing the empty result wiped every tile at once
-		// over a page that says nothing about the account. LastUpdated is
-		// deliberately not bumped, so the row is still stale and the next round
-		// replaces it as soon as the real source answers.
+		// same moment, so writing the empty result blanks every tile at once.
+		// LastUpdated is deliberately not bumped, so the row is still stale and
+		// the next round replaces it as soon as the real source answers.
 		gameStatsLog().Warn("refresh game stats extracted no rows", "platform", platformName, "game", game, "accountID", accountID, "htmlBytes", len(rawHTML), "keptPrevious", len(row.Collected))
 		return fmt.Errorf("no statistics extracted (saved debug HTML under DataRoot/temp)")
 	}

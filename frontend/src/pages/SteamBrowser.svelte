@@ -266,10 +266,8 @@
   //
   // Drawn as a frame around the page area rather than as a fill behind it. A
   // fill covers the seam just as well, but everything it covers is where the
-  // content view lands - so until that view's first paint the window was a sheet
-  // of red rather than a red border, which is the one thing the border is meant
-  // to distinguish itself from. Left transparent inside, the page area shows the
-  // same background as every other page until the view arrives to cover it.
+  // content view lands, so until that view's first paint the window is a sheet
+  // of red rather than a red border.
   //
   // Width is a fixed margin over the widest seam that can open up: the resize
   // strip is around eight physical pixels and the shell's frame is three to

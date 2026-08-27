@@ -115,12 +115,10 @@ func TestSteamAvatarPendingMatchesOriginalLogic(t *testing.T) {
 	}
 }
 
-// TestManualAvatarIsNeverPending pins the rule that broke the tiles: a manual
-// avatar that had aged past the expiry was reported pending by every list
-// build, while the background refresh went on emitting "not pending" for it,
-// because nothing ever re-downloads a manual avatar to reset its age. The two
-// answers flipped the flag against each other on every window focus, and the
-// tile fell back to the placeholder each time.
+// TestManualAvatarIsNeverPending pins the rule that broke the tiles: nothing ever
+// re-downloads a manual avatar to reset its age, so list builds reported an aged
+// one pending while the refresh reported it not pending, and the tile fell back to
+// the placeholder.
 func TestManualAvatarIsNeverPending(t *testing.T) {
 	const id = "76561198000000001"
 	staticID := steamStaticAvatarID(id)

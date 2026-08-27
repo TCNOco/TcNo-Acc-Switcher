@@ -31,14 +31,10 @@ export const platformBgInfo = writable<AppBackgroundInfo>({ ...DEFAULT_BG });
 /**
  * True when the user has set their own background or explicitly cleared it,
  * overriding the active theme's bundled background image.
- * Derived directly from the backend-sourced appBgInfo — no localStorage involved.
  */
 export const userOverriddenAppBg = derived(appBgInfo, ($bg) => $bg.themeBgOverride);
 
-/**
- * Persist the override flag to the settings file via the backend and update the
- * appBgInfo store so all derived state reacts immediately.
- */
+/** Persists the override flag to the settings file via the backend. */
 export async function setUserOverride(val: boolean): Promise<void> {
   await PlatformService.SetThemeBgOverride(val);
   appBgInfo.update((bg) => ({ ...bg, themeBgOverride: val }));

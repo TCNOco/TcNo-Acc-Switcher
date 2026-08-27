@@ -111,7 +111,6 @@
   --text-dim-gray: #7c8a94;
   --text-body-muted: #43535e;
   --surface-panel-bg: var(--aero-panel);
-  /* Vista's glass was heavier and cooler than 7's — same idea, a touch more tint. */
   --page-surface-tint: var(--aero-panel);
   --page-surface-strong: color-mix(in srgb, var(--aero-panel) 82%, transparent);
   --page-surface-blur: 24px;
@@ -306,8 +305,6 @@ $bar: ":is(.headerbar, .modal-headerbar, .app-lock-headerbar)";
     0 0 6px rgba(10, 30, 42, 0.6);
 }
 
-/* The aero trio is one joined block hanging off the top edge: no gaps, shared
-   1px dividers, and only the two outer bottom corners rounded. */
 #{$bar} :is(.window-controls, .modal-window-controls):is(.window-controls, .modal-window-controls) {
   grid-template-columns: 29px 27px 45px;
   gap: 0;
@@ -317,7 +314,6 @@ $bar: ":is(.headerbar, .modal-headerbar, .app-lock-headerbar)";
   align-self: flex-start;
 }
 
-/* Vista's trio is darker glass than 7's: smoky, with white glyphs. */
 #{$bar} .win-btn.win-btn.win-btn {
   width: auto;
   height: 18px;
@@ -865,9 +861,6 @@ a:hover {
   }
 }
 
-/* ---- Steam Guard ---- */
-
-/* Confirmations window: aero buttons and glass panels. */
 .confirmations-refresh,
 .confirmations-status button,
 .confirmations-actions button,
@@ -945,7 +938,6 @@ button.confirmations-trade__item {
   box-shadow: 2px 3px 7px rgba(0, 0, 0, 0.28);
 }
 
-/* Steam Guard modal: sunken white fields, glass tile rows. */
 .modalFG .steam-guard__code {
   border: 1px solid #7f9db9;
   border-radius: 1px;
@@ -1002,7 +994,6 @@ button.confirmations-trade__item {
 @include windows-icons.themed-button-icons(vista);
 @include windows-tiles.desktop-tiles(vista);
 
-/* Server picker grid: Vista's glass list - white rows, cool header, soft edge. */
 :root {
   --role-table-bg: #ffffff;
   --role-table-head-bg: linear-gradient(180deg, #f4f9fc 0%, #e4eef4 100%);

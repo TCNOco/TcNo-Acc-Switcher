@@ -25,7 +25,6 @@ type AppSettings struct {
 	ThemeAccentPreset string `json:"themeAccentPreset,omitempty"`
 	ThemeAccentCustom string `json:"themeAccentCustom,omitempty"`
 
-	// AnimationsEnabled controls whether UI motion is active.
 	// Stored without omitempty so false round-trips: omitted key plus normalize defaults would otherwise force true on load.
 	AnimationsEnabled bool `json:"animationsEnabled"`
 
@@ -85,7 +84,6 @@ type AppSettings struct {
 	// still has to run, to remove the entry from the accounts it is still in.
 	AddToSteamManaged bool `json:"addToSteamManaged,omitempty"`
 
-	// StartProgramCentered places the main window in the center of the screen when the app opens.
 	StartProgramCentered bool `json:"startProgramCentered,omitempty"`
 
 	// WindowWidth and WindowHeight are the main window's last un-maximised size,

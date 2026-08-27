@@ -18,8 +18,7 @@ function functionSource(name: string): string {
 
 describe("Steam Guard login again", () => {
   // Steam's access token lapses in about a day; the refresh token stored beside
-  // it lasts months. This handler once went straight to the password form, which
-  // turned that day into how often the user had to type a password.
+  // it lasts months.
   it("spends the saved refresh token before asking for a password", () => {
     const body = functionSource("startLoginAgain");
 

@@ -62,9 +62,8 @@ const (
 )
 
 // ownedFlagClasses are the ways a purchase section says the account already
-// holds that package. Steam renders more than one variant - a captured page used
-// ds_owned_flag where another used package_in_library_flag/in_own_library - so
-// all of them are matched, and only ever inside the Prime section.
+// holds that package. Steam renders more than one variant, so all of them are
+// matched, and only ever inside the Prime section.
 var ownedFlagClasses = []string{
 	"in_own_library",
 	"package_in_library_flag",
@@ -87,8 +86,7 @@ func Parse(body []byte) Result {
 	// every account as Non-Prime the moment a session lapsed.
 	//
 	// g_AccountID, not g_steamID: the latter is a steamcommunity.com variable and
-	// appears nowhere on a store page, so checking for it rejected every real
-	// response as unreadable.
+	// appears nowhere on a store page.
 	switch readSession(body) {
 	case signedOut:
 		return Result{Outcome: OutcomeNotSignedIn}
@@ -120,10 +118,10 @@ const (
 	signedIn
 )
 
-// readSession reads the store's account id. Zero, or a page that carries none at
-// all, is not a session we can draw an ownership conclusion from.
 var accountIDPattern = regexp.MustCompile(`g_AccountID\s*=\s*(\d+)`)
 
+// readSession reads the store's account id. Zero, or a page that carries none at
+// all, is not a session we can draw an ownership conclusion from.
 func readSession(body []byte) sessionState {
 	match := accountIDPattern.FindSubmatch(body)
 	if match == nil {
@@ -135,7 +133,6 @@ func readSession(body []byte) sessionState {
 	return signedIn
 }
 
-// findPrimeSection returns the purchase block for the Prime package.
 func findPrimeSection(root *nethtml.Node) *nethtml.Node {
 	var found *nethtml.Node
 	budget := maxNodes

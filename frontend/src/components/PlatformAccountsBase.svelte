@@ -75,7 +75,6 @@
   import "../styles/gamestats.scss";
   import "../styles/platformAccountsShared.scss";
 
-  // ---- Extracted pure logic modules ----
   import {
     mergeListIntoExisting,
     mergeEnrichmentIntoExisting,
@@ -164,7 +163,6 @@
   let gameStatsByAccount: Record<string, Record<string, Record<string, GameStatMetricDTO>>> = {};
   let hasGameStatsSupport = false;
 
-  // Reactive declarations
   $: so = $searchOverlayCtrl;
   $: appBarTitle.set(name || "TcNo Account Switcher");
   $: isActionBusy = isActionBusyValue;
@@ -238,7 +236,6 @@
     }
   }
 
-  // ---- Helpers ----
   function accountById(id: string): TAccount | undefined {
     return accountMap.get(id);
   }
@@ -374,7 +371,6 @@
     setAvatarEpoch({ ...avatarEpoch, [uid]: (avatarEpoch[uid] ?? 0) + 1 });
   }
 
-  // ---- Context factories for extracted modules ----
   function getAccountActionsCtx(): AccountActionsContext {
     return {
       name,
@@ -401,7 +397,6 @@
     };
   }
 
-  // ---- Wrappers for extracted functions that return values ----
   async function loadTagDefsInternal(): Promise<void> {
     tagDefsLoading = true;
     try {
@@ -436,7 +431,6 @@
     }, getAccountActionsCtx());
   }
 
-  // ---- Sort ----
   function applyPlatformSort(kind: PlatformSortKind): void {
     const ids = sortAccountIds(accountIds, accountById, adapter, kind);
     if (!ids) return;
@@ -489,7 +483,6 @@
     };
   }
 
-  // ---- Tag filter ----
   function onTagFilterBarClick(ev: Event): void {
     openTagFilterMenu({
       ev: ev as MouseEvent,
@@ -499,7 +492,6 @@
     });
   }
 
-  // ---- File drop drag ----
   function hasFilesDragType(ev: DragEvent): boolean {
     const types = ev.dataTransfer?.types;
     return !!(types && Array.from(types as unknown as Iterable<string>).includes("Files"));
@@ -528,7 +520,6 @@
     }
   }
 
-  // ---- Image pick ----
   function closeImagePick(): void {
     imagePick = { open: false, accountId: "", displayName: "", manual: false };
     fileDragHoverRowId = "";
@@ -736,7 +727,6 @@
     }
   }
 
-  // ---- Load accounts ----
   // Game stats markup and tag defs live only in this component, so a remount starts
   // with neither. The account cache outlives the page, so a reload after navigating
   // back finds nothing changed - this tracks whether the fetch has happened at all,
@@ -812,7 +802,6 @@
     }
   }
 
-  // ---- Apply real-time patches ----
   function applyPatchFromEvent(raw: unknown): void {
     const patch = adapter.buildPatch(raw);
     const targetId = adapter.patchTargetId(patch);
@@ -831,7 +820,6 @@
     if (targetId === selectedId) touchStatus();
   }
 
-  // ---- Search ----
   function buildAccountRows(q: string, epochs: Record<string, number>): SearchResultRow[] {
     return buildAccountSearchRows({
       accounts,
@@ -1001,7 +989,6 @@
     }
   }
 
-  // ---- Context menu ----
   function ctxMenu(rowId: string): () => MenuItemDef[] {
     return () => {
       const acc = accountById(rowId);
@@ -1042,7 +1029,6 @@
     return [...buildFilterMenuItems(name), ...(adapter.buildBackgroundMenu?.() ?? [])];
   }
 
-  // ---- Lifecycle ----
   onMount(() => {
     previousPage.set({ page: "home" });
     void preflightAdminForPlatform(name);

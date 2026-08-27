@@ -12,7 +12,7 @@ import (
 )
 
 // SDA's encryption parameters, matched exactly so files interoperate in both
-// directions. Changing any of these breaks compatibility with SDA.
+// directions.
 const (
 	legacyPBKDF2Iterations = 50000
 	legacyKeyBytes         = 32

@@ -45,10 +45,7 @@
     return s.toLowerCase();
   }
 
-  /**
-   * Splits a label into words for acronym-style search. Any run of these separators starts a new
-   * word (spaces, hyphen/minus, underscores, en/em dash, colon, semicolon, comma, dot, slash).
-   */
+  /** Word separators for acronym-style label search; any run of them starts a new word. */
   const LABEL_WORD_SPLIT_RE = /[\s\u00A0\-_–—:;,.|/\\\u2026]+/u;
 
   function splitLabelWords(label: string): string[] {
@@ -86,10 +83,7 @@
   $: tail = hasSearchMarker ? items.slice(1) : items;
   $: alwaysShowSearchFlyout =
     hasSearchMarker && !!(items[0] as { alwaysShowSearch?: boolean } | undefined)?.alwaysShowSearch;
-  /**
-   * Search row only in flyout columns (same >5 threshold as legacy); root lists are unpaged so
-   * no search strip on the root menu. `alwaysShowSearch` forces the search row for small lists.
-   */
+  /** Search row only in flyout columns; `alwaysShowSearch` forces it for small lists. */
   $: showSearchRow =
     isFlyoutColumn && (tail.length > SEARCH_THRESHOLD || alwaysShowSearchFlyout);
   $: q = norm(searchQuery.trim());

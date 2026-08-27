@@ -175,7 +175,7 @@ func utf16FixedToString(b []uint16) string {
 	return windows.UTF16ToString(b[:n])
 }
 
-// waitForImageExit polls until exeImage is gone or maxWait elapses.
+// waitForImageExit waits until exeImage is gone or maxWait elapses.
 func waitForImageExit(exeImage string, maxWait, poll time.Duration, targetCount int) {
 	deadline := time.Now().Add(maxWait)
 	start := time.Now()
@@ -204,8 +204,8 @@ func waitForImageExit(exeImage string, maxWait, poll time.Duration, targetCount 
 	}
 
 	// Wait on the real process handles instead of re-reading the process table. The wait
-	// returns the instant the last process dies, so poll no longer bounds how fast we notice
-	// an exit - it only bounds how often the "waiting for X" status line is refreshed.
+	// returns the instant the last process dies, so poll only bounds how often the
+	// "waiting for X" status line is refreshed.
 	var handles []windows.Handle
 	var unwaitable []uint32
 	for _, pid := range pids {

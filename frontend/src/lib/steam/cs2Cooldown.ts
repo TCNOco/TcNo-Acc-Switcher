@@ -43,13 +43,7 @@ const PHRASE_KEY: Record<Cs2CooldownUnit, [one: string, other: string]> = {
   minute: ["Steam_Cs2Cooldown_Time_Minute", "Steam_Cs2Cooldown_Time_Minutes"],
 };
 
-/**
- * Tooltip, and the screen-reader status line. Spelled out and pluralised.
- *
- * There is no tile label any more: the CS2 Cooldown tag shows the cooldown, and
- * its own hover already counts down live, so a second line said the same thing
- * twice.
- */
+/** Tooltip, and the screen-reader status line. Spelled out and pluralised. */
 export function cs2CooldownTooltip(cooldown: Cs2Cooldown, tr: Translate): string {
   if (cooldown.permanent) return tr("Tooltip_SteamCs2CooldownPermanent");
   const [one, other] = PHRASE_KEY[cooldown.unit];
