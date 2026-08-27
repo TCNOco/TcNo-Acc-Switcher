@@ -46,6 +46,12 @@ func newCompositeAssetHandler(embedded fs.FS) http.Handler {
 		w.Header().Set("Cross-Origin-Opener-Policy", "same-origin")
 		w.Header().Set("Cross-Origin-Resource-Policy", "same-origin")
 		w.Header().Set("Origin-Agent-Cluster", "?1")
+		// Everything under /assets/ is Vite content-hashed, so its URL changes
+		// whenever its bytes do. Deliberately no ETag: the WebView2 response
+		// writer turns every 304 into a 500 because 304s hang the webview.
+		if strings.HasPrefix(r.URL.Path, "/assets/") {
+			w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+		}
 		if r.Method != http.MethodGet && r.Method != http.MethodHead {
 			embedHandler.ServeHTTP(w, r)
 			return

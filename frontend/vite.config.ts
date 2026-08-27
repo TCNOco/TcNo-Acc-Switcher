@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import wails from "@wailsio/runtime/plugins/vite";
+import { gzipDist } from "./vite-plugin-gzip-dist";
 import { yamlAsJson } from "./vite-plugin-yaml";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -17,7 +18,7 @@ export default defineConfig({
       ),
     },
   },
-  plugins: [yamlAsJson(), svelte(), wails("./bindings")],
+  plugins: [yamlAsJson(), svelte(), wails("./bindings"), gzipDist()],
   build: {
     // WebView2 is Evergreen Chromium, so downlevel transpilation is dead weight.
     target: "esnext",

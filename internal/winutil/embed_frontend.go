@@ -1,7 +1,6 @@
 package winutil
 
 import (
-	"embed"
 	"errors"
 	iofs "io/fs"
 	"path/filepath"
@@ -18,7 +17,7 @@ var ErrNoPlatformArt = errors.New("no platform art in embedded assets")
 
 var (
 	embeddedFrontendMu sync.RWMutex
-	embeddedFrontend   embed.FS
+	embeddedFrontend   iofs.FS
 
 	platformArtMu   sync.RWMutex
 	platformArtOnce sync.Once
@@ -26,15 +25,18 @@ var (
 	platformArtPNGs map[string]string // normalized key -> png path
 )
 
-// SetEmbeddedFrontendFS sets the embedded Vite dist FS (e.g. main's //go:embed all:frontend/dist).
-func SetEmbeddedFrontendFS(f embed.FS) {
+// SetEmbeddedFrontendFS sets the embedded Vite dist FS (e.g. main's //go:embed
+// all:frontend/dist). It takes an iofs.FS rather than the embed.FS so the build
+// can hand over a wrapper that inflates gzipped assets; the extension switch in
+// buildPlatformArtMap depends on seeing the real ".svg"/".png" names.
+func SetEmbeddedFrontendFS(f iofs.FS) {
 	embeddedFrontendMu.Lock()
 	embeddedFrontend = f
 	embeddedFrontendSet = true
 	embeddedFrontendMu.Unlock()
 }
 
-func buildPlatformArtMap(rootFS embed.FS) {
+func buildPlatformArtMap(rootFS iofs.FS) {
 	platformArtOnce.Do(func() {
 		svgMap := make(map[string]string)
 		pngMap := make(map[string]string)
@@ -67,12 +69,11 @@ func buildPlatformArtMap(rootFS embed.FS) {
 	})
 }
 
-func embeddedFS() (embed.FS, bool) {
+func embeddedFS() (iofs.FS, bool) {
 	embeddedFrontendMu.RLock()
 	defer embeddedFrontendMu.RUnlock()
-	// embed.FS zero value is usable but empty; we track explicit SetEmbeddedFrontendFS via a flag.
 	if !embeddedFrontendSet {
-		return embed.FS{}, false
+		return nil, false
 	}
 	return embeddedFrontend, true
 }
@@ -135,13 +136,13 @@ func FindPlatformArt(platformKey string) (svg []byte, png []byte, err error) {
 	platformArtMu.RUnlock()
 
 	if svgPath != "" {
-		svg, err = rootFS.ReadFile(svgPath)
+		svg, err = iofs.ReadFile(rootFS, svgPath)
 		if err != nil {
 			return nil, nil, err
 		}
 	}
 	if pngPath != "" {
-		png, err = rootFS.ReadFile(pngPath)
+		png, err = iofs.ReadFile(rootFS, pngPath)
 		if err != nil {
 			return nil, nil, err
 		}

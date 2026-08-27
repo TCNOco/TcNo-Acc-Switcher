@@ -52,6 +52,28 @@ func TestCompositeAssetHandlerSetsSecurityHeaders(t *testing.T) {
 	}
 }
 
+// Only /assets/ is content-hashed by Vite. img/ and backgrounds/ are the
+// user-writable overlay and have to stay revalidated.
+func TestImmutableCachingOnlyForHashedAssets(t *testing.T) {
+	handler := newCompositeAssetHandler(fstest.MapFS{
+		"index.html":         &fstest.MapFile{Data: []byte("<!doctype html>")},
+		"assets/app-abc.js":  &fstest.MapFile{Data: []byte("export {}")},
+		"img/platform/a.svg": &fstest.MapFile{Data: []byte("<svg/>")},
+	})
+	for path, want := range map[string]string{
+		"/assets/app-abc.js":  "public, max-age=31536000, immutable",
+		"/img/platform/a.svg": "",
+		"/":                   "",
+		"/assets/missing.js":  "public, max-age=31536000, immutable",
+	} {
+		response := httptest.NewRecorder()
+		handler.ServeHTTP(response, httptest.NewRequest(http.MethodGet, "http://wails.localhost"+path, nil))
+		if got := response.Header().Get("Cache-Control"); got != want {
+			t.Errorf("Cache-Control for %s = %q, want %q", path, got, want)
+		}
+	}
+}
+
 func TestWritableAssetAllowedOnlyForMediaDirectories(t *testing.T) {
 	for _, path := range []string{"img/profiles/avatar.webp", "backgrounds/app.png", "img/video.webm"} {
 		if !writableAssetAllowed(path) {

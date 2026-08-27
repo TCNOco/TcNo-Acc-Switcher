@@ -16,6 +16,7 @@ import (
 	"TcNo-Acc-Switcher/internal/controllerinput"
 	"TcNo-Acc-Switcher/internal/crashlog"
 	"TcNo-Acc-Switcher/internal/discordrpc"
+	"TcNo-Acc-Switcher/internal/gzipfs"
 	"TcNo-Acc-Switcher/internal/ipc"
 	"TcNo-Acc-Switcher/internal/legacyinstall"
 	"TcNo-Acc-Switcher/internal/logredact"
@@ -38,6 +39,11 @@ import (
 
 //go:embed all:frontend/dist
 var assets embed.FS
+
+// The production build stores most of frontend/dist gzipped; the wrapper hides
+// that from every consumer, so both the asset server and the platform art
+// lookup take this rather than the raw embed.
+var frontendAssets = gzipfs.New(assets)
 
 //go:embed build/trayicon.png
 var trayIconPNG []byte
@@ -63,7 +69,7 @@ var (
 )
 
 func init() {
-	winutil.SetEmbeddedFrontendFS(assets)
+	winutil.SetEmbeddedFrontendFS(frontendAssets)
 
 	application.RegisterEvent[string]("navigate")
 
@@ -272,7 +278,7 @@ func main() {
 		LogWriter:        app.LogWriter(logSink),
 		CrashSubmitted:   crashSubmitted,
 		StartupToast:     parsed.StartupToast,
-		EmbeddedAssets:   assets,
+		EmbeddedAssets:   frontendAssets,
 		TrayIconPNG:      trayIconPNG,
 		AppIconPNG:       trayIconPNG,
 		UpdaterPublicKey: updaterPublicKey,
