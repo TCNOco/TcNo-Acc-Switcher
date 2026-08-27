@@ -48,6 +48,8 @@
   const PING_EVENT = "serverpicker:ping";
   const PING_DONE_EVENT = "serverpicker:ping-done";
   const FLAG_FALLBACK = "/img/flags/xx.svg";
+  // Their source SVGs carried heavy coats of arms; rasterised at 4x the 22x16 display size.
+  const RASTER_FLAGS = new Set(["es", "mx"]);
 
   let games: GameDTO[] = [];
   let gameId = "cs2";
@@ -85,7 +87,8 @@
 
 
   function flagSrc(code: string): string {
-    return code ? `/img/flags/${code}.svg` : FLAG_FALLBACK;
+    if (!code) return FLAG_FALLBACK;
+    return `/img/flags/${code}.${RASTER_FLAGS.has(code) ? "webp" : "svg"}`;
   }
 
   function onFlagError(e: Event): void {

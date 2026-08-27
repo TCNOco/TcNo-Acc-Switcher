@@ -18,6 +18,10 @@ export default defineConfig({
     },
   },
   plugins: [yamlAsJson(), svelte(), wails("./bindings")],
+  build: {
+    // WebView2 is Evergreen Chromium, so downlevel transpilation is dead weight.
+    target: "esnext",
+  },
   json: {
     // Locales arrive through import.meta.glob and are read off .default, so a
     // named export per key only inflates each locale chunk; stringify lets the
