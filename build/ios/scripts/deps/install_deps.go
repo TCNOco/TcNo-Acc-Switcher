@@ -1,5 +1,4 @@
 // install_deps.go - iOS development dependency checker
-// This script checks for required iOS development tools.
 // It's designed to be portable across different shells by using Go instead of shell scripts.
 //
 // Usage:
@@ -37,11 +36,9 @@ func main() {
 		{
 			Name: "Xcode",
 			CheckFunc: func() (bool, string) {
-				// Check if xcodebuild exists
 				if !checkCommand([]string{"xcodebuild", "-version"}) {
 					return false, ""
 				}
-				// Get version info
 				out, err := exec.Command("xcodebuild", "-version").Output()
 				if err != nil {
 					return false, ""
@@ -60,14 +57,12 @@ func main() {
 		{
 			Name: "Xcode Developer Path",
 			CheckFunc: func() (bool, string) {
-				// Check if xcode-select points to a valid Xcode path
 				out, err := exec.Command("xcode-select", "-p").Output()
 				if err != nil {
 					return false, "xcode-select not configured"
 				}
 				path := strings.TrimSpace(string(out))
 
-				// Check if path exists and is in Xcode.app
 				if _, err := os.Stat(path); err != nil {
 					return false, "Invalid Xcode path"
 				}
@@ -88,7 +83,6 @@ func main() {
 		{
 			Name: "iOS SDK",
 			CheckFunc: func() (bool, string) {
-				// Get the iOS Simulator SDK path
 				cmd := exec.Command("xcrun", "--sdk", "iphonesimulator", "--show-sdk-path")
 				output, err := cmd.Output()
 				if err != nil {
@@ -96,7 +90,6 @@ func main() {
 				}
 				sdkPath := strings.TrimSpace(string(output))
 
-				// Check if the SDK path exists
 				if _, err := os.Stat(sdkPath); err != nil {
 					return false, "iOS SDK path not found"
 				}
@@ -107,7 +100,6 @@ func main() {
 					return false, "UIKit.framework not found"
 				}
 
-				// Get SDK version
 				versionCmd := exec.Command("xcrun", "--sdk", "iphonesimulator", "--show-sdk-version")
 				versionOut, _ := versionCmd.Output()
 				version := strings.TrimSpace(string(versionOut))
@@ -125,12 +117,10 @@ func main() {
 				if !checkCommand([]string{"xcrun", "simctl", "help"}) {
 					return false, ""
 				}
-				// Check if we can list runtimes
 				out, err := exec.Command("xcrun", "simctl", "list", "runtimes").Output()
 				if err != nil {
 					return false, "Cannot access simulator"
 				}
-				// Count iOS runtimes
 				lines := strings.Split(string(out), "\n")
 				count := 0
 				var versions []string
@@ -160,7 +150,6 @@ func main() {
 		},
 	}
 
-	// Check each dependency
 	for _, dep := range dependencies {
 		success, details := dep.CheckFunc()
 		if success {
@@ -201,7 +190,6 @@ func main() {
 		}
 	}
 
-	// Check for iPhone simulators
 	fmt.Println()
 	fmt.Println("Checking for iPhone simulator devices...")
 	if !checkCommand([]string{"xcrun", "simctl", "list", "devices"}) {
@@ -216,7 +204,6 @@ func main() {
 			fmt.Println("⚠️  No iPhone simulator devices found")
 			fmt.Println()
 
-			// Get the latest iOS runtime
 			runtimeOut, err := exec.Command("xcrun", "simctl", "list", "runtimes").Output()
 			if err != nil {
 				fmt.Println("   Failed to get iOS runtimes:", err)
@@ -256,7 +243,6 @@ func main() {
 				}
 			}
 		} else {
-			// Count iPhone devices
 			count := 0
 			lines := strings.Split(string(out), "\n")
 			for _, line := range lines {
@@ -268,7 +254,6 @@ func main() {
 		}
 	}
 
-	// Final summary
 	fmt.Println()
 	fmt.Println("=" + strings.Repeat("=", 50))
 	if hasErrors {
@@ -300,7 +285,6 @@ func checkCommand(args []string) bool {
 }
 
 func promptUser(question string) bool {
-	// Check if we're in a non-interactive environment
 	if os.Getenv("CI") != "" || os.Getenv("TASK_FORCE_YES") == "true" {
 		fmt.Printf("%s [y/N]: y (auto-accepted)\n", question)
 		return true

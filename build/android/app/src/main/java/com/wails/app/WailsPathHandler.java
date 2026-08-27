@@ -32,12 +32,10 @@ public class WailsPathHandler implements WebViewAssetLoader.PathHandler {
     public WebResourceResponse handle(@NonNull String path) {
         Log.d(TAG, "Handling path: " + path);
 
-        // Normalize path
         if (path.isEmpty() || path.equals("/")) {
             path = "/index.html";
         }
 
-        // Get asset from Go
         byte[] data = bridge.serveAsset(path, "GET", "{}");
 
         if (data == null || data.length == 0) {
@@ -45,11 +43,9 @@ public class WailsPathHandler implements WebViewAssetLoader.PathHandler {
             return null; // Return null to let WebView handle 404
         }
 
-        // Determine MIME type
         String mimeType = bridge.getAssetMimeType(path);
         Log.d(TAG, "Serving " + path + " with type " + mimeType + " (" + data.length + " bytes)");
 
-        // Create response
         InputStream inputStream = new ByteArrayInputStream(data);
         Map<String, String> headers = new HashMap<>();
         headers.put("Access-Control-Allow-Origin", "*");
@@ -65,9 +61,6 @@ public class WailsPathHandler implements WebViewAssetLoader.PathHandler {
         );
     }
 
-    /**
-     * Determine MIME type from file extension
-     */
     private String getMimeType(String path) {
         String lowerPath = path.toLowerCase();
 

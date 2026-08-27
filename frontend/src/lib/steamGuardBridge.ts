@@ -1174,7 +1174,6 @@ async function runSteamGuardPasswordChange(
   }
 }
 
-/** The Steam Guard modal's back end. */
 export const controller: SteamGuardModalController = {
 	requestSensitiveView,
 	endSensitiveView: (capability, lease) => SteamGuardService.EndSensitiveView(capability, lease),
@@ -1211,8 +1210,6 @@ export const controller: SteamGuardModalController = {
 	getTradeLink: async (accountId, capability) => {
 		const result = await SteamGuardService.GetSteamTradeLink(accountId, capability);
 		return {
-			// Go owns the vocabulary; anything this build does not know is an error
-			// rather than something to render raw.
 			state: tradeLinkState(result.state),
 			url: result.url ?? "",
 			needsLogin: result.needsLogin === true,

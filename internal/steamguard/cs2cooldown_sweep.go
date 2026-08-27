@@ -36,19 +36,15 @@ const (
 	// cooldownSweepFloor is the minimum gap between whole sweeps.
 	cooldownSweepFloor = 90 * time.Second
 
-	// cooldownAccountStagger paces the sweep. Steam is not a CDN and the
-	// protocol client has no rate limiter, so the discipline is entirely ours.
+	// cooldownAccountStagger paces the sweep. The protocol client has no rate
+	// limiter, so the pacing is entirely ours.
 	cooldownAccountStagger = 2 * time.Second
 
 	// cooldownSweepConcurrency is how many accounts may be waiting on Steam at
 	// once. The stagger above still decides when each request starts; this only
 	// stops the sweep holding the next account back until the last one answered.
-	//
-	// A GCPD read is slow, and a Prime verdict can cost a second request on top,
-	// so strictly serial the last rank in a dozen-account vault landed minutes
-	// after the refresh that asked for it - and the rank is the thing the user is
-	// watching. Three at a time is still a fraction of what the account list's own
-	// image refresh asks of Steam in the same moment.
+	// Three at a time: serial made the last rank in a large vault land minutes
+	// after the refresh that asked for it.
 	cooldownSweepConcurrency = 3
 
 	cooldownRequestTimeout = 30 * time.Second
@@ -163,11 +159,8 @@ func (s *Service) sweepCS2Cooldowns(ctx context.Context) {
 	//
 	// The floor exists to space out requests to Steam, and every bail below makes
 	// none - the commonest by far being a locked vault, which yields no targets.
-	// Stamping those anyway is what made unlocking the vault appear to do nothing:
-	// the account page's refresh a moment earlier had already found the vault
-	// locked, done no work, and put the next ninety seconds out of bounds, so the
-	// unlock - the one event that changes what a sweep can answer - was turned
-	// away as rate limited and no rank ever moved.
+	// Stamping those anyway rate limits away the unlock-triggered sweep that
+	// follows, which is the one event that changes what a sweep can answer.
 	swept := false
 	defer func() {
 		s.cooldownSweep.mu.Lock()
@@ -210,8 +203,7 @@ func (s *Service) sweepCS2Cooldowns(ctx context.Context) {
 	swept = true
 	// Consumed here rather than at the top, for the same reason: a force raised so
 	// a newly added account gets checked has to survive a run that never reached
-	// one, or the add is answered by a sweep that does nothing and the request is
-	// gone.
+	// one.
 	s.cooldownSweep.forced.Store(false)
 	stored, err := cs2cooldown.Load()
 	if err != nil {
@@ -354,12 +346,9 @@ func rateLimitEvidence(err error, requests int, elapsed time.Duration) []any {
 // logCooldownFetchFailure records why one account was not read, at a level that
 // matches how surprising it is.
 //
-// This was a flat Debug line, and that is how a vanity-URL redirect went
-// unnoticed: every account with a custom Steam URL failed here, the sweep
-// counted them as checked, and nothing above Debug ever said otherwise. Only the
-// app's own state is quiet now; anything else names its kind and status, so a
-// failure with no status - a request that got no answer at all, the shape a
-// denied redirect has - is legible rather than invisible.
+// Only the app's own state is quiet; anything else names its kind and status, so
+// a failure with no status - a request that got no answer at all, the shape a
+// denied redirect has - stays legible rather than invisible.
 func logCooldownFetchFailure(log *slog.Logger, steamID64 string, err error) {
 	attributes := []any{"steamId64", steamID64}
 	var apiErr *confirmationapi.Error
@@ -414,8 +403,7 @@ func (s *Service) fetchAndStoreCooldown(
 		if errors.As(err, &apiErr) && apiErr.Kind == confirmationapi.FailureRateLimit {
 			// Wrapped, not replaced: the sentinel is what the sweep switches on,
 			// but the status and any Retry-After behind it are the only direct
-			// evidence of where Steam's limit actually sits. Collapsing them to a
-			// bare sentinel meant every real rate limit taught us nothing.
+			// evidence of where Steam's limit actually sits.
 			return fmt.Errorf("%w: %w", errCooldownRateLimited, err)
 		}
 		logCooldownFetchFailure(log, target.steamID64, err)
@@ -442,12 +430,10 @@ func (s *Service) fetchAndStoreCooldown(
 	}
 	primeStarted := time.Now()
 	primeState := s.primeStateFor(ctx, credentials, result, collectPrime)
-	// Two timings rather than one, because they answer different questions: the
-	// GCPD read is what every account pays, while the store page is the second
-	// request only an unsettled Prime verdict costs. A sweep that runs long
-	// because half the accounts are buying a Prime answer is a different problem
-	// from one where Steam is simply slow, and the totals alone cannot tell them
-	// apart. Measured from the sweep itself, so no probe and no vault password.
+	// Two timings rather than one: the GCPD read is what every account pays, while
+	// the store page is the second request only an unsettled Prime verdict costs,
+	// and the totals alone cannot tell a slow Steam from a sweep full of those.
+	// Measured from the sweep itself, so no probe and no vault password.
 	log.Debug("cooldown account read",
 		"steamId64", target.steamID64,
 		"gcpd", gcpdTook.Round(time.Millisecond),

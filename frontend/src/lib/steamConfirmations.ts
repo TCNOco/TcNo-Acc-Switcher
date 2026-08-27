@@ -209,7 +209,7 @@ export interface SteamConfirmationsStore extends Readable<SteamConfirmationsStat
   toggleChecked(handle: string): void;
   checkAll(): void;
   clearChecked(): void;
-  /** Decides every checked row, one Steam call each, in list order. */
+  /** Decides every checked row: one batched Steam call when the adapter offers it, otherwise one each in list order. */
   decideChecked(decision: ConfirmationDecision): Promise<void>;
   loginAgain(): Promise<void>;
   /** Full description of one traded item, or null when Steam will not describe it. */
@@ -459,9 +459,6 @@ export function createSteamConfirmationsStore(
       // Staleness is about the confirmation, not the list: a poll finishing while
       // this was in flight used to throw the detail away and leave the open trade
       // with no items.
-      // Staleness is about the confirmation, not the list: a poll finishing while
-      // this was in flight used to throw the detail away and leave the open trade
-      // with no items.
       if (destroyed || adapter !== activeAdapter) return;
       if (!get(state).rows.some((row) => row.handle === handle)) return;
       state.update((current) => ({
@@ -473,8 +470,7 @@ export function createSteamConfirmationsStore(
     } catch (error) {
       console.error("Steam confirmations: detail could not be loaded", error);
     } finally {
-      // Whatever happened, the wait is over: a failure leaves the confirmation
-      // decidable on what the list already showed.
+      // Whatever happened, the wait is over.
       state.update((current) => current.detailLoadingHandle === handle
         ? { ...current, detailLoadingHandle: null }
         : current);

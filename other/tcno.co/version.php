@@ -48,20 +48,15 @@ function ip_info($ip = NULL, $purpose = "location", $deep_detect = TRUE) {
     }
     return $output;
 }
-// Get user info
 $details = ip_info("Visitor", "Location");
-///echo($details["state"].", ".$details["country"].", ".$details["continent"]."<br>");
 
-// Today's JSON file
 $filename = __DIR__ ."/NetCore_data/".date("Y-m-d").".json";
 $jsToday = json_decode(@file_get_contents($filename), true); // "@" ignores non-exist error
 
 $currentCount = 0;
 
-$jsToday["total"] += 1; // Total users +1
-///$jsToday["Africa"]["South Africa"]["Gauteng"]
+$jsToday["total"] += 1;
 $jsToday[$details["continent_code"]][$details["country"]][$details["state"]] += 1; // Get and incriment value, set value in array if not already set
 
-///print_r($jsToday);
 file_put_contents($filename, json_encode($jsToday));
 ?>

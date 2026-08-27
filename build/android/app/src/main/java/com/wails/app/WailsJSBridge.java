@@ -91,8 +91,6 @@ public class WailsJSBridge {
     /**
      * Get the platform name
      * Called from JavaScript: wails.platform()
-     *
-     * @return "android"
      */
     @JavascriptInterface
     public String platform() {
@@ -102,17 +100,12 @@ public class WailsJSBridge {
     /**
      * Check if we're running in debug mode
      * Called from JavaScript: wails.isDebug()
-     *
-     * @return true if debug build, false otherwise
      */
     @JavascriptInterface
     public boolean isDebug() {
         return BuildConfig.DEBUG;
     }
 
-    /**
-     * Send a callback response to JavaScript
-     */
     private void sendCallback(String callbackId, String result, String error) {
         final String js;
         if (error != null) {

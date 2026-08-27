@@ -144,8 +144,8 @@ func TestAcquireAdmitsOnceASlotAgesOut(t *testing.T) {
 	}
 }
 
-// 500 is the one that matters: it is what Steam actually sends, and an earlier
-// version of this waited for a 429 that never came.
+// 500 is the one that matters: it is what Steam actually sends. A 429 never
+// arrives.
 func TestMiniprofileRefusalCoversWhatSteamActuallySends(t *testing.T) {
 	for _, status := range []int{500, 429, 403, 503} {
 		if !isMiniprofileRefusal(status) {

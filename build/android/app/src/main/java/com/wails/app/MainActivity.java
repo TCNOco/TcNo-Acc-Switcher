@@ -33,14 +33,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Initialize the native Go library
         bridge = new WailsBridge(this);
         bridge.initialize();
 
-        // Set up WebView
         setupWebView();
 
-        // Load the application
         loadApplication();
     }
 
@@ -48,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
     private void setupWebView() {
         webView = findViewById(R.id.webview);
 
-        // Configure WebView settings
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
@@ -58,18 +54,15 @@ public class MainActivity extends AppCompatActivity {
         settings.setMediaPlaybackRequiresUserGesture(false);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
 
-        // Enable debugging in debug builds
         if (BuildConfig.DEBUG) {
             WebView.setWebContentsDebuggingEnabled(true);
         }
 
-        // Set up asset loader for serving local assets
         assetLoader = new WebViewAssetLoader.Builder()
                 .setDomain(WAILS_HOST)
                 .addPathHandler("/", new WailsPathHandler(bridge))
                 .build();
 
-        // Set up WebView client to intercept requests
         webView.setWebViewClient(new WebViewClient() {
             @Nullable
             @Override
@@ -77,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
                 String url = request.getUrl().toString();
                 Log.d(TAG, "Intercepting request: " + url);
 
-                // Handle wails.localhost requests
                 if (request.getUrl().getHost() != null &&
                         request.getUrl().getHost().equals(WAILS_HOST)) {
 
@@ -85,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
                     // including query string because WebViewAssetLoader.PathHandler strips query params
                     String path = request.getUrl().getPath();
                     if (path != null && path.startsWith("/wails/")) {
-                        // Get full path with query string for runtime calls
                         String fullPath = path;
                         String query = request.getUrl().getQuery();
                         if (query != null && !query.isEmpty()) {
@@ -93,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                         Log.d(TAG, "Wails API call detected, full path: " + fullPath);
 
-                        // Call bridge directly with full path
                         byte[] data = bridge.serveAsset(fullPath, request.getMethod(), "{}");
                         if (data != null && data.length > 0) {
                             java.io.InputStream inputStream = new java.io.ByteArrayInputStream(data);
@@ -111,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
                                 inputStream
                             );
                         }
-                        // Return error response if data is null
                         return new WebResourceResponse(
                             "application/json",
                             "UTF-8",
@@ -122,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
                         );
                     }
 
-                    // For regular assets, use the asset loader
                     return assetLoader.shouldInterceptRequest(request.getUrl());
                 }
 
@@ -133,17 +121,14 @@ public class MainActivity extends AppCompatActivity {
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 Log.d(TAG, "Page loaded: " + url);
-                // Inject Wails runtime
                 bridge.injectRuntime(webView, url);
             }
         });
 
-        // Add JavaScript interface for Go communication
         webView.addJavascriptInterface(new WailsJSBridge(bridge, webView), "wails");
     }
 
     private void loadApplication() {
-        // Load the main page from the asset server
         String url = WAILS_SCHEME + "://" + WAILS_HOST + "/";
         Log.d(TAG, "Loading URL: " + url);
         webView.loadUrl(url);

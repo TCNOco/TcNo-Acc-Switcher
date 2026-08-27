@@ -20,7 +20,6 @@ var broadcastExes = []string{
 	"streamlabs obs.exe",
 	"streamlabs desktop.exe",
 
-	// XSplit.
 	"xsplit.core.exe",
 	"xsplit.broadcaster.exe",
 	"xsplitgamecaster.exe",

@@ -482,8 +482,8 @@ export type SteamGuardModalController = {
 		keyfilePath?: string,
 		backupKey?: string,
 	  ) => Promise<void>;
-	  /** Resolves to the written path, or "" when the user cancelled the save dialog. */
-	  /** maFilePassword encrypts the file the way SDA does; empty exports plaintext. */
+	  /** Resolves to the written path, or "" when the user cancelled the save dialog.
+	   *  maFilePassword encrypts the file the way SDA does; empty exports plaintext. */
 	  exportMaFile?: (
 		accountId: string,
 		capability: string,

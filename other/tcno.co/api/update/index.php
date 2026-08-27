@@ -75,25 +75,20 @@ function ip_info($ip = NULL, $purpose = "location", $deep_detect = TRUE) {
     }
     return $output;
 }
-// Get user info
 $details = ip_info("Visitor", "Location");
-///echo($details["state"].", ".$details["country"].", ".$details["continent"]."<br>");
 
-// Today's JSON file
 $filename = __DIR__ .(!isset($_GET['debug']) ? "/../stats/update/" : "/../statsDEBUG/update/").date("Y-m-d").".json";
 if (false === ($data = file_get_contents($filename))) {
-    exit(); // Process failed.
+    exit();
 } else {
-    $jsToday = json_decode($data, true); // "@" ignores non-exist error
+    $jsToday = json_decode($data, true);
 }
 
 $currentCount = 0;
 
-$jsToday["total"] += 1; // Total users +1
-///$jsToday["Africa"]["South Africa"]["Gauteng"]
+$jsToday["total"] += 1;
 $jsToday[$details["continent_code"]][$details["country"]][$details["state"]] += 1; // Get and incriment value, set value in array if not already set
 $jsToday["update_from"][$_GET['v']] += 1;
 
-///print_r($jsToday);
 file_put_contents($filename, json_encode($jsToday));
 ?>

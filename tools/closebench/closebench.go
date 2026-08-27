@@ -37,8 +37,6 @@ import (
 	"TcNo-Acc-Switcher/internal/winutil"
 )
 
-// ---------- targets ----------
-
 // steamKillNames mirrors internal/steam.steamKillNames, which is deliberately wider than
 // the Steam descriptor's ExesToEnd.
 var steamKillNames = []string{
@@ -80,8 +78,6 @@ func resolveTargets(platformsPath, platformKey string) ([]string, error) {
 	}
 	return nil, fmt.Errorf("platform %q not found in %s", platformKey, platformsPath)
 }
-
-// ---------- timing ----------
 
 type span struct {
 	Name     string  `json:"name"`
@@ -148,8 +144,6 @@ func (r *recorder) report(title string) {
 		fmt.Printf("json written: %s\n", *jsonOut)
 	}
 }
-
-// ---------- process table ----------
 
 type procLite struct {
 	PID       uint32
@@ -220,8 +214,6 @@ func targetPIDs(names []string) (map[uint32]string, map[string][]uint32) {
 	}
 	return out, byImage
 }
-
-// ---------- win32 ----------
 
 var (
 	modUser32                    = windows.NewLazySystemDLL("user32.dll")
@@ -368,8 +360,6 @@ func imageNames(pids map[uint32]string) []string {
 	}
 	return out
 }
-
-// ---------- modes ----------
 
 func runInventory(names []string) map[uint32]string {
 	targets, _ := targetPIDs(names)

@@ -15,10 +15,6 @@ func WailsIOSMain() {
 	// This causes signal handling issues:
 	// "signal 16 received on thread with no signal stack"
 	// "fatal error: non-Go code disabled sigaltstack"
-	// iOS apps run in a sandboxed environment where the Go runtime's
-	// signal handling doesn't work the same way as desktop platforms.
 
-	// Call the actual main function from main.go
-	// This ensures all the user's code is executed
 	main()
 }

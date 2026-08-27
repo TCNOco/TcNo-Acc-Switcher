@@ -84,7 +84,6 @@ func (c *perPlatformCooldown) shouldSkipBypass(platformKey string, bypass bool) 
 	return c.clock().Sub(last) < c.cooldown
 }
 
-// markFinished records that a refresh for platformKey just completed.
 func (c *perPlatformCooldown) markFinished(platformKey string) {
 	c.mu.Lock()
 	defer c.mu.Unlock()

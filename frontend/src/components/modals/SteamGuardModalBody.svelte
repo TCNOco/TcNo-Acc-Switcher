@@ -228,11 +228,6 @@
 	}
 
 	/**
-	 * Avatar/display-name source for a single-account screen. The first candidate that
-	 * actually carries an avatar wins, so a picker row or opener-supplied image is never
-	 * shadowed by an avatar-less one; otherwise the usual precedence applies.
-	 */
-	/**
 	 * Fallback summary for an account we have no vault listing for. "authenticator"
 	 * is the safe default: it is what every account was before login-only existed,
 	 * and this only builds an identity for display, never a decision about which
@@ -243,6 +238,11 @@
 		return { ...target, locked, kind: "authenticator", sessionStatus: "unknown" };
 	}
 
+	/**
+	 * Avatar/display-name source for a single-account screen. The first candidate that
+	 * actually carries an avatar wins, so a picker row or opener-supplied image is never
+	 * shadowed by an avatar-less one; otherwise the usual precedence applies.
+	 */
 	function summaryOf(
 		target: SteamGuardAccountRef,
 		locked: boolean,
@@ -320,10 +320,9 @@
 	 * rotates it - including writes this modal never asked for. The owned-games
 	 * sweep renews lapsed sessions in the background, on accounts the user may
 	 * not even have open, and that one batch invalidates the capability of every
-	 * window holding one (see refreshLapsedOwnedGamesSessions in Go, which says
-	 * as much). Nothing tells the modal, so the first sign of it is a call
-	 * rejected for a capability that worked a second earlier - which is what left
-	 * the browse buttons dead until the modal was reopened.
+	 * window holding one (refreshLapsedOwnedGamesSessions in Go). Nothing tells
+	 * the modal, so the first sign of it is a call rejected for a capability that
+	 * worked a second earlier.
 	 *
 	 * Retrying the call itself is safe for the ones that use this: each checks the
 	 * capability before it does anything, so a rejected attempt did nothing to
@@ -2350,7 +2349,7 @@
 			// is checked again after the drag, so a retry would put the overlay back up
 			// and ask for the same box a second time - worse than saying so. Sweeps no
 			// longer rotate a live capability out from under it (carryCapabilitiesAcross
-			// in Go), which is what used to land here.
+			// in Go).
 			const capability = await ensureCapability(currentAccount);
 			await handleQRScanResult(
 				currentAccount,
@@ -2386,9 +2385,7 @@
 	 * One click: renew the saved session, and only ask for a password if that fails.
 	 *
 	 * Steam's access token lapses in about a day while the refresh token stored
-	 * beside it lasts months, so most arrivals here need no password at all. Going
-	 * straight to the form asked for one every day and told the user their refresh
-	 * token had been rejected without ever having offered it to Steam.
+	 * beside it lasts months, so most arrivals here need no password at all.
 	 *
 	 * A renewal can still mint a token for a session Steam goes on to refuse, so
 	 * success is confirmed against Steam before it is reported.
@@ -2532,8 +2529,8 @@
 			} else if (entry === "add-account") {
 				// Nothing to bind a capability to yet: the id arrives with the
 				// attempt, which the reactive gate mints. Acquiring here with the
-				// empty id the menu request carries is what failed, and it failed
-				// before any lease existed - so the capture guard never went up.
+				// empty id the menu request carries fails before any lease exists,
+				// so the capture guard never goes up.
 				focusCurrentScreen();
 			} else {
 				void contentProtection.acquire(account.id).then(async () => {
@@ -4141,10 +4138,6 @@
 		text-align: center;
 	}
 
-	/* Shown inside a primary button while its action is in flight. The vault
-	   steps derive a key and the Steam steps wait on the network, both long
-	   enough that a button which only greys out reads as a click that did
-	   nothing. currentColor keeps it legible on any button in any theme. */
 	/* Stacked, the sign-in fields and the scan code together make the screen tall
 	   enough to scroll, so the split modifier below puts them side by side. */
 	.steam-guard__signin {
@@ -4214,6 +4207,10 @@
 		text-align: center;
 	}
 
+	/* Shown inside a primary button while its action is in flight. The vault
+	   steps derive a key and the Steam steps wait on the network, both long
+	   enough that a button which only greys out reads as a click that did
+	   nothing. currentColor keeps it legible on any button in any theme. */
 	.steam-guard__spinner {
 		display: inline-block;
 		width: 0.9em;

@@ -1038,9 +1038,8 @@ func (s *Service) ListAccounts(accountID, token string) ([]AccountSummary, error
 		}
 		loaded, err := recordFromVault(v, record.ID)
 		if err != nil {
-			// One unreadable record must not blank the whole picker. Before the
-			// vault held more than one record shape this returned the error, so
-			// a single half-finished enrollment hid every other account.
+			// One unreadable record must not blank the whole picker: a single
+			// half-finished enrollment would otherwise hide every other account.
 			serviceLogger().Warn("skipping unreadable vault record",
 				"steamId64", record.SteamID64, "error", err)
 			continue
@@ -1172,8 +1171,6 @@ func (s *Service) ChangePasswordWithFactors(currentPassword, newPassword, appPas
 	// A closure, because the secret may be filled in below and the argument to a
 	// plain defer is evaluated where it is written.
 	defer func() { wipe(oldCreds.SecurityKey) }()
-	// Unlock with the full factor set, not the password alone: rebuilding the
-	// password part of a slot needs every other factor that slot lists.
 	if err := s.unlockWithSecurityKeyFallbackLocked(v, &oldCreds); err != nil {
 		return err
 	}

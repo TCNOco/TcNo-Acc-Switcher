@@ -20,7 +20,7 @@ var (
 	ErrTimeSampleOutOfRange = errors.New("Steam Guard time sample offset exceeds limit")
 )
 
-// Clock supplies local time. It permits deterministic tests and alternate clocks.
+// Clock supplies local time.
 type Clock interface {
 	Now() time.Time
 }
