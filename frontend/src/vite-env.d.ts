@@ -1,6 +1,12 @@
 /// <reference types="svelte" />
 /// <reference types="vite/client" />
 
+/** Shared key index emitted by vite-plugin-locale-values; each locale module is a value array in this order. */
+declare module "virtual:locale-keys" {
+  const keys: string[]
+  export default keys
+}
+
 interface WindowToastOpts {
   type: string
   title?: string

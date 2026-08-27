@@ -1,11 +1,15 @@
 import { derived, writable } from "svelte/store";
+import localeKeys from "virtual:locale-keys";
 import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
+import { zipMessages } from "../lib/localeMessages";
 
 const STORAGE_KEY = "language";
 
+// Value arrays, not objects: vite-plugin-locale-values strips the keys, which
+// are shared across all 38 locales via `localeKeys`.
 const modules = import.meta.glob("../Resources/*.json") as Record<
   string,
-  () => Promise<{ default: Record<string, string> }>
+  () => Promise<{ default: (string | null)[] }>
 >;
 
 export const locale = writable("en-US");
@@ -86,7 +90,7 @@ async function loadEnUSMessages(): Promise<Record<string, string>> {
     return {};
   }
   const enMod = await enEntry[1]();
-  enUSMessagesCache = enMod.default;
+  enUSMessagesCache = zipMessages(localeKeys, enMod.default);
   return enUSMessagesCache;
 }
 
@@ -96,10 +100,10 @@ async function loadLocale(code: string) {
   );
   if (!entry) throw new Error(`Missing locale file: ${code}.json`);
   const mod = await entry[1]();
-  let merged = mod.default;
+  let merged = zipMessages(localeKeys, mod.default);
   if (code !== "en-US") {
     const en = await loadEnUSMessages();
-    merged = { ...en, ...mod.default };
+    merged = { ...en, ...merged };
   }
   messages.set(merged);
   locale.set(code);

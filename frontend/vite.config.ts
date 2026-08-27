@@ -4,6 +4,7 @@ import { defineConfig } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import wails from "@wailsio/runtime/plugins/vite";
 import { gzipDist } from "./vite-plugin-gzip-dist";
+import { localeValueArrays } from "./vite-plugin-locale-values";
 import { yamlAsJson } from "./vite-plugin-yaml";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -18,7 +19,13 @@ export default defineConfig({
       ),
     },
   },
-  plugins: [yamlAsJson(), svelte(), wails("./bindings"), gzipDist()],
+  plugins: [
+    yamlAsJson(),
+    localeValueArrays(),
+    svelte(),
+    wails("./bindings"),
+    gzipDist(),
+  ],
   build: {
     // Three webviews, not one: WebView2 is evergreen and WebKitGTK 6.0 is
     // recent, so macOS is the floor -- LSMinimumSystemVersion is 10.15, whose
@@ -29,6 +36,7 @@ export default defineConfig({
     // Locales arrive through import.meta.glob and are read off .default, so a
     // named export per key only inflates each locale chunk; stringify lets the
     // browser JSON.parse them instead of evaluating a huge object literal.
+    // localeValueArrays runs first and hands this the value array, still as JSON.
     namedExports: false,
     stringify: true,
   },
