@@ -152,6 +152,10 @@ function New-InstallerPackage {
   Remove-Item -Recurse -Force $stageDir -ErrorAction SilentlyContinue
   New-Item -ItemType Directory -Force -Path $stageDir | Out-Null
   Copy-Item -Force $exePath $stageDir
+  # The .7z doubles as the published portable download, and nothing in Go detects a
+  # missing WebView2 runtime: without the bootstrapper a portable user on a machine
+  # without it gets a blank window and no message.
+  Copy-Item -Force $bootstrapper $stageDir
   & 7z a -m0=lzma2 -mx=9 -mfb=273 $archivePath "$stageDir\*"
   if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
