@@ -9,8 +9,8 @@ import (
 )
 
 // queryPattern is the whole query grammar this reader accepts:
-// SELECT <col> FROM <table> WHERE <col> = <literal> [LIMIT n].
-var queryPattern = regexp.MustCompile(`(?is)^SELECT\s+(\w+)\s+FROM\s+(\w+)\s+WHERE\s+(\w+)\s*=\s*('(?:[^']|'')*'|-?\d+(?:\.\d+)?)\s*(?:LIMIT\s+\d+\s*)?;?$`)
+// SELECT <col> FROM <table> WHERE <col> = <literal>.
+var queryPattern = regexp.MustCompile(`(?is)^SELECT\s+(\w+)\s+FROM\s+(\w+)\s+WHERE\s+(\w+)\s*=\s*('(?:[^']|'')*'|-?\d+(?:\.\d+)?)\s*;?$`)
 
 type query struct {
 	column  string

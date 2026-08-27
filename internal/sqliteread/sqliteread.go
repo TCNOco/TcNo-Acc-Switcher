@@ -14,9 +14,15 @@ import (
 	"strings"
 )
 
-// ErrWAL reports that the database may have newer data in a -wal sidecar.
-// Callers must treat the main file's contents as stale, not merely missing.
-var ErrWAL = errors.New("sqlite database has a non-empty write-ahead log")
+// ErrPendingWrites reports that a sidecar file may hold newer rows than the main
+// database. Callers must treat the main file's contents as stale, not merely
+// missing. ErrWAL and ErrJournal name which sidecar, and both match it.
+var ErrPendingWrites = errors.New("sqlite database has pending writes")
+
+var (
+	ErrWAL     = fmt.Errorf("%w in a non-empty write-ahead log", ErrPendingWrites)
+	ErrJournal = fmt.Errorf("%w in a hot rollback journal", ErrPendingWrites)
+)
 
 const headerSize = 100
 
@@ -83,9 +89,17 @@ func open(path string) (*reader, error) {
 		_ = f.Close()
 		return nil, fmt.Errorf("unsupported read format %d", head[19])
 	}
-	if head[19] == 2 && walHasFrames(path+"-wal", pageSize) {
-		_ = f.Close()
-		return nil, ErrWAL
+	switch head[19] {
+	case 1:
+		if journalIsHot(path + "-journal") {
+			_ = f.Close()
+			return nil, ErrJournal
+		}
+	case 2:
+		if walHasFrames(path+"-wal", pageSize) {
+			_ = f.Close()
+			return nil, ErrWAL
+		}
 	}
 	pages := int(st.Size() / int64(pageSize))
 	if pages < 1 {
@@ -118,6 +132,25 @@ func walHasFrames(path string, pageSize int) bool {
 		return true
 	}
 	return string(h[16:24]) == string(h[walHeader+8:walHeader+16])
+}
+
+// journalIsHot reports whether a -journal sidecar holds a transaction still
+// owed to the main database, whose pages therefore may be mid-write or carry
+// values a rollback has yet to undo. Journal modes that keep the file after a
+// commit truncate or zero it rather than delete it, so only a file long enough
+// to hold a header, with the header magic intact, counts.
+func journalIsHot(path string) bool {
+	f, err := os.Open(path)
+	if err != nil {
+		return false
+	}
+	defer func() { _ = f.Close() }()
+	const journalHeader = 28
+	h := make([]byte, journalHeader)
+	if _, err := f.ReadAt(h, 0); err != nil {
+		return false
+	}
+	return binary.BigEndian.Uint64(h[0:8]) == 0xd9d505f920a163d7
 }
 
 func (r *reader) close() { _ = r.f.Close() }

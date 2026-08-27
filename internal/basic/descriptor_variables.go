@@ -95,9 +95,10 @@ func resolveDescriptorValue(d platform.Descriptor, raw, folder string, ctx platf
 	}
 	if resolved, handled, err := resolveSQLiteValue(v, folder, ctx); handled {
 		if err != nil {
-			// A stale value here switches to the wrong account, so a pending WAL is not a quiet miss.
+			// A stale value here switches to the wrong account, so a sidecar the
+			// reader cannot apply is not a quiet miss.
 			level := slog.LevelDebug
-			if errors.Is(err, sqliteread.ErrWAL) {
+			if errors.Is(err, sqliteread.ErrPendingWrites) {
 				level = slog.LevelWarn
 			}
 			descriptorVarsLog().Log(context.Background(), level, "resolve descriptor value via sqlite failed", "saved", saved, "value", v, "err", err)

@@ -9,6 +9,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/ulikunitz/xz"
 
@@ -307,5 +308,38 @@ func TestDownloadAppNameMapPrefersCompact(t *testing.T) {
 	}
 	if m["440"] != "Team Fortress 2" {
 		t.Fatalf("unexpected name from compact source: %q", m["440"])
+	}
+}
+
+// A blocking on-demand download is uncancellable from the UI, so its total wait
+// must not scale with the number of sources tried.
+func TestEnsureAppNameMapBoundsBlockingDownload(t *testing.T) {
+	paths.ResetForTest(t.TempDir())
+	t.Cleanup(func() { setSteamAppNameMapMemory(nil) })
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		<-r.Context().Done()
+	}))
+	defer srv.Close()
+
+	restore := steamAppNameMapSources
+	steamAppNameMapSources = nil
+	for i := 0; i < 8; i++ {
+		steamAppNameMapSources = append(steamAppNameMapSources, steamAppNameMapSource{
+			url: srv.URL, codec: appNameMapCodecPlain, format: appNameMapFormatJSON,
+		})
+	}
+	t.Cleanup(func() { steamAppNameMapSources = restore })
+
+	restoreTimeout := steamAppNameMapOnDemandTimeout
+	steamAppNameMapOnDemandTimeout = 300 * time.Millisecond
+	t.Cleanup(func() { steamAppNameMapOnDemandTimeout = restoreTimeout })
+
+	start := time.Now()
+	if _, err := ensureAppNameMap(context.Background()); err == nil {
+		t.Fatal("expected the blocking download to fail")
+	}
+	if elapsed := time.Since(start); elapsed > 4*steamAppNameMapOnDemandTimeout {
+		t.Fatalf("waited %v for %d sources; the deadline covers one rung, not the walk", elapsed, len(steamAppNameMapSources))
 	}
 }

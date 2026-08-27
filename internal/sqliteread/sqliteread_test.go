@@ -45,7 +45,7 @@ func TestQueryScalar(t *testing.T) {
 		{"rowid alias column", `SELECT tag FROM alias_tbl WHERE id = '7'`, "Aliased#0007"},
 		{"real value", `SELECT v FROM other WHERE k = 'pi'`, "3.5"},
 		{"blob value", `SELECT v FROM other WHERE k = 'blob'`, "\xde\xad\xbe\xef"},
-		{"case insensitive keywords", `select battle_tag from login_cache where account_id_lo = '1111185900' limit 1`, "Player0#1000"},
+		{"case insensitive keywords", `select battle_tag from login_cache where account_id_lo = '1111185900'`, "Player0#1000"},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
@@ -70,6 +70,10 @@ func TestQueryScalarRejectsUnsupportedQueries(t *testing.T) {
 		`SELECT battle_tag FROM login_cache WHERE account_id_lo = '4242'; DROP TABLE login_cache`,
 		`SELECT missing FROM login_cache WHERE account_id_lo = '4242'`,
 		`SELECT battle_tag FROM missing WHERE account_id_lo = '4242'`,
+		// The reader has no row limit to apply, so it must refuse rather than
+		// answer as though LIMIT meant something.
+		`SELECT battle_tag FROM login_cache WHERE account_id_lo = '4242' LIMIT 0`,
+		`SELECT battle_tag FROM login_cache WHERE account_id_lo = '1111185900' LIMIT 2`,
 	} {
 		if got, err := QueryScalar(fixture, q); err == nil {
 			t.Fatalf("query %q unexpectedly succeeded with %q", q, got)
@@ -105,7 +109,7 @@ func TestQueryScalarWAL(t *testing.T) {
 			}
 			got, err := QueryScalar(path, q)
 			if c.wantErr {
-				if !errors.Is(err, ErrWAL) {
+				if !errors.Is(err, ErrWAL) || !errors.Is(err, ErrPendingWrites) {
 					t.Fatalf("got %q, %v; want ErrWAL", got, err)
 				}
 				return
@@ -131,6 +135,55 @@ func buildWAL(magic uint32, pageSize int, live bool) []byte {
 	if live {
 		copy(b[40:48], b[16:24])
 	}
+	return b
+}
+
+// A rollback journal left behind by an interrupted write means the main file's
+// pages are the ones the journal exists to undo. Battle.net's CachedData.db is
+// journal_mode=delete, so this is the sidecar the reader actually meets.
+func TestQueryScalarRollbackJournal(t *testing.T) {
+	const q = `SELECT battle_tag FROM login_cache WHERE account_id_lo = '1111185900'`
+	cases := []struct {
+		name    string
+		journal []byte
+		wantErr bool
+	}{
+		{"no sidecar", nil, false},
+		{"a transaction the database still owes", buildJournal(0xd9d505f920a163d7, 512), true},
+		{"truncated to nothing after commit", []byte{}, false},
+		{"header zeroed after commit", make([]byte, 512), false},
+		{"shorter than a header", buildJournal(0xd9d505f920a163d7, 512)[:20], false},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			path := copyFixture(t, nil)
+			if c.journal != nil {
+				if err := os.WriteFile(path+"-journal", c.journal, 0o600); err != nil {
+					t.Fatalf("write journal: %v", err)
+				}
+			}
+			got, err := QueryScalar(path, q)
+			if c.wantErr {
+				if !errors.Is(err, ErrJournal) || !errors.Is(err, ErrPendingWrites) {
+					t.Fatalf("got %q, %v; want ErrJournal", got, err)
+				}
+				return
+			}
+			if err != nil || got != "Player0#1000" {
+				t.Fatalf("got %q, %v", got, err)
+			}
+		})
+	}
+}
+
+// buildJournal writes a rollback journal header for one page.
+func buildJournal(magic uint64, pageSize int) []byte {
+	b := make([]byte, 28+pageSize)
+	binary.BigEndian.PutUint64(b[0:8], magic)
+	binary.BigEndian.PutUint32(b[8:12], 1)
+	binary.BigEndian.PutUint32(b[16:20], 25)
+	binary.BigEndian.PutUint32(b[20:24], 512)
+	binary.BigEndian.PutUint32(b[24:28], uint32(pageSize))
 	return b
 }
 

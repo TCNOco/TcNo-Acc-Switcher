@@ -191,6 +191,12 @@ const (
 	steamAppNameMapMaxGzipBytes    = 8 << 20
 )
 
+// steamAppNameMapOnDemandTimeout bounds a blocking download, which stands
+// between the user and the games list, so the whole walk down the source list
+// gets one deadline. appclient's timeout is per request, which bounds a rung and
+// not the wait. Shortened by tests.
+var steamAppNameMapOnDemandTimeout = 60 * time.Second
+
 type steamAppNameMapCodec string
 
 const (
@@ -350,6 +356,9 @@ func downloadAndStoreAppNameMap(ctx context.Context, reason string) error {
 
 	var lastErr error
 	for _, source := range steamAppNameMapSources {
+		if ctx.Err() != nil {
+			break
+		}
 		steamLog().Info("steam app name map fetching",
 			slog.String("url", source.url),
 			slog.String("reason", reason),
@@ -399,6 +408,9 @@ func downloadAndStoreAppNameMap(ctx context.Context, reason string) error {
 	}
 	if lastErr != nil {
 		return lastErr
+	}
+	if err := ctx.Err(); err != nil {
+		return err
 	}
 	return fmt.Errorf("steam app name map: empty")
 }
@@ -572,7 +584,12 @@ func ensureAppNameMap(ctx context.Context) (map[string]string, error) {
 		steamLog().Info("steam app name map download skipped: offline mode", slog.String("reason", "on-demand-missing"))
 		return nil, fmt.Errorf("steam app name map: %w", appclient.ErrOfflineMode)
 	}
-	steamLog().Info("steam app name map cache missing; blocking download", slog.String("reason", "on-demand-missing"))
+	steamLog().Info("steam app name map cache missing; blocking download",
+		slog.String("reason", "on-demand-missing"),
+		slog.Duration("timeout", steamAppNameMapOnDemandTimeout),
+	)
+	ctx, cancel := context.WithTimeout(ctx, steamAppNameMapOnDemandTimeout)
+	defer cancel()
 	if err := downloadAndStoreAppNameMap(ctx, "on-demand-missing"); err != nil {
 		return nil, fmt.Errorf("steam app name map: %w", err)
 	}
