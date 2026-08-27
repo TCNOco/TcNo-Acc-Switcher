@@ -20,8 +20,10 @@ export default defineConfig({
   },
   plugins: [yamlAsJson(), svelte(), wails("./bindings"), gzipDist()],
   build: {
-    // WebView2 is Evergreen Chromium, so downlevel transpilation is dead weight.
-    target: "esnext",
+    // Three webviews, not one: WebView2 is evergreen and WebKitGTK 6.0 is
+    // recent, so macOS is the floor -- LSMinimumSystemVersion is 10.15, whose
+    // WKWebView is Safari 13.1. Raise this only alongside that plist.
+    target: ["chrome87", "safari13.1"],
   },
   json: {
     // Locales arrive through import.meta.glob and are read off .default, so a
