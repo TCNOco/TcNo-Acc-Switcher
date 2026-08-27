@@ -1,6 +1,7 @@
 package steam
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -19,6 +20,8 @@ import (
 	"TcNo-Acc-Switcher/internal/crashlog"
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
+
+	"github.com/ulikunitz/xz"
 )
 
 // InstalledGameInfo is one installed Steam app from libraryfolders / appmanifest scan.
@@ -172,15 +175,23 @@ func saveAppNameMapToDisk(m map[string]string) error {
 }
 
 const (
+	steamAppArrayMirrorXZURL    = "https://api.tcno.co/sw/SteamAppArrayXZ"
 	steamAppArrayMirrorURL      = "https://api.tcno.co/sw/SteamAppArray"
 	steamAppNameMapCacheTTL     = 24 * time.Hour
 	steamAppNameMapFetchTimeout = 10 * time.Minute
 	steamAppNameMapMaxJSONBytes = 32 << 20
+	steamAppNameMapMaxXZBytes   = 8 << 20
 )
 
-// The mirror serves this JSON gzipped and appclient.Shared's transport decodes it
-// transparently, so the bytes measured here are always the decoded payload.
-var steamAppNameMapSources = []string{steamAppArrayMirrorURL}
+type steamAppNameMapSource struct {
+	url          string
+	xzCompressed bool
+}
+
+var steamAppNameMapSources = []steamAppNameMapSource{
+	{url: steamAppArrayMirrorXZURL, xzCompressed: true},
+	{url: steamAppArrayMirrorURL, xzCompressed: false},
+}
 
 var (
 	steamAppNameMapMu         sync.RWMutex
@@ -282,25 +293,29 @@ func downloadAndStoreAppNameMap(ctx context.Context, reason string) error {
 	)
 
 	var lastErr error
-	for _, url := range steamAppNameMapSources {
+	for _, source := range steamAppNameMapSources {
 		steamLog().Info("steam app name map fetching",
-			slog.String("url", url),
+			slog.String("url", source.url),
 			slog.String("reason", reason),
+			slog.Bool("xz", source.xzCompressed),
 		)
-		raw, err := fetchSteamAppNameMapRaw(ctx, url)
+		raw, compressedBytes, err := fetchSteamAppNameMapPayload(ctx, source)
 		if err != nil {
 			lastErr = err
 			steamLog().Warn("steam app name map fetch failed",
-				slog.String("url", url),
+				slog.String("url", source.url),
+				slog.Bool("xz", source.xzCompressed),
 				slog.Any("err", err),
 			)
 			continue
 		}
 		names, err := parseAppNameMapJSON(raw)
 		if err != nil {
-			lastErr = fmt.Errorf("invalid app name map payload from %s: %w", url, err)
+			lastErr = fmt.Errorf("invalid app name map payload from %s: %w", source.url, err)
 			steamLog().Warn("steam app name map fetch invalid payload",
-				slog.String("url", url),
+				slog.String("url", source.url),
+				slog.Bool("xz", source.xzCompressed),
+				slog.Int("compressedBytes", compressedBytes),
 				slog.Int("jsonBytes", len(raw)),
 				slog.Any("err", err),
 			)
@@ -310,13 +325,17 @@ func downloadAndStoreAppNameMap(ctx context.Context, reason string) error {
 			return err
 		}
 		setSteamAppNameMapMemory(names)
-		steamLog().Info("steam app name map refreshed",
+		logArgs := []any{
 			slog.String("reason", reason),
-			slog.String("source", url),
+			slog.String("source", source.url),
 			slog.Int("entries", len(names)),
 			slog.Int("jsonBytes", len(raw)),
 			slog.String("cachePath", cachePath),
-		)
+		}
+		if source.xzCompressed {
+			logArgs = append(logArgs, slog.Int("compressedBytes", compressedBytes))
+		}
+		steamLog().Info("steam app name map refreshed", logArgs...)
 		return nil
 	}
 	if lastErr != nil {
@@ -417,12 +436,43 @@ func runSteamAppNameMapMonitor() {
 	}
 }
 
-func fetchSteamAppNameMapRaw(ctx context.Context, url string) ([]byte, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+func fetchSteamAppNameMapPayload(ctx context.Context, source steamAppNameMapSource) ([]byte, int, error) {
+	compressed, err := fetchSteamAppNameMapRaw(ctx, source)
+	if err != nil {
+		return nil, 0, err
+	}
+	if !source.xzCompressed {
+		return compressed, len(compressed), nil
+	}
+	raw, err := decompressXZSteamAppNameMap(compressed)
+	if err != nil {
+		return nil, len(compressed), err
+	}
+	return raw, len(compressed), nil
+}
+
+func decompressXZSteamAppNameMap(compressed []byte) ([]byte, error) {
+	r, err := xz.NewReader(bytes.NewReader(compressed))
+	if err != nil {
+		return nil, fmt.Errorf("xz reader: %w", err)
+	}
+	raw, err := io.ReadAll(io.LimitReader(r, steamAppNameMapMaxJSONBytes))
+	if err != nil {
+		return nil, fmt.Errorf("xz decompress: %w", err)
+	}
+	return raw, nil
+}
+
+func fetchSteamAppNameMapRaw(ctx context.Context, source steamAppNameMapSource) ([]byte, error) {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, source.url, nil)
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("Accept", "application/json")
+	if source.xzCompressed {
+		req.Header.Set("Accept", "application/x-xz")
+	} else {
+		req.Header.Set("Accept", "application/json")
+	}
 	req.Header.Set("User-Agent", "TcNo-Acc-Switcher/3 (Steam app names; +https://github.com/TcNo-Acc-Switcher)")
 	resp, err := appclient.Shared.Do(req)
 	if err != nil {
@@ -430,9 +480,13 @@ func fetchSteamAppNameMapRaw(ctx context.Context, url string) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return nil, fmt.Errorf("GET %s: HTTP %d", url, resp.StatusCode)
+		return nil, fmt.Errorf("GET %s: HTTP %d", source.url, resp.StatusCode)
 	}
-	return io.ReadAll(io.LimitReader(resp.Body, steamAppNameMapMaxJSONBytes))
+	limit := steamAppNameMapMaxJSONBytes
+	if source.xzCompressed {
+		limit = steamAppNameMapMaxXZBytes
+	}
+	return io.ReadAll(io.LimitReader(resp.Body, int64(limit)))
 }
 
 func ensureAppNameMap(ctx context.Context) (map[string]string, error) {
