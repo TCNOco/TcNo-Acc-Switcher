@@ -2,6 +2,7 @@ package steam
 
 import (
 	"bytes"
+	"compress/gzip"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -175,22 +176,78 @@ func saveAppNameMapToDisk(m map[string]string) error {
 }
 
 const (
-	steamAppArrayMirrorXZURL    = "https://api.tcno.co/sw/SteamAppArrayXZ"
-	steamAppArrayMirrorURL      = "https://api.tcno.co/sw/SteamAppArray"
+	steamAppArrayCompactURL   = "https://api.tcno.co/sw/SteamAppArrayCompact"
+	steamAppArrayCompactXZURL = "https://api.tcno.co/sw/SteamAppArrayCompactXZ"
+	steamAppArrayMirrorXZURL  = "https://api.tcno.co/sw/SteamAppArrayXZ"
+	steamAppArrayMirrorURL    = "https://api.tcno.co/sw/SteamAppArray"
+
 	steamAppNameMapCacheTTL     = 24 * time.Hour
 	steamAppNameMapFetchTimeout = 10 * time.Minute
-	steamAppNameMapMaxJSONBytes = 32 << 20
-	steamAppNameMapMaxXZBytes   = 8 << 20
+
+	// Wire limits. The live array is ~8.3 MB as JSON and ~5.5 MB compact, in
+	// 2.1-2.9 MB compressed; every cap is well clear of that but bounded.
+	steamAppNameMapMaxJSONBytes    = 32 << 20
+	steamAppNameMapMaxCompactBytes = 16 << 20
+	steamAppNameMapMaxXZBytes      = 8 << 20
+	steamAppNameMapMaxGzipBytes    = 8 << 20
+)
+
+type steamAppNameMapCodec string
+
+const (
+	appNameMapCodecPlain steamAppNameMapCodec = "none"
+	appNameMapCodecXZ    steamAppNameMapCodec = "xz"
+	appNameMapCodecGzip  steamAppNameMapCodec = "gzip"
+)
+
+// steamAppNameMapFormat is the payload the codec unwraps to.
+type steamAppNameMapFormat struct {
+	name     string
+	maxBytes int
+	parse    func([]byte) (map[string]string, error)
+}
+
+var (
+	appNameMapFormatJSON    = steamAppNameMapFormat{"json", steamAppNameMapMaxJSONBytes, parseAppNameMapJSON}
+	appNameMapFormatCompact = steamAppNameMapFormat{"compact", steamAppNameMapMaxCompactBytes, parseAppNameMapCompact}
 )
 
 type steamAppNameMapSource struct {
-	url          string
-	xzCompressed bool
+	url    string
+	codec  steamAppNameMapCodec
+	format steamAppNameMapFormat
 }
 
+// steamAppNameMapSources is tried in order, cheapest to decode first, falling
+// through on any failure - including a 404 from a server that has not deployed
+// the newer formats yet.
 var steamAppNameMapSources = []steamAppNameMapSource{
-	{url: steamAppArrayMirrorXZURL, xzCompressed: true},
-	{url: steamAppArrayMirrorURL, xzCompressed: false},
+	{url: steamAppArrayCompactURL, codec: appNameMapCodecGzip, format: appNameMapFormatCompact},
+	{url: steamAppArrayCompactXZURL, codec: appNameMapCodecXZ, format: appNameMapFormatCompact},
+	{url: steamAppArrayMirrorXZURL, codec: appNameMapCodecXZ, format: appNameMapFormatJSON},
+	{url: steamAppArrayMirrorURL, codec: appNameMapCodecPlain, format: appNameMapFormatJSON},
+}
+
+func (c steamAppNameMapCodec) maxCompressedBytes() int {
+	switch c {
+	case appNameMapCodecXZ:
+		return steamAppNameMapMaxXZBytes
+	case appNameMapCodecGzip:
+		return steamAppNameMapMaxGzipBytes
+	default:
+		return steamAppNameMapMaxJSONBytes
+	}
+}
+
+func (c steamAppNameMapCodec) accept() string {
+	switch c {
+	case appNameMapCodecXZ:
+		return "application/x-xz"
+	case appNameMapCodecGzip:
+		return "application/gzip"
+	default:
+		return "application/json"
+	}
 }
 
 var (
@@ -297,26 +354,28 @@ func downloadAndStoreAppNameMap(ctx context.Context, reason string) error {
 		steamLog().Info("steam app name map fetching",
 			slog.String("url", source.url),
 			slog.String("reason", reason),
-			slog.Bool("xz", source.xzCompressed),
+			slog.String("codec", string(source.codec)),
+			slog.String("format", source.format.name),
 		)
 		raw, compressedBytes, err := fetchSteamAppNameMapPayload(ctx, source)
 		if err != nil {
 			lastErr = err
 			steamLog().Warn("steam app name map fetch failed",
 				slog.String("url", source.url),
-				slog.Bool("xz", source.xzCompressed),
+				slog.String("codec", string(source.codec)),
 				slog.Any("err", err),
 			)
 			continue
 		}
-		names, err := parseAppNameMapJSON(raw)
+		names, err := source.format.parse(raw)
 		if err != nil {
 			lastErr = fmt.Errorf("invalid app name map payload from %s: %w", source.url, err)
 			steamLog().Warn("steam app name map fetch invalid payload",
 				slog.String("url", source.url),
-				slog.Bool("xz", source.xzCompressed),
+				slog.String("codec", string(source.codec)),
+				slog.String("format", source.format.name),
 				slog.Int("compressedBytes", compressedBytes),
-				slog.Int("jsonBytes", len(raw)),
+				slog.Int("payloadBytes", len(raw)),
 				slog.Any("err", err),
 			)
 			continue
@@ -328,12 +387,13 @@ func downloadAndStoreAppNameMap(ctx context.Context, reason string) error {
 		logArgs := []any{
 			slog.String("reason", reason),
 			slog.String("source", source.url),
+			slog.String("format", source.format.name),
 			slog.Int("entries", len(names)),
-			slog.Int("jsonBytes", len(raw)),
+			slog.Int("payloadBytes", len(raw)),
 			slog.String("cachePath", cachePath),
 		}
-		if source.xzCompressed {
-			logArgs = append(logArgs, slog.Int("compressedBytes", compressedBytes))
+		if source.codec != appNameMapCodecPlain {
+			logArgs = append(logArgs, slog.String("codec", string(source.codec)), slog.Int("compressedBytes", compressedBytes))
 		}
 		steamLog().Info("steam app name map refreshed", logArgs...)
 		return nil
@@ -441,24 +501,44 @@ func fetchSteamAppNameMapPayload(ctx context.Context, source steamAppNameMapSour
 	if err != nil {
 		return nil, 0, err
 	}
-	if !source.xzCompressed {
-		return compressed, len(compressed), nil
-	}
-	raw, err := decompressXZSteamAppNameMap(compressed)
+	raw, err := decompressSteamAppNameMap(compressed, source)
 	if err != nil {
 		return nil, len(compressed), err
 	}
 	return raw, len(compressed), nil
 }
 
-func decompressXZSteamAppNameMap(compressed []byte) ([]byte, error) {
-	r, err := xz.NewReader(bytes.NewReader(compressed))
-	if err != nil {
-		return nil, fmt.Errorf("xz reader: %w", err)
+// decompressSteamAppNameMap unwraps the transport codec. The endpoints serve
+// pre-compressed files as their own content type, so nothing here can be left
+// to the transport's automatic Content-Encoding handling.
+func decompressSteamAppNameMap(compressed []byte, source steamAppNameMapSource) ([]byte, error) {
+	var r io.Reader
+	switch source.codec {
+	case appNameMapCodecXZ:
+		xr, err := xz.NewReader(bytes.NewReader(compressed))
+		if err != nil {
+			return nil, fmt.Errorf("xz reader: %w", err)
+		}
+		r = xr
+	case appNameMapCodecGzip:
+		gr, err := gzip.NewReader(bytes.NewReader(compressed))
+		if err != nil {
+			return nil, fmt.Errorf("gzip reader: %w", err)
+		}
+		defer gr.Close()
+		r = gr
+	default:
+		if len(compressed) > source.format.maxBytes {
+			return nil, fmt.Errorf("%s payload %d bytes over %d limit", source.format.name, len(compressed), source.format.maxBytes)
+		}
+		return compressed, nil
 	}
-	raw, err := io.ReadAll(io.LimitReader(r, steamAppNameMapMaxJSONBytes))
+	raw, err := io.ReadAll(io.LimitReader(r, int64(source.format.maxBytes)+1))
 	if err != nil {
-		return nil, fmt.Errorf("xz decompress: %w", err)
+		return nil, fmt.Errorf("%s decompress: %w", source.codec, err)
+	}
+	if len(raw) > source.format.maxBytes {
+		return nil, fmt.Errorf("%s payload over %d limit", source.format.name, source.format.maxBytes)
 	}
 	return raw, nil
 }
@@ -468,11 +548,7 @@ func fetchSteamAppNameMapRaw(ctx context.Context, source steamAppNameMapSource) 
 	if err != nil {
 		return nil, err
 	}
-	if source.xzCompressed {
-		req.Header.Set("Accept", "application/x-xz")
-	} else {
-		req.Header.Set("Accept", "application/json")
-	}
+	req.Header.Set("Accept", source.codec.accept())
 	req.Header.Set("User-Agent", "TcNo-Acc-Switcher/3 (Steam app names; +https://github.com/TcNo-Acc-Switcher)")
 	resp, err := appclient.Shared.Do(req)
 	if err != nil {
@@ -482,11 +558,7 @@ func fetchSteamAppNameMapRaw(ctx context.Context, source steamAppNameMapSource) 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		return nil, fmt.Errorf("GET %s: HTTP %d", source.url, resp.StatusCode)
 	}
-	limit := steamAppNameMapMaxJSONBytes
-	if source.xzCompressed {
-		limit = steamAppNameMapMaxXZBytes
-	}
-	return io.ReadAll(io.LimitReader(resp.Body, int64(limit)))
+	return io.ReadAll(io.LimitReader(resp.Body, int64(source.codec.maxCompressedBytes())))
 }
 
 func ensureAppNameMap(ctx context.Context) (map[string]string, error) {

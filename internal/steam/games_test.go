@@ -66,7 +66,7 @@ func TestDecompressXZSteamAppNameMap(t *testing.T) {
 	raw := validSteamAppArrayJSON()
 	compressed := compressXZForTest(t, raw)
 
-	got, err := decompressXZSteamAppNameMap(compressed)
+	got, err := decompressSteamAppNameMap(compressed, steamAppNameMapSource{codec: appNameMapCodecXZ, format: appNameMapFormatJSON})
 	if err != nil {
 		t.Fatal(err)
 	}
