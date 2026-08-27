@@ -10,6 +10,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/ulikunitz/xz"
+
 	"TcNo-Acc-Switcher/internal/paths"
 )
 
@@ -161,9 +163,24 @@ func gzipForTest(t *testing.T, data []byte) []byte {
 	return buf.Bytes()
 }
 
-// TestDownloadAppNameMapFallsThrough covers the case that keeps the app working
-// against a server that has not deployed the compact endpoints: the preferred
-// source 404s, the next serves a corrupt body, and the JSON mirror wins.
+func xzForTest(t *testing.T, data []byte) []byte {
+	t.Helper()
+	var buf bytes.Buffer
+	w, err := xz.NewWriter(&buf)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := w.Write(data); err != nil {
+		t.Fatal(err)
+	}
+	if err := w.Close(); err != nil {
+		t.Fatal(err)
+	}
+	return buf.Bytes()
+}
+
+// TestDownloadAppNameMapFallsThrough walks the whole source table, each rung with the
+// codec it really carries, down to the plain JSON mirror.
 func TestDownloadAppNameMapFallsThrough(t *testing.T) {
 	paths.ResetForTest(t.TempDir())
 	t.Cleanup(func() {
@@ -177,7 +194,9 @@ func TestDownloadAppNameMapFallsThrough(t *testing.T) {
 		case "/compact":
 			http.NotFound(w, r)
 		case "/compact-xz":
-			w.Write(gzipForTest(t, []byte("not a compact app array")))
+			w.Write(xzForTest(t, []byte("not a compact app array")))
+		case "/json-xz":
+			w.Write(xzForTest(t, []byte("{ not json")))
 		case "/json":
 			w.Write(validSteamAppArrayJSON())
 		}
@@ -187,7 +206,56 @@ func TestDownloadAppNameMapFallsThrough(t *testing.T) {
 	restore := steamAppNameMapSources
 	steamAppNameMapSources = []steamAppNameMapSource{
 		{url: srv.URL + "/compact", codec: appNameMapCodecGzip, format: appNameMapFormatCompact},
-		{url: srv.URL + "/compact-xz", codec: appNameMapCodecGzip, format: appNameMapFormatCompact},
+		{url: srv.URL + "/compact-xz", codec: appNameMapCodecXZ, format: appNameMapFormatCompact},
+		{url: srv.URL + "/json-xz", codec: appNameMapCodecXZ, format: appNameMapFormatJSON},
+		{url: srv.URL + "/json", codec: appNameMapCodecPlain, format: appNameMapFormatJSON},
+	}
+	t.Cleanup(func() { steamAppNameMapSources = restore })
+
+	if err := downloadAndStoreAppNameMap(context.Background(), "test"); err != nil {
+		t.Fatal(err)
+	}
+	if len(hits) != 4 {
+		t.Fatalf("expected all four sources tried, got %v", hits)
+	}
+	m, err := getSteamAppNameMapCached()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if m["730"] != "Counter-Strike 2" {
+		t.Fatalf("unexpected name from fallback source: %q", m["730"])
+	}
+}
+
+// The rung a current client lands on against a server that never deployed the compact
+// endpoints: xz off the wire, JSON inside. SteamAppArrayXZ is what v4.0.7 and earlier
+// servers answer with, so it has to carry the app on its own.
+func TestDownloadAppNameMapFallsBackToXZJSONMirror(t *testing.T) {
+	paths.ResetForTest(t.TempDir())
+	t.Cleanup(func() {
+		setSteamAppNameMapMemory(nil)
+	})
+
+	var hits []string
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		hits = append(hits, r.URL.Path)
+		switch r.URL.Path {
+		case "/json-xz":
+			w.Write(xzForTest(t, validSteamAppArrayJSON()))
+		case "/json":
+			t.Errorf("plain JSON mirror reached although the xz mirror answered")
+			http.NotFound(w, r)
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer srv.Close()
+
+	restore := steamAppNameMapSources
+	steamAppNameMapSources = []steamAppNameMapSource{
+		{url: srv.URL + "/compact", codec: appNameMapCodecGzip, format: appNameMapFormatCompact},
+		{url: srv.URL + "/compact-xz", codec: appNameMapCodecXZ, format: appNameMapFormatCompact},
+		{url: srv.URL + "/json-xz", codec: appNameMapCodecXZ, format: appNameMapFormatJSON},
 		{url: srv.URL + "/json", codec: appNameMapCodecPlain, format: appNameMapFormatJSON},
 	}
 	t.Cleanup(func() { steamAppNameMapSources = restore })
@@ -196,14 +264,14 @@ func TestDownloadAppNameMapFallsThrough(t *testing.T) {
 		t.Fatal(err)
 	}
 	if len(hits) != 3 {
-		t.Fatalf("expected all three sources tried, got %v", hits)
+		t.Fatalf("expected the xz JSON mirror to win, got %v", hits)
 	}
 	m, err := getSteamAppNameMapCached()
 	if err != nil {
 		t.Fatal(err)
 	}
 	if m["730"] != "Counter-Strike 2" {
-		t.Fatalf("unexpected name from fallback source: %q", m["730"])
+		t.Fatalf("unexpected name from the xz JSON mirror: %q", m["730"])
 	}
 }
 
