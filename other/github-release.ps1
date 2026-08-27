@@ -152,8 +152,7 @@ function New-InstallerPackage {
   Remove-Item -Recurse -Force $stageDir -ErrorAction SilentlyContinue
   New-Item -ItemType Directory -Force -Path $stageDir | Out-Null
   Copy-Item -Force $exePath $stageDir
-  Copy-Item -Force $bootstrapper $stageDir
-  & 7z a -mx9 $archivePath "$stageDir\*"
+  & 7z a -m0=lzma2 -mx=9 -mfb=273 $archivePath "$stageDir\*"
   if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
   }
