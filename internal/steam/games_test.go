@@ -1,7 +1,6 @@
 package steam
 
 import (
-	"bytes"
 	"os"
 	"path/filepath"
 	"strings"
@@ -10,8 +9,6 @@ import (
 
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
-
-	"github.com/ulikunitz/xz"
 )
 
 func validSteamAppArrayJSON() []byte {
@@ -46,39 +43,17 @@ func TestSteamAppNameMapCacheExpired(t *testing.T) {
 	}
 }
 
-func compressXZForTest(t *testing.T, data []byte) []byte {
-	t.Helper()
-	var buf bytes.Buffer
-	w, err := xz.NewWriter(&buf)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if _, err := w.Write(data); err != nil {
-		t.Fatal(err)
-	}
-	if err := w.Close(); err != nil {
-		t.Fatal(err)
-	}
-	return buf.Bytes()
-}
-
-func TestDecompressXZSteamAppNameMap(t *testing.T) {
+// A decompressed payload over the format's cap has to error: the reader is
+// bounded, so letting it through would parse a silently truncated array.
+func TestDecompressSteamAppNameMapRejectsOversized(t *testing.T) {
 	raw := validSteamAppArrayJSON()
-	compressed := compressXZForTest(t, raw)
+	tiny := steamAppNameMapFormat{"json", len(raw) - 1, parseAppNameMapJSON}
 
-	got, err := decompressSteamAppNameMap(compressed, steamAppNameMapSource{codec: appNameMapCodecXZ, format: appNameMapFormatJSON})
-	if err != nil {
-		t.Fatal(err)
+	if _, err := decompressSteamAppNameMap(gzipForTest(t, raw), steamAppNameMapSource{codec: appNameMapCodecGzip, format: tiny}); err == nil {
+		t.Fatal("expected the gzip rung to reject an oversized payload")
 	}
-	if string(got) != string(raw) {
-		t.Fatalf("decompressed payload mismatch")
-	}
-	m, err := parseAppNameMapJSON(got)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if m["730"] != "Counter-Strike 2" {
-		t.Fatalf("unexpected parsed name: %q", m["730"])
+	if _, err := decompressSteamAppNameMap(raw, steamAppNameMapSource{codec: appNameMapCodecPlain, format: tiny}); err == nil {
+		t.Fatal("expected the plain rung to reject an oversized payload")
 	}
 }
 

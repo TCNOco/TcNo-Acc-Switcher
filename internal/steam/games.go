@@ -21,8 +21,6 @@ import (
 	"TcNo-Acc-Switcher/internal/crashlog"
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
-
-	"github.com/ulikunitz/xz"
 )
 
 // InstalledGameInfo is one installed Steam app from libraryfolders / appmanifest scan.
@@ -175,19 +173,16 @@ func saveAppNameMapToDisk(m map[string]string) error {
 }
 
 const (
-	steamAppArrayCompactURL   = "https://api.tcno.co/sw/SteamAppArrayCompact"
-	steamAppArrayCompactXZURL = "https://api.tcno.co/sw/SteamAppArrayCompactXZ"
-	steamAppArrayMirrorXZURL  = "https://api.tcno.co/sw/SteamAppArrayXZ"
-	steamAppArrayMirrorURL    = "https://api.tcno.co/sw/SteamAppArray"
+	steamAppArrayCompactURL = "https://api.tcno.co/sw/SteamAppArrayCompact"
+	steamAppArrayMirrorURL  = "https://api.tcno.co/sw/SteamAppArray"
 
 	steamAppNameMapCacheTTL     = 24 * time.Hour
 	steamAppNameMapFetchTimeout = 10 * time.Minute
 
-	// Wire limits. The live array is ~8.3 MB as JSON and ~5.5 MB compact, in
-	// 2.1-2.9 MB compressed; every cap is well clear of that but bounded.
+	// Wire limits. The live array is ~5.7 MB as JSON and ~3.7 MB compact, in
+	// ~2.1 MB gzip; every cap is well clear of that but bounded.
 	steamAppNameMapMaxJSONBytes    = 32 << 20
 	steamAppNameMapMaxCompactBytes = 16 << 20
-	steamAppNameMapMaxXZBytes      = 8 << 20
 	steamAppNameMapMaxGzipBytes    = 8 << 20
 )
 
@@ -201,7 +196,6 @@ type steamAppNameMapCodec string
 
 const (
 	appNameMapCodecPlain steamAppNameMapCodec = "none"
-	appNameMapCodecXZ    steamAppNameMapCodec = "xz"
 	appNameMapCodecGzip  steamAppNameMapCodec = "gzip"
 )
 
@@ -228,15 +222,11 @@ type steamAppNameMapSource struct {
 // the newer formats yet.
 var steamAppNameMapSources = []steamAppNameMapSource{
 	{url: steamAppArrayCompactURL, codec: appNameMapCodecGzip, format: appNameMapFormatCompact},
-	{url: steamAppArrayCompactXZURL, codec: appNameMapCodecXZ, format: appNameMapFormatCompact},
-	{url: steamAppArrayMirrorXZURL, codec: appNameMapCodecXZ, format: appNameMapFormatJSON},
 	{url: steamAppArrayMirrorURL, codec: appNameMapCodecPlain, format: appNameMapFormatJSON},
 }
 
 func (c steamAppNameMapCodec) maxCompressedBytes() int {
 	switch c {
-	case appNameMapCodecXZ:
-		return steamAppNameMapMaxXZBytes
 	case appNameMapCodecGzip:
 		return steamAppNameMapMaxGzipBytes
 	default:
@@ -246,8 +236,6 @@ func (c steamAppNameMapCodec) maxCompressedBytes() int {
 
 func (c steamAppNameMapCodec) accept() string {
 	switch c {
-	case appNameMapCodecXZ:
-		return "application/x-xz"
 	case appNameMapCodecGzip:
 		return "application/gzip"
 	default:
@@ -519,18 +507,13 @@ func fetchSteamAppNameMapPayload(ctx context.Context, source steamAppNameMapSour
 	return raw, len(compressed), nil
 }
 
-// decompressSteamAppNameMap unwraps the transport codec. The endpoints serve
-// pre-compressed files as their own content type, so nothing here can be left
-// to the transport's automatic Content-Encoding handling.
+// decompressSteamAppNameMap unwraps the transport codec. The compact endpoint
+// serves a pre-compressed file as its own content type, so that one cannot be
+// left to the transport's automatic Content-Encoding handling; the plain JSON
+// mirror can, and arrives already inflated.
 func decompressSteamAppNameMap(compressed []byte, source steamAppNameMapSource) ([]byte, error) {
 	var r io.Reader
 	switch source.codec {
-	case appNameMapCodecXZ:
-		xr, err := xz.NewReader(bytes.NewReader(compressed))
-		if err != nil {
-			return nil, fmt.Errorf("xz reader: %w", err)
-		}
-		r = xr
 	case appNameMapCodecGzip:
 		gr, err := gzip.NewReader(bytes.NewReader(compressed))
 		if err != nil {
@@ -569,7 +552,18 @@ func fetchSteamAppNameMapRaw(ctx context.Context, source steamAppNameMapSource) 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		return nil, fmt.Errorf("GET %s: HTTP %d", source.url, resp.StatusCode)
 	}
-	return io.ReadAll(io.LimitReader(resp.Body, int64(source.codec.maxCompressedBytes())))
+	limit := source.codec.maxCompressedBytes()
+	body, err := io.ReadAll(io.LimitReader(resp.Body, int64(limit)+1))
+	if err != nil {
+		return nil, err
+	}
+	// Truncating at the cap would hand the decoder a short body rather than no
+	// body, so an oversized payload has to fail the rung here instead of
+	// reaching the decoder in pieces.
+	if len(body) > limit {
+		return nil, fmt.Errorf("GET %s: body over %d limit", source.url, limit)
+	}
+	return body, nil
 }
 
 func ensureAppNameMap(ctx context.Context) (map[string]string, error) {
