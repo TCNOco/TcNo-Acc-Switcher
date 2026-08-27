@@ -103,3 +103,35 @@ func TestSafeColorKeepsOnlyHex(t *testing.T) {
 		}
 	}
 }
+
+// Steam quotes numbers inconsistently in this payload — the two captured
+// responses in this package already disagree over appid — and a quoted flag
+// used to fail the unmarshal and drop the whole item description.
+func TestDecodeItemClassAcceptsQuotedFlags(t *testing.T) {
+	t.Parallel()
+
+	document := `BuildHover( 'id', {"name":"Quoted","tradable":"1","marketable":"0"} );`
+	item, ok := decodeItemClass([]byte(document))
+	if !ok {
+		t.Fatal("quoted flags did not decode")
+	}
+	if !item.Tradable {
+		t.Error(`tradable "1" did not read as true`)
+	}
+	// "0" is truthy as a string; the flag has to follow the number it encodes.
+	if item.Marketable {
+		t.Error(`marketable "0" did not read as false`)
+	}
+}
+
+func TestDecodeItemClassTreatsAbsentFlagsAsUnset(t *testing.T) {
+	t.Parallel()
+
+	item, ok := decodeItemClass([]byte(`BuildHover( 'id', {"name":"Bare"} );`))
+	if !ok {
+		t.Fatal("payload without flags did not decode")
+	}
+	if item.Tradable || item.Marketable {
+		t.Fatalf("absent flags = %#v", item)
+	}
+}

@@ -51,15 +51,17 @@ type ItemClass struct {
 	Tags           []ItemTag         `json:"tags,omitempty"`
 }
 
-// itemClassWire mirrors the JSON Steam passes to BuildHover.
+// itemClassWire mirrors the JSON Steam passes to BuildHover. Steam quotes numbers
+// inconsistently in this payload, so the 0/1 flags are read as unsignedString: a
+// quoted flag must not cost the whole item.
 type itemClassWire struct {
-	Name           string `json:"name"`
-	MarketHashName string `json:"market_hash_name"`
-	Type           string `json:"type"`
-	NameColor      string `json:"name_color"`
-	IconURL        string `json:"icon_url"`
-	Tradable       int    `json:"tradable"`
-	Marketable     int    `json:"marketable"`
+	Name           string         `json:"name"`
+	MarketHashName string         `json:"market_hash_name"`
+	Type           string         `json:"type"`
+	NameColor      string         `json:"name_color"`
+	IconURL        string         `json:"icon_url"`
+	Tradable       unsignedString `json:"tradable"`
+	Marketable     unsignedString `json:"marketable"`
 	Descriptions   []struct {
 		Value string `json:"value"`
 		Color string `json:"color"`
@@ -167,6 +169,12 @@ func buildHoverPayload(document string) (string, bool) {
 	return "", false
 }
 
+// itemFlag reads one of Steam's 0/1 flags. unsignedString has already reduced the
+// value to canonical decimal, so only absent and "0" are false.
+func itemFlag(value unsignedString) bool {
+	return value != "" && value != "0"
+}
+
 func itemClassFromWire(wire itemClassWire) ItemClass {
 	item := ItemClass{
 		Name:           clampText(wire.Name),
@@ -174,8 +182,8 @@ func itemClassFromWire(wire itemClassWire) ItemClass {
 		Type:           clampText(wire.Type),
 		NameColor:      safeColor(wire.NameColor),
 		IconURL:        itemImageURL(wire.IconURL),
-		Tradable:       wire.Tradable != 0,
-		Marketable:     wire.Marketable != 0,
+		Tradable:       itemFlag(wire.Tradable),
+		Marketable:     itemFlag(wire.Marketable),
 	}
 	for _, description := range wire.Descriptions {
 		if len(item.Descriptions) >= maxItemDescriptions {
