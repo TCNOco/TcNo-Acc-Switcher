@@ -21,7 +21,6 @@ require (
 	github.com/tc-hib/winres v0.3.1
 	github.com/tidwall/gjson v1.19.0
 	github.com/tidwall/sjson v1.2.5
-	github.com/ulikunitz/xz v0.5.16
 	github.com/wailsapp/wails/v3 v3.0.0-beta.12
 	golang.org/x/crypto v0.54.0
 	golang.org/x/image v0.45.0
@@ -30,7 +29,6 @@ require (
 	golang.org/x/sync v0.22.0
 	golang.org/x/sys v0.47.0
 	golang.org/x/text v0.41.0
-	modernc.org/sqlite v1.54.0
 )
 
 require (
@@ -39,26 +37,20 @@ require (
 	github.com/antchfx/xpath v1.3.6 // indirect
 	github.com/coder/websocket v1.8.14 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
-	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/fxamacker/cbor/v2 v2.9.2 // indirect
 	github.com/godbus/dbus/v5 v5.2.2 // indirect
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
 	github.com/golang/snappy v1.0.0 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.22 // indirect
-	github.com/ncruces/go-strftime v1.0.0 // indirect
 	github.com/onsi/gomega v1.34.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
-	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/tidwall/match v1.2.0 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	golang.org/x/exp v0.0.0-20260528193900-50dc527dd6c7 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
-	modernc.org/libc v1.74.1 // indirect
-	modernc.org/mathutil v1.7.1 // indirect
-	modernc.org/memory v1.11.0 // indirect
 )
 
 replace github.com/Jleagle/unmarshal-go v0.0.0-20210227002040-694f544f9265 => github.com/Jleagle/unmarshal-go v0.0.0-20260702203424-38325863b365
