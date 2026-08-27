@@ -43,7 +43,6 @@ func runAsDesktopUser(exe string, args []string, workingDir string, hideWindow b
 
 // desktopUserToken duplicates the shell's token into a primary token so a launch drops our elevation.
 func desktopUserToken() (windows.Token, error) {
-	// 1) Enable SeIncreaseQuotaPrivilege on current process token.
 	hProcessToken := windows.Token(0)
 	err := windows.OpenProcessToken(windows.CurrentProcess(), windows.TOKEN_ADJUST_PRIVILEGES|windows.TOKEN_QUERY, &hProcessToken)
 	if err != nil {
@@ -65,7 +64,6 @@ func desktopUserToken() (windows.Token, error) {
 		return 0, fmt.Errorf("AdjustTokenPrivileges: %w", err)
 	}
 
-	// 2) Shell window → shell PID.
 	hwnd := windows.GetShellWindow()
 	if hwnd == 0 {
 		return 0, fmt.Errorf("GetShellWindow returned 0")

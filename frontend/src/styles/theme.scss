@@ -63,7 +63,6 @@
     --main-padding: .75rem;
     --document-canvas-bg: #1b2636;
 
-    /* --- Shared neutral / shadow tokens --- */
     --pure-black: #000;
     --shadow-color-heavy: rgba(0, 0, 0, 0.84);
     --shadow-color-50: rgba(0, 0, 0, 0.5);
@@ -96,7 +95,7 @@
     --text-subtle-gray: #b1b1b1;
     --text-dim-gray: #6b6a6a;
     /* Settings notes and hints use this, so it is body text and owes the reader
-       4.5:1 — the old #828282 managed 3.2:1 on the settings sheet. */
+       4.5:1. */
     --text-body-muted: #9d9d9d;
     --tag-default-bg: #555555;
     --surface-glass-06-15: linear-gradient(145deg, var(--overlay-white-08), rgba(0, 0, 0, 0.15));
@@ -255,7 +254,7 @@
     --ace-xml-pe: #494949;
     --ace-warning-orange: #ffb86c;
 
-    /* Steam miniprofile (accent-tinted; was fixed cyan/blue ramps) */
+    /* Steam miniprofile (accent-tinted) */
     --miniprofile-radial-glow: rgba(var(--accentInt), 0.45);
     --miniprofile-radial-fade: rgba(var(--accentInt), 0.08);
     --miniprofile-linear-top: rgba(var(--accentInt), 0.55);

@@ -202,11 +202,8 @@ func (v *windowsView) webview() (*webview2.ICoreWebView2_2, func(), error) {
 	return view2, func() { view2.Release() }, nil
 }
 
-// subscribe wires the events the toolbar is driven by.
-//
-// Every handler is kept in v.handlers. WebView2 stores them as raw pointers the
-// garbage collector cannot see, so a handler that is only referenced by the
-// runtime is collectable the moment this returns.
+// subscribe wires the events the toolbar is driven by. Every handler is kept in
+// v.handlers, for the lifetime reason documented on that field.
 func (v *windowsView) subscribe() error {
 	view2, release, err := v.webview()
 	if err != nil {
@@ -249,9 +246,8 @@ func (v *windowsView) subscribe() error {
 // subscribeDownloads wires the download event, which lives on a later interface
 // than everything else this view uses.
 //
-// A runtime too old to offer it is not fatal. The window works; downloads land
-// in WebView2's own flyout instead of the user's browser, which is the behaviour
-// this whole path exists to replace rather than something it depends on.
+// A runtime too old to offer it is not fatal: the window works, and downloads
+// land in WebView2's own flyout instead of the user's browser.
 func (v *windowsView) subscribeDownloads() error {
 	if v.chromium == nil {
 		return errors.New("steambrowser: content view is gone")
@@ -356,8 +352,7 @@ func (v *windowsView) SetTopInset(top int) error {
 	}
 
 	// PutBounds rather than Chromium.ResizeWithBounds: that path logs a failure
-	// and carries on, which is how an off-thread call left the window showing a
-	// toolbar over nothing with no error anywhere the caller could see it.
+	// and carries on, so a placement that fails reaches no caller.
 	controller := v.chromium.GetController()
 	if controller == nil {
 		return errors.New("steambrowser: content view has no controller")
@@ -410,10 +405,8 @@ func (v *windowsView) Close() {
 	})
 }
 
-// --- COM callbacks ---
-//
-// The runtime calls these on the UI thread. They keep no reference to the
-// arguments beyond the call.
+// COM callbacks. The runtime calls these on the UI thread, and they keep no
+// reference to the arguments beyond the call.
 
 func (v *windowsView) QueryInterface(_, _ uintptr) uintptr { return 0 }
 func (v *windowsView) AddRef() uintptr                     { return 1 }

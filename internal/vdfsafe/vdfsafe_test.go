@@ -33,7 +33,6 @@ func TestReadBytes_wellFormedStillParses(t *testing.T) {
 	}
 }
 
-// The property the package rests on: a value must survive a write/read round trip.
 func TestEscapeIsInverseOfUnescape(t *testing.T) {
 	t.Parallel()
 	for _, plain := range []string{

@@ -10,9 +10,9 @@ import (
 
 // A market-listing confirmation is mostly boilerplate: how to post the listing,
 // and a paragraph of advice for anyone who did not create it. The generic text
-// parser flattens the whole page into one block, which buries the four things
-// that actually decide the answer — what the sale pays, what the buyer pays, and
-// how the market for the item looks. Those live in their own markup, and the item
+// parser flattens the whole page into one block, which buries what actually
+// decides the answer: what the sale pays, what the buyer pays, and how the
+// market for the item looks. Those live in their own markup, and the item
 // itself is JSON, so both are read as structure rather than as prose.
 
 const (
@@ -70,9 +70,7 @@ func decodeListing(html string) *ListingDetails {
 		return nil
 	}
 	// Steam's block has held exactly these two prices, in this order, for as long
-	// as this page has existed. Taking them by position rather than by label is
-	// what lets the window name them in the user's language; anything else keeps
-	// Steam's own labels.
+	// as this page has existed.
 	if len(listing.Prices) == 2 {
 		listing.Receive = listing.Prices[0].Value
 		listing.BuyerPays = listing.Prices[1].Value
@@ -157,9 +155,8 @@ func splitListingEntry(entry *nethtml.Node) (string, string) {
 	return collapseText(before.String()), collapseText(after.String())
 }
 
-// The wording Steam wraps the market numbers in. Reading the numbers out of it
-// is what lets the window say them in the user's own language instead of
-// repeating Steam's English; the sentences themselves are never shown.
+// The wording Steam wraps the market numbers in; the sentences themselves are
+// never shown.
 //
 // This only recognises English, because Steam answers the detail page in the
 // account's language and there is no reliable way to read every one of them. A

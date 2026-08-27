@@ -406,9 +406,7 @@ describe("Steam Guard listing anchor", () => {
 	];
 	const pending: SteamGuardAccountRef = { id: "pending:0123456789abcdef0123456789abcdef", username: "" };
 
-	// The reported bug: Back from Add Account listed the vault under the attempt
-	// the screen was running on, which Go refuses - it is not a vault record - and
-	// the refusal surfaced as "accounts could not be loaded".
+	// Go refuses a pending attempt as a listing anchor: it is not a vault record.
 	it("never anchors on a pending add attempt", () => {
 		expect(steamGuardListingAnchor([pending], listed)?.id).toBe("76561198000000001");
 		expect(steamGuardListingAnchor([pending, null, { id: "", username: "" }], listed)?.id)
@@ -423,8 +421,6 @@ describe("Steam Guard listing anchor", () => {
 		expect(steamGuardListingAnchor([listed[1], notInVault], listed)?.id).toBe("76561198000000002");
 	});
 
-	// No listing has succeeded yet, so there is nothing to confirm against and
-	// the account in hand is the only anchor there is.
 	it("falls back to the candidate when nothing has been listed", () => {
 		expect(steamGuardListingAnchor([account], [])?.id).toBe(account.id);
 	});

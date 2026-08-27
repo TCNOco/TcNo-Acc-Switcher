@@ -73,8 +73,8 @@ type Request struct {
 	// never names a destination this refused - the error says that one was, and
 	// which check did it.
 	//
-	// Called synchronously from the redirect check, so it must not block. For a
-	// caller that has to see where a chain went; nil disables it.
+	// Called synchronously from the redirect check, so it must not block. Nil
+	// disables it.
 	OnRedirect func(hop int, target string)
 }
 
@@ -106,11 +106,9 @@ func NewTransport() *http.Transport {
 		Proxy:                  nil,
 		DialContext:            (&net.Dialer{Timeout: 10 * time.Second, KeepAlive: 30 * time.Second}).DialContext,
 		ForceAttemptHTTP2:      true,
-		// Sized for the sweeps rather than for a single request: the CS2 sweep now
-		// reads several accounts at once and the owned games sweep runs alongside
-		// it, all against steamcommunity.com. At two idle slots most of those paid
-		// for a fresh TCP and TLS handshake. This bounds pooling, not policy - what
-		// the transport is allowed to talk to is decided above and below it.
+		// Sized for the concurrent sweeps rather than a single request: the CS2 and
+		// owned games sweeps both read several accounts at once against
+		// steamcommunity.com, so two idle slots meant fresh TLS handshakes.
 		MaxIdleConns:           16,
 		MaxIdleConnsPerHost:    6,
 		IdleConnTimeout:        30 * time.Second,
@@ -330,7 +328,7 @@ func classifyRequestError(ctx context.Context, err error) error {
 	if errors.As(err, &protocolErr) {
 		// Rebuilt rather than returned, so the transport error underneath - which
 		// carries the URL - is left behind. Every field has to be carried across
-		// by hand for that to be safe, and Detail was being dropped.
+		// by hand for that to be safe.
 		return &Error{
 			Code:          protocolErr.Code,
 			State:         protocolErr.State,

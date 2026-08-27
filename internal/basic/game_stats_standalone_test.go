@@ -11,11 +11,9 @@ func standaloneTestDef() gameDefinition {
 	}
 }
 
-// The point of the provider seam: a metric served this way has to be
-// indistinguishable from the same metric served by a configured refresh, since
-// both land in one row on the tile. Rendering runs through the same
-// collectStatsFromHTML the configured path uses, so this pins that it really is
-// the DisplayAs markup and not a second implementation.
+// A provider-served metric lands in the same tile row as one from a configured
+// refresh, so it must render through the same collectStatsFromHTML and DisplayAs
+// markup, not a second implementation.
 func TestStandaloneStatsMarkupRendersTheDefinitionsDisplayMarkup(t *testing.T) {
 	RegisterStandaloneStats("StandalonePlatform", "StandaloneGame", func(accountID string) ([]byte, bool) {
 		if accountID != "acct-1" {

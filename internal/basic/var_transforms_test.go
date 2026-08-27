@@ -37,7 +37,6 @@ func TestApplyVariableTransformPipeline_Substring(t *testing.T) {
 	if g := applyVariableTransformPipeline(`abcdef|Substring(:3)`); g != "abc" {
 		t.Fatalf(":3 got %q", g)
 	}
-	// Out of range: tolerant
 	if g := applyVariableTransformPipeline(`ab|Substring(5:8)`); g != "" {
 		t.Fatalf("expected empty, got %q", g)
 	}

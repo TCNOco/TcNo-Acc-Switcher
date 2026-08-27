@@ -1,4 +1,3 @@
-/* Headers */
 h1 {
   font-size: 1.75rem;
 }
@@ -6,7 +5,6 @@ h2 {
   font-size: 1.25rem;
 }
 
-/* Links */
 a {
   color: var(--accent);
   cursor: pointer;
@@ -71,7 +69,6 @@ button.fancyLink:disabled {
   transform: none;
 }
 
-/* Buttons */
 button,
 .button {
   text-align: center;
@@ -114,7 +111,6 @@ button,
     opacity: var(--role-disabled-opacity, 0.55);
   }
 
-  /* Button children */
   & span {
     line-height: 2.5em;
   }
@@ -175,7 +171,6 @@ button:not(.fancyLink) {
   }
 }
 
-/* Dropdown */
 button .caret, .button .caret {
     margin-left: 0;
 }
@@ -395,7 +390,6 @@ button .caret, .button .caret {
   border-color: var(--accent);
 }
 
-/* Text Editor */
 .text-editor {
     margin: 0;
     position: absolute;
@@ -427,7 +421,6 @@ button .caret, .button .caret {
     }
 }
 
-/* Other */
 .listWithBars {
     ul {
         padding-left: 0;
@@ -450,7 +443,6 @@ button .caret, .button .caret {
     font-size: 0.8em;
 }
 
-/* Ace Editor */
 .ace_editor {
   background: var(--ace-editor-bg);
   color: var(--white);
@@ -671,7 +663,6 @@ button .caret, .button .caret {
         }
     }
 }
-/* For sortable */
 .shortcutPlaceholder {
     border: 2px dashed var(--accent);
     background: var(--code-background);
@@ -751,7 +742,6 @@ button .caret, .button .caret {
     }
 }
 
-/* Path picker */
 .pathPicker {
     color: var(--whiteSecondary);
     background: var(--even-darker-code-background);
@@ -810,7 +800,6 @@ button .caret, .button .caret {
 }
 
 
-/* Tooltips */
 .tooltip {
     pointer-events: none;
     display: block;
@@ -928,12 +917,6 @@ button .caret, .button .caret {
     position: relative;
 }
 
-
-/* ---------------------------------------- */
-/*     PLATFORM-SPECIFIC ICONS SECTION      */
-/* ---------------------------------------- */
-
-/* Modal icons */
 .modalIco {
   &GitHub,
   &Networking,
@@ -945,7 +928,6 @@ button .caret, .button .caret {
   }
 }
 
-/* BattleNet icons */
 .battlenet {
   &IcoOWTank,
   &IcoOWDamage,
@@ -958,7 +940,6 @@ button .caret, .button .caret {
   }
 }
 
-/* Footer icons */
 #btnSettings,
 #btnHelp {
   width: 36px;

@@ -213,9 +213,7 @@ export function buildTagsSectionMenuItem(opts: {
         });
       },
     },
-    // Managed tags are never offered: the app applies and withdraws them on its
-    // own, so adding one by hand would only last until the next sweep. The
-    // Steam settings checkbox is their only control.
+    // Managed tags are never offered for adding: the next sweep would undo it.
     ...tagList
       .filter((d) => !assignedIds.has(d.id) && !isManagedTag(d))
       .map(
@@ -230,8 +228,7 @@ export function buildTagsSectionMenuItem(opts: {
   ];
 
   // Managed tags are not offered for removal, here or under Remove all - the
-  // sweep would reapply them. Special tags the user applied themselves stay
-  // removable; only the app-managed ones are withheld.
+  // sweep would reapply them.
   const removableTags = assignedTags.filter((tg) => !isManagedTag(tg));
   const removeChildren: MenuItemDef[] = removableTags.map(
     (tg): MenuItemDef => ({

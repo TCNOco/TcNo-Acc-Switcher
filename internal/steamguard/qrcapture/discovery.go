@@ -24,7 +24,6 @@ func New() *Scanner {
 	return NewWithBackend(newBackend(), uint32(os.Getpid()))
 }
 
-// NewWithBackend constructs an injectable scanner.
 func NewWithBackend(backend Backend, applicationPID uint32) *Scanner {
 	return &Scanner{backend: backend, applicationPID: applicationPID}
 }

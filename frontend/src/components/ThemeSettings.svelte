@@ -17,17 +17,15 @@
 
   let savingReduceMotion = false;
 
-  /* Stored as "animations enabled" and shown as its opposite: the switch people
-     look for is the one that calms the interface down, and inverting it here
-     costs nothing next to migrating the setting. */
+  /* Stored as "animations enabled", shown as "reduce motion": inverting at the
+     switch costs less than migrating the stored setting. */
   async function toggleReduceMotion(): Promise<void> {
     if (savingReduceMotion) return;
     savingReduceMotion = true;
     const label = get(t)("Settings_ReduceMotion");
     const previous = get(animationsEnabled);
-    /* Optimistic, and reverted below if the save fails. The box is rendered from
-       the store, so waiting for the round trip leaves it sitting on the state the
-       user just clicked away from - and the interface keeps moving meanwhile. */
+    /* Optimistic: the box renders from the store, so waiting for the round trip
+       leaves it on the state the user just clicked away from. */
     animationsEnabled.set(!previous);
     try {
       await setAnimationsEnabled(!previous);

@@ -231,9 +231,8 @@ func probePrimeStatus(
 	case primestatus.OutcomeNotSignedIn:
 		t.Log("PRIME: store served a signed-out page; the community session is not accepted there")
 	default:
-		// Deliberately not a verdict. The licenses probe that preceded this
-		// reported an unreadable page as a confident NON-PRIME, on an account
-		// that has Prime.
+		// Deliberately not a verdict: an unreadable page is not evidence that the
+		// account lacks Prime.
 		t.Log("PRIME: page not recognised (age gate, region, or layout change) - INCONCLUSIVE")
 	}
 

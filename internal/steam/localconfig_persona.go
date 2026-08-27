@@ -92,7 +92,6 @@ func serializeLocalConfigForDisk(kvRoot steamvdf.KeyValue) []byte {
 	return []byte(dedupeSerializedLocalConfigText(text))
 }
 
-// dedupeSerializedLocalConfigText collapses every run of backslashes to a single \ in the full file text immediately before save.
 func dedupeSerializedLocalConfigText(s string) string {
 	return collapseRepeatedBackslashesStable(s)
 }

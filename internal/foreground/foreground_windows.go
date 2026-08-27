@@ -12,8 +12,8 @@ import (
 	"golang.org/x/sys/windows"
 )
 
-// Detection is event-driven, matching the streamer watcher: one WinEvent hook
-// for foreground changes and one for minimise/restore. An idle machine costs
+// Detection is event-driven, matching the streamer watcher: WinEvent hooks for
+// foreground changes, minimise/restore, and window moves. An idle machine costs
 // nothing, and a game taking the screen is a single callback.
 const (
 	eventSystemForeground     = 0x0003

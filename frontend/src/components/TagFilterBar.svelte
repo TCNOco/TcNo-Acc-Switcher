@@ -38,15 +38,11 @@
     margin: 0 0 0.5rem;
     padding: 0.4rem 0.5rem;
     border: 0px solid transparent;
-    /* An opaque surface, not a scrim. `--backdrop-dark-20` is literally
-       rgba(0,0,0,0.2) in all 22 themes, so the bar was only ever a 20% shade of
-       whatever sat behind it - unreadable on a light theme (WinVista measured
-       1.69:1) and at the mercy of the picture on the themes that ship a
-       wallpaper, which is every Windows one bar 95.
-
-       `--surface-row-dark` is the pairing `.acc_list_actionbar` already uses for
-       the other bar in this same list, it is opaque in all 22, and with
-       `--whiteSecondary` on top the worst case across them is 5.17:1. */
+    /* Opaque, not a scrim: a 20% black fill leaves the bar a shade of whatever is
+       behind it, 1.69:1 on the WinVista theme and at the mercy of the wallpaper on
+       the themes that ship one. `--surface-row-dark` is the pairing
+       `.acc_list_actionbar` uses for the other bar in this list, opaque in all 22
+       themes, worst case 5.17:1 under `--whiteSecondary`. */
     background: var(--surface-row-dark);
     color: var(--whiteSecondary);
     font: inherit;

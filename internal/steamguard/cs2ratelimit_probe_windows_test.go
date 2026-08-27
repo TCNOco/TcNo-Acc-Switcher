@@ -96,8 +96,8 @@ func (r cs2ProbeRung) percentile(p float64) time.Duration {
 // secretInput picks where a typed secret is read from, and returns a closer.
 //
 // go test hands the test binary a stdin that is already at EOF, so prompting on
-// stdin is answered instantly with nothing - which is exactly what the first
-// version of this did. The three cases are told apart rather than guessed at:
+// stdin is answered instantly with nothing. The three cases are told apart
+// rather than guessed at:
 //
 //   - stdin is a pipe or a file: the caller redirected it on purpose, so honour
 //     it and a piped password still works.

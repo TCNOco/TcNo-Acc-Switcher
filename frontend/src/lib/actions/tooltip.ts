@@ -242,10 +242,9 @@ export const tooltip: Action<HTMLElement, TooltipParams> = (node, param) => {
         if (e.key === 'Escape') hide()
     }
 
-    // Bound only while this instance has a tip up. Lists mount thousands of these at
-    // once — a Steam library renders one per owner avatar — and keeping the window
-    // and document listeners for the whole lifetime made every scroll, resize and
-    // keystroke fan out to every row, and every re-render re-register the lot.
+    // Bound only while this instance has a tip up: lists mount thousands of these
+    // at once (one per owner avatar in a Steam library), and lifetime listeners fan
+    // every scroll, resize and keystroke out to every row.
     let boundWhileVisible = false
 
     function bindWhileVisible() {

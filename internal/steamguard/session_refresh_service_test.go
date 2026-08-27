@@ -62,9 +62,8 @@ func TestEnsureFreshSessionLeavesALiveSessionAlone(t *testing.T) {
 	}
 }
 
-// TestEnsureFreshSessionRenewsALapsedSession is the whole point of the method: an
-// access token expires in about a day, the refresh token beside it lasts months,
-// and only the second one running out should cost the user a password.
+// An access token expires in about a day, the refresh token beside it lasts
+// months, and only the second one running out should cost the user a password.
 func TestEnsureFreshSessionRenewsALapsedSession(t *testing.T) {
 	service, accountID, _ := newAuthServiceFixture(t)
 	seedSessionTokens(t, service, accountID,

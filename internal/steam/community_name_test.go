@@ -82,7 +82,6 @@ func BenchmarkMiniprofileParsePerAccount(b *testing.B) {
 		}
 	})
 
-	// The individual costs, to show where the time actually goes.
 	b.Run("Parts/Sanitise", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
 			_ = sanitizeMiniprofileHTML(raw)

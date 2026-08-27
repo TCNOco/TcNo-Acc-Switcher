@@ -78,7 +78,6 @@ type OSCapabilities struct {
 	Autostart bool `json:"autostart"`
 }
 
-// Capabilities reports what this build supports.
 func Capabilities() OSCapabilities { return osCapabilities }
 
 // CurrentOS is the GOOS the UI is running against: "windows", "linux" or

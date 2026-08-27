@@ -51,8 +51,7 @@ export function registerSvgRenderBridge(): () => void {
         );
         return;
       }
-      // Match DefaultPlatformLogoBackground (#23272A); opaque base under the SVG.
-      //ctx.fillStyle = "#23272A";
+      // Opaque base under the SVG.
       ctx.fillRect(0, 0, d.size, d.size);
       ctx.drawImage(img, 0, 0, d.size, d.size);
       const blob = await new Promise<Blob | null>((r) =>

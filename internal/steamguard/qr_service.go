@@ -557,9 +557,8 @@ func (s *Service) finishQRScan(source, accountID, token string, original qrattem
 	// Only the account is held against the binding the scan opened with. The
 	// generation is deliberately not: a background session-token sweep carries
 	// live capabilities onto the generation it commits, so the two legitimately
-	// differ here, and demanding they match refused scans whose pixels were
-	// already captured and decoded. Any write that does not carry capabilities
-	// across has already failed the token above.
+	// differ here. Any write that does not carry capabilities across has already
+	// failed the token above.
 	current, err := s.authorizeQRBinding(accountID, token)
 	if err != nil || current.AccountID != original.AccountID {
 		if err != nil {

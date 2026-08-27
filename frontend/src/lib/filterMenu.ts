@@ -93,8 +93,7 @@ function gamesSortChildren(tr: Translate): MenuItemDef[] {
  * menu on empty space in an account list. Pass an empty platform name for the home
  * platform grid, which sorts by name only. Steam's page swaps its whole body between
  * the switcher and the games list, so the tab store — not the caller — decides which
- * of the two the menu is being raised over; that keeps the action bar's one Filter
- * button correct on both tabs without it having to know which list is mounted.
+ * of the two the menu is being raised over.
  */
 export function buildFilterMenuItems(platformName: string): MenuItemDef[] {
   const tr = get(t) as Translate;

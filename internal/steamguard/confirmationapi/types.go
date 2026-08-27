@@ -49,9 +49,7 @@ type Error struct {
 	HasRetryAfter bool
 	// Detail is the transport's fixed label for which check refused the request,
 	// carried through because Kind alone collapses very different causes onto the
-	// same word. A denied redirect and a rejected session both read as reauth,
-	// and telling them apart from a log line is the difference between a fix and
-	// a guess.
+	// same word: a denied redirect and a rejected session both read as reauth.
 	Detail string
 }
 

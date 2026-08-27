@@ -8,10 +8,6 @@ import (
 	"TcNo-Acc-Switcher/internal/platform"
 )
 
-// ---------------------------------------------------------------------------
-// parseRockstarEmail
-// ---------------------------------------------------------------------------
-
 func TestParseRockstarEmail(t *testing.T) {
 	t.Parallel()
 	if got := parseRockstarEmail([]byte(`<Profile><Email>user@rockstar.com</Email></Profile>`)); got != "user@rockstar.com" {
@@ -26,28 +22,20 @@ func TestParseRockstarEmail(t *testing.T) {
 	if got := parseRockstarEmail([]byte(`<Email></Email>`)); got != "" {
 		t.Errorf("empty Email: got %q", got)
 	}
-	// Whitespace padding
 	if got := parseRockstarEmail([]byte(`<Email>  spaced@mail.com  </Email>`)); got != "spaced@mail.com" {
 		t.Errorf("got %q, want spaced@mail.com", got)
 	}
-	// Multiple emails — returns first
 	if got := parseRockstarEmail([]byte(`<Email>first@a.com</Email><Email>second@b.com</Email>`)); got != "first@a.com" {
 		t.Errorf("got %q, want first@a.com", got)
 	}
-	// Email with encoded characters
 	if got := parseRockstarEmail([]byte(`<Email>user+tag@domain.co.uk</Email>`)); got != "user+tag@domain.co.uk" {
 		t.Errorf("got %q", got)
 	}
 }
 
-// ---------------------------------------------------------------------------
-// builtInUniqueIDRockstarEmail — end-to-end with temp files
-// ---------------------------------------------------------------------------
-
 func TestBuiltInUniqueIDRockstarEmail(t *testing.T) {
 	dir := t.TempDir()
 
-	// Create two profile files, newest should be picked
 	older := filepath.Join(dir, "Profiles", "old_profile.xml")
 	newer := filepath.Join(dir, "Profiles", "new_profile.xml")
 	os.MkdirAll(filepath.Dir(older), 0o755)

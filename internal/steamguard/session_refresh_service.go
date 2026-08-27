@@ -23,8 +23,7 @@ type SteamSessionRefreshState struct {
 // The two tokens run on very different clocks: Steam's access token lasts about a
 // day, the refresh token beside it months. Judging a session on the access token
 // alone - which is all SteamSessionLocalState can do without writing - makes the
-// shorter clock decide how often the user signs in, and that is the whole reason
-// re-logins were showing up every few days.
+// shorter clock decide how often the user signs in.
 //
 // Unlike SteamSessionLocalState this can write to the vault, so it belongs only on
 // paths that open a single account. The listing path must keep using

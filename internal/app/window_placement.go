@@ -186,8 +186,7 @@ func clampInt(value, low, high int) int {
 	return min(max(value, low), high)
 }
 
-// windowGeometry is the part of the main window a recorder reads, kept as an
-// interface so the rules below can be exercised without one.
+// windowGeometry is the part of the main window a recorder reads.
 type windowGeometry interface {
 	Bounds() application.Rect
 	IsMinimised() bool

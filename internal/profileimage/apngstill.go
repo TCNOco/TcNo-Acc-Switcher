@@ -20,18 +20,14 @@ import (
 
 // Steam's animated avatar frames are APNGs, and a page cannot freeze one. There
 // is no way to pause an animated <img>, and drawImage only ever hands back the
-// default image - proven by five captures across three seconds of a running
-// animation coming back byte-identical. In these files the default image is
-// frame 0, which on a lightning border is the peak of the flash and several
-// times thicker than the frame that was on screen a moment before.
+// default image. In these files the default image is frame 0, which on a
+// lightning border is the peak of the flash and several times thicker than the
+// frame that was on screen a moment before.
 //
 // So the still is cut here instead, once, when the frame is downloaded. The
-// result is an ordinary single-frame PNG: it renders in the same <img>, it looks
-// like the animation rather than its loudest moment, and it costs nothing to
-// display because there is nothing left to decode.
+// result is an ordinary single-frame PNG that renders in the same <img>.
 
-// ErrNotAnimated means there is nothing to cut a still from, which every caller
-// treats as "no work to do" rather than as a failure.
+// ErrNotAnimated means there is nothing to cut a still from.
 var ErrNotAnimated = errors.New("not an animated PNG")
 
 // AnimatedStillSuffix names the single-frame companion of an animated asset.

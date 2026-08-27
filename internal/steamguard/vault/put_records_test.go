@@ -26,9 +26,8 @@ func recordFor(t *testing.T, v *Vault, steamID64 string) []byte {
 	return nil
 }
 
-// The point of the batch: refreshing a whole vault's access tokens must cost
-// one generation rotation, not one per account. A rotation invalidates every
-// outstanding capability, so the count is the behaviour under test.
+// Refreshing a whole vault's access tokens must cost one generation rotation,
+// not one per account: a rotation invalidates every outstanding capability.
 func TestPutRecordsCommitsOneGenerationForTheWholeBatch(t *testing.T) {
 	v := newUnlocked(t)
 	before := v.Generation()

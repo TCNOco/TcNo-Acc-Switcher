@@ -18,8 +18,8 @@ var ErrWouldReplaceAuthenticator = errors.New("this Steam account already has an
 
 // putLoginOnlyRecord stores a session-only record for steamID.
 //
-// The guard is the important part. vault.PutRecord replaces by SteamID64, so
-// without a pre-read a user who picks "Login only" on an account that already
+// vault.PutRecord replaces by SteamID64, so without a pre-read a user who
+// picks "Login only" on an account that already
 // has an authenticator would destroy the shared secret, the identity secret and
 // the revocation code - none of which can be recovered. Only an absent record or
 // an existing login-only one may be written here; replacing a login-only record
@@ -82,8 +82,6 @@ func (s *Service) registryStateForRecord(v *vault.Vault, accountID string, fallb
 //
 // Only login-only records: an authenticator's secrets exist nowhere else, so
 // there is no "remove" for one that would not be a silent, unrecoverable loss.
-// The kind is re-checked under the service lock rather than trusted from the
-// caller, because the frontend gate is UX and this one is the actual rule.
 //
 // The account's stored CS2 cooldown is deliberately left behind. It describes
 // the account, not the vault record, and signing out of Steam Guard is not a way

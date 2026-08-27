@@ -259,7 +259,6 @@ func AddUser(platformKey, arg, name string, maxAccounts int) error {
 		return err
 	}
 	list := trayUsers[platformKey]
-	// Remove existing same Arg
 	filtered := list[:0]
 	for _, u := range list {
 		if strings.TrimSpace(u.Arg) != arg {

@@ -70,8 +70,6 @@ func TestPerPlatformCoalescer_ConcurrentClaims(t *testing.T) {
 	}
 }
 
-// --- perPlatformCooldown tests ---
-
 type fakeClock struct {
 	mu sync.Mutex
 	t  time.Time

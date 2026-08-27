@@ -60,7 +60,6 @@ $motion-essential:
   }
 }
 
-/* Reduce motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
   :root {
     @include reduce-motion-tree;

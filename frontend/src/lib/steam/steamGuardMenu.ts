@@ -52,8 +52,7 @@ export function buildSteamGuardMenuItem(
   });
 
   // One entry either way. An account the vault holds opens on itself; one it
-  // does not hold opens the page that offers the ways to add it. The flows are
-  // chosen there rather than in a submenu that named three of them up front.
+  // does not hold opens the page that offers the ways to add it.
   const inVault = heldInSteamGuardVault(acc);
   const item: MenuItemDef = {
     label: tr("Context_SteamGuard"),

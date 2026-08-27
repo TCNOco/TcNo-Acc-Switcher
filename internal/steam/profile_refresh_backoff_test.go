@@ -18,10 +18,8 @@ func dnsFailure() error {
 	}
 }
 
-// The regression: net.DNSError reports neither Timeout nor Temporary for
-// "no such host", so it used to be read as a verdict about the account - one
-// attempt, no retry, and the failure painted on every tile until something
-// unrelated triggered another round.
+// net.DNSError reports neither Timeout nor Temporary for "no such host", so
+// nothing but this check stops it being read as a verdict about the account.
 func TestDNSFailureIsTransient(t *testing.T) {
 	if !isTransientProfileRefreshError(dnsFailure()) {
 		t.Fatal("a DNS lookup failure must be retried, not reported as the account's state")

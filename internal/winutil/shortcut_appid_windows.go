@@ -92,9 +92,8 @@ func hresultErr(hr uintptr) error {
 //
 // It deliberately does not call propsys.dll!InitPropVariantFromString. That
 // name is an inline helper in propvarutil.h rather than a dependable export,
-// and LazyProc.Call panics outright when a proc is missing — which is how a
-// missing export surfaced as a crash while creating a shortcut. The inline
-// version is only SHStrDupW plus a vt assignment, so do exactly that.
+// and LazyProc.Call panics outright when a proc is missing. The inline version
+// is only SHStrDupW plus a vt assignment, so do exactly that.
 func initPropVariantFromString(s string) (propVariant, error) {
 	var pv propVariant
 	ws, err := windows.UTF16PtrFromString(s)

@@ -13,8 +13,7 @@ import (
 // only way to notice it has moved.
 func TestParseAppInfoAgainstLocalSteam(t *testing.T) {
 	// installRoot needs Platforms.json and app settings next to the built exe, which
-	// a test binary has no business assembling. The default install locations are
-	// enough for a check that skips when it finds nothing.
+	// a test binary has no business assembling, so try the default install locations.
 	var raw []byte
 	var err error
 	found := ""

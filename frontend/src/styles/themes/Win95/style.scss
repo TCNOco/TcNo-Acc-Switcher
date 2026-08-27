@@ -529,8 +529,6 @@ input.acc:checked + label.acc { border-color: var(--accent) !important; backgrou
 .fancyLink, a { color: #000080; text-decoration: underline; }
 .fancyLink:hover, a:hover { color: #800080; }
 
-/* ---- Steam Guard ---- */
-
 /* Confirmations window: raised bevel buttons, a sunken white list, face panels. */
 .confirmations-refresh,
 .confirmations-status button,

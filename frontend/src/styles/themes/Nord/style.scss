@@ -463,8 +463,6 @@ input[type=password]:focus { border-bottom: 2px solid color.adjust($nordFrost3, 
 
     &:hover:not(:active) {
         animation: effect 1s ease-in-out 0s infinite normal none running;
-        // animation: pulse 0s;
-        // transform: none;
     }
 }
 

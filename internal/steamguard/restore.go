@@ -196,9 +196,9 @@ func (s *Service) restoreVerifiedBackupAtWith(source string, creds vault.Credent
 			wipe(plaintext)
 			return "", getErr
 		}
-		// The state has to match what the record actually holds. Restoring
-		// everything as "active" put a lock icon on half-finished enrollments
-		// and, now, on login-only accounts that have no code behind them.
+		// The state has to match what the record actually holds: marking
+		// everything "active" puts a lock icon on half-finished enrollments
+		// and on login-only accounts that have no code behind them.
 		state := registryStateForKind(vaultrecord.Sniff(plaintext))
 		wipe(plaintext)
 		if err := registry.Upsert(record.SteamID64, state); err != nil {

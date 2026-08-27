@@ -19,8 +19,7 @@ const CS2RankCollectorName = "steam-cs2-gcpd"
 //
 // It deliberately mimics a small JSON API response so the GCPD variant's Collect
 // entries stay "Source": "json" and reuse the very same DisplayAs, colour bands
-// and formatting as the Leetify variant - one rendering path, one place to
-// change how a rank looks.
+// and formatting as the Leetify variant.
 type cs2RankPayload struct {
 	Premier     int `json:"premier,omitempty"`
 	PremierWins int `json:"premierWins,omitempty"`
@@ -38,7 +37,7 @@ func RegisterCS2RankCollector() {
 	basic.RegisterGameStatsCollector(CS2RankCollectorName, collectCS2Ranks)
 	// The same payload, for accounts that never set CS2 stats up. Registering
 	// both is what makes "Show CS2 rank" work whether or not the user has
-	// configured game stats, with one rendering path either way.
+	// configured game stats.
 	basic.RegisterStandaloneStats(steam.PlatformKey, CS2GameName, standaloneCS2Ranks)
 }
 
@@ -60,8 +59,7 @@ func standaloneCS2Ranks(accountID string) ([]byte, bool) {
 // account list.
 //
 // An error means "nothing usable for this account", which the chain treats as an
-// ordinary variant failure and answers by moving on to Leetify, then CSRep. That
-// single return is the whole "signed in? authenticated : public API" decision.
+// ordinary variant failure and answers by moving on to Leetify, then CSRep.
 func collectCS2Ranks(ctx context.Context, accountID string) ([]byte, error) {
 	if err := ctx.Err(); err != nil {
 		return nil, err

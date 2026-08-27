@@ -191,7 +191,6 @@ func TestLoginAgainReauthenticationRequiredIsNotAnError(t *testing.T) {
 	if after := service.vault.Generation(); after != before {
 		t.Fatal("failed refresh unexpectedly rotated the vault generation")
 	}
-	// The unchanged capability must still work.
 	if _, err := service.LoginAgain(accountID, grant.Capability); err != nil {
 		t.Fatalf("capability was invalidated by a non-writing failure: %v", err)
 	}

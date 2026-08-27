@@ -25,9 +25,8 @@ func TestPersistPrunedTagsSurvivesUnwritableIdsFile(t *testing.T) {
 		t.Fatal("fixture should have had something to prune")
 	}
 
-	// The read paths call this and then carry on. Before, a write error was
-	// returned and blanked the account list and the tag map; now it must be
-	// swallowed so the caller can still serve its pruned copy.
+	// The read paths call this and then carry on, so a write error must be
+	// swallowed: returning it blanks the account list and the tag map.
 	persistPrunedTags("BasicTestPlatformWithNoDataRoot", f)
 
 	// The in-memory prune is what the caller returns, so it has to survive the

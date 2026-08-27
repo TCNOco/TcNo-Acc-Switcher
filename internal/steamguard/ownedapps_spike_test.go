@@ -141,9 +141,8 @@ func TestOwnedAppsSpike(t *testing.T) {
 }
 
 // freshAccessToken mints a token for this run rather than trusting the stored
-// one, which is the whole reason the first pass of this probe was inconclusive:
-// every record answered HTTP 401, which is what an expired token and a rejected
-// audience look like alike.
+// one: an expired token and a rejected audience both answer HTTP 401, so a stale
+// token leaves the probe inconclusive.
 //
 // Renewal is deliberately RenewalNone. RenewalAllow can hand back a rotated
 // refresh token, and this probe never writes the vault - accepting a rotation it

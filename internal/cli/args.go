@@ -405,7 +405,6 @@ func isLogoutToken(a string) bool {
 func logoutParsed(a string) (Parsed, error) {
 	p := Parsed{Kind: KindLogout}
 	s := strings.TrimSpace(a)
-	// strip "logout" prefix (any case)
 	lo := strings.ToLower(s)
 	if !strings.HasPrefix(lo, "logout") {
 		return Parsed{}, fmt.Errorf("not a logout token")

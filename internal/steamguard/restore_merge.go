@@ -378,9 +378,7 @@ type backupRecordSummary struct {
 
 // describeBackupRecord reads whichever shape a staged record holds.
 //
-// A backup can legitimately contain login-only records, and before this existed
-// a single one of them aborted the whole plan or commit - taking every other
-// account in the backup with it.
+// A backup can legitimately contain login-only records, not just maFiles.
 func describeBackupRecord(plaintext []byte) (backupRecordSummary, error) {
 	switch kind := vaultrecord.Sniff(plaintext); kind {
 	case vaultrecord.KindLoginOnly:

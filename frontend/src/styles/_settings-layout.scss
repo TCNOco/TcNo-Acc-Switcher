@@ -20,8 +20,6 @@
   --settings-column: 64rem;
 }
 
-/* ── Page ───────────────────────────────────────────────────────────── */
-
 /* `.main-content` is on the same element; the extra class beats its padding
    and display without having to care which stylesheet lands last. */
 .main-content.settings-page {
@@ -46,8 +44,6 @@
   border: 0;
   border-top: 1px solid var(--accent);
 }
-
-/* ── Search ─────────────────────────────────────────────────────────── */
 
 /* Scrolls away with the page rather than floating over it: pinned, it covered
    settings and collided with any dropdown opening near the top. */
@@ -108,8 +104,6 @@
   text-align: center;
 }
 
-/* ── Groups ─────────────────────────────────────────────────────────── */
-
 .settings-group + .settings-group {
   margin-top: 1.5rem;
 }
@@ -134,8 +128,6 @@
   overflow-wrap: anywhere;
   user-select: text;
 }
-
-/* ── Toggle grid ────────────────────────────────────────────────────── */
 
 /* auto-fill, not auto-fit: at wide widths a half-empty last row should keep
    its column width instead of stretching one toggle across the page. */
@@ -207,8 +199,6 @@
   line-height: 1.3;
   cursor: pointer;
 }
-
-/* ── Label + control fields ─────────────────────────────────────────── */
 
 .settings-field {
   display: flex;
@@ -310,8 +300,6 @@
   align-content: start;
 }
 
-/* ── Action button rows ─────────────────────────────────────────────── */
-
 .settings-actions {
   display: flex;
   flex-wrap: wrap;
@@ -332,8 +320,6 @@
   margin: 0 0 0.6rem;
   padding: 0 var(--settings-toggle-pad-x, 0.4rem);
 }
-
-/* ── Callout cards ──────────────────────────────────────────────────── */
 
 .settings-card {
   display: grid;

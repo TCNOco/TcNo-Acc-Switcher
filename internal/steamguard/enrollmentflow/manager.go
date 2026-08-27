@@ -134,8 +134,8 @@ type slotState struct {
 	// status is meaningful only when resumable: an enrollment to carry on with.
 	status    Status
 	resumable bool
-	// occupied is a record that is not a resumable enrollment, with kind naming
-	// its shape. Enrolling over one replaces it.
+	// occupied is a record in the slot, with kind naming its shape. Enrolling
+	// over one replaces it.
 	occupied bool
 	kind     vaultrecord.Kind
 }

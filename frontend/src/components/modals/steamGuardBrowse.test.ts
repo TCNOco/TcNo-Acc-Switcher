@@ -32,8 +32,7 @@ describe("Steam Guard browse buttons", () => {
   });
 
   // The setup page is for an account the vault does not hold at all: no record,
-  // no session, and openBrowser has no account to act on. They were offered here
-  // and did nothing when pressed.
+  // no session, and openBrowser has no account to act on.
   it("are absent from the page for an account with no vault record", () => {
     expect(screenSource("setup")).not.toContain(BROWSE_ROW);
   });

@@ -321,8 +321,7 @@ describe("Steam confirmations store", () => {
     store.destroy();
   });
 
-  // The poll returns the list, not the per-confirmation detail. Losing it replaced
-  // an open trade's contents with nothing while the user was reading them.
+  // The poll returns the list, not the per-confirmation detail.
   it("keeps a loaded detail when the list refreshes", async () => {
     const trade = {
       partner: { name: "Partner", avatar: "", profileUrl: "", level: 21, yearsBadge: "" },
@@ -370,8 +369,7 @@ describe("Steam confirmations store", () => {
     store.destroy();
   });
 
-  // Deciding used to open the neighbouring confirmation, which put an undecided
-  // trade in front of the user as the result of deciding this one.
+  // Opening the neighbour instead puts an undecided trade in front of the user.
   it("closes the open confirmation after deciding it", async () => {
     const fetch = vi.fn()
       .mockResolvedValueOnce(fresh([row, secondRow]))
@@ -386,8 +384,7 @@ describe("Steam confirmations store", () => {
     store.destroy();
   });
 
-  // A poll landing while the detail request was in flight used to discard the
-  // result, leaving the open trade with no items.
+  // Discarding it because a poll landed first leaves the open trade with no items.
   it("keeps a detail that arrives during a refresh", async () => {
     let release: ((value: { fields: never[]; trade: null }) => void) | undefined;
     const fetch = vi.fn().mockResolvedValue(fresh([row]));
@@ -541,8 +538,6 @@ describe("Steam confirmations store", () => {
     store.destroy();
   });
 
-  // Accept and Deny in the batch bar act on exactly the marked rows: no more,
-  // no fewer, and in the order the list shows them.
   it("decides exactly the checked rows, in list order", async () => {
     const thirdRow = { ...row, handle: "opaque:three" };
     const fetch = vi.fn().mockResolvedValue(fresh([row, secondRow, thirdRow]));
@@ -561,8 +556,6 @@ describe("Steam confirmations store", () => {
     store.destroy();
   });
 
-  // One row Steam refuses must not abandon the rest of the batch; it keeps its
-  // mark and its error so the user can see it and try again.
   it("carries a batch past one failed row and keeps that row marked", async () => {
     const fetch = vi.fn().mockResolvedValue(fresh([row, secondRow]));
     const decide = vi.fn()

@@ -46,8 +46,7 @@ func (s *Service) qrFlowAuthorizer(accountID, token string) steamFlowAuthorizer 
 //
 // Never taken from the caller: it is the one thing standing between a scan and
 // somebody else's tokens being stored under this account, so it is derived from
-// what is on disk - and derived the same way on every step, since authflow
-// compares the whole binding each time.
+// what is on disk.
 func (s *Service) expectedQRAccountName(accountID string) string {
 	if name, known := s.accountNameForSteamID(accountID); known {
 		if trimmed := strings.TrimSpace(name); trimmed != "" {

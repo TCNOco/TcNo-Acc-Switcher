@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { shortcutRowKey, treeRowKey } from "./fsPaths";
 
-// The picker lists shortcuts to folders that also appear under their drive.
-// When both rows shared an identity, scrolling and arrow keys landed on the
-// shortcut, which is always near the top, instead of the row in the tree.
+// The picker lists shortcuts to folders that also appear under their drive; one
+// shared identity sends scrolling and arrow keys to the shortcut near the top
+// instead of the row in the tree.
 describe("path picker row keys", () => {
   it("tells a shortcut apart from the tree row for the same folder", () => {
     const path = "C:\\Users\\tcno\\Documents";

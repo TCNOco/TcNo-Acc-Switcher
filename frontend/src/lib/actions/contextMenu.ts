@@ -1,7 +1,6 @@
 import type { Action } from "svelte/action";
 import { openContextMenu, openContextMenuAtRect, type ContextMenuAnchorRect, type MenuItemDef } from "../../stores/contextMenu";
 
-/** Menu items getter, optionally with logic that runs before the menu opens (e.g. select row). */
 export type ContextMenuItemsGetter = () => MenuItemDef[];
 
 export type ContextMenuBinding =
@@ -66,7 +65,7 @@ function openMenu(
   open(items);
 }
 
-/** Right-click: optionally run beforeOpen, then open global context menu from getter. */
+/** Right-click or the keyboard menu key: optionally run beforeOpen, then open the global context menu from getter. */
 export const contextMenu: Action<HTMLElement, ContextMenuBinding> = (node, binding) => {
   let getter: ContextMenuItemsGetter;
   let beforeOpen: (() => void) | undefined;

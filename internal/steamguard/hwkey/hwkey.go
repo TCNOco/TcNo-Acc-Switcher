@@ -70,8 +70,7 @@ type Authenticator interface {
 	Evaluate(ctx context.Context, creds []Credential) (Credential, []byte, error)
 }
 
-// RPID is this application's relying-party identifier. It is a constant and
-// must never change.
+// RPID is this application's relying-party identifier. It must never change.
 const RPID = "steamguard.tcno.co"
 
 // SaltFor is the value handed to the authenticator to derive a credential's

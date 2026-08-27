@@ -2,8 +2,8 @@ import { describe, expect, it, vi } from "vitest";
 import { accountAvatarSrc, type AccountAvatarInput } from "./accountAvatarSrc";
 
 // jsdom has no canvas, so the generator returns "" and the resolver falls through
-// to the platform placeholder. That is the behaviour worth pinning: a missing
-// canvas must never leave an account tile with a broken image.
+// to the platform placeholder: a missing canvas must never leave an account tile
+// with a broken image.
 vi.mock("./generatedAvatar", () => ({
   accountAvatar: (salt: string, platform: string, key: string) =>
     key ? `generated:${salt}:${platform}:${key}` : "",

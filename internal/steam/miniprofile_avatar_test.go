@@ -58,8 +58,7 @@ func TestExtractMiniprofileAvatarMediaURL_stillImageIsNotMedia(t *testing.T) {
 
 // A cached fragment has had its asset URLs rewritten to the app's own origin. Those
 // paths are safe to render but are not fetchable, and the sole consumer of this
-// function downloads whatever it returns — reporting one produced a failed request
-// ("unsupported protocol scheme") on every refresh.
+// function downloads whatever it returns.
 func TestExtractMiniprofileAvatarMediaURL_localizedPathIsNotMedia(t *testing.T) {
 	t.Parallel()
 

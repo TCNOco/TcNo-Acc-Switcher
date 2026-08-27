@@ -8,8 +8,7 @@ import (
 
 // A loginusers.vdf caught mid-write: the key is there, its value is not.
 // steamvdf panics on this rather than returning an error, and logsanitize runs
-// on the logging path - a crash here would take down the app while it was
-// trying to record why something went wrong.
+// on the logging path - a crash here would take down the app.
 const truncatedLoginUsers = "\"users\"\n{\n\t\"76561198000000100\"\n\t{\n\t\t\"AccountName\""
 
 func TestParseLoginUsers_truncatedFileErrorsNotPanics(t *testing.T) {

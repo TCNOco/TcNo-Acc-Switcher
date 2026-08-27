@@ -389,8 +389,6 @@
       opacity: 1;
     }
   }
-  /* The folder rides along in the corner so the row still reads as a folder,
-     and keeps showing whether it is open. */
   .pp-row-badge {
     position: absolute;
     right: 0;

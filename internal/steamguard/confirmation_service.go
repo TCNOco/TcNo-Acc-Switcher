@@ -124,8 +124,8 @@ func (s *Service) ListConfirmations(token string) (ConfirmationsResult, error) {
 		logConfirmationFailure(log, "list", binding.AccountID, result.State, err)
 		return result, nil
 	}
-	// Rows render from getlist alone. The per-row /details fetch used to abort the
-	// whole refresh on the first failure; details are on-demand only now.
+	// Rows render from getlist alone; the per-row /details fetch is on demand, so
+	// one row's failure cannot abort the whole refresh.
 	rows := make([]ConfirmationRowView, 0, len(confirmations))
 	privateRows := make(map[string]confirmationapi.Confirmation, len(confirmations))
 	cachedIcons := make([]string, 0, len(confirmations))
@@ -445,14 +445,9 @@ func (s *Service) endConfirmationOperation(operation uint64) {
 }
 
 // beginConfirmationDetail returns the context for one row's detail fetch, on a
-// cancel slot of its own.
-//
-// It used to share the window's single slot, which made the ten-second list poll
-// and an opening trade cancel each other: a poll landing before the detail page
-// arrived left the trade blank, and one landing part-way through its icons left
-// some tiles empty — both fixed by closing the trade and opening it again, since
-// by then the page and the images were cached. Opening another row still cancels
-// the row before it, and tearing the window down still cancels whatever runs.
+// cancel slot of its own, so the ten-second list poll and an opening trade do
+// not cancel each other. Opening another row still cancels the row before it,
+// and tearing the window down still cancels whatever runs.
 func (s *Service) beginConfirmationDetail() (context.Context, uint64) {
 	s.confirmationWindowMu.Lock()
 	if s.confirmationDetailCancel != nil {
@@ -594,11 +589,10 @@ type ConfirmationDetailsResult struct {
 
 // InspectConfirmation loads the detail page for one confirmation. The list view
 // carries only a headline, a few summary lines and a single icon, so this is the
-// only source of anything richer — and with dumps enabled it records exactly what
-// Steam sent, so what is actually available can be seen rather than assumed.
+// only source of anything richer. With dumps enabled it records what Steam sent.
 //
 // Fetched when a row is selected rather than for the whole list: it is one
-// request per confirmation, and batching them used to fail an entire refresh.
+// request per confirmation.
 func (s *Service) InspectConfirmation(handle, token string) (ConfirmationDetailsResult, error) {
 	binding, account, err := s.confirmationAccount(token)
 	if err != nil {

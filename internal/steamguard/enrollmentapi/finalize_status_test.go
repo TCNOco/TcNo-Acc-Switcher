@@ -12,9 +12,7 @@ import (
 // Steam's status 1 is EResult OK and means the authenticator now exists on the
 // account. It does not always arrive with the separate success flag, and the
 // response defines no want_more field at all, so requiring either of those
-// reported a completed enrollment as a rejection - leaving a live authenticator
-// the app had refused to record, and a user who could not generate codes for
-// their own account.
+// rejects a completed enrollment.
 func TestFinalizeTreatsStatusOneAsComplete(t *testing.T) {
 	cases := map[string][]byte{
 		"status only":           appendVarint(appendVarint(nil, 3, testUnix+1), 4, 1),

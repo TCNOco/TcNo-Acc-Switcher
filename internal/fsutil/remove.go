@@ -13,9 +13,8 @@ import (
 // existed or because a retry succeeded) and the last observed error
 // otherwise.
 //
-// The remove function is taken as a parameter so tests can drive the retry
-// loop with synthetic failures without OS-specific setup. Production
-// callers should pass os.RemoveAll.
+// remove is a parameter so tests can inject synthetic failures; production
+// callers pass os.RemoveAll.
 func RemoveAllWithRetry(path string, total time.Duration, remove func(string) error) error {
 	if _, err := os.Stat(path); err != nil {
 		if errors.Is(err, os.ErrNotExist) {

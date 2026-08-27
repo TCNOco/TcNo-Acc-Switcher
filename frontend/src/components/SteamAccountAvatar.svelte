@@ -75,13 +75,12 @@
    * Suspending swaps the APNG for a still cut from it by the backend.
    *
    * The page cannot produce that still itself. There is no way to pause an
-   * animated <img>, and drawImage only ever hands back the default image — five
-   * captures spread across three seconds of a running animation came back
-   * byte-identical. In these frames the default image is frame 0, which on a
-   * lightning border is the peak of the flash and several times thicker than
-   * whatever was on screen a moment earlier, so freezing onto a canvas made the
-   * border visibly swell. profileimage.StillFromAPNG picks the median frame
-   * instead, which is what the border looks like for most of its cycle.
+   * animated <img>, and drawImage only ever hands back the default image. In
+   * these frames the default image is frame 0, which on a lightning border is
+   * the peak of the flash and several times thicker than whatever was on screen
+   * a moment earlier, so freezing onto a canvas made the border visibly swell.
+   * profileimage.StillFromAPNG picks the median frame instead, which is what the
+   * border looks like for most of its cycle.
    *
    * A frame with no still is one that does not animate, so leaving it running
    * costs nothing.

@@ -13,8 +13,6 @@ describe("animationsSuspended", () => {
     expect(get(animationsSuspended)).toBe(false);
   });
 
-  // The reported bug: the animations paused when the game started and never came
-  // back while it was still open, however many times the user tabbed across.
   it("resumes once the user tabs back, with the game still running", () => {
     gameRunning.set(true);
     windowFocused.set(false);
@@ -33,9 +31,8 @@ describe("animationsSuspended", () => {
     expect(get(animationsSuspended)).toBe(true);
   });
 
-  // Coverage is not qualified by focus: a fullscreen window from another process
-  // being in front already means we are not, and animating behind a game is the
-  // waste the whole thing exists to avoid.
+  // Coverage is not qualified by focus: another process's fullscreen window being
+  // in front already means we are not.
   it("stays frozen while a fullscreen app covers the screen", () => {
     screenCovered.set(true);
     windowFocused.set(true);

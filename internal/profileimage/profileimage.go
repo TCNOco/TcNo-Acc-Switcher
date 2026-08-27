@@ -95,12 +95,10 @@ func MainAvatarStemFromCacheStem(cacheStem string) string {
 // MarkAutomatedProfileCachesStale ages every automated cache file out instead of
 // removing it, so the next refresh re-downloads each one and replaces it in place.
 //
-// Deleting them up front is what made a refresh blank the whole list: the file
-// behind every <img> vanished the moment the user pressed refresh and did not
-// come back until its own download finished, which on a cold cache is most of a
-// minute for a dozen accounts. An aged file still exists, still renders, and is
-// atomically overwritten the instant its replacement arrives - so the list keeps
-// showing the old faces and swaps them one at a time as the new ones land.
+// Deleting them up front blanks the list: the file behind every <img> is gone
+// until its own download finishes, which on a cold cache is most of a minute for
+// a dozen accounts. An aged file still renders and is atomically overwritten the
+// instant its replacement arrives.
 //
 // Manual avatars are left entirely alone, as they are by the delete pass: they
 // have no remote source to refresh from.
@@ -389,7 +387,7 @@ func LocalAssetExists(publicURL string) bool {
 	return err == nil && !st.IsDir()
 }
 
-// FileOlderThanDays returns true if path exists and mod time is older than days (or file missing -> false).
+// FileOlderThanDays returns true if path's mod time is older than days. A missing file, or days <= 0, also reports true.
 func FileOlderThanDays(path string, days int) bool {
 	if days <= 0 {
 		return true
@@ -470,7 +468,6 @@ func DownloadIfNeeded(ctx context.Context, client *http.Client, platformKey, acc
 		return nil, err
 	}
 
-	// If a cached file exists and is still fresh, return without downloading.
 	var existingPath, existingExt string
 	for _, ext := range []string{"jpg", "jpeg", "png", "webp", "gif", "webm", "mp4"} {
 		p := filepath.Join(dir, accountID+"."+ext)
@@ -528,11 +525,10 @@ func DownloadIfNeeded(ctx context.Context, client *http.Client, platformKey, acc
 	// The superseded file goes only once its replacement is safely written, and
 	// only when the extension changed - the same name is overwritten in place.
 	//
-	// This is what lets callers stop deleting a cache before refreshing it. Two
-	// files under one stem is the problem the old delete-first pass existed to
-	// avoid, since FindCached walks a fixed extension order and would keep serving
-	// a stale .jpg after an avatar became a .webm. Retiring the loser here solves
-	// that without any window where the account has no image at all.
+	// FindCached walks a fixed extension order, so two files under one stem would
+	// keep serving a stale .jpg after an avatar became a .webm. Retiring the loser
+	// here lets callers skip deleting a cache before a refresh, with no window
+	// where the account has no image at all.
 	if existingPath != "" && existingPath != dest {
 		_ = os.Remove(existingPath)
 	}

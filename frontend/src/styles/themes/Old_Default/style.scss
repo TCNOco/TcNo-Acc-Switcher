@@ -128,7 +128,6 @@
   --role-status-bad: #ec7a7a;
 }
 
-// Main UI
 .headerbar,
 .resizeTopLeft,
 .resizeTop,
@@ -209,7 +208,6 @@ a:not([href]):not([class]):hover {
     color: #FFAA00;
 }
 
-// Platform list
 .platform_list_item {
     border: #FFAA00 1px solid;
     color: var(--whiteSecondary);
@@ -231,7 +229,6 @@ a:not([href]):not([class]):hover {
     background: #28374E;
 }
 
-// Modal UI
 .modalFG {
     background: #14151E;
 }
@@ -276,7 +273,6 @@ a:not([href]):not([class]):hover {
     }
 }
 
-// Interactive UI
 input[type='checkbox'] + label {
     border: 1px solid #FFF;
 }
@@ -333,7 +329,6 @@ div.clearingRight {
     background: #222;
 }
 
-// Context menu
 .contextmenu {
     background: #14151E;
 

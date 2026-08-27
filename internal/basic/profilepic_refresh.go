@@ -315,9 +315,8 @@ func (b *BasicService) queueMissingSavedProfileImages(platformKey string) {
 	}
 }
 
-// runProfileImageRefreshBypassCooldown clears the per-platform cooldown and
-// triggers a background refresh. Used by explicit user actions such as
-// "Refresh all profile images" so the user's request is not silently dropped.
+// runProfileImageRefreshBypassCooldown exists for explicit user actions such as
+// "Refresh all profile images", where the cooldown must not drop the request.
 func (b *BasicService) runProfileImageRefreshBypassCooldown(platformKey string) {
 	b.imgRefreshCooldown.reset(platformKey)
 	go b.runProfileImageRefresh(platformKey)

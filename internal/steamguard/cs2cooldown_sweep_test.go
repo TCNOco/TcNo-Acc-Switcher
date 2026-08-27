@@ -34,9 +34,8 @@ func (h *capturingHandler) Handle(_ context.Context, record slog.Record) error {
 func (h *capturingHandler) WithAttrs([]slog.Attr) slog.Handler { return h }
 func (h *capturingHandler) WithGroup(string) slog.Handler      { return h }
 
-// A vanity-URL redirect used to land here as a flat Debug line, so every account
-// with a custom Steam URL failed in total silence while the sweep counted it as
-// checked. Anything that is not the app's own state must now be visible.
+// A failure that is not the app's own state must be visible: at Debug, an
+// account with a custom Steam URL failed silently and still counted as checked.
 func TestCooldownFetchFailureIsVisibleUnlessItIsTheAppsOwnState(t *testing.T) {
 	cases := map[string]struct {
 		err  error
@@ -178,9 +177,9 @@ func newSweepFixture(t *testing.T) (*Service, *fakeCooldownClient, []string) {
 	return service, fake, []string{authID, loginID}
 }
 
-// setUnexpiredTokens rewrites the seeded authenticator's access token so the
-// local expiry check does not skip it. The fixture ships an opaque placeholder,
-// and AccessTokenExpired treats an unreadable token as usable.
+// setUnexpiredTokens asserts the seeded authenticator is there. Its access token
+// is an opaque placeholder and AccessTokenExpired treats an unreadable token as
+// usable, so the local expiry check does not skip it and nothing needs rewriting.
 func setUnexpiredTokens(t *testing.T, service *Service, accountID string) {
 	t.Helper()
 	if _, err := recordForSteamID64(service.vault, accountID); err != nil {
@@ -189,9 +188,8 @@ func setUnexpiredTokens(t *testing.T, service *Service, accountID string) {
 }
 
 func TestSweepDoesNotRotateTheVaultGeneration(t *testing.T) {
-	// The single most important property of the sweep. Any vault write rotates
-	// the generation and invalidates every outstanding capability, including the
-	// one an open Steam Guard window is holding.
+	// Any vault write rotates the generation and invalidates every outstanding
+	// capability, including the one an open Steam Guard window is holding.
 	service, fake, _ := newSweepFixture(t)
 	before := service.vault.Generation()
 
@@ -346,9 +344,8 @@ func TestSweepSkipsAccountsCheckedRecently(t *testing.T) {
 	}
 }
 
-// The point of the cap is that the sweep overlaps accounts at all. A serial
-// sweep satisfies the cap too, so this holds one account's read open and waits
-// for a second to arrive on top of it.
+// A serial sweep satisfies the concurrency cap too, so this holds one account's
+// read open and waits for a second to arrive on top of it.
 func TestSweepReadsAccountsConcurrently(t *testing.T) {
 	service, fake, _ := newSweepFixture(t)
 	both := make(chan struct{})
@@ -530,10 +527,8 @@ func TestForceSurvivesASkippedSweep(t *testing.T) {
 }
 
 // A locked vault yields no targets, so the sweep makes no requests - and must
-// therefore not spend the floor that spaces them out. Stamping it anyway is what
-// made unlocking the vault do nothing: the account page's refresh moments earlier
-// had already found the vault locked and put the next ninety seconds out of
-// bounds, so the unlock was turned away as rate limited and no rank moved.
+// therefore not spend the floor that spaces them out, or a refresh that found
+// the vault locked puts the unlock that follows it out of bounds.
 func TestSweepWithNothingToReadSpendsNeitherTheFloorNorTheForce(t *testing.T) {
 	service, fake, _ := newSweepFixture(t)
 	setCS2Settings(t, true, true, false)

@@ -109,7 +109,7 @@
 
   &.platform_list_placeholder {
     cursor: default;
-    /* Same border width as live tiles so the dashed slot matches picked-up size (was 2px). */
+    /* Same border width as live tiles so the dashed slot matches picked-up size. */
     border: 1px dashed var(--accent);
     background: var(--black-alpha-12);
     box-shadow: none;
@@ -202,7 +202,6 @@
 }
 
 .ico {
-  /* ALL */
   &BG {
       background: linear-gradient(0deg, var(--code) 0%, var(--code) 0%, var(--black) 100%, var(--home-ico-gradient-end) 202123%);
   }

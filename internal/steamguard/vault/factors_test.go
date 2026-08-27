@@ -20,7 +20,6 @@ func TestKeyfileRoundTrip(t *testing.T) {
 	if parsed.ID != k.ID || !bytes.Equal(parsed.Secret, k.Secret) {
 		t.Fatal("keyfile did not survive a round trip")
 	}
-	// Two keyfiles never collide.
 	other, err := NewKeyfile()
 	if err != nil {
 		t.Fatal(err)
@@ -92,7 +91,6 @@ func TestRecoveryCodeParsesHoweverItIsTyped(t *testing.T) {
 
 // Enrolling a second factor alongside the password means either one opens the
 // vault. Enrolling one that replaces the password slot means both are needed.
-// The difference is the whole feature, so it is pinned here.
 func TestAddSlotReplacingThePasswordSlotRequiresBoth(t *testing.T) {
 	const password = "correct horse battery staple"
 	v := newUnlocked(t)

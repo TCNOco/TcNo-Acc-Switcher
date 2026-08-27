@@ -123,8 +123,8 @@ func EnableAutoRestartAfterUpdate(app *application.App) {
 		return
 	}
 	// Bound to the download, not to EventUpdateAvailable: a check that only
-	// finds a release does not download anything, and announcing a download
-	// there told users an update was being applied behind their back.
+	// finds a release does not download anything, and announcing one there
+	// tells users an update is being applied behind their back.
 	app.Event.On(updater.EventDownloadStarted, func(*application.CustomEvent) {
 		NotifyNative("tcno-update-downloading", "TcNo Account Switcher", "Downloading the update.", map[string]interface{}{
 			"type": "update-downloading",

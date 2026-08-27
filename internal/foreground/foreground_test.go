@@ -82,7 +82,6 @@ func TestLooksFullscreen(t *testing.T) {
 			true,
 		},
 		{
-			// The case that caught this: a maximised browser on a second monitor.
 			// Windows oversizes a maximised window by the invisible resize border,
 			// so it overshoots the monitor exactly the way a game does, and with
 			// the taskbar on another screen nothing trims it back.

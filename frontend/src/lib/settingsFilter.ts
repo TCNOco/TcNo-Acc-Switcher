@@ -121,8 +121,8 @@ const isRule = (el: Element): boolean => el.tagName === "HR";
 
 /**
  * Hides the page's own headings and dividers once the groups they introduce are
- * gone. These sit beside the groups rather than inside them — "Steam settings"
- * above a rule, "App settings" below it — so `filterGroup` never reaches them.
+ * gone. These sit beside the groups rather than inside them ("Steam settings"
+ * above a rule, "App settings" below it), so `filterGroup` never reaches them.
  */
 function hidePageChrome(root: HTMLElement): void {
   const children = [...root.children] as HTMLElement[];

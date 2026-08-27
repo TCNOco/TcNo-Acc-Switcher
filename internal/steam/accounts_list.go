@@ -266,7 +266,7 @@ func (s *SteamService) GetSteamAccountsEnrichment() ([]SteamAccountEnrichmentDTO
 	now := time.Now()
 	out := make([]SteamAccountEnrichmentDTO, len(ctx.users))
 	// Each row costs a cached-miniprofile file read plus an HTML parse over it,
-	// and the rows share nothing writable, so they are built concurrently.
+	// so they are built concurrently.
 	rows := ctx.users
 	parallel.ForEachIndex(len(rows), func(i int) {
 		out[i] = steamEnrichmentFor(ctx, rows[i], avatars, now)
@@ -367,8 +367,6 @@ func steamEnrichmentFor(ctx *steamListContext, u LoginUser, avatars *profileimag
 		CS2CooldownExpiresAt: cooldownExpiry,
 		CS2CooldownPermanent: cooldownPermanent,
 		ShowCS2Cooldown:      ctx.st.SteamCollectCS2Cooldowns,
-		// Both settings gate this: the rank is a by-product of the cooldown
-		// sweep, so with collection off there is nothing keeping it current.
 	}
 }
 

@@ -293,8 +293,8 @@ func (b *BasicService) ChangeAccountImage(platformKey, uniqueID, sourcePath stri
 	if platformKey == "" || uniqueID == "" || sourcePath == "" {
 		return fmt.Errorf("invalid change image parameters")
 	}
-	// Lock manual marker before writing bytes so concurrent basic profile refresh cannot download/copy
-	// over the avatar during the gap where DeleteCached (old behavior) stripped the sentinel (Rockstar/EA/Ubisoft).
+	// Set the manual marker before writing bytes: a concurrent basic profile
+	// refresh would otherwise download over the avatar (Rockstar/EA/Ubisoft).
 	if err := profileimage.WriteManualProfileMarker(platformKey, uniqueID); err != nil {
 		return err
 	}

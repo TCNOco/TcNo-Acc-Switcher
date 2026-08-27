@@ -208,9 +208,7 @@ func (v *Vault) SecurityKeys() []SecurityKeyRef {
 
 // AddSlot enrols another way to open the vault. The vault must be unlocked: the
 // key is taken from the open vault rather than re-derived, so managing factors
-// does not require presenting every factor a second time. Re-deriving was wrong
-// - once a slot needed a password and a keyfile, a password alone could no
-// longer add or remove anything.
+// does not require presenting every factor a second time.
 //
 // Replaces reports slots to drop in the same commit, which is how "password
 // only" becomes "password AND keyfile" rather than "either one".
@@ -305,8 +303,7 @@ func (v *Vault) newFactorLocked(kind string, spec SlotSpec) (slotFactor, error) 
 }
 
 // RemoveSlot drops one enrolled way in. It refuses to remove the last one:
-// there is no such thing as a vault nobody can open, only data nobody can read,
-// and that has to be an explicit choice made somewhere else.
+// making the vault unreadable has to be an explicit choice made elsewhere.
 func (v *Vault) RemoveSlot(id string) error {
 	v.mu.Lock()
 	defer v.mu.Unlock()
@@ -341,9 +338,7 @@ const MaxSlotLabelBytes = 64
 
 // RenameSlot changes what a way in is called. Only the label moves: it is not
 // covered by slotAAD, so nothing is re-derived and no factor has to be presented
-// beyond the open vault. Two security keys enrolled before names existed are
-// otherwise indistinguishable, and removing the wrong one is discovered by
-// finding out which device stopped working.
+// beyond the open vault.
 func (v *Vault) RenameSlot(id, label string) error {
 	if len(label) == 0 || len(label) > MaxSlotLabelBytes {
 		return ErrInvalidFormat

@@ -123,7 +123,7 @@ export function dismissModal(result?: unknown): void {
   resolver = null;
   // Cleared with the modal that raised it. A body that leaks the flag - an
   // operation that throws past its reset - would otherwise leave every later
-  // modal refusing Escape, and the flag is what makes Escape the way out.
+  // modal refusing Escape.
   modalBusy.set(false);
   activeModal.set(null);
   r?.(result);

@@ -78,11 +78,10 @@ func platformExpandPath(s string) string {
 // installedAppIDs maps each installed app id to the name Steam wrote in its
 // appmanifest, or "" when the file has none.
 //
-// The manifest is the only name source that covers apps the store will not talk
-// about at all - tools, redistributables, dedicated servers, hard-delisted games -
-// because it is written by the client that installed them rather than by the store.
-// The catalogue map has no entry for those at any point, so reading the file the
-// scan already found is what keeps them from rendering as "App <id>".
+// The manifest is written by the client that installed the app, so it is the only
+// name source covering apps the store will not talk about - tools, redistributables,
+// dedicated servers, hard-delisted games. The catalogue map never lists those, so
+// without the manifest they render as "App <id>".
 func installedAppIDs(steamRoot string) (map[string]string, error) {
 	dirs, err := steamAppsDirs(steamRoot)
 	if err != nil {
@@ -609,10 +608,9 @@ func BuildInstalledGamesList(ctx context.Context, steamRoot string) ([]Installed
 }
 
 // buildInstalledGamesListWithNames is BuildInstalledGamesList for a caller that
-// already holds the name map. ensureAppNameMap hands back a full copy of the
-// catalogue - ~180k entries, several megabytes - so a screen that needs names
-// twice resolves once and threads the map through instead. The appinfo cache is
-// threaded for the same reason.
+// already holds the name map. The catalogue is ~180k entries, several megabytes,
+// so a screen that needs names twice resolves it once and threads the map through
+// instead. The appinfo cache is threaded for the same reason.
 func buildInstalledGamesListWithNames(steamRoot string, names, local map[string]string) ([]InstalledGameInfo, error) {
 	installed, err := installedAppIDs(steamRoot)
 	if err != nil {

@@ -104,9 +104,8 @@ func TestBackupKeyOpensTheVaultAndReplacesTheOldOne(t *testing.T) {
 	}
 }
 
-// Enrolling never takes away what already worked. Adding a keyfile - with or
-// without a password of its own - leaves the password opening the vault exactly
-// as it did, because removing a way in is a separate, deliberate act.
+// Enrolling never takes away what already worked: adding a keyfile - with or
+// without a password of its own - leaves the password opening the vault.
 func TestEnrollingAKeyfileLeavesThePasswordWorking(t *testing.T) {
 	service, password := newFactorService(t)
 	if _, err := service.CreateVaultBackupKey(password); err != nil {
@@ -188,9 +187,8 @@ func TestRemoveVaultFactorKeepsAWayIn(t *testing.T) {
 	}
 }
 
-// Enrolling a factor is only useful if the vault can then be opened with it.
-// Unlock was once password-only, which left a vault with no password-only way in
-// unreachable through the app.
+// Enrolling a factor is only useful if the vault can then be opened with it: a
+// password-only unlock leaves a vault with no password slot unreachable.
 func TestUnlockAcceptsEnrolledFactors(t *testing.T) {
 	service, password := newFactorService(t)
 	code, err := service.CreateVaultBackupKey(password)
@@ -335,9 +333,8 @@ func TestSecurityKeyFromAnotherDeviceIsRejected(t *testing.T) {
 	}
 }
 
-// Two keys enrolled, one in the drawer: the one in hand has to work. The driver
-// used to ask about each credential in turn and stop at the first that the
-// attached key did not hold, which made every key but the first unusable.
+// Two keys enrolled, one in the drawer: the one in hand has to work, whichever
+// credential the vault lists it under.
 func TestASecondSecurityKeyOpensTheVaultOnItsOwn(t *testing.T) {
 	service, password := newFactorService(t)
 	if _, err := service.CreateVaultBackupKey(password); err != nil {
@@ -451,9 +448,7 @@ func TestSecurityKeyEnrolmentGuards(t *testing.T) {
 }
 
 // Once a slot needs a password and a keyfile, the password alone can no longer
-// derive the vault key. Factor management used to re-derive from the password,
-// so enrolling anything else became impossible the moment the first combined
-// factor was added. Management now works from the unlocked vault instead.
+// derive the vault key, so factor management works from the unlocked vault.
 func TestFactorsRemainManageableAfterCombinedEnrolment(t *testing.T) {
 	service, password := newFactorService(t)
 	if _, err := service.CreateVaultBackupKey(password); err != nil {
@@ -677,10 +672,9 @@ func TestChangePasswordRefusesAStaleKeyfile(t *testing.T) {
 	}
 }
 
-// The test above only covered a vault still unlocked from enrolment. The unlock
-// lease is five minutes, so in practice the settings screen is reached with the
-// vault locked - and a password alone cannot reopen a password-and-keyfile slot,
-// which made every factor action fail with "requires an enrolled factor".
+// The unlock lease is five minutes, so in practice the settings screen is
+// reached with the vault locked, and a password alone cannot reopen a
+// password-and-keyfile slot.
 func TestManagementReopensALockedCombinedVault(t *testing.T) {
 	service, password := newFactorService(t)
 	if _, err := service.CreateVaultBackupKey(password); err != nil {

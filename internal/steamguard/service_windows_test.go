@@ -12,8 +12,7 @@ import (
 
 // A vault is only ever created in order to be used straight away: the 2-Factor
 // flow calls Initialize and then resumes enrollment, which refuses a locked
-// vault. Leaving it locked reported "the vault was unlocked, but setup could
-// not continue" and stranded the user with a vault they had just made.
+// vault.
 func TestInitializeLeavesTheVaultUnlockedForEnrollment(t *testing.T) {
 	useSettingsRoot(t)
 	service := newServiceForTest()
@@ -24,8 +23,7 @@ func TestInitializeLeavesTheVaultUnlockedForEnrollment(t *testing.T) {
 	if service.vault.IsLocked() {
 		t.Fatal("Initialize left the vault locked; enrollment cannot continue")
 	}
-	// The path that actually failed: enrollment authorises the flow first, and
-	// that is what rejected the locked vault.
+	// Enrollment authorises the flow first, and that is what rejects a locked vault.
 	if _, _, _, err := service.authorizeSteamFlow(qrTestAccountID, "no-such-capability"); errors.Is(err, vault.ErrLocked) {
 		t.Fatal("authorizeSteamFlow still reports the vault as locked")
 	}

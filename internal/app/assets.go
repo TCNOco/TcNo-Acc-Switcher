@@ -57,7 +57,7 @@ func newCompositeAssetHandler(embedded fs.FS) http.Handler {
 			return
 		}
 		// Classify before touching the filesystem: only img/ and backgrounds/ can be
-		// served from disk, so anything else can skip the wwwroot lookup entirely.
+		// served from disk.
 		upath := strings.TrimPrefix(filepath.ToSlash(r.URL.Path), "/")
 		if upath == "" {
 			upath = "."

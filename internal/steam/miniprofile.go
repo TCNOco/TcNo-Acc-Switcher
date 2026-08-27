@@ -188,8 +188,7 @@ func embedMiniprofileHTMLAssets(ctx context.Context, client *http.Client, steamI
 		}
 	}
 
-	// The avatar frame and the avatar itself are the two images every
-	// miniprofile carries, and the webview's CSP refuses their Steam URLs.
+	// The webview's CSP refuses the Steam URLs for the frame and avatar images.
 	// The frame shares the accounts list's cache key, so it is usually a
 	// disk hit rather than a download.
 	if frame := findFirstDivWithClass(body, "playersection_avatar_frame"); frame != nil {
@@ -338,9 +337,8 @@ func ExtractMiniprofileAvatarMediaURL(fragment string) string {
 		}
 	}
 	// The img fallback exists for animated GIF avatars only. A still avatar's
-	// img is the same picture the full-quality static download already fetches,
-	// just smaller — reporting it here doubled the download and put the worse
-	// copy on screen.
+	// img is a smaller copy of what the full-quality static download already
+	// fetches, so reporting it here would download twice and show the worse copy.
 	if img := firstDescendantElement(mount, "img"); img != nil {
 		if u := attrVal(img, "src"); isRemoteSteamAssetURL(u) && strings.HasSuffix(strings.ToLower(u), ".gif") {
 			return u

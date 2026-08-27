@@ -8,9 +8,8 @@ import (
 	"TcNo-Acc-Switcher/internal/steamguard/confirmationapi"
 )
 
-// The failure the account list actually hit: a resume from sleep, DNS not up,
-// every account answered "temporarily failed". Six hours is far too long to wait
-// that out.
+// A resume from sleep with DNS not yet up makes every account answer
+// "temporarily failed", and six hours is far too long to wait that out.
 func TestRetryableSweepFailureClassification(t *testing.T) {
 	for kind, want := range map[confirmationapi.FailureKind]bool{
 		confirmationapi.FailureRetryable: true,

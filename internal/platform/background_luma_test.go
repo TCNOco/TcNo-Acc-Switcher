@@ -47,8 +47,7 @@ func TestSampleImageLumaSolidColours(t *testing.T) {
 				t.Fatalf("Mean = %.4f, want ~%.4f", luma.Mean, tc.want)
 			}
 			// A flat colour has nothing to spread between, so both percentiles
-			// land on the mean. This is the case that lets the UI flip text
-			// colour with confidence.
+			// land on the mean.
 			if !closeTo(luma.High-luma.Low, 0, 0.005) {
 				t.Fatalf("spread = %.4f, want ~0 for a solid colour", luma.High-luma.Low)
 			}

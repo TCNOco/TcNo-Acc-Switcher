@@ -33,7 +33,7 @@ func parseAppNameMapCompact(raw []byte) (map[string]string, error) {
 }
 
 // decodeCompactAppArray returns the same map[decimal app id]name shape as
-// parseAppNameMapJSON, so every consumer downstream is unchanged.
+// parseAppNameMapJSON.
 func decodeCompactAppArray(raw []byte) (map[string]string, error) {
 	if len(raw) > compactAppArrayMaxBytes {
 		return nil, fmt.Errorf("compact app array: %d bytes over %d limit", len(raw), compactAppArrayMaxBytes)

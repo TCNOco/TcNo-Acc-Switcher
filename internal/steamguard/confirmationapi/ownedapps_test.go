@@ -62,10 +62,9 @@ func TestFetchOwnedAppsAcceptsCredentialsWithoutASessionID(t *testing.T) {
 	}
 }
 
-// The failure that matters: Steam answers an unauthorised caller with HTTP 200
-// and an empty response object, which is the same shape an account owning
-// nothing would produce. Reading it as an empty library would cache a wrong
-// answer indistinguishable from a right one.
+// Steam answers an unauthorised caller with HTTP 200 and an empty response
+// object, the same shape an account owning nothing would produce. Reading it as
+// an empty library would cache a wrong answer indistinguishable from a right one.
 func TestParseOwnedAppsTreatsAnEmptyResponseAsReauth(t *testing.T) {
 	for name, body := range map[string]string{
 		"empty response object": `{"response":{}}`,

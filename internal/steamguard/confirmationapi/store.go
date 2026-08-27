@@ -39,8 +39,7 @@ func (c *Client) FetchCS2StorePage(ctx context.Context, credentials Credentials)
 	headers.Set("User-Agent", protocol.UserAgent)
 	headers.Set("Cookie", storeCookie(credentials))
 	// RouteTransfer, not RouteRequest: the route selects a fixed host allowlist,
-	// and store.steampowered.com is only on the transfer one. This is a request
-	// matching an existing permission, not a widening of it.
+	// and store.steampowered.com is only on the transfer one.
 	response, err := c.protocol.Do(ctx, protocol.Request{
 		Method: http.MethodGet, Endpoint: cs2StorePageURL, Route: protocol.RouteTransfer,
 		Header: headers, Timeout: RequestTimeout, MaxResponseBytes: maxStorePageBytes,

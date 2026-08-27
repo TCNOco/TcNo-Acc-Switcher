@@ -509,8 +509,6 @@ input.acc:checked + label.acc { border-color: var(--accent) !important; backgrou
 .fancyLink, a { color: #0000ff; text-decoration: underline; }
 .fancyLink:hover, a:hover { color: #ff0000; }
 
-/* ---- Steam Guard ---- */
-
 /* Confirmations window: Luna buttons, a white list, warm panel surfaces. */
 .confirmations-refresh,
 .confirmations-status button,

@@ -16,7 +16,7 @@ const (
 // Highest field number each response is known to define. Anything above is a
 // field Steam added later; protobuf exists to let a reader skip those, and
 // rejecting them would turn a routine server-side addition into a hard failure
-// to enrol. Every field below is still validated exactly as before.
+// to enrol.
 const (
 	maxKnownAddResponseField      = 12
 	maxKnownFinalizeResponseField = 4
@@ -213,9 +213,8 @@ func unmarshalAddResponse(data []byte) (result addWireResult, err error) {
 			pending.AccountName = string(field.bytes)
 		case 7:
 			// token_gid is an opaque Steam identifier that nothing here reads as
-			// a number. SteamKit types it as a plain string and this package's
-			// own downstream validator accepts general text, so demanding
-			// decimal digits rejected responses that were perfectly valid.
+			// a number. SteamKit types it as a plain string, so general text is
+			// accepted rather than decimal digits.
 			if field.typeID != wireBytes || !validText(field.bytes, maxTokenGIDBytes, true) {
 				return addWireResult{}, invalidResponse("token GID")
 			}
@@ -271,8 +270,7 @@ func unmarshalAddResponse(data []byte) (result addWireResult, err error) {
 		// sent the user their confirmation code. Throwing the response away
 		// over a confirmation type this build has not heard of would discard
 		// the account's secrets while leaving the enrolment half-done on
-		// Steam's side. Unknown means "ask the user for the code" - a state
-		// this package already defines and the flow already handles.
+		// Steam's side. Unknown means "ask the user for the code".
 		pending.Confirmation = ConfirmationUnknown
 	}
 	switch {

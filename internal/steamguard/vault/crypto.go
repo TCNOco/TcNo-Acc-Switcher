@@ -171,8 +171,7 @@ func factorMaterial(factor slotFactor, creds Credentials) ([]byte, error) {
 
 // factorIdentityMatches reports whether the material offered for this factor is
 // the material this factor was enrolled with, where the caller knew which it
-// held. An unidentified credential matches anything, which is what every caller
-// did before identity was carried at all.
+// held. An unidentified credential matches anything.
 func factorIdentityMatches(factor slotFactor, creds Credentials) bool {
 	switch factor.Type {
 	case FactorKeyfile:
@@ -586,10 +585,8 @@ const maxCredentialID = 1024
 // decodeCredentialID validates a stored security-key handle.
 //
 // Handles are base64url, which is what WebAuthn uses and what the platform
-// driver writes. Validating them with the standard alphabet only worked for
-// handles that happened to contain none of the two characters the alphabets
-// disagree on, so roughly a quarter of keys enrolled and the rest were rejected
-// as a corrupt vault.
+// driver writes. The standard alphabet rejects any handle carrying one of the
+// two characters the alphabets disagree on, as a corrupt vault.
 func decodeCredentialID(value string) ([]byte, error) {
 	if len(value) > base64.RawURLEncoding.EncodedLen(maxCredentialID)+4 {
 		return nil, ErrInvalidFormat

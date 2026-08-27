@@ -26,11 +26,10 @@ var defaultProfileXMLRetryPolicy = profileXMLRetryPolicy{
 // Steam could not be reached at all.
 //
 // The policy above only covers the attempts for one account inside one round.
-// What went wrong for users is the round itself: a machine resuming from sleep
-// runs the refresh before its network adapter is up, every account fails at
-// once, and with the account list already cached nothing ever asks for another
-// round - so the failure sat on every tile until something unrelated happened
-// to trigger one.
+// A machine resuming from sleep runs the refresh before its network adapter is
+// up and every account fails at once; with the account list already cached
+// nothing else ever asks for another round, so without this the failure sits on
+// every tile until something unrelated happens to trigger one.
 var profileRefreshRetryDelays = []time.Duration{
 	30 * time.Second,
 	time.Minute,
@@ -134,11 +133,9 @@ func isTransientProfileRefreshError(err error) bool {
 		return httpErr.StatusCode == 408 || httpErr.StatusCode == 425 || httpErr.StatusCode == 429 || httpErr.StatusCode >= 500
 	}
 	// Everything net/http reports before it has a response arrives as a
-	// *url.Error: DNS lookup, dial, TLS. A DNS "no such host" is the one that
-	// matters here - it reports neither Timeout nor Temporary, so it used to be
-	// treated as a verdict about the account and painted on every tile at once.
-	// It is nothing of the sort; on a machine that has just woken it means the
-	// adapter is not up yet, and the only right answer is to try again.
+	// *url.Error: DNS lookup, dial, TLS. A DNS "no such host" reports neither
+	// Timeout nor Temporary, but it is not a verdict about the account: on a
+	// machine that has just woken it means the adapter is not up yet.
 	var urlErr *url.Error
 	if errors.As(err, &urlErr) {
 		return true
