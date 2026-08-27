@@ -20,10 +20,9 @@ import (
 // because the map is refreshed against the store on its own schedule while this file
 // only holds what this machine happened to look at.
 //
-// The format is undocumented and Valve has revised it - v29 moved key names into a
-// string table appended to the file. Every failure here is soft: an unknown version,
-// a short read or a malformed record yields no names rather than an error, and the
-// caller falls back exactly as it would with no Steam install at all.
+// The format is undocumented and Valve has revised it. Every failure here is soft:
+// an unknown version, a short read or a malformed record yields no names rather than
+// an error, and the caller falls back exactly as it would with no Steam install at all.
 const (
 	appInfoMagicV28 = 0x07564428
 	appInfoMagicV29 = 0x07564429

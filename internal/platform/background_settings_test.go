@@ -84,7 +84,7 @@ func TestBuildAppBgInfoCarriesMeasuredLuma(t *testing.T) {
 	}
 
 	// No image means no background to measure, so the luma must not leak through
-	// and convince the UI it knows how bright a picture that is not showing is.
+	// and tell the UI how bright a picture that is not showing is.
 	if info := buildAppBgInfo("", 0, 0, "top", "cover", false, luma, ""); info.Luma.Measured {
 		t.Fatalf("luma = %+v, want unmeasured when there is no image", info.Luma)
 	}

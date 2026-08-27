@@ -21,8 +21,7 @@ import (
 // all write with no service lock at all. Without this, a background writer
 // landing between a UI read and its write silently drops the user's edit.
 //
-// Callers take it around the whole load-mutate-save, not just the save - the
-// mutex is only useful if the read is inside it.
+// Callers take it around the whole load-mutate-save, not just the save.
 var idsFileMu sync.Mutex
 
 // withIdsFile runs a read-modify-write over ids.json under idsFileMu. mutate

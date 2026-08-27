@@ -289,8 +289,7 @@ func decodeXOR1(img *image.NRGBA, data []byte, base, stride, w, h int, pal []col
 //
 // A 32bpp icon normally carries transparency in its alpha channel and ships an
 // all-zero AND plane, so whole zero mask bytes are skipped instead of being
-// tested bit by bit, and set bits write the alpha byte directly rather than
-// reading and rewriting a whole pixel.
+// tested bit by bit.
 func applyANDMask(img *image.NRGBA, data []byte, base, stride, w, h int) {
 	maskBytes := (w + 7) / 8
 	for vy := 0; vy < h; vy++ {

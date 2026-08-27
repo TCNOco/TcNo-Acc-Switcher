@@ -50,8 +50,7 @@ const (
 
 // probeConcurrencies is the ladder. Cumulative counts and elapsed time are
 // carried across rungs, so a limit expressed as "N requests then no" and one
-// expressed as "N per second" can be told apart at the end - the first version
-// of this could not, and reported a tripped miniprofile endpoint as a clean run.
+// expressed as "N per second" can be told apart at the end.
 var probeConcurrencies = []int{1, 2, 3, 5, 8, 12}
 
 // probeEndpoint is one measurable Steam surface.
@@ -201,7 +200,7 @@ func (o probeOutcome) statusHistogram() string {
 //
 // 500 and 403 are in the list because that is what the community endpoints
 // actually say. Neither is a 429, and a probe that waited for a 429 would report
-// a blocked endpoint as healthy - which is precisely what happened the first time.
+// a blocked endpoint as healthy.
 func isRefusal(status int) bool {
 	switch status {
 	case http.StatusTooManyRequests, http.StatusForbidden, http.StatusUnauthorized,
@@ -235,8 +234,8 @@ func probeCacheAllowed() bool {
 }
 
 // bustCache appends a nonce so the edge has nothing to replay. Without it the
-// ladder measures Akamai's throughput for a handful of cached objects - which on
-// the profile endpoint read as 456 requests a second and meant nothing at all.
+// ladder measures Akamai's throughput for a handful of cached objects, which on
+// the profile endpoint read as 456 requests a second.
 func bustCache(url string, sequence int, at time.Time) string {
 	if probeCacheAllowed() {
 		return url

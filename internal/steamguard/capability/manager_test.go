@@ -60,9 +60,8 @@ func TestRebindMovesTheGenerationWithoutReissuingTheToken(t *testing.T) {
 
 	m.Rebind(" after ")
 
-	// The point of the whole exercise: the window holds the same token string
-	// across a background write and its next call is authorized against the
-	// generation that write committed.
+	// The window holds the same token string across a background write and its
+	// next call is authorized against the generation that write committed.
 	after := binding
 	after.VaultGeneration = "after"
 	if err := m.Validate(after, token); err != nil {

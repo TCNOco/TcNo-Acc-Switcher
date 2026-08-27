@@ -198,9 +198,8 @@ func TestFindLibraryCacheIconPrefersSquareClientIcon(t *testing.T) {
 
 func TestFindLibraryCacheIconPrefersTheSmallestSquareAsset(t *testing.T) {
 	lc := t.TempDir()
-	// 25 of 5947 app folders measured on a real install hold a second, far larger
-	// square asset next to the client icon. The list row wants the icon, not the
-	// multi-megabyte poster.
+	// A few app folders hold a second, far larger square asset next to the client
+	// icon. The list row wants the icon, not the multi-megabyte poster.
 	small := strings.Repeat("b", 40) + ".jpg"
 	large := strings.Repeat("1", 40) + ".jpg"
 	writeIconFile(t, filepath.Join(lc, "570", small), squareJPEG(t, 32))
@@ -356,9 +355,7 @@ func TestEnsureGameIconCachesTheLocalSquareIcon(t *testing.T) {
 	}
 }
 
-// The regression behind "every game image is broken": the list handed out a URL
-// per row from a path builder, while the files were still being fetched in the
-// background. Only ids whose bytes are actually on disk may report a URL.
+// Only ids whose bytes are actually on disk may report a URL.
 func TestEnsureLocalGameIconsOnlyReportsIconsThatExist(t *testing.T) {
 	dir, doer := useTempIconCache(t)
 	lc := t.TempDir()

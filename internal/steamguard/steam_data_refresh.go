@@ -26,8 +26,7 @@ type steamDataRefreshState struct {
 // Unlocking the vault is the moment the app can answer questions it could not a
 // second earlier - CS2 cooldowns, ranks and Prime all come from an authenticated
 // sweep - and adding an account is the moment a tile exists with nothing behind
-// it. Either way the right answer is current data, not whatever survives until
-// the next cache lifetime expires hours from now.
+// it.
 //
 // force is for the add: it skips the cooldown sweep's rate limit so an account
 // that has never been checked is checked, without also restarting the bulk

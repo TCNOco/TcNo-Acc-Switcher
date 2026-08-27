@@ -39,8 +39,7 @@ func WriteShortcutLnk(shortcutPath, targetExe, arguments, workingDir, descriptio
 	}
 	// The .lnk is already on disk and works. The AppUserModelID only decides how
 	// Windows groups and pins it, so losing it must not turn a created shortcut
-	// into "could not create shortcut" — which is what a missing propsys export
-	// used to do.
+	// into "could not create shortcut".
 	if err := setShortcutAppUserModelID(shortcutPath, appUserModelID); err != nil {
 		slogWin().Warn("shortcut created without a shell identity; taskbar grouping may be wrong",
 			"path", shortcutPath, "err", err)

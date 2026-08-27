@@ -6,9 +6,8 @@ import (
 	"testing"
 )
 
-// setTestAppData sets %APPDATA% to a temporary directory for the duration of the test
-// and restores the original value on cleanup. This prevents tests from seeing the
-// host machine's real TcNo Account Switcher config in %AppData%.
+// setTestAppData points the config dir at a temporary directory so tests never see
+// the host machine's real TcNo Account Switcher config.
 // All three variables, because DefaultUserDataDir goes through os.UserConfigDir:
 // that reads APPDATA on Windows, but XDG_CONFIG_HOME then HOME everywhere else.
 func setTestAppData(t *testing.T) {

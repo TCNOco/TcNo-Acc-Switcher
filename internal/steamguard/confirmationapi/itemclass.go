@@ -51,9 +51,7 @@ type ItemClass struct {
 	Tags           []ItemTag         `json:"tags,omitempty"`
 }
 
-// itemClassWire mirrors the JSON Steam passes to BuildHover. Numbers arrive as
-// either numbers or strings depending on the field, so the loose ones are read as
-// raw JSON and normalised.
+// itemClassWire mirrors the JSON Steam passes to BuildHover.
 type itemClassWire struct {
 	Name           string `json:"name"`
 	MarketHashName string `json:"market_hash_name"`

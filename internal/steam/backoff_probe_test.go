@@ -16,15 +16,11 @@ import (
 //	$env:TCNO_BACKOFF = "1"
 //	go test ./internal/steam -run BackoffProbe -v -timeout 30m
 //
-// The storm probe measured recovery by asking every ten seconds and got 52s and
-// 62s. Those are upper bounds at best and may be self-inflicted: Steam's harsher
-// rate limiting is widely reported to restart its clock when you keep asking
-// during a block, so a dense poll can hold a door shut that it is trying to open.
-//
-// So this one goes completely silent first, then asks once. If the wall clears
-// sooner than the polled runs suggested, the polling was the problem and the app
-// must never retry into a refusal - it must wait out a fixed period and only then
-// try, exactly once.
+// The storm probe polled every ten seconds and saw recovery at 52s and 62s.
+// Steam's harsher rate limiting is reported to restart its clock while you keep
+// asking, so those are upper bounds. This one goes silent first, then asks once:
+// if the wall clears sooner, polling was what held it shut, and the app must
+// wait out a fixed period and try exactly once rather than retry into a refusal.
 //
 // Run it more than once at different TCNO_BACKOFF_QUIET_SECONDS to bracket the
 // answer. Each run costs one deliberate trip of the limit.

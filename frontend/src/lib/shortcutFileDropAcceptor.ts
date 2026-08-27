@@ -14,7 +14,6 @@ function isNoShortcutFilesDrop(err: unknown): boolean {
   );
 }
 
-/** Creates a drop acceptor that imports shortcuts for a platform. */
 export function createShortcutFileDropAcceptor(
   getPlatformName: () => string,
   onSuccess: (count: number) => void,

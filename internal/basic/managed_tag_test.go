@@ -62,9 +62,9 @@ func TestSetManagedTagCreatesTheDefinitionAndAssignsIt(t *testing.T) {
 }
 
 func TestSetManagedTagNeverWritesADefinitionLevelExpiry(t *testing.T) {
-	// The single most important property. pruneExpiredTagsInFile strips a
-	// definition-expired tag from EVERY account, so one account's cooldown
-	// lapsing would untag everyone else still on cooldown.
+	// pruneExpiredTagsInFile strips a definition-expired tag from EVERY account,
+	// so one account's cooldown lapsing would untag everyone else still on
+	// cooldown.
 	useManagedTagRoot(t)
 	expiry := time.Now().Add(time.Hour).UTC().Format(time.RFC3339)
 	if err := SetManagedTag(managedTagPlatform, managedTagAccount, ManagedTagCS2Cooldown, true, expiry); err != nil {

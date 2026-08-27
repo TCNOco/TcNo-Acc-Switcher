@@ -96,7 +96,7 @@ func ExpandWindowsPath(s string) string {
 	return filepath.Clean(out)
 }
 
-// ExpandPathTokens applies standard env expansion then context tokens (order: env first, then ctx).
+// ExpandPathTokens applies standard env expansion then context tokens.
 func ExpandPathTokens(s string, ctx PathTokenContext) string {
 	s = ExpandWindowsPath(s)
 	if ctx.PlatformFolder != "" {

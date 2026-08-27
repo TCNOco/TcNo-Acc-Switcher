@@ -1,9 +1,7 @@
 // Package filelog provides the app's on-disk log sink.
 //
 // Release builds link with -H windowsgui and so have no console attached at
-// all: anything written to os.Stderr is discarded, which left a shipped build
-// with no record of a failed start, a failed swap or an unresolvable path. This
-// gives those writes somewhere to land.
+// all: anything written to os.Stderr is discarded.
 package filelog
 
 import (

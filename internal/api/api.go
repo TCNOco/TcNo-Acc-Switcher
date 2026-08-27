@@ -15,8 +15,7 @@ func AnonymousStatsUploadURL() string {
 	return baseURL + "/stats/"
 }
 
-// Singular. The plural form 404s, so every crash report this app has ever tried
-// to send was rejected and then dropped.
+// Singular. The plural form 404s and the report is dropped.
 func CrashURL() string {
 	return baseURL + "/crash/"
 }

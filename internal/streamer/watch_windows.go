@@ -18,7 +18,7 @@ import (
 // Detection never polls the process table on a timer.
 //
 // Start: two WinEvent hooks. Windows delivers a message only when a window is shown
-// or takes the foreground, so an idle machine costs literally nothing. Each event is
+// or takes the foreground, so an idle machine costs nothing. Each event is
 // a PID lookup against a bounded map; only a PID we have not classified yet is worth
 // an OpenProcess to read its image name.
 //
@@ -197,7 +197,7 @@ func (w *watcher) runMessageLoop(generation uint64) {
 }
 
 // winEventProc runs on the watcher thread for every hooked event. Everything before
-// the seen-map check is a handful of instructions, which is the point.
+// the seen-map check must stay a handful of instructions.
 func winEventProc(_ uintptr, _ uint32, hwnd uintptr, idObject, idChild int32, _, _ uint32) uintptr {
 	if hwnd == 0 || idObject != objidWindow || idChild != childidSelf {
 		return 0

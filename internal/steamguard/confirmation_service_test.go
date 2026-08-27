@@ -169,11 +169,9 @@ func issueConfirmationCapability(t *testing.T, service *Service) string {
 	return token
 }
 
-// Opening a trade and the ten-second list poll used to share one cancel slot, so
-// whichever started second killed the first. A poll landing before the detail
-// page arrived left the trade blank; one landing part-way through its icons left
-// some tiles empty. Both looked like they fixed themselves on a second open,
-// because by then Steam's page and the images were already cached.
+// Opening a trade and the ten-second list poll must not share one cancel slot:
+// whichever started second kills the first, leaving the trade blank or its icon
+// tiles half-filled.
 func TestConfirmationDetailAndListRefreshDoNotCancelEachOther(t *testing.T) {
 	service := &Service{}
 

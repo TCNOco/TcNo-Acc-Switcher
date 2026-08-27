@@ -64,8 +64,7 @@ type VaultFactorStatus struct {
 	PasswordOnly bool          `json:"passwordOnly"`
 	// PasswordOpens reports whether some slot needs nothing but the password.
 	// Unlike PasswordOnly this stays true once other factors are enrolled
-	// alongside it, which is what tells a caller whether asking for a password
-	// alone is enough to reopen the vault.
+	// alongside it.
 	PasswordOpens bool `json:"passwordOpens"`
 	// KeyfileCount and SecurityKeyCount let the settings screen offer "add" or
 	// "remove" per factor kind without re-deriving it from Factors. Keyfiles are
@@ -91,9 +90,8 @@ func (s *Service) ListVaultFactors() (VaultFactorStatus, error) {
 }
 
 // primaryKind names a way in after the thing the user holds. A slot needing a
-// password and a keyfile is a keyfile you also need the password for, not a
-// password: the password is the accompaniment, and calling it anything else
-// would put two rows in the settings list that mean the same slot.
+// password and a keyfile is a keyfile you also need the password for; naming it
+// after the password would put two rows in the list that mean the same slot.
 func primaryKind(factors []string) string {
 	for _, kind := range factors {
 		if kind != vault.FactorPassword {
@@ -153,8 +151,7 @@ func summariseFactors(slots []vault.SlotInfo) VaultFactorStatus {
 			factor.Removable, factor.Blocks = false, blockBackupNeeded
 		}
 		// Not a block: a vault opened only by a security key is a setup someone
-		// may well want. But a row labelled "keyfile" does not say it is also
-		// carrying the password, so removing it has to be confirmed as such.
+		// may well want, so this flags the row rather than refusing the removal.
 		factor.LastPasswordWayIn = usesPassword && withPasswordCount <= 1
 		status.Factors = append(status.Factors, factor)
 	}
@@ -205,8 +202,6 @@ func (s *Service) CreateVaultBackupKey(password string) (string, error) {
 // operation lock forever if the prompt is never answered.
 const securityKeyTimeout = 2 * time.Minute
 
-// authenticator is a field so tests substitute a deterministic fake. Nil means
-// the platform driver.
 func (s *Service) securityKeyAuthenticator() hwkey.Authenticator {
 	if s.authenticator != nil {
 		return s.authenticator
@@ -254,8 +249,7 @@ func (s *Service) EnrollVaultSecurityKey(password, name, keyPassword string) err
 	}
 	// Validated before the device is touched, so a typo does not cost the user a
 	// key ceremony and leave a slot nothing can open. The label counts too: it is
-	// bounded in bytes by the header, and a name in a non-Latin script used to
-	// pass here and be refused as a corrupt vault after two touches.
+	// bounded in bytes by the header.
 	if keyPassword != "" {
 		if err := passwordpolicy.ValidateNew(keyPassword); err != nil {
 			return err
@@ -266,9 +260,7 @@ func (s *Service) EnrollVaultSecurityKey(password, name, keyPassword string) err
 		return vault.ErrInvalidFormat
 	}
 
-	// The ceremony waits on the user twice. Held under the service lock it
-	// blocked Lock Now, app-lock and every other Steam Guard call for as long as
-	// nobody touched the key.
+	// The ceremony waits on the user twice.
 	var cred hwkey.Credential
 	var secret []byte
 	s.promptWithoutServiceLock(func() {
@@ -337,8 +329,7 @@ func factorName(name, fallback string) string {
 
 // maxFactorNameBytes leaves room inside the vault's own label limit for the
 // " (12)" a duplicate name picks up. Bytes, not runes: the vault counts bytes,
-// so a rune cap let a name in Japanese through here and had it rejected as a
-// corrupt vault - after the user had already touched their security key twice.
+// so a rune cap admits a label the vault then rejects as corrupt.
 const maxFactorNameBytes = vault.MaxSlotLabelBytes - 8
 
 // truncateToBytes cuts a string to a byte budget without splitting a rune.
@@ -376,16 +367,14 @@ func uniqueFactorName(name, fallback string, existing []vault.SlotInfo) string {
 
 // evaluateSecurityKeyLocked offers every enrolled credential at once and returns
 // the secret of whichever key is actually attached, along with the handle that
-// answered. Several keys can be enrolled - a spare kept elsewhere is the point -
-// and the user is holding one of them, so the driver is asked to match rather
-// than being interrogated per credential.
+// answered. Several keys can be enrolled and the user is holding one of them, so
+// the driver is asked to match rather than being interrogated per credential.
 //
-// Callers hold s.mu. It is released for the ceremony itself: the prompt waits on
-// a person, and holding the service lock across it made Lock Now, app-lock and
-// every other Steam Guard call wait with them - so the vault stayed open on an
-// unattended machine for exactly as long as nobody answered. Vault state can
-// change while it is released, so callers re-read it afterwards rather than
-// trusting anything they read before.
+// Callers hold s.mu. It is released for the ceremony itself, which waits on a
+// person: holding the service lock across it blocks Lock Now, app-lock and every
+// other Steam Guard call, leaving the vault open on an unattended machine. Vault
+// state can change while it is released, so callers re-read it afterwards rather
+// than trusting anything they read before.
 func (s *Service) evaluateSecurityKeyLocked(v *vault.Vault) (string, []byte, error) {
 	refs := v.SecurityKeys()
 	if len(refs) == 0 {
@@ -459,8 +448,7 @@ func (s *Service) PickVaultKeyfile() (string, error) {
 
 // SaveVaultBackupKey writes a backup key to a file the user picks. Go writes it
 // rather than the webview offering a download, because the navigation guard
-// blocks the anchor a browser-style download needs, and a native save dialog is
-// what a desktop app should be doing anyway.
+// blocks the anchor a browser-style download needs.
 func (s *Service) SaveVaultBackupKey(code string) (string, error) {
 	// Parsed, not just non-empty: this refuses to write a file that would not
 	// open the vault, which is worse than writing nothing.
@@ -566,9 +554,7 @@ func (s *Service) EnrollVaultKeyfile(password, keyfilePassword string) (string, 
 	if save == nil {
 		save = saveKeyfileDialog
 	}
-	// The save dialog waits on the user with no timeout of its own. Holding the
-	// service lock across it left the vault open and unlockable - Lock Now and
-	// app-lock both wait on this mutex - for as long as the dialog sat there.
+	// The save dialog waits on the user with no timeout of its own.
 	var path string
 	s.promptWithoutServiceLock(func() { path, err = save(keyfile) })
 	if err != nil {
@@ -662,10 +648,8 @@ func passwordOnlySlotIDs(slots []vault.SlotInfo) []string {
 // The vault itself refuses only to remove the very last slot. The rules that
 // stop a user stranding themselves in practice - do not leave a paper backup key
 // as the only way in, do not take the backup key away while a losable factor is
-// enrolled - are decided here, and they are decided here rather than only in the
-// settings screen because the outcome of getting them wrong is a vault nobody
-// can read. Enrolment already enforces its half server-side; removal is the
-// direction that loses data.
+// enrolled - are decided here rather than only in the settings screen, because
+// the outcome of getting them wrong is a vault nobody can read.
 func (s *Service) RemoveVaultFactor(password, slotID string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -704,10 +688,9 @@ func (s *Service) unlockedVaultLocked(password string) (*vault.Vault, error) {
 //
 // It has to outlive the dialogs the user walks through between authenticating
 // and the change landing, and those are paced by a person: adding a keyfile can
-// mint a backup key first and stop to have it written down. Two minutes cut that
-// flow in half. What it still bounds is the case it exists for - an unlocked
-// vault, remembered for the whole session, answering factor changes to a caller
-// that never presented anything.
+// mint a backup key first and stop to have it written down. What it still bounds
+// is the case it exists for - an unlocked vault, remembered for the whole
+// session, answering factor changes to a caller that never presented anything.
 const managementWindow = 10 * time.Minute
 
 // credentialsSupplied reports whether the caller offered anything at all to
@@ -775,8 +758,7 @@ func (s *Service) managementGateOpenLocked() bool {
 // Management has to accept every factor, not just the password. The unlock lease
 // is five minutes, so by the time someone reaches the settings screen the vault
 // is usually locked again, and on a vault whose slot needs a password and a
-// keyfile a password alone cannot reopen it - which made every factor action
-// impossible once the first combined factor was enrolled.
+// keyfile a password alone cannot reopen it.
 //
 // An already-open vault is not authorisation. With "remember for session" the
 // lease lasts the whole session, so returning the vault to anyone who asked let
@@ -861,9 +843,7 @@ func (s *Service) unlockWithSecurityKeyFallbackLocked(v *vault.Vault, creds *vau
 // Backup and restore rekey a copy of the header, which re-derives every factor
 // of every slot the credentials can open. The security-key descriptors travel
 // with a backup exactly so an enrolled key still opens a copy on another
-// machine - but neither path ever asked the device, so a vault whose only
-// interactive way in is a key could be backed up only by transcribing the paper
-// backup key with the key sitting in the port. Failure is silent on purpose:
+// machine, so the device has to be asked here. Failure is silent on purpose:
 // the caller reports what the credentials could not do, not that a key it may
 // not have was not offered.
 func (s *Service) fillSecurityKeyLocked(v *vault.Vault, creds *vault.Credentials) {
@@ -947,9 +927,8 @@ func (s *Service) UnlockVaultForManagement(password, keyfilePath, backupKey stri
 	}
 	if v.IsLocked() {
 		// Unlocking with these credentials is itself the proof, so the answer is
-		// not demanded a second time. It used to be, and on a key-only vault
-		// that meant two Windows Hello prompts for one management action,
-		// because the evaluated secret was wiped before it could be reused.
+		// not demanded a second time; on a key-only vault that would mean two
+		// Windows Hello prompts for one management action.
 		if err := s.unlockWithSecurityKeyFallbackLocked(v, &creds); err != nil {
 			return err
 		}

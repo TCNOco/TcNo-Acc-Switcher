@@ -27,14 +27,9 @@ func setTestRegValue(t *testing.T, keyPath, valueName, data string) {
 	})
 }
 
-// ---------------------------------------------------------------------------
-// Test 26: REG entries in LoginFiles — save writes reg.json, Login restores
-// ---------------------------------------------------------------------------
-
 func TestFlow_RegistryInLoginFiles(t *testing.T) {
 	env := newFlowTestEnv(t)
 
-	// Create a real registry value in a test key
 	regKeyPath := `TestValues`
 	regFullKey := flowTestRegKey(regKeyPath)
 	regFullValue := regFullKey + ":StringVal"
@@ -49,21 +44,18 @@ func TestFlow_RegistryInLoginFiles(t *testing.T) {
 	// Also add a file so we can verify the save succeeded
 	mustWrite(t, filepath.Join(env.instDir, "%Platform_Folder%\\config.cfg"), "file-data")
 
-	// Add a regular file entry so we know the save flow executed
 	fc.Descriptor.LoginFiles["%Platform_Folder%\\config.cfg"] = "Saved/config.cfg"
 
 	if err := saveCurrentAfterKill(FlowDeps{}, "RegAccount", fc); err != nil {
 		t.Fatalf("save: %v", err)
 	}
 
-	// Verify reg.json was written in the cache
 	cacheDir := env.cacheDir("RegAccount")
 	regJSONPath := filepath.Join(cacheDir, "reg.json")
 	if !pathExists(t, regJSONPath) {
 		t.Fatal("reg.json was not created in cache directory")
 	}
 
-	// Parse reg.json and verify it contains the REG entry
 	data, err := os.ReadFile(regJSONPath)
 	if err != nil {
 		t.Fatalf("read reg.json: %v", err)
@@ -87,18 +79,15 @@ func TestFlow_RegistryInLoginFiles(t *testing.T) {
 		t.Errorf("reg.json does not contain REG entry for %s", regFullValue)
 	}
 
-	// Delete and re-create the registry value to verify restore
 	t.Cleanup(func() { _ = winutil.RegistryDelete(regFullValue) })
 	if err := winutil.RegistryDelete(regFullValue); err != nil {
 		t.Fatalf("delete reg value: %v", err)
 	}
 
-	// Restore via Login
 	if err := Login(FlowDeps{}, fc, "RegAccount"); err != nil {
 		t.Fatalf("Login: %v", err)
 	}
 
-	// Verify the registry value was restored
 	restored, _, err := winutil.RegistryRead(regFullKey + ":StringVal")
 	if err != nil {
 		t.Fatalf("RegistryRead after Login: %v", err)
@@ -112,14 +101,9 @@ func TestFlow_RegistryInLoginFiles(t *testing.T) {
 	}
 }
 
-// ---------------------------------------------------------------------------
-// Test 27: REG:* (all values in a key) save/restore
-// ---------------------------------------------------------------------------
-
 func TestFlow_RegistryAllValuesInKey(t *testing.T) {
 	env := newFlowTestEnv(t)
 
-	// Create multiple values in a test key
 	keyPath := `AllValues`
 	setTestRegValue(t, keyPath, "Val1", "first")
 	setTestRegValue(t, keyPath, "Val2", "second")
@@ -134,7 +118,6 @@ func TestFlow_RegistryAllValuesInKey(t *testing.T) {
 	}
 	fc.Descriptor.AllFilesRequired = false
 
-	// Add a file entry
 	mustWrite(t, filepath.Join(env.instDir, "%Platform_Folder%\\config.cfg"), "x")
 	fc.Descriptor.LoginFiles["%Platform_Folder%\\config.cfg"] = "Saved/config.cfg"
 
@@ -153,7 +136,6 @@ func TestFlow_RegistryAllValuesInKey(t *testing.T) {
 		}
 	}
 
-	// Delete and restore
 	_ = winutil.RegistryDelete(flowTestRegKey(keyPath) + ":Val1")
 	_ = winutil.RegistryDelete(flowTestRegKey(keyPath) + ":Val2")
 
@@ -171,10 +153,6 @@ func TestFlow_RegistryAllValuesInKey(t *testing.T) {
 		t.Errorf("Val2 = %v, want second", v2)
 	}
 }
-
-// ---------------------------------------------------------------------------
-// Test 28: REG:path:glob* value save/restore
-// ---------------------------------------------------------------------------
 
 func TestFlow_RegistryGlobValues(t *testing.T) {
 	env := newFlowTestEnv(t)
@@ -223,7 +201,6 @@ func TestFlow_RegistryGlobValues(t *testing.T) {
 		}
 	}
 
-	// Delete Settings_* values and restore
 	_ = winutil.RegistryDelete(flowTestRegKey(keyPath) + ":Settings_json")
 	_ = winutil.RegistryDelete(flowTestRegKey(keyPath) + ":Settings_bak")
 
@@ -240,10 +217,6 @@ func TestFlow_RegistryGlobValues(t *testing.T) {
 		t.Errorf("Settings_bak = %v", sb)
 	}
 }
-
-// ---------------------------------------------------------------------------
-// Test 29: REG in PathListToClear deletes registry on logout
-// ---------------------------------------------------------------------------
 
 func TestFlow_RegistryOnClear(t *testing.T) {
 	env := newFlowTestEnv(t)
@@ -270,10 +243,6 @@ func TestFlow_RegistryOnClear(t *testing.T) {
 		t.Error("registry value should have been deleted on clear")
 	}
 }
-
-// ---------------------------------------------------------------------------
-// Test 30: REG in PathListToClear with RegDeleteOnClear=false empties
-// ---------------------------------------------------------------------------
 
 func TestFlow_RegistryOnClear_Empty(t *testing.T) {
 	env := newFlowTestEnv(t)

@@ -146,7 +146,7 @@ describe("adding an account", () => {
   // Acquiring on mount used the id from the menu request, which for an add is
   // empty: it threw, and no lease meant no capture protection either.
   it("does not take a capability before an attempt exists", () => {
-    const mount = fragmentAfter('} else if (entry === "add-account") {', 400);
+    const mount = functionBodyBefore('} else if (entry === "add-account") {', "} else {");
     expect(mount).not.toContain("contentProtection.acquire(account.id)");
     expect(mount).toContain("focusCurrentScreen()");
   });

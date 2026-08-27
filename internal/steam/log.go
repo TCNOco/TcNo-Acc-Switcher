@@ -10,7 +10,7 @@ func steamLog() *slog.Logger {
 	return slog.Default().With("component", "steam")
 }
 
-// tailSteamID logs only the last 6 digits to reduce PII in logs.
+// tailSteamID keeps only the last 6 digits to reduce PII in logs.
 func tailSteamID(id string) string {
 	id = strings.TrimSpace(id)
 	if len(id) <= 6 {

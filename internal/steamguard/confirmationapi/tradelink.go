@@ -20,11 +20,10 @@ const (
 // only place Steam shows an account its own trade URL.
 //
 // The method is fixed to GET and the path suffix is a literal, for the same
-// reason gcpd.go hard-codes its app id - but with sharper teeth here. The same
-// page answers a POST by ROTATING the trade token, which would silently break
-// every trade link the user has already handed out to sites, bots and friends.
-// There must be no request this package can be talked into making that has that
-// effect.
+// reason gcpd.go hard-codes its app id. The same page answers a POST by
+// ROTATING the trade token, which would silently break every trade link the
+// user has already handed out to sites, bots and friends. There must be no
+// request this package can be talked into making that has that effect.
 func (c *Client) FetchTradeOfferPrivacyPage(ctx context.Context, credentials Credentials) ([]byte, error) {
 	if c == nil || c.protocol == nil || ctx == nil || c.offline == nil {
 		return nil, &Error{Kind: FailureInvalid}
@@ -51,10 +50,9 @@ func (c *Client) FetchTradeOfferPrivacyPage(ctx context.Context, credentials Cre
 	// Steam canonicalises /profiles/<id64>/... to /id/<vanity>/... for any account
 	// with a custom URL, so a large share of real accounts answer this with a 302
 	// rather than the page. Following it needs the cookies, or the hop lands on
-	// the login page and a perfectly good session reads as "sign in again" - which
-	// is exactly what it did. Same host only; a redirect anywhere else is still
-	// scrubbed, and a redirect to /login/ is followed and then recognised from the
-	// body it returns.
+	// the login page and a perfectly good session reads as "sign in again". Same
+	// host only; a redirect anywhere else is still scrubbed, and a redirect to
+	// /login/ is followed and then recognised from the body it returns.
 	//
 	// The budget is raised because Steam's own route to this page is longer than
 	// the default three hops - the canonicalisation, then the session handoff,

@@ -63,9 +63,8 @@ func seedProfileCache(t testing.TB, accounts int) []string {
 	return ids
 }
 
-// TestSnapshotMatchesPerAccountLookups is the correctness bar for replacing the
-// per-account probes: the snapshot must answer identically for every account,
-// including those with no cached image and those holding a manual lock.
+// The snapshot must answer identically to the per-account probes for every
+// account, including those with no cached image and those holding a manual lock.
 func TestSnapshotMatchesPerAccountLookups(t *testing.T) {
 	ids := seedProfileCache(t, 40)
 	snapshot, err := NewSnapshot(benchPlatform)

@@ -180,8 +180,7 @@ func TestParseReadsCompetitiveFromTheAggregateTableWhenPerMapIsBlank(t *testing.
 	t.Parallel()
 	// A real account shape: the overall standing is on the aggregate row and
 	// every per-map skill group is empty. Reading only the per-map table
-	// reported no competitive rank at all for these accounts, which made the
-	// stats collector decline and hand back to the third-party providers.
+	// reported no competitive rank at all for these accounts.
 	body := page(
 		rankTable(`<tr><td>Premier</td><td>84</td><td>2</td><td>60</td><td>22,887</td></tr>`+
 			`<tr><td>Competitive</td><td>854</td><td>136</td><td>858</td><td>12</td></tr>`) +
@@ -365,7 +364,7 @@ func TestParseIgnoresANonNumericSkillCell(t *testing.T) {
 // livePage mirrors a real ?tab=matchmaking response, captured 2026-08-07.
 // Column names, ordering, the " GMT" suffix on every instant and the empty
 // Skill Group cells are all exactly as Steam ships them; only the values are
-// changed. Every hand-written fixture above got at least one of those wrong.
+// changed.
 const livePage = `<html><head><title>Steam Community</title></head><body>
 <h1>Personal Game Data</h1>
 <table class="generic_kv_table">

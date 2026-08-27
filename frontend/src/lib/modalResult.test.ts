@@ -20,9 +20,7 @@ describe("modalResult", () => {
     await expect(pending).resolves.toEqual({ ok: true });
   });
 
-  // Escape and the backdrop close the modal without the body reporting
-  // anything. Awaiting onDone alone left the caller hanging there, which reads
-  // as a button that does nothing rather than as a cancelled dialog.
+  // Escape and the backdrop close the modal without the body reporting anything.
   it("resolves null when the modal is dismissed without a result", async () => {
     const pending = modalResult<string>("Unlock", body, {});
 

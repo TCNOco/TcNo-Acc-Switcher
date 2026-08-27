@@ -44,11 +44,9 @@ func RegisterSteamGuardSweepTrigger(fn func(force bool)) {
 // RequestSteamGuardSweep asks for the CS2 cooldown, rank and Prime sweep and the
 // owned games sweep to run now.
 //
-// This is the only way to reach the figures that need a signed-in session.
-// Nothing the Steam service itself can do produces a CS2 rank: it comes from an
-// authenticated GCPD read, so a refresh that does not come through here leaves
-// the rank at whatever the last sweep managed - which, if that sweep ran while
-// the network was down, is nothing at all.
+// This is the only way to reach the figures that need a signed-in session: a
+// CS2 rank comes from an authenticated GCPD read, so a refresh that does not
+// come through here leaves the rank at whatever the last sweep managed.
 func RequestSteamGuardSweep(force bool) {
 	guardSweepMu.Lock()
 	fn := guardSweepTrigger

@@ -69,13 +69,12 @@ func SessionCookies(steamID64, accessToken, sessionID string) ([]Cookie, error) 
 	cookies := make([]Cookie, 0, len(sessionDomains)*5)
 	for _, domain := range sessionDomains {
 		cookies = append(cookies,
-			// Secure and SameSite=None are what Steam itself sets, and they are
-			// load bearing rather than cosmetic. Steam's pages pull resources
-			// across its own domains - a community page reaches store.steampowered
-			// .com for the header - and those are cross-site requests. Under a
-			// cookie API's usual Lax default the session is not sent with them, so
-			// the page half-loads and waits on requests that will never come back
-			// signed in.
+			// Secure and SameSite=None are what Steam itself sets. Steam's pages
+			// pull resources across its own domains - a community page reaches
+			// store.steampowered.com for the header - and those are cross-site
+			// requests. Under a cookie API's usual Lax default the session is not
+			// sent with them, so the page half-loads and waits on requests that
+			// will never come back signed in.
 			Cookie{
 				Name: "steamLoginSecure", Value: login, Domain: domain, Path: "/",
 				Secure: true, HTTPOnly: true, SameSite: SameSiteNone,

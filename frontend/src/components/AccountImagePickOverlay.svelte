@@ -4,9 +4,7 @@
   import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import { t } from "../stores/i18n";
 
-  /** When true, overlay is shown */
   export let open = false;
-  /** Account display name for copy */
   export let accountDisplayName = "";
   /** Show "Remove image" when current avatar is user-set */
   export let showRemoveButton = false;

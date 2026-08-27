@@ -53,10 +53,8 @@ func steamIconPolicy() confirmationicon.Policy {
 
 // confirmationIconCache turns remote icon URLs into files the webview may load.
 //
-// The cache is deliberately short-lived: it holds only what the open list refers
-// to. Every refresh prunes files no longer referenced, so a confirmation that has
-// been accepted or denied takes its icon with it, and closing the window clears
-// the folder entirely. Nothing accumulates on disk.
+// It holds only what the open list refers to: every refresh prunes files no
+// longer referenced, and closing the window clears the folder entirely.
 type confirmationIconCache struct {
 	mu      sync.Mutex
 	fetcher *confirmationicon.Fetcher
@@ -126,7 +124,6 @@ func (c *confirmationIconCache) Ensure(ctx context.Context, rawURL string) strin
 		confirmationsLogger().Warn("confirmation icon cache unavailable", "error", err)
 		return ""
 	}
-	// A hit for any known extension avoids refetching an icon already on disk.
 	for _, extension := range []string{".png", ".jpg", ".webp", ".gif"} {
 		name := localName(rawURL, extension)
 		if _, err := os.Stat(filepath.Join(c.dir, name)); err == nil {
@@ -182,8 +179,8 @@ func (c *confirmationIconCache) Prune(keep []string) {
 	}
 }
 
-// Clear empties the cache. The confirmations window closing is the point at which
-// none of these images are needed any more.
+// Clear empties the cache: the confirmations window closing is the point at
+// which none of these images are needed any more.
 func (c *confirmationIconCache) Clear() {
 	c.mu.Lock()
 	defer c.mu.Unlock()

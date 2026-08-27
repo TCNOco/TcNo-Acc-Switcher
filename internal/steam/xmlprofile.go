@@ -121,10 +121,9 @@ func FetchProfileXML(ctx context.Context, client *http.Client, steamID64 string)
 	}
 
 	// Parsed before it is cached, and the cache is dropped when it stops
-	// parsing. Writing first meant one interception page - the classic answer
-	// from a network that has resumed but not finished connecting - pinned
-	// itself over the real profile for the whole 24h lifetime, so every retry
-	// re-read the same unusable body instead of asking Steam again.
+	// parsing: caching first pins an interception page over the real profile for
+	// the whole 24h lifetime, and every retry re-reads it instead of asking
+	// Steam again.
 	doc, err := parseProfileXMLDoc(data)
 	if err != nil {
 		if cached {

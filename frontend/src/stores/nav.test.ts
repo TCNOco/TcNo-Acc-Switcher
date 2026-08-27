@@ -10,9 +10,9 @@ import { previousPage, route } from "./nav";
 /**
  * These guard the Svelte 5 remount loop: pages set their own route on mount,
  * and App rebuilds the page whenever this store changes. A fresh object for the
- * route we are already on used to tear the page down, whose onMount set the
- * route again, without bound. Dropping no-op writes is what stops it, so the
- * store must stay silent when the destination has not moved.
+ * route we are already on tears the page down, whose onMount sets the route
+ * again, without bound, so the store must stay silent when the destination has
+ * not moved.
  */
 describe("route store", () => {
   beforeEach(() => {

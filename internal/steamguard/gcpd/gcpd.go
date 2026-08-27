@@ -145,11 +145,11 @@ func parseGCPDTimestamp(cell string) (time.Time, bool) {
 
 // englishMarkers are strings that only appear on an English-rendered GCPD page.
 //
-// This guard is load-bearing. Cooldown detection matches the English word
-// "Cooldown" in a table header, so on a non-English render no cooldown table is
-// found - which, without this check, would look identical to "this account has
-// no cooldown" and would silently clear a real one. Requiring a positive marker
-// before returning OutcomeParsed turns that silent data loss into a no-op.
+// Cooldown detection matches the English word "Cooldown" in a table header, so
+// on a non-English render no cooldown table is found - which, without this
+// check, would look identical to "this account has no cooldown" and would
+// silently clear a real one. Requiring a positive marker before returning
+// OutcomeParsed turns that silent data loss into a no-op.
 var englishMarkers = []string{
 	"Personal Game Data",
 	"Matchmaking Mode",
@@ -168,7 +168,7 @@ var loginMarkers = []string{
 // Parse reads a GCPD matchmaking-tab response.
 //
 // now is passed in rather than read from the clock so the caller controls the
-// definition of "future" and tests stay deterministic.
+// definition of "future".
 func Parse(body []byte, now time.Time) Result {
 	if len(body) == 0 || len(body) > maxBodyBytes {
 		return Result{}
@@ -273,12 +273,6 @@ func isAggregateRankTable(header row) bool {
 	return true
 }
 
-// readRankTable folds the per-mode standings into ranks.
-//
-// Columns are located by header name only. The C++ reference falls back to fixed
-// column indices when the names do not match; that is how a layout change turns
-// into a confidently wrong rating, so here a table whose columns cannot be named
-// is skipped entirely.
 // isPerMapRankTable matches the sibling of the aggregate table: same leading
 // header cell, plus a Map column.
 func isPerMapRankTable(header row) bool {
@@ -331,12 +325,16 @@ func readPerMapRankTable(rows []row, ranks *Ranks) {
 	// Never overwrites a value the aggregate table already supplied: that is
 	// Steam's own overall standing, where this is a maximum computed over maps.
 	if found && !ranks.Competitive.Found {
-		// Wins is left at -1: they are per map, and summing them would invent a
-		// number Steam never shows.
 		ranks.Competitive = Rank{Found: true, Value: best, Wins: -1}
 	}
 }
 
+// readRankTable folds the per-mode standings into ranks.
+//
+// Columns are located by header name only. The C++ reference falls back to fixed
+// column indices when the names do not match; that is how a layout change turns
+// into a confidently wrong rating, so here a table whose columns cannot be named
+// is skipped entirely.
 func readRankTable(rows []row, ranks *Ranks) {
 	header := rows[0]
 	if header.truncated() {
@@ -390,8 +388,7 @@ func readRankTable(rows []row, ranks *Ranks) {
 		//
 		// Any recorded match counts, not just a win. A row reading 0 wins, 0 ties,
 		// 1 loss is still an account that queued Premier, which cannot be done
-		// without Prime - and reporting it as Non-Prime was exactly the mislabel
-		// the tag is meant to avoid.
+		// without Prime.
 		if strings.Contains(mode, "premier") && !ranks.PremierPlayed {
 			played := wins > 0 || countAt(cells, tiesCol) > 0 || countAt(cells, lossesCol) > 0
 			if !played && lastMatchCol >= 0 && len(cells) > lastMatchCol {
@@ -412,11 +409,9 @@ func readRankTable(rows []row, ranks *Ranks) {
 		case strings.Contains(mode, "competitive"):
 			// Steam records the competitive skill group in either place and, in
 			// practice, only one of them per account: an account with a group
-			// here has blanks in the per-map table and vice versa. Reading only
-			// the per-map table is why this returned no competitive rank for
-			// accounts whose standing is recorded on this row. Overwrites the
-			// per-map value if both somehow appear - this is Steam's own overall
-			// figure, where the other is a maximum we compute.
+			// here has blanks in the per-map table and vice versa. Overwrites
+			// the per-map value if both somehow appear - this is Steam's own
+			// overall figure, where the other is a maximum we compute.
 			ranks.Competitive = Rank{Found: true, Value: value, Wins: wins}
 		}
 	}

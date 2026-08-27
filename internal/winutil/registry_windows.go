@@ -246,7 +246,7 @@ func deleteRegistryValueIfPresent(key registry.Key, val string) error {
 	return err
 }
 
-// RegistryDelete removes a value or the whole key if value name is empty (not used here).
+// RegistryDelete removes the named value. It never deletes a key.
 func RegistryDelete(encoded string) error {
 	k, sub, val, _, err := parseRegistryPath(encoded)
 	if err != nil {
@@ -354,7 +354,7 @@ func trimTrailingExplicitType(s string) (string, uint32) {
 	return prefix, t
 }
 
-// ParseRegistryPath splits HKCU\Sub\Key:ValueName (optional REG: prefix; optional trailing :REG_DWORD).
+// parseRegistryPath splits HKCU\Sub\Key:ValueName (optional REG: prefix; optional trailing :REG_DWORD).
 func parseRegistryPath(encoded string) (registry.Key, string, string, uint32, error) {
 	s := strings.TrimSpace(encoded)
 	s = strings.TrimPrefix(s, "REG:")

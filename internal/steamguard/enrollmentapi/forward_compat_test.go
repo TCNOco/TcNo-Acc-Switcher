@@ -6,10 +6,8 @@ import (
 	"testing"
 )
 
-// Steam adds fields to its responses over time. Protobuf exists so a reader can
-// skip what it does not recognise; rejecting the whole message instead turned
-// one server-side addition into "invalid Steam authenticator enrollment
-// response" and made enrolment impossible.
+// Steam adds fields to its responses over time. Rejecting a whole message for
+// an unknown field makes enrolment impossible the day Steam adds one.
 func TestAddResponseSkipsFieldsAddedLater(t *testing.T) {
 	base := validAddResponse(2)
 
@@ -37,8 +35,8 @@ func TestFinalizeResponseSkipsFieldsAddedLater(t *testing.T) {
 	base := appendVarint(nil, 1, 1)
 	base = appendVarint(base, 4, 1)
 
-	// A later field of a type this parser never expected must also be skipped:
-	// the wire type was previously rejected before the field number was read.
+	// A later field of a wire type this parser never expected must also be
+	// skipped, not rejected before its field number is read.
 	withUnknown := appendBytes(base, maxKnownFinalizeResponseField+1, []byte("added later"))
 	withUnknown = appendVarint(withUnknown, maxKnownFinalizeResponseField+2, 3)
 	withUnknown = appendBytes(withUnknown, maxKnownFinalizeResponseField+1, []byte("repeated"))
@@ -52,7 +50,6 @@ func TestFinalizeResponseSkipsFieldsAddedLater(t *testing.T) {
 	}
 }
 
-// Known fields are still validated exactly as before.
 func TestKnownFieldsStillValidated(t *testing.T) {
 	shortSecret := appendBytes(nil, 1, []byte("too short"))
 	shortSecret = appendFixed64(shortSecret, 2, 42)
@@ -80,9 +77,8 @@ func TestKnownFieldsStillValidated(t *testing.T) {
 	}
 }
 
-// token_gid is an opaque Steam identifier, not a number. Steam GIDs commonly
-// contain hex letters, and requiring decimal digits rejected the whole
-// response for a field this package never reads as a value.
+// token_gid is an opaque Steam identifier, not a number: Steam GIDs commonly
+// contain hex letters, and this package never reads it as a value.
 func TestAddResponseAcceptsNonNumericTokenGID(t *testing.T) {
 	for _, gid := range []string{"c1a2b3d4e5f60718", "0123456789abcdef", "9876543210"} {
 		message := appendBytes(nil, 1, make([]byte, 20))

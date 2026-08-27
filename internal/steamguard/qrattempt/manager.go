@@ -86,8 +86,6 @@ func New() *Manager {
 	return newManager(systemClock{}, rand.Reader, securemem.New())
 }
 
-// NewWithDependencies constructs a manager with injectable time, entropy, and
-// secure-memory dependencies.
 func NewWithDependencies(clock Clock, entropy io.Reader, protector securemem.Protector) (*Manager, error) {
 	if clock == nil || entropy == nil || protector == nil {
 		return nil, ErrInvalidConfiguration

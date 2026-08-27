@@ -429,8 +429,7 @@ func (m *Manager) Poll(ctx context.Context, binding Binding, handle string) (sta
 			return Status{}, flowError(ErrorProtocol)
 		}
 		if entry.viaQR && !qrAccountMatches(binding.ExpectedAccountName, result.AccountName) {
-			// Somebody scanned it, but not the account this session was opened
-			// for. Their tokens are never stored: they are wiped here, before
+			// The scanner's tokens are never stored: they are wiped here, before
 			// anything downstream can be handed a sign-in for the wrong account.
 			wipePollResult(&result)
 			m.closeEntryLocked(entry, now)

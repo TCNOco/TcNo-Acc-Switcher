@@ -32,7 +32,7 @@ export function steamAccountVisualKey(account: SteamAccountRow): string {
     account.tags ?? [],
     // Anything the tile draws has to be here: applyAccountPatch and
     // rowsVisuallyChanged both bail when the key is unchanged, so a field left
-    // out silently never repaints. showSteamGuardLock was missing until now.
+    // out silently never repaints.
     account.showSteamGuardLock ?? false,
     account.steamGuardLoginOnly ?? false,
     account.cs2CooldownExpiresAt ?? "",

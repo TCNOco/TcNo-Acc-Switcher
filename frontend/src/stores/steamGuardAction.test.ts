@@ -69,7 +69,6 @@ describe("Steam Guard action-bar account", () => {
   });
 
   it("prefers an authenticator over a login-only account", () => {
-    // The default target should be one that can actually produce a code.
     expect(steamGuardActionAccountFrom([
       {
         steamId64: "76561198000000005",

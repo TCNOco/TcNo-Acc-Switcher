@@ -17,7 +17,7 @@ func write(t *testing.T, path string, size int) {
 	}
 }
 
-// legacyDir builds a directory that looks like a C# install: one marker plus
+// newLegacyDir builds a directory that looks like a C# install: one marker plus
 // whatever extra names the test needs.
 func newLegacyDir(t *testing.T, extra ...string) string {
 	t.Helper()

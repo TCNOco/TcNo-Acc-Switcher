@@ -71,7 +71,7 @@ var errFactorUnavailable = errors.New("slot factor material not supplied")
 // Credentials carries the factor material offered when opening a vault. Only
 // the factors a slot actually lists are consulted. SecurityKey is the value a
 // hardware authenticator returned, already evaluated: the vault never talks to
-// a device itself, which keeps every path here testable without one.
+// a device itself.
 type Credentials struct {
 	Password     string
 	Keyfile      []byte

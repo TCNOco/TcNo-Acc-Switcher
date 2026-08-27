@@ -211,7 +211,7 @@ func TestInspectRestoreBackupRejectsUnrelatedFolder(t *testing.T) {
 	}
 }
 
-// treeDigest fingerprints every file path, size and content under root.
+// treeDigest fingerprints every path and file content under root.
 func treeDigest(t *testing.T, root string) string {
 	t.Helper()
 	var entries []string

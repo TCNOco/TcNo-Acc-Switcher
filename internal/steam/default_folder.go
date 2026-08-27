@@ -9,7 +9,7 @@ import (
 // defaultFolderPath is where Steam installs itself on this OS.
 //
 // ResolveInstallFolder trusts FolderPath ahead of everything else, so a wrong
-// default here is not cosmetic - it is the answer the account list gets.
+// default here is the answer the account list gets.
 func defaultFolderPath() string { return defaultFolderPathFor(runtime.GOOS) }
 
 func defaultFolderPathFor(goos string) string {

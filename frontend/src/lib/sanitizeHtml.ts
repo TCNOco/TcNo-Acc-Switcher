@@ -82,7 +82,7 @@ export function safeUrl(value: string, { image = false, svgUse = false }: { imag
   }
   // Local asset paths may carry a cache-busting query (`?_tcv=<mtime>`): the backend
   // adds one when it rewrites the mini profile's avatar, and dropping the query here
-  // used to drop the whole src, leaving a broken image. The query charset excludes
+  // drops the whole src, leaving a broken image. The query charset excludes
   // quotes, angle brackets, colons and spaces, so it cannot escape the attribute or
   // introduce a scheme.
   if (/^\/?img\/[A-Za-z0-9_./%-]+(?:\?[A-Za-z0-9_=&.%-]*)?$/i.test(v)) {

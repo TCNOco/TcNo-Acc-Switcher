@@ -147,10 +147,8 @@ func forceKillIfStillRunning(exeImage string) {
 // minimise to tray while it is shutting down is at best useless.
 //
 // delivered reports whether the graceful signal reached anything that could act on it. A target
-// with no top-level windows - a background service such as EABackgroundService.exe, which has
-// none at all - cannot receive WM_CLOSE, so waiting out the graceful window for it is waiting for
-// a reply to a message that was never delivered. Callers skip the wait and go straight to the
-// force kill, which is the same outcome the timeout would have reached anyway.
+// with no top-level windows - a background service such as EABackgroundService.exe - cannot
+// receive WM_CLOSE, so callers skip the wait and go straight to the force kill.
 //
 // The returned join must be called before the caller finishes with exeImage. A taskkill still in
 // flight after KillByName returns would land on the process the switch has just relaunched.
@@ -182,7 +180,7 @@ func requestGracefulProcessExit(exeImage string, nativeQuitSent bool) (delivered
 // had been asked to close.
 //
 // It returns how many top-level windows were reached, so the caller can tell a windowless
-// target from one that was asked to close and is thinking about it.
+// target from one that was asked to close.
 func postWMCloseToMatchingProcesses(exeImage string) (posted int) {
 	pids, err := allPIDsForImageName(exeImage)
 	if err != nil {

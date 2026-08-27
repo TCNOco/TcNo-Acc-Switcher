@@ -349,9 +349,8 @@ func TestFinalizeCommitsCanonicalActiveMaFile(t *testing.T) {
 		parsed.Account.Session.AccessToken != "access-token-secret" {
 		t.Fatalf("unexpected active maFile: %#v", parsed.Account)
 	}
-	// Carried from the login through the pending record: an account finalized
-	// without it can never renew its own session, and asks for a password every
-	// time its access token lapses.
+	// Carried from the login through the pending record: without it the account
+	// asks for a password every time its access token lapses.
 	if parsed.Account.Session.RefreshToken != "refresh-token-secret" {
 		t.Fatal("the refresh token did not survive enrollment; this account can never renew")
 	}

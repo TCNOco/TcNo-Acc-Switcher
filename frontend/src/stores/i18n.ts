@@ -35,7 +35,6 @@ function pathKey(p: string) {
   return p.replace(/\\/g, "/");
 }
 
-/** BCP 47 language tag, e.g. en-US */
 function syncDocumentLanguageAndDirection(code: string) {
   if (typeof document === "undefined") {
     return;
@@ -46,9 +45,7 @@ function syncDocumentLanguageAndDirection(code: string) {
   document.documentElement.setAttribute("lang", tag);
 }
 
-/**
- * Whether the locale uses right-to-left UI (Arabic, Hebrew, Persian, etc.).
- */
+/** Whether the locale uses right-to-left UI (Arabic, Hebrew, Persian, etc.). */
 function localeIsRtl(code: string): boolean {
   const normalized = code.trim().replace(/_/g, "-");
   try {

@@ -539,8 +539,6 @@ func BenchmarkOwnedGamesInstalledSort(b *testing.B) {
 	})
 }
 
-// --- Candidates a SIMD kernel could plausibly touch ---
-
 // benchDedupeSorted replicates ownedgames.dedupeSorted so the sweep's per-account
 // sort can be measured without importing an unexported function.
 func benchDedupeSorted(appIDs []uint32) []uint32 {

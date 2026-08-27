@@ -131,8 +131,7 @@ func TestConsumePendingAddPreventsReplay(t *testing.T) {
 	}
 }
 
-// Pins the boundary the whole design rests on: the strict path must not have
-// been loosened to let an add through it.
+// The strict path must not have been loosened to let an add through it.
 func TestStrictPathStillRejectsPendingIdentities(t *testing.T) {
 	service, _, _ := newAuthServiceFixture(t)
 	id, err := service.NewAddAccountAttempt()
@@ -170,8 +169,8 @@ func TestBeginAddAccountLoginRejectsLoginAgain(t *testing.T) {
 	}
 }
 
-// The whole point: the account is stored under the SteamID Steam named, not
-// under the pending id the flow ran on.
+// The account is stored under the SteamID Steam named, not under the pending id
+// the flow ran on.
 func TestAddAccountLoginOnlyStoresUnderTheDiscoveredSteamID(t *testing.T) {
 	service, _, _ := newAuthServiceFixture(t)
 	manager := &authServiceCredentialManager{steamID: addedSteamID}
@@ -302,8 +301,7 @@ func TestAddAccountRejectsAForeignCapability(t *testing.T) {
 
 // Leaving the add screen lists the vault, and doing that under the attempt the
 // screen ran on is refused: a pending id is never a vault record, so it can
-// never be the anchor. The frontend has to pick an account the vault holds -
-// this is the boundary that makes it have to.
+// never be the anchor. The frontend has to pick an account the vault holds.
 func TestListAccountsRefusesAPendingAnchor(t *testing.T) {
 	service, _, _ := newAuthServiceFixture(t)
 

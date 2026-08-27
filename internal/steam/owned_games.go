@@ -55,9 +55,9 @@ func SetOwnedGamesSweepHook(fn func()) {
 // of each other; each one spawns its own bounded fan-out.
 var ownedGamesWarming atomic.Bool
 
-// These two are vars for the same reason gameIconCacheDir is: both reach past
-// the process, one into whatever Steam is installed on the machine and one onto
-// the network, and neither belongs in a unit test.
+// These are vars for the same reason gameIconCacheDir is: they reach past the
+// process, into whatever Steam is installed on the machine and onto the
+// network, and none of them belongs in a unit test.
 var (
 	ownedGamesInstalledFn  = installedGamesForOwnedList
 	ownedGamesWarmFn       = WarmGameIcons
@@ -130,8 +130,7 @@ func (s *SteamService) GetOwnedGamesList() ([]OwnedGameDTO, error) {
 // The lowercase key is computed once per game rather than inside the comparator.
 // A vault of a dozen accounts joins to around twenty thousand rows, so
 // lowercasing on both sides of every comparison costs roughly half a million
-// allocations to produce a few thousand distinct keys - measured at 43ms against
-// 6.7ms for one pass up front.
+// allocations to produce a few thousand distinct keys.
 func sortOwnedGames(list []OwnedGameDTO) {
 	type keyed struct {
 		name string
@@ -178,14 +177,13 @@ func ownedGameName(names, local map[string]string, appID string) string {
 // applyLocalGameIcons fills in every icon that resolves from disk, and leaves
 // the rest empty.
 //
-// GameIconURL only builds a path. Handing one out for a file that is not there
-// yet is what made the whole list render as broken images: the background warm
-// mixes instant librarycache copies with CDN requests for the app ids that have
-// no local art, so on a real library it had cached 51 of 4139 available icons
-// while every row already pointed at a 404. The local pass is disk-bound and
-// measured in hundreds of milliseconds for a library of this size, so it runs
-// here, before the first paint. A row with no icon yet keeps an empty URL and
-// the view draws its placeholder until the background pass fetches one.
+// GameIconURL only builds a path, so handing one out for a file that is not
+// there yet renders the row as a broken image. The background warm cannot cover
+// that: it mixes instant librarycache copies with CDN requests for the app ids
+// that have no local art. The local pass is disk-bound, hundreds of
+// milliseconds for a large library, so it runs here before the first paint. A
+// row with no icon yet keeps an empty URL and the view draws its placeholder
+// until the background pass fetches one.
 func applyLocalGameIcons(list []OwnedGameDTO) {
 	if len(list) == 0 {
 		return

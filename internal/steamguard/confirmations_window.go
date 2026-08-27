@@ -125,7 +125,6 @@ func (s *Service) OpenConfirmations(accountID, modalToken string) error {
 	s.confirmationInstanceID = instanceID
 	if existing, ok := app.Window.GetByName(confirmationsWindowName); ok {
 		s.capabilities.RevokeWindow(confirmationsWindowName)
-		// Reused window: retitle for the account it now serves.
 		existing.SetTitle(confirmationsWindowTitle(username))
 		existing.DispatchWailsEvent(&application.CustomEvent{Name: ConfirmationsContextEvent, Sender: "native"})
 		existing.Show()

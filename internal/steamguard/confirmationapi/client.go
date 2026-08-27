@@ -304,8 +304,7 @@ func confirmationCookie(credentials Credentials) string {
 // mobileconf, which is a mobile-app endpoint, and harmless on a data page like
 // GCPD - but on an account settings page the mobile shell bounces the request
 // until the redirect budget runs out. internal/steambrowser leaves the marker
-// off its windows for the same reason, in its own words: these are meant to
-// look like the desktop site.
+// off its windows for the same reason.
 func desktopSessionCookie(credentials Credentials) string {
 	return "steamLoginSecure=" + credentials.SteamID + "%7C%7C" + credentials.AccessToken +
 		"; sessionid=" + credentials.SessionID +

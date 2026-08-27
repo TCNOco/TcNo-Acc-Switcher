@@ -17,10 +17,11 @@ function isMediaType(ty: string): boolean {
 }
 
 /**
- * Classifies a drag's payload during dragenter/dragover.
- * - "image"       — recognised image/video MIME type → per-account row drop cues
- * - "shortcut"    — empty MIME type (Windows .lnk/.url) or no type info → fullscreen shortcut overlay
- * - "incompatible"— non-empty, non-image MIME type → error overlay
+ * Classifies one drag item by its MIME type during dragenter/dragover.
+ * - "image": recognised image/video MIME type, so per-account row drop cues
+ * - "incompatible": non-empty, non-image MIME type, so the error overlay
+ * - null: empty MIME type (Windows .lnk/.url) or no type info; the
+ *                   caller treats a typeless file item as a shortcut.
  */
 function classifyItemType(type: string): DragFileCategory | null {
   const ty = type.trim().toLowerCase();

@@ -2,8 +2,7 @@ import { describe, expect, it } from "vitest";
 import { normalizeDisplayPath, parentDisplayPath, sameFsPath, stripSurroundingQuotes } from "./fsPaths";
 
 // Explorer's "Copy as path" hands over a quoted path. The quotes reached the
-// Go stat, which only trims and cleans, so every pasted path was rejected -
-// and the picker is the only way back for a platform that was not auto-found.
+// Go stat, which only trims and cleans, so every pasted path was rejected.
 describe("quoted paths", () => {
   it("takes the quotes off a path pasted from Explorer", () => {
     expect(stripSurroundingQuotes('"C:\\Games\\Delta Force\\game.exe"')).toBe(

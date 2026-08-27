@@ -5,8 +5,6 @@
 // draws Steam's animated avatar frames, which are multi-megabyte APNGs and GIFs
 // that keep decoding and compositing for as long as they are in the document —
 // roughly a quarter of a core, whether or not a pixel of the window is visible.
-// Suspending them while a fullscreen application is in front costs the user
-// nothing: the frames are already hidden behind the game.
 package foreground
 
 // Rect is a screen rectangle in virtual-desktop coordinates, matching Win32's

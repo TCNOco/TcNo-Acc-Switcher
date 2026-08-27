@@ -16,11 +16,7 @@
      base press rule and swallow the press state.
    - The selection rules stay at (0,2,2) so acclist.scss's
      `input.acc:checked + label.acc.currentAcc` (0,3,2) still wins: a selected
-     tile that is also the live session keeps the green border that says so.
-   - The drag ghost and the drop placeholder are restated below rather than
-     excluded with `:not()`. They are a shadow and an empty slot, not icons, but
-     excluding them would push the bare rule to (0,3,0) - where it would start
-     beating the keyboard focus ring instead. */
+     tile that is also the live session keeps the green border that says so. */
 
 @mixin desktop-tiles($era) {
   /* Explorer's marquee fill, as alpha over the theme accent. */
@@ -44,7 +40,6 @@
     $select-fill: 0.28;
   }
 
-  /* ── At rest: no box ───────────────────────────────────────────────── */
   .platform_list_item,
   label.acc {
     border-color: transparent;
@@ -78,7 +73,6 @@
       0 1px 0 rgba(255, 255, 255, 0.75);
   }
 
-  /* ── Hover and press: the marquee, lightly ─────────────────────────── */
   label.acc:hover:not(.acc--broken) {
     border-color: rgba(var(--accentInt), 0.55);
     background: rgba(var(--accentInt), $hover-fill);
@@ -109,7 +103,6 @@
     box-shadow: none;
   }
 
-  /* ── Selected: the full marquee rectangle ──────────────────────────── */
   input.acc:checked + label.acc {
     border-color: var(--accent) !important;
     background: rgba(var(--accentInt), $select-fill);

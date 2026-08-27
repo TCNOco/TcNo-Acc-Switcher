@@ -168,8 +168,8 @@ func TestLevelDBStoreAcquire_ReleaseIdempotent(t *testing.T) {
 }
 
 // TestLevelDBStoreCloseIdle_ConcurrentReaders stress-tests the refcount guard:
-// a flurry of readValue calls run alongside repeated closeIdle passes.
-// The fix must prevent ErrClosed from leaking back to a live reader.
+// a flurry of readValue calls run alongside repeated closeIdle passes. ErrClosed
+// must never leak back to a live reader.
 func TestLevelDBStoreCloseIdle_ConcurrentReaders(t *testing.T) {
 	dir := t.TempDir()
 	dbPath := filepath.Join(dir, "ldb")

@@ -417,8 +417,7 @@ func TestListLostAuthPageReadsAsReauth(t *testing.T) {
 	assertFailure(t, err, FailureReauth)
 }
 
-// A refused redirect used to read as reauth whatever refused it, so a chain this
-// client would not follow to the end told the user to sign in again - on an
+// Reading any refused redirect as reauth tells the user to sign in again on an
 // account whose session Steam never rejected.
 func TestOnlyADisabledRedirectReadsAsReauth(t *testing.T) {
 	reauth := classifyProtocolError(&protocol.Error{

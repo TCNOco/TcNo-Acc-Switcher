@@ -33,7 +33,6 @@ const (
 	DefaultTombstoneCapacity = 64
 )
 
-// Clock is the small time boundary needed for deterministic expiry tests.
 type Clock interface {
 	Now() time.Time
 	After(time.Duration) <-chan time.Time
@@ -150,8 +149,7 @@ type Error struct {
 	Kind          ErrorKind
 	RetryAfter    time.Duration
 	HasRetryAfter bool
-	// Cause detail for ErrorProtocol. These name why Steam refused, so the user
-	// is told what went wrong instead of retrying an attempt that cannot succeed.
+	// Cause detail for ErrorProtocol.
 	ProtocolCode string
 	StatusCode   int
 	EResult      int

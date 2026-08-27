@@ -52,8 +52,7 @@ func seedLoginOnlyRecordWithTokens(
 }
 
 func TestListAccountsReturnsEveryRecordShape(t *testing.T) {
-	// Before the vault held more than one shape this returned an error for the
-	// whole call, so a single login-only or half-finished record hid every
+	// A single login-only or half-finished record must not hide every other
 	// account in the picker.
 	service, anchorID, _ := newAuthServiceFixture(t)
 	loginID := seedLoginOnlyRecord(t, service.vault, loginOnlySteamID, "session_only")
@@ -166,7 +165,6 @@ func TestPutLoginOnlyRecordRefusesToReplaceAnAuthenticator(t *testing.T) {
 	if !errors.Is(err, ErrWouldReplaceAuthenticator) {
 		t.Fatalf("err = %v, want ErrWouldReplaceAuthenticator", err)
 	}
-	// The authenticator must be untouched.
 	if _, err := accountFromRecord(service.vault, mustRecordID(t, service.vault, accountID)); err != nil {
 		t.Fatalf("authenticator no longer readable: %v", err)
 	}

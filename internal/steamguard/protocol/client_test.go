@@ -235,8 +235,7 @@ func TestDoStillDeniesRedirectsWithoutAllowRedirects(t *testing.T) {
 }
 
 // Every redirect refusal collapses to the same Kind by the time it reaches a
-// caller, so the label is the only thing that says which check fired. Getting
-// this wrong costs a debugging round trip per failure.
+// caller, so the label is the only thing that says which check fired.
 func TestDoLabelsWhyARedirectWasDenied(t *testing.T) {
 	t.Parallel()
 

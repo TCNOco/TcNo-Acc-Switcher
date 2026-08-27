@@ -45,10 +45,7 @@ func standaloneStatsProviderFor(platformKey, game string) StandaloneStatsProvide
 //
 // It runs the payload through collectStatsFromHTML and collectIndicatorMarkup -
 // the very functions the configured path uses - so the markup is identical by
-// construction rather than by a second implementation kept in step by hand. That
-// is the whole point: a metric rendered here and the same metric rendered from a
-// configured refresh have to be indistinguishable, and sit in the same row as
-// any other game's.
+// construction rather than by a second implementation kept in step by hand.
 func standaloneStatsMarkup(platformKey, game, accountID string, def gameDefinition) map[string]StatValueAndIconDTO {
 	provider := standaloneStatsProviderFor(platformKey, game)
 	if provider == nil {

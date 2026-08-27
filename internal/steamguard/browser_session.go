@@ -43,8 +43,7 @@ func NewBrowserSessionSource(service *Service) steambrowser.SessionSource {
 func (b browserSessionSource) BrowserSession(accountID, modalToken string) (steambrowser.WebSession, error) {
 	// Authorized once, up front. Renewing writes to the vault and rotates the
 	// generation this very capability is bound to, so checking it again afterwards
-	// would reject the caller for a side effect of its own call — which is what
-	// used to fail the first window an account opened after its token went stale.
+	// would reject the caller for a side effect of its own call.
 	v, _, steamID, err := b.service.authorizeSteamFlow(accountID, modalToken)
 	if err != nil {
 		return steambrowser.WebSession{}, err

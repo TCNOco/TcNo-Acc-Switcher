@@ -7,9 +7,8 @@ import (
 
 // Opt-in: set TCNO_STORE_FIXTURE to a dumped store page.
 //
-// The synthetic fixtures above are built from markup I chose; this runs the same
-// parser over a page Steam actually served, which is the only thing that catches
-// a marker that only exists in my head.
+// The synthetic fixtures use hand-written markup, so only a page Steam actually
+// served catches a marker that never existed on one.
 func TestParseAgainstADumpedStorePage(t *testing.T) {
 	path := os.Getenv("TCNO_STORE_FIXTURE")
 	if path == "" {

@@ -17,9 +17,8 @@ import (
 // This replays a whole account refresh against the real Steam - every endpoint at
 // once, in the shape and at the concurrency the app uses - to find which one
 // gives out first under combined load, and how long the app is unusable
-// afterwards. The ladder probe next door measures endpoints one at a time, which
-// is how their ceilings were found; this measures them competing, which is what
-// actually happens.
+// afterwards. The ladder probe next door measures endpoints one at a time; this
+// measures them competing, which is what actually happens.
 //
 //	$env:TCNO_PROBE_IDS = "765...,765...,765..."
 //	$env:TCNO_STORM = "1"
@@ -28,10 +27,9 @@ import (
 // Close the app first: its own refresh would add requests this cannot count, and
 // on the tightest endpoint that is the difference between a clean run and a block.
 //
-// Two rounds by default, because that is the case worth knowing about. A six
-// hourly refresh and an unlock-triggered one landing near each other is ordinary,
-// and each round spends a full account's worth of the miniprofile budget - which
-// measured out at roughly twenty requests a minute.
+// Two rounds by default: a six hourly refresh and an unlock-triggered one landing
+// near each other is ordinary, and each round spends a full account's worth of the
+// miniprofile budget, roughly twenty requests a minute.
 
 const (
 	// Per-request budgets mirror the app's own, so a timeout here is a timeout

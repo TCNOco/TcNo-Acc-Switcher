@@ -22,9 +22,9 @@ import (
 	_ "golang.org/x/image/webp"
 )
 
-// DefaultPlatformLogoForeground matches in-app accent (#80ffea) so rasterised icons align with the UI.
 const (
 	DefaultPlatformLogoBackground = "#23272A"
+	// DefaultPlatformLogoForeground matches in-app accent (#80ffea) so rasterised icons align with the UI.
 	DefaultPlatformLogoForeground = "#80ffea"
 )
 
@@ -215,7 +215,6 @@ func SolidNRGBA(size int, c color.NRGBA) *image.NRGBA {
 	return img
 }
 
-// EncodePNG encodes img as PNG bytes.
 func EncodePNG(img image.Image) ([]byte, error) {
 	var buf bytes.Buffer
 	if err := png.Encode(&buf, img); err != nil {

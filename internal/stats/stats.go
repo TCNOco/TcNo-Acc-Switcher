@@ -322,7 +322,6 @@ func TryUploadDaily(statsEnabled, statsShare, offlineMode bool) error {
 	}
 
 	mu.Lock()
-	// Flush any pending dirty data before we compute totals for upload.
 	if dirty {
 		dirty = false
 		_ = flushLocked()

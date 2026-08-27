@@ -19,7 +19,6 @@ func TestExpandDescriptorVariables_Basic(t *testing.T) {
 	if got != "Missing %nonexistent% var" {
 		t.Errorf("got %q", got)
 	}
-	// Empty string
 	got = expandDescriptorVariables("", vars)
 	if got != "" {
 		t.Errorf("empty: got %q", got)

@@ -161,8 +161,7 @@ var gameIconHeaderNames = []string{"header.jpg", "library_header.jpg"}
 // The hash name is what distinguishes the icon from the rest of an app folder,
 // which is otherwise a fixed vocabulary of descriptive names - header.jpg,
 // library_600x900.jpg, library_hero.jpg, library_hero_blur.jpg,
-// library_header.jpg, logo.png. Being 40 characters it is also the longest name
-// present, which is the rule by eye, but the hash shape is the real one.
+// library_header.jpg, logo.png.
 var reLibraryIconName = regexp.MustCompile(`^[0-9a-f]{40}\.jpg$`)
 
 // findLibraryCacheIcon picks the best artwork Steam has already cached for appID,

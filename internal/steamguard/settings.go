@@ -42,9 +42,7 @@ func settingsPath() (string, error) {
 }
 
 // settingsFileExists distinguishes "the user has never chosen" from "the user
-// chose off". LoadSettings answers both with FeatureEnabled false, and those
-// two cases must not be treated alike: one is a decision to respect, the other
-// is a profile that has simply never had Steam Guard settings written.
+// chose off": LoadSettings answers both with FeatureEnabled false.
 func settingsFileExists() bool {
 	path, err := settingsPath()
 	if err != nil {

@@ -37,8 +37,7 @@ func resolveDescriptorVariables(d platform.Descriptor, folder string, ctx platfo
 				continue
 			} else {
 				descriptorVarsLog().Debug("resolve variable via leveldb failed", "name", name, "saved", saved, "ref", ref, "err", err)
-				// Do not treat failed leveldb references as plain paths/strings.
-				// Keep variable empty so callers never receive literal ".\\leveldb:..." text.
+				// Keep the variable empty so callers never receive literal ".\\leveldb:..." text.
 				out[name] = ""
 				continue
 			}

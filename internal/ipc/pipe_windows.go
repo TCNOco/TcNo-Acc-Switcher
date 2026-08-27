@@ -49,8 +49,7 @@ func ForwardArgs(argv []string) error {
 	return err
 }
 
-// StartGUIServer listens for forwarded argv until stop is called.
-// Returns a function that can be called to stop the listener.
+// StartGUIServer listens for forwarded argv until the returned stop is called.
 func StartGUIServer(handler func(argv []string)) (func(), error) {
 	l, err := winio.ListenPipe(PipePath, nil)
 	if err != nil {

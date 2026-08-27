@@ -490,11 +490,9 @@ func (s *SteamService) RefreshAllSteamImages() error {
 // dropStaleMiniprofileFragment retires the cached miniprofile fragment once the
 // assets it points at are due for replacement.
 //
-// It no longer deletes those assets. DownloadIfNeeded already re-fetches anything
-// past its expiry and now retires the file it supersedes, so removing them here
-// bought nothing - and it cost the list its faces for the whole of the round,
-// which is precisely what a refresh looked like to the user: every tile blank,
-// then slowly filling back in.
+// It must not delete those assets: DownloadIfNeeded already re-fetches anything
+// past its expiry and retires the file it supersedes, and deleting them here
+// blanks every tile for the whole of the round.
 //
 // It takes the answers from a Lookup, so the caller can hand one directory
 // snapshot to a whole refresh round.
@@ -584,10 +582,9 @@ func (s *SteamService) noteProfileRefreshOutcome(unreachable bool) {
 
 // profileRefreshConcurrency is how many accounts are refreshed at once.
 //
-// Set from where the avatar CDN stops giving anything back. Measured against it:
-// concurrency 5 returned 7.6 requests a second, 8 returned 10.2, and 12 returned
-// 10.3 while median latency went from 711ms to 979ms. Past eight the extra
-// requests only queue, so eight is the knee and there is nothing above it to win.
+// Eight is the avatar CDN's knee: concurrency 5 returned 7.6 requests a second,
+// 8 returned 10.2, and 12 returned 10.3 while median latency went from 711ms to
+// 979ms.
 //
 // Nothing else in the round objects: profile XML cleared 26 requests a second on
 // its own, and the miniprofile endpoint - which does object, strongly - is held
@@ -783,9 +780,7 @@ func (s *SteamService) runProfileRefresh() {
 					// The last good fragment is kept rather than left empty. A
 					// refusal says nothing about the account, but an empty fragment
 					// says something quite specific further down - it is how
-					// "this account has no animated avatar" is expressed - and one
-					// transient 500 from a rate limit was enough to delete the
-					// cached animation and reset every tile to its static image.
+					// "this account has no animated avatar" is expressed.
 					patch.MiniProfileHTML = ReadCachedMiniprofileHTML(u.SteamID64)
 				} else {
 					patch.MiniProfileHTML = miniHTML
@@ -1124,8 +1119,7 @@ func (s *SteamService) ClearManualAccountProfileImage(steamID64 string) error {
 
 // SetBanStatusHidden adds or removes one account from the list whose VAC or
 // limited status is not shown. The ban itself is untouched - this only stops
-// the switcher painting it on every visit, which is a display preference, not
-// an attempt to make the account look clean.
+// the switcher painting it on every visit.
 func (s *SteamService) SetBanStatusHidden(steamID64 string, hidden bool) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()

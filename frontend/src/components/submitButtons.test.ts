@@ -14,9 +14,7 @@ function svelteFiles(dir: string): string[] {
 }
 
 // installNavigationGuard cancels native form submission app-wide, so a
-// type="submit" button does nothing when clicked. Keyboard Enter still works
-// through the inputs' own handlers, which is why this reads as "the button is
-// dead but Enter works" rather than as an obviously broken screen.
+// type="submit" button does nothing when clicked.
 describe("action buttons", () => {
 	it("never rely on native form submission", () => {
 		const offenders = svelteFiles(srcDir)
