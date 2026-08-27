@@ -1,10 +1,13 @@
 package basic
 
 import (
+	"context"
+	"errors"
 	"log/slog"
 	"strings"
 
 	"TcNo-Acc-Switcher/internal/platform"
+	"TcNo-Acc-Switcher/internal/sqliteread"
 )
 
 func descriptorVarsLog() *slog.Logger {
@@ -93,7 +96,12 @@ func resolveDescriptorValue(d platform.Descriptor, raw, folder string, ctx platf
 	}
 	if resolved, handled, err := resolveSQLiteValue(v, folder, ctx); handled {
 		if err != nil {
-			descriptorVarsLog().Debug("resolve descriptor value via sqlite failed", "saved", saved, "value", v, "err", err)
+			// A stale value here switches to the wrong account, so a pending WAL is not a quiet miss.
+			level := slog.LevelDebug
+			if errors.Is(err, sqliteread.ErrWAL) {
+				level = slog.LevelWarn
+			}
+			descriptorVarsLog().Log(context.Background(), level, "resolve descriptor value via sqlite failed", "saved", saved, "value", v, "err", err)
 			return ""
 		}
 		descriptorVarsLog().Debug("resolved descriptor value via sqlite", "valuePreview", previewLevelDBValue(resolved))

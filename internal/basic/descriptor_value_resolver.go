@@ -1,15 +1,13 @@
 package basic
 
 import (
-	"database/sql"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 
 	"TcNo-Acc-Switcher/internal/platform"
-
-	_ "modernc.org/sqlite"
+	"TcNo-Acc-Switcher/internal/sqliteread"
 )
 
 const latestModifiedFilePrefix = "LATEST_MODIFIED_FILE:"
@@ -64,28 +62,9 @@ func resolveSQLiteValue(v, folder string, ctx platform.PathTokenContext) (string
 		return "", true, fmt.Errorf("bad SQLITE format")
 	}
 	expandedDBPath := expandPlatformPath(dbPath, folder, ctx)
-	dsn := "file:" + strings.ReplaceAll(expandedDBPath, `\`, `/`) + "?mode=ro"
-	db, err := sql.Open("sqlite", dsn)
+	value, err := sqliteread.QueryScalar(expandedDBPath, query)
 	if err != nil {
-		return "", true, fmt.Errorf("open SQLITE db %q: %w", expandedDBPath, err)
-	}
-	defer func() { _ = db.Close() }()
-	var value any
-	row := db.QueryRow(query)
-	if err := row.Scan(&value); err != nil {
-		if err == sql.ErrNoRows {
-			return "", true, nil
-		}
 		return "", true, fmt.Errorf("query SQLITE db %q: %w", expandedDBPath, err)
 	}
-	switch x := value.(type) {
-	case nil:
-		return "", true, nil
-	case string:
-		return strings.TrimSpace(x), true, nil
-	case []byte:
-		return strings.TrimSpace(string(x)), true, nil
-	default:
-		return strings.TrimSpace(fmt.Sprint(x)), true, nil
-	}
+	return strings.TrimSpace(value), true, nil
 }

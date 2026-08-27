@@ -1,15 +1,12 @@
 package basic
 
 import (
-	"database/sql"
 	"os"
 	"path/filepath"
 	"testing"
 	"time"
 
 	"TcNo-Acc-Switcher/internal/platform"
-
-	_ "modernc.org/sqlite"
 )
 
 func TestResolveDescriptorValue_LatestModifiedFile(t *testing.T) {
@@ -47,28 +44,20 @@ I 2026-05-07 16:50:14.311645 [Main] {Main} Opened database at: C:\Users\tcno\App
 }
 
 func TestResolveDescriptorValue_SQLiteInterpolatesBuiltInUserID(t *testing.T) {
-	dir := t.TempDir()
-	dbPath := filepath.Join(dir, "CachedData.db")
-	db, err := sql.Open("sqlite", dbPath)
+	dbPath, err := filepath.Abs(filepath.Join("testdata", "cacheddata.db"))
 	if err != nil {
-		t.Fatalf("open sqlite db: %v", err)
+		t.Fatalf("resolve fixture path: %v", err)
 	}
-	if _, err := db.Exec(`CREATE TABLE login_cache (account_id_lo TEXT, battle_tag TEXT)`); err != nil {
-		t.Fatalf("create table: %v", err)
-	}
-	if _, err := db.Exec(`INSERT INTO login_cache (account_id_lo, battle_tag) VALUES ('1111185922', 'Player#1234')`); err != nil {
-		t.Fatalf("insert row: %v", err)
-	}
-	if err := db.Close(); err != nil {
-		t.Fatalf("close sqlite db: %v", err)
-	}
+	vars := map[string]string{"BuiltInUserId": "1111185922"}
 	raw := "SQLITE:" + dbPath + "|SELECT battle_tag FROM login_cache WHERE account_id_lo = '%BuiltInUserId%'"
-	got := resolveDescriptorValue(platform.Descriptor{}, raw, "", platform.PathTokenContext{}, map[string]string{
-		"BuiltInUserId": "1111185922",
-	}, "", false)
-	want := "Player#1234"
-	if got != want {
+	got := resolveDescriptorValue(platform.Descriptor{}, raw, "", platform.PathTokenContext{}, vars, "", false)
+	if want := "Player#1234"; got != want {
 		t.Fatalf("unexpected sqlite resolved value: got %q want %q", got, want)
+	}
+
+	raw = "SQLITE:" + dbPath + "|SELECT * FROM login_cache"
+	if got := resolveDescriptorValue(platform.Descriptor{}, raw, "", platform.PathTokenContext{}, vars, "", false); got != "" {
+		t.Fatalf("unsupported query should resolve to empty, got %q", got)
 	}
 }
 
