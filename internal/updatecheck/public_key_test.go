@@ -5,12 +5,11 @@ import (
 	"crypto/ed25519"
 	"crypto/rand"
 	"encoding/base64"
+	"encoding/binary"
 	"encoding/hex"
 	"os"
 	"path/filepath"
 	"testing"
-
-	"golang.org/x/crypto/ssh"
 )
 
 func TestNormalizePublicKeyOpenSSH(t *testing.T) {
@@ -18,16 +17,41 @@ func TestNormalizePublicKeyOpenSSH(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	sshPub, err := ssh.NewPublicKey(pub)
-	if err != nil {
-		t.Fatal(err)
-	}
-	authorized := ssh.MarshalAuthorizedKey(sshPub)
+	authorized := []byte("ssh-ed25519 " + base64.StdEncoding.EncodeToString(sshWireKey("ssh-ed25519", pub)) + " updater@tcno\n")
 
 	got := NormalizePublicKey(authorized)
 	if !bytes.Equal(got, pub) {
 		t.Fatalf("NormalizePublicKey = %x, want raw key %x", got, []byte(pub))
 	}
+}
+
+// authorized_keys shapes OpenSSH accepts but NormalizePublicKey deliberately
+// does not: they must pass through untouched rather than yield a wrong key.
+func TestNormalizePublicKeyRejectsUnsupportedLines(t *testing.T) {
+	pub, _, err := ed25519.GenerateKey(rand.Reader)
+	if err != nil {
+		t.Fatal(err)
+	}
+	body := base64.StdEncoding.EncodeToString(sshWireKey("ssh-ed25519", pub))
+	for name, line := range map[string]string{
+		"comment line":  "# updater key\nssh-ed25519 " + body + "\n",
+		"options":       `command="/bin/true",no-pty ssh-ed25519 ` + body + "\n",
+		"wrong algo":    "ssh-rsa " + body + "\n",
+		"truncated key": "ssh-ed25519 " + base64.StdEncoding.EncodeToString(sshWireKey("ssh-ed25519", pub[:16])) + "\n",
+	} {
+		t.Run(name, func(t *testing.T) {
+			if got := NormalizePublicKey([]byte(line)); !bytes.Equal(got, []byte(line)) {
+				t.Fatalf("line was parsed as %x, want passthrough", got)
+			}
+		})
+	}
+}
+
+func sshWireKey(algo string, key []byte) []byte {
+	blob := binary.BigEndian.AppendUint32(nil, uint32(len(algo)))
+	blob = append(blob, algo...)
+	blob = binary.BigEndian.AppendUint32(blob, uint32(len(key)))
+	return append(blob, key...)
 }
 
 func TestNormalizePublicKeyPassthrough(t *testing.T) {
