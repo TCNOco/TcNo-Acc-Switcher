@@ -89,7 +89,6 @@ public class WailsJSBridge {
     }
 
     /**
-     * Get the platform name
      * Called from JavaScript: wails.platform()
      */
     @JavascriptInterface
@@ -98,7 +97,6 @@ public class WailsJSBridge {
     }
 
     /**
-     * Check if we're running in debug mode
      * Called from JavaScript: wails.isDebug()
      */
     @JavascriptInterface

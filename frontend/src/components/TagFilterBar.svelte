@@ -38,9 +38,10 @@
     margin: 0 0 0.5rem;
     padding: 0.4rem 0.5rem;
     border: 0px solid transparent;
-    /* Opaque, not a scrim: a 20% black fill leaves the bar a shade of whatever is
-       behind it, 1.69:1 on the WinVista theme and at the mercy of the wallpaper on
-       the themes that ship one. `--surface-row-dark` is the pairing
+    /* Opaque, not a scrim: `--backdrop-dark-20` is rgba(0,0,0,0.2) in all 22
+       themes, so it leaves the bar a shade of whatever is behind it, 1.69:1 on
+       the WinVista theme and at the mercy of the wallpaper on the themes that
+       ship one. `--surface-row-dark` is the pairing
        `.acc_list_actionbar` uses for the other bar in this list, opaque in all 22
        themes, worst case 5.17:1 under `--whiteSecondary`. */
     background: var(--surface-row-dark);

@@ -81,6 +81,7 @@ public class WailsBridge {
 
     /**
      * Serve an asset from the Go asset server
+     * @param headers The request headers as JSON
      * @return The asset data, or null if not found
      */
     public byte[] serveAsset(String path, String method, String headers) {

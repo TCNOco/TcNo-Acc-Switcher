@@ -94,7 +94,6 @@ func main() {
 					return false, "iOS SDK path not found"
 				}
 
-				// Check for UIKit framework (essential for iOS development)
 				uikitPath := fmt.Sprintf("%s/System/Library/Frameworks/UIKit.framework", sdkPath)
 				if _, err := os.Stat(uikitPath); err != nil {
 					return false, "UIKit.framework not found"
@@ -127,7 +126,6 @@ func main() {
 				for _, line := range lines {
 					if strings.Contains(line, "iOS") && !strings.Contains(line, "unavailable") {
 						count++
-						// Extract version number
 						if parts := strings.Fields(line); len(parts) > 2 {
 							for _, part := range parts {
 								if strings.HasPrefix(part, "(") && strings.HasSuffix(part, ")") {
@@ -212,7 +210,6 @@ func main() {
 				var latestRuntime string
 				for _, line := range lines {
 					if strings.Contains(line, "iOS") && !strings.Contains(line, "unavailable") {
-						// Extract runtime identifier
 						parts := strings.Fields(line)
 						if len(parts) > 0 {
 							latestRuntime = parts[len(parts)-1]

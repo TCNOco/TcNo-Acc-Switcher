@@ -470,7 +470,6 @@ export function createSteamConfirmationsStore(
     } catch (error) {
       console.error("Steam confirmations: detail could not be loaded", error);
     } finally {
-      // Whatever happened, the wait is over.
       state.update((current) => current.detailLoadingHandle === handle
         ? { ...current, detailLoadingHandle: null }
         : current);

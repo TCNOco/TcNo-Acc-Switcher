@@ -97,8 +97,7 @@ body {
     -webkit-backdrop-filter: blur(var(--page-surface-blur)) saturate(var(--page-surface-saturate));
 }
 
-/* ── Text that sits straight on the wallpaper ────────────────────────────
-   `data-backdrop` appears only once the background has actually been measured,
+/* `data-backdrop` appears only once the background has actually been measured,
    so a theme keeps its own colours until there is evidence to overrule them.
    Its value is the ink polarity: light text means a dark picture underneath. */
 :root[data-backdrop] .page--has-bg {

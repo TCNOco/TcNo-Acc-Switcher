@@ -122,9 +122,9 @@ func (c *Client) FinalizeAddAuthenticator(ctx context.Context, request FinalizeR
 		return FinalizeResult{}, &SteamError{ResultCode: wireResult.status}
 	}
 	// status 1 is Steam's OK and is authoritative: the authenticator exists on
-	// the account by this point. success is not always set alongside it, and
-	// want_more is not defined in the current response, so neither can gate
-	// completion.
+	// the account by this point. success is not always set alongside it, so it
+	// is ignored; want_more is absent from the current response, and absent has
+	// to read as done rather than as a rejection.
 	if wireResult.wantMore {
 		result.State = StateAuthenticatorCodeRetry
 		return result, nil

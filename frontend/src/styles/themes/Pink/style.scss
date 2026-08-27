@@ -6,7 +6,7 @@
 @use "../overlay_surfaces" as overlay;
 
 :root {
-    /* ── Palette primitives (single hex source per stop) ── */
+    /* One hex source per stop; everything below derives from these. */
     --pink-shell: #f5bedb;
     --pink-shell-fg: #5a3444;
     --pink-shell-hover: #f1dde9;
