@@ -10,6 +10,9 @@
   import { offlineMode } from "../../stores/offlineMode";
   import { openAlert } from "../../stores/modal";
   import {
+    ARG_OFFLINE,
+    ARG_SILENT,
+    ARG_VGUI,
     closingValues,
     closingLabel,
     overrideStates,
@@ -27,11 +30,10 @@
   export let hasDesktopShortcut: boolean = false;
   export let silentOn: boolean = false;
   export let oldUiOn: boolean = false;
+  export let steamOfflineOn: boolean = false;
   export let closingMethodUiLocked: boolean = false;
 
   const dispatch = createEventDispatcher();
-  const ARG_SILENT = "-silent";
-  const ARG_VGUI = "-vgui";
   let stateOpen = false;
 
   function overrideLabel(v: number): string {
@@ -246,6 +248,17 @@
       on:change={() => {
         steamSettings.LaunchArguments = withLaunchArgFlag(steamSettings.LaunchArguments ?? "", ARG_VGUI, !oldUiOn);
         dispatch("save");
+      }}
+    />
+    <SettingsToggle
+      id="ps-steam-offline"
+      checked={steamOfflineOn}
+      disabled={!steamSettings.AutoStart}
+      label={$t("Steam_OfflineMode")}
+      tooltip={$t("Tooltip_SteamOfflineMode")}
+      on:change={() => {
+        steamSettings.LaunchArguments = withLaunchArgFlag(steamSettings.LaunchArguments ?? "", ARG_OFFLINE, !steamOfflineOn);
+        dispatch("saveImmediate");
       }}
     />
     <SettingsToggle

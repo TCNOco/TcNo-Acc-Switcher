@@ -53,7 +53,7 @@ func TestWriteLoginUsersAndRegistry(t *testing.T) {
 `
 	os.WriteFile(loginPath, []byte(initialVDF), 0o644)
 
-	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000200"); err != nil {
+	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000200", false); err != nil {
 		t.Fatalf("writeLoginUsersAndAutoLogin: %v", err)
 	}
 
@@ -107,6 +107,82 @@ func TestWriteLoginUsersAndRegistry(t *testing.T) {
 	_ = winutil.RegistryDelete(steamTestRegBase + ":RememberPassword")
 }
 
+func TestWriteLoginUsersAndRegistry_AppliesOfflineModeToSelectedAccount(t *testing.T) {
+	dir := t.TempDir()
+	configDir := filepath.Join(dir, "config")
+	if err := os.MkdirAll(configDir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+
+	loginPath := filepath.Join(configDir, "loginusers.vdf")
+	initialVDF := `"users"
+{
+	"76561198000000100"
+	{
+		"AccountName"		"player1"
+		"PersonaName"		"Player One"
+		"WantsOfflineMode"		"1"
+		"SkipOfflineModeWarning"		"1"
+		"AutoLogin"		"1"
+		"RememberPassword"		"1"
+	}
+	"76561198000000200"
+	{
+		"AccountName"		"player2"
+		"PersonaName"		"Player Two"
+		"WantsOfflineMode"		"0"
+		"SkipOfflineModeWarning"		"0"
+		"AutoLogin"		"0"
+		"RememberPassword"		"0"
+	}
+}
+`
+	if err := os.WriteFile(loginPath, []byte(initialVDF), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		_ = winutil.RegistryDelete(steamTestRegBase + ":AutoLoginUser")
+		_ = winutil.RegistryDelete(steamTestRegBase + ":RememberPassword")
+	})
+
+	assertOffline := func(want string) {
+		t.Helper()
+		users, err := ParseLoginUsers(loginPath)
+		if err != nil {
+			t.Fatal(err)
+		}
+		seenInactive := false
+		seenSelected := false
+		for _, user := range users {
+			switch user.SteamID64 {
+			case "76561198000000100":
+				seenInactive = true
+				if user.WantsOffline != "1" || user.SkipOfflineWarn != "1" {
+					t.Errorf("inactive account offline fields changed: wants=%q skip=%q", user.WantsOffline, user.SkipOfflineWarn)
+				}
+			case "76561198000000200":
+				seenSelected = true
+				if user.WantsOffline != want || user.SkipOfflineWarn != want {
+					t.Errorf("selected account offline fields = %q/%q, want %s/%s", user.WantsOffline, user.SkipOfflineWarn, want, want)
+				}
+			}
+		}
+		if !seenInactive || !seenSelected {
+			t.Fatalf("expected both loginusers.vdf accounts, seen inactive=%t selected=%t", seenInactive, seenSelected)
+		}
+	}
+
+	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000200", true); err != nil {
+		t.Fatalf("enable offline mode: %v", err)
+	}
+	assertOffline("1")
+
+	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000200", false); err != nil {
+		t.Fatalf("disable offline mode: %v", err)
+	}
+	assertOffline("0")
+}
+
 func TestWriteLoginUsersAndRegistry_AddNew(t *testing.T) {
 	dir := t.TempDir()
 	configDir := filepath.Join(dir, "config")
@@ -128,7 +204,7 @@ func TestWriteLoginUsersAndRegistry_AddNew(t *testing.T) {
 	os.WriteFile(loginPath, []byte(initialVDF), 0o644)
 
 	// Add New: empty selectedID64 → AutoLoginUser is written as "" which deletes the value on Windows
-	if err := writeLoginUsersAndAutoLogin(dir, ""); err != nil {
+	if err := writeLoginUsersAndAutoLogin(dir, "", false); err != nil {
 		t.Fatalf("writeLoginUsersAndAutoLogin: %v", err)
 	}
 
@@ -195,7 +271,7 @@ func TestWriteLoginUsersAndRegistry_AppendsStoredAccount(t *testing.T) {
 }
 `), 0o644)
 
-	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000200"); err != nil {
+	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000200", false); err != nil {
 		t.Fatalf("writeLoginUsersAndAutoLogin: %v", err)
 	}
 
@@ -249,7 +325,7 @@ func TestWriteLoginUsersAndRegistry_RebuildsDeletedFile(t *testing.T) {
 	dir := t.TempDir()
 	os.MkdirAll(filepath.Join(dir, "config"), 0o755)
 
-	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000100"); err != nil {
+	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000100", false); err != nil {
 		t.Fatalf("writeLoginUsersAndAutoLogin: %v", err)
 	}
 
@@ -288,7 +364,7 @@ func TestWriteLoginUsersAndRegistry_NoAccountNameFallsBackToChooser(t *testing.T
 }
 `), 0o644)
 
-	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000300"); err != nil {
+	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000300", false); err != nil {
 		t.Fatalf("a nameless stored account should still switch: %v", err)
 	}
 
@@ -328,7 +404,7 @@ func TestWriteLoginUsersAndRegistry_RebuildsEmptyFile(t *testing.T) {
 	loginPath := filepath.Join(configDir, "loginusers.vdf")
 	os.WriteFile(loginPath, nil, 0o644)
 
-	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000100"); err != nil {
+	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000100", false); err != nil {
 		t.Fatalf("writeLoginUsersAndAutoLogin: %v", err)
 	}
 	users, err := ParseLoginUsers(loginPath)
@@ -356,7 +432,7 @@ func TestWriteLoginUsersAndRegistry_KeepsUnreadableFile(t *testing.T) {
 	const body = `"users" { "76561198000000100" { "AccountName"`
 	os.WriteFile(loginPath, []byte(body), 0o644)
 
-	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000100"); err == nil {
+	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000100", false); err == nil {
 		t.Fatal("a corrupt loginusers.vdf should abort the switch, not be replaced")
 	}
 	raw, err := os.ReadFile(loginPath)
@@ -374,7 +450,7 @@ func TestWriteLoginUsersAndRegistry_UnknownAccountFails(t *testing.T) {
 	dir := t.TempDir()
 	os.MkdirAll(filepath.Join(dir, "config"), 0o755)
 
-	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000999"); err == nil {
+	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000999", false); err == nil {
 		t.Fatal("switching to an account neither Steam nor the switcher knows should fail")
 	}
 }

@@ -13,18 +13,20 @@
   import * as Wails from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import * as BasicService from "../../bindings/TcNo-Acc-Switcher/internal/basic/basicservice.js";
   import * as Shortcuts from "wails-shortcuts-service";
-  import { SaveSteamSettings, GetSteamSettings, RefreshVACStatus, RefreshAllSteamImages } from "../../bindings/TcNo-Acc-Switcher/internal/steam/steamservice.js";
+  import { GetSteamSettings, RefreshVACStatus, RefreshAllSteamImages } from "../../bindings/TcNo-Acc-Switcher/internal/steam/steamservice.js";
   import { requestPlatformAccountsRefresh } from "../stores/platformPage";
   import { controllerSpatialNavigation } from "../lib/actions/controllerSpatialNavigation";
   import { PlatformSettings } from "../../bindings/TcNo-Acc-Switcher/internal/platform/models.js";
   import { Settings } from "../../bindings/TcNo-Acc-Switcher/internal/steam/models.js";
   import {
+    ARG_OFFLINE,
     ARG_SILENT,
     ARG_VGUI,
     hasLaunchArgFlag,
     sanitizeSettingsPayload,
     isClosingMethodForcedPayload,
   } from "../lib/platformSettingsShared";
+  import { steamSwitchCoordinator } from "../lib/steam/switchCoordinator";
   import "../styles/Settings.scss";
 
   export let name: string;
@@ -67,6 +69,10 @@
     isSteam && steamSettings
       ? hasLaunchArgFlag(steamSettings.LaunchArguments ?? "", ARG_VGUI)
       : false;
+  $: steamOfflineOn =
+    isSteam && steamSettings
+      ? hasLaunchArgFlag(steamSettings.LaunchArguments ?? "", ARG_OFFLINE)
+      : false;
 
   function debouncedSaveSteam(): void {
     if (!isSteam || !steamSettings) return;
@@ -83,7 +89,7 @@
     if (!isSteam || !steamSettings || !steamSavePending) return;
     steamSavePending = false;
     try {
-      await SaveSteamSettings(steamSettings);
+      await steamSwitchCoordinator.saveSettings(steamSettings);
       requestPlatformAccountsRefresh(name);
     } catch {}
   }
@@ -119,6 +125,12 @@
   function onSteamSave(): void {
     bumpSteamSettings();
     debouncedSaveSteam();
+  }
+
+  function onSteamSaveImmediate(): void {
+    bumpSteamSettings();
+    steamSavePending = true;
+    void flushSteamSave();
   }
 
   function onGenericSave(): void {
@@ -459,8 +471,10 @@
         {hasDesktopShortcut}
         {silentOn}
         {oldUiOn}
+        {steamOfflineOn}
         {closingMethodUiLocked}
         on:save={onSteamSave}
+        on:saveImmediate={onSteamSaveImmediate}
         on:toggleDesktopShortcut={onToggleDesktopShortcut}
       />
     {:else if !isSteam && genericPS}

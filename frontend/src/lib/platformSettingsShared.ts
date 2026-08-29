@@ -1,5 +1,6 @@
 export const ARG_SILENT = "-silent";
 export const ARG_VGUI = "-vgui";
+export const ARG_OFFLINE = "-offline";
 
 export const closingValues = ["Combined", "Close", "TaskKill", "Electron"] as const;
 

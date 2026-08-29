@@ -190,6 +190,9 @@ func RunGUI(params RunGUIParams) {
 		return err
 	})
 	var wailsApp *application.App
+	forwardedCLI := newForwardedCLIGate(func(argv []string) {
+		handleForwardedCLI(wailsApp, disp, argv)
+	})
 	appOpts := application.Options{
 		Name:        appName,
 		Description: "A Superfast open-source account switcher",
@@ -202,7 +205,7 @@ func RunGUI(params RunGUIParams) {
 		SingleInstance: &application.SingleInstanceOptions{
 			UniqueID: "co.tcno.acc-switcher",
 			OnSecondInstanceLaunch: func(data application.SecondInstanceData) {
-				handleForwardedCLI(wailsApp, disp, argvWithoutExecutable(data.Args))
+				forwardedCLI.Submit(argvWithoutExecutable(data.Args))
 			},
 		},
 		Mac: application.MacOptions{
@@ -228,6 +231,9 @@ func RunGUI(params RunGUIParams) {
 	}
 
 	wailsApp = application.New(appOpts)
+	wailsApp.Event.OnApplicationEvent(events.Common.ApplicationStarted, func(*application.ApplicationEvent) {
+		forwardedCLI.Ready()
+	})
 	registerSecurityLifecycle(wailsApp, lifecycle)
 	if err := platform.SyncAutostartPreference(wailsApp, guiSettings.StartTrayWithWindows, guiSettings.AlwaysRunAsAdmin); err != nil {
 		wailsApp.Logger.Warn("autostart sync", "error", err)
@@ -277,9 +283,7 @@ func RunGUI(params RunGUIParams) {
 		}
 	})
 
-	ipcStop, err := ipc.StartGUIServer(func(argv []string) {
-		handleForwardedCLI(wailsApp, disp, argv)
-	})
+	ipcStop, err := ipc.StartGUIServer(forwardedCLI.Submit)
 	if err != nil {
 		log.Printf("ipc server: %v", err)
 	}

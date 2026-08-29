@@ -10,6 +10,7 @@ import type { SteamTradeLink } from "../steamGuardModal";
 import { copySteamGuardCodeNow, fetchTradeLinkNow, refreshSteamGuardVaultUnlocked } from "./steamGuardQuickCopy";
 import * as SteamService from "../../../bindings/TcNo-Acc-Switcher/internal/steam/steamservice.js";
 import * as Shortcuts from "wails-shortcuts-service";
+import { steamSwitchCoordinator } from "./switchCoordinator";
 
 const STEAM_USERDATA_ERR_KEYS = new Set([
   "Toast_NoValidSteamId",
@@ -86,7 +87,7 @@ export function createSteamMenuCommands(acc: SteamAccountRow, deps: SteamMenuDep
   return {
     async loginAs(personaState: number): Promise<void> {
       try {
-        await SteamService.SwapToSteamAccount(rid, personaState, []);
+        await steamSwitchCoordinator.swapToAccount(rid, personaState, []);
         pushToast({ type: "success", message: tr("Toast_AccountSwitched"), duration: 4000 });
       } catch (e) {
         pushToast({ type: "error", message: formatToastWithError(tr("Toast_SwitchFailed"), e), duration: 8000 });
@@ -212,7 +213,7 @@ export function createSteamMenuCommands(acc: SteamAccountRow, deps: SteamMenuDep
 
     async loginAndLaunchGame(appId: string, gameName: string): Promise<void> {
       try {
-        await SteamService.LoginAndLaunchGame(rid, -1, appId);
+        await steamSwitchCoordinator.loginAndLaunchGame(rid, -1, appId);
         pushToast({ type: "success", message: tr("Toast_StartedGame", { program: gameName }), duration: 4000 });
       } catch (e) {
         await reportLaunchFailure(e, deps.name);

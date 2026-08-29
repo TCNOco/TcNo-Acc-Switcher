@@ -44,6 +44,7 @@
     type OwnedGameRow,
   } from "../lib/steam/ownedGames";
   import { orderByAccountRank, rankAccountsByRecency } from "../lib/steam/accountRecency";
+  import { steamSwitchCoordinator } from "../lib/steam/switchCoordinator";
   import "../styles/platformAccountsShared.scss";
   import "../styles/steamGames.scss";
 
@@ -317,14 +318,14 @@
     actionBarStatus.set($t("Status_SelectedAccount", { name: account.displayName }));
     try {
       if (launch && game) {
-        await SteamService.LoginAndLaunchGame(steamId64, -1, game.appId);
+        await steamSwitchCoordinator.loginAndLaunchGame(steamId64, -1, game.appId);
         pushToast({
           type: "success",
           message: $t("Toast_StartedGame", { program: game.name }),
           duration: 4000,
         });
       } else {
-        await SteamService.SwapToSteamAccount(steamId64, -1, []);
+        await steamSwitchCoordinator.swapToAccount(steamId64, -1, []);
         pushToast({ type: "success", message: $t("Toast_AccountSwitched"), duration: 4000 });
       }
       requestPlatformAccountsRefresh(name);

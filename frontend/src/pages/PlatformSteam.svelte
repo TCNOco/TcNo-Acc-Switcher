@@ -43,6 +43,7 @@
     publishSteamGuardActionAccounts,
   } from "../stores/steamGuardAction";
   import { resetSteamPageTab, steamPageTab } from "../stores/steamPageTab";
+  import { steamSwitchCoordinator } from "../lib/steam/switchCoordinator";
   import { activeModal } from "../stores/modal";
   import {
     openSteamBrowserNow,
@@ -227,9 +228,9 @@
         showCs2Cooldown: r.showCs2Cooldown ?? true,
       })) as SteamAccountRow[];
     },
-    swapTo: (id: string) => SteamService.SwapToSteamAccount(id, -1, []),
+    swapTo: (id: string) => steamSwitchCoordinator.swapToAccount(id, -1, []),
     saveOrder: (ids: string[]) => SteamService.SaveSteamAccountOrder(ids),
-    addNew: () => SteamService.SteamAddNew(),
+    addNew: () => steamSwitchCoordinator.addNew(),
     forget: async (id: string) => {
       try {
         await SteamService.ForgetSteamAccount(id);
@@ -249,7 +250,7 @@
     clearManualImage: (id: string) => SteamService.ClearManualAccountProfileImage(id),
     getNote: (id: string) => BasicService.GetAccountNote("Steam", id),
     setNote: (id: string, note: string) => BasicService.SetAccountNote("Steam", id, note),
-    launch: () => SteamService.LaunchSteam(),
+    launch: () => steamSwitchCoordinator.launchSteam(),
     closePlatform: () => SteamService.CloseSteam(),
     refreshOnWindowFocus: true,
     // Two calls, because Steam answers to two different clients here.
@@ -350,7 +351,7 @@
     gameSearchHint: get(t)("Search_Hint_Games"),
 
     loginAndLaunchGame: async (accountId: string, appId: string) => {
-      await SteamService.LoginAndLaunchGame(accountId, -1, appId);
+      await steamSwitchCoordinator.loginAndLaunchGame(accountId, -1, appId);
     },
 
     onAfterLoad: async (accounts: SteamAccountRow[], ctx) => {

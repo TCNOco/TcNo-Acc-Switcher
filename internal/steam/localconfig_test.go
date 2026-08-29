@@ -155,7 +155,7 @@ func TestWriteLoginUsersAndAutoLogin_FieldSwapping(t *testing.T) {
 		"RememberPassword"`, 1)
 	os.WriteFile(loginPath, []byte(initialVDF), 0o644)
 
-	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000100"); err != nil {
+	if err := writeLoginUsersAndAutoLogin(dir, "76561198000000100", false); err != nil {
 		t.Fatalf("writeLoginUsersAndAutoLogin: %v", err)
 	}
 

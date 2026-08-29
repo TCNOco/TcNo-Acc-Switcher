@@ -6,6 +6,7 @@ import (
 	"log"
 	"log/slog"
 	"os"
+	"reflect"
 
 	"TcNo-Acc-Switcher/internal/actionlog"
 	"TcNo-Acc-Switcher/internal/app"
@@ -268,10 +269,15 @@ func main() {
 
 	legacyinstall.StartupCleanup(exeDir)
 
+	services := serviceList()
+	if err := validateWailsServices(services); err != nil {
+		panic(err)
+	}
+
 	app.RunGUI(app.RunGUIParams{
 		Parsed:           parsed,
 		GuiSettings:      startupSettings,
-		Services:         serviceList(),
+		Services:         services,
 		Dispatch:         disp,
 		DiscordRPC:       discordRPC,
 		ControllerInput:  controllerSvc,
@@ -308,6 +314,24 @@ func serviceList() []application.Service {
 		application.NewService(steamBrowserSvc),
 		application.NewService(serverPickerSvc),
 	}
+}
+
+func validateWailsServices(services []application.Service) error {
+	for i, service := range services {
+		instance := service.Instance()
+		if instance == nil {
+			return fmt.Errorf("invalid Wails service at index %d: nil instance", i)
+		}
+
+		value := reflect.ValueOf(instance)
+		switch value.Kind() {
+		case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Ptr, reflect.Slice:
+			if value.IsNil() {
+				return fmt.Errorf("invalid Wails service at index %d: typed-nil instance (%T)", i, instance)
+			}
+		}
+	}
+	return nil
 }
 
 func loadStartupSettings() (platform.AppSettings, error) {

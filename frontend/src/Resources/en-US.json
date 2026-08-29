@@ -41,6 +41,8 @@
   "Steam_CheckVac": "Check account VAC status",
   "Steam_OverrideDefaultState": "Override default login state:",
   "Steam_StartSilent": "Open Steam to task tray on switch (Start Steam with '-silent')",
+  "Steam_OfflineMode": "Steam Offline Mode",
+  "Tooltip_SteamOfflineMode": "Start Steam with '-offline' after switching accounts. This is separate from the app's Offline Mode setting.",
   "Steam_OldUi": "Use Old UI in Steam (-vgui)",
   "Button_AddNew": "Add New",
   "Button_SaveCurrent": "Save Current",

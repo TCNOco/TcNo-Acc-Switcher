@@ -23,6 +23,8 @@ var steamKillNames = []string{
 	"GameOverlayUI.exe",
 }
 
+const steamOfflineLaunchArg = "-offline"
+
 // SwapToAccount: empty steamID64 clears AutoLoginUser (Add New). personaState -1 uses Steam_OverrideState; < -1 skips localconfig persona edit. extraLaunchArgs append after settings argv.
 func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string) (err error) {
 	if err := security.RequireUnlocked(); err != nil {
@@ -104,7 +106,7 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 
 	platform.EmitActionBarStatusI18n("Status_ActionBar_UpdatingSteamLogin")
 
-	if err := writeLoginUsersAndAutoLogin(root, steamID64); err != nil {
+	if err := writeLoginUsersAndAutoLogin(root, steamID64, steamOfflineModeEnabled(st)); err != nil {
 		return err
 	}
 
@@ -242,7 +244,11 @@ func buildSteamArgs(st Settings, extraLaunchArgs []string) []string {
 	return args
 }
 
-func writeLoginUsersAndAutoLogin(steamRoot, selectedID64 string) error {
+func steamOfflineModeEnabled(st Settings) bool {
+	return platform.HasLaunchArgToken(st.LaunchArguments, steamOfflineLaunchArg)
+}
+
+func writeLoginUsersAndAutoLogin(steamRoot, selectedID64 string, offlineMode bool) error {
 	loginPath := LoginUsersPath(steamRoot)
 	selected := strings.TrimSpace(selectedID64)
 
@@ -293,6 +299,13 @@ func writeLoginUsersAndAutoLogin(steamRoot, selectedID64 string) error {
 			u.MostRecent = "1"
 			u.AutoLogin = "1"
 			u.RememberPassword = "1"
+			if offlineMode {
+				u.WantsOffline = "1"
+				u.SkipOfflineWarn = "1"
+			} else {
+				u.WantsOffline = "0"
+				u.SkipOfflineWarn = "0"
+			}
 			autoUser = u.AccountName
 		}
 	}
