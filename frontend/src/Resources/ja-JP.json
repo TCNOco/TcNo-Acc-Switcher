@@ -41,6 +41,8 @@
   "Steam_CheckVac": "アカウントVACの状態を確認",
   "Steam_OverrideDefaultState": "デフォルトのログイン状態を上書き:",
   "Steam_StartSilent": "アカウント切り替え時にSteamをタスクトレイに開く ('-silent'で起動)",
+  "Steam_OfflineMode": "Steam オフラインモード",
+  "Tooltip_SteamOfflineMode": "アカウントの切り替え後に Steam を '-offline' で起動します。これはアプリのオフラインモード設定とは別のものです。",
   "Steam_OldUi": "Steam で古い UI を使用する (-vgui)",
   "Button_AddNew": "新規追加",
   "Button_SaveCurrent": "現在の保存",

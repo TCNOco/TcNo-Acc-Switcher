@@ -41,6 +41,8 @@
   "Steam_CheckVac": "Kontrollera VAC status för kontot",
   "Steam_OverrideDefaultState": "Åsidosätt standardinloggningstillstånd:",
   "Steam_StartSilent": "Öppna Steam i systemfältet vid växling (Starta Steam med '-silent')",
+  "Steam_OfflineMode": "Steams offlineläge",
+  "Tooltip_SteamOfflineMode": "Starta Steam med '-offline' efter att du har bytt konto. Detta är separat från appens inställning för offlineläge.",
   "Steam_OldUi": "Använd det gamla användargränssnittet i Steam (-vgui)",
   "Button_AddNew": "Lägg till ny",
   "Button_SaveCurrent": "Spara aktuell",

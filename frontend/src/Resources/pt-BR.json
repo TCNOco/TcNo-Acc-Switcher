@@ -41,6 +41,8 @@
   "Steam_CheckVac": "Verificar status do VAC da conta",
   "Steam_OverrideDefaultState": "Substituir estado padrão de login:",
   "Steam_StartSilent": "Abrir Steam na bandeja ao alternar (iniciar Steam com '-silent')",
+  "Steam_OfflineMode": "Modo offline da Steam",
+  "Tooltip_SteamOfflineMode": "Inicie a Steam com '-offline' após trocar de conta. Esta opção é independente da configuração Modo offline do aplicativo.",
   "Steam_OldUi": "Use a interface antiga da Steam (-vgui)",
   "Button_AddNew": "Adicionar Novo",
   "Button_SaveCurrent": "Salvar atual",

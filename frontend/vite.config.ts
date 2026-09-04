@@ -40,11 +40,4 @@ export default defineConfig({
     namedExports: false,
     stringify: true,
   },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        api: "modern", // or "modern-compiler"
-      },
-    },
-  },
 });

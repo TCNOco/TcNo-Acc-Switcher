@@ -41,6 +41,8 @@
   "Steam_CheckVac": "Zkontrolovat stav VAC účtu",
   "Steam_OverrideDefaultState": "Přepsat výchozí stav přihlášení:",
   "Steam_StartSilent": "Při přepnutí otevřít Steam do oznamovací oblasti (spustit Steam s '-silent')",
+  "Steam_OfflineMode": "Režim offline služby Steam",
+  "Tooltip_SteamOfflineMode": "Po přepnutí účtů spustit Steam s parametrem '-offline'. Toto nastavení je oddělené od nastavení „Režim offline“ v aplikaci.",
   "Steam_OldUi": "Použít staré uživatelské rozhraní ve službě Steam (-vgui)",
   "Button_AddNew": "Přidat nový",
   "Button_SaveCurrent": "Uložit aktuální",

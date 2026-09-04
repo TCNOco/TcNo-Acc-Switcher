@@ -41,6 +41,8 @@
   "Steam_CheckVac": "ตรวจสอบสถานะบัญชี VAC",
   "Steam_OverrideDefaultState": "แทนที่สถานะการเข้าสู่ระบบเริ่มต้น:",
   "Steam_StartSilent": "เปิด Steam ไปยังซิสเต็มเทรย์เมื่อสลับบัญชี (เริ่ม Steam ด้วย '-silent')",
+  "Steam_OfflineMode": "โหมดออฟไลน์ของ Steam",
+  "Tooltip_SteamOfflineMode": "เริ่ม Steam ด้วย '-offline' หลังจากสลับบัญชี การตั้งค่านี้แยกจากการตั้งค่าโหมดออฟไลน์ของแอป",
   "Steam_OldUi": "ใช้ UI เก่าใน Steam (-vgui)",
   "Button_AddNew": "เพิ่มใหม่",
   "Button_SaveCurrent": "บันทึกปัจจุบัน",

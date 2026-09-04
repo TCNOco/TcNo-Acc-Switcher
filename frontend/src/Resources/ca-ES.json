@@ -41,6 +41,8 @@
   "Steam_CheckVac": "Comprova l'estat del compte de VAC",
   "Steam_OverrideDefaultState": "Substitueix l'estat d'inici de sessió per defecte:",
   "Steam_StartSilent": "Obre Steam a la safata de tasques en canviar (Inicia Steam amb '-silent')",
+  "Steam_OfflineMode": "Mode fora de línia de Steam",
+  "Tooltip_SteamOfflineMode": "Inicia Steam amb '-offline' després de canviar de compte. Aquesta opció és independent de la configuració Mode fora de línia de l'aplicació.",
   "Steam_OldUi": "Utilitza la interfície d'usuari antiga a Steam (-vgui)",
   "Button_AddNew": "Afegeix nou",
   "Button_SaveCurrent": "Desa l'actual",

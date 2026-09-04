@@ -41,6 +41,8 @@
   "Steam_CheckVac": "Έλεγχος κατάστασης VAC λογαριασμού",
   "Steam_OverrideDefaultState": "Παράκαμψη προεπιλεγμένης κατάστασης σύνδεσης:",
   "Steam_StartSilent": "Άνοιγμα του πλαισίου εργασίας Steam στον διακόπτη (Εκκίνηση του Steam με '-silent')",
+  "Steam_OfflineMode": "Λειτουργία εκτός σύνδεσης του Steam",
+  "Tooltip_SteamOfflineMode": "Εκκινήστε το Steam με '-offline' μετά την εναλλαγή λογαριασμού. Αυτή η επιλογή είναι ξεχωριστή από τη ρύθμιση «Λειτουργία εκτός σύνδεσης» της εφαρμογής.",
   "Steam_OldUi": "Χρησιμοποιήστε το Old UI στο Steam (-vgui)",
   "Button_AddNew": "Προσθήκη Νέου",
   "Button_SaveCurrent": "Αποθήκευση τρέχοντος",

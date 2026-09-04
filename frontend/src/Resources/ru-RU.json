@@ -41,6 +41,8 @@
   "Steam_CheckVac": "Проверить VAC статус",
   "Steam_OverrideDefaultState": "Установить статус по умолчанию при входе:",
   "Steam_StartSilent": "Откройте Steam для включения лотка задач (запустите Steam с помощью '-silent')",
+  "Steam_OfflineMode": "Автономный режим Steam",
+  "Tooltip_SteamOfflineMode": "Запускать Steam с параметром '-offline' после переключения аккаунтов. Это отдельная настройка, не связанная с настройкой «Автономный режим» приложения.",
   "Steam_OldUi": "Использовать старый пользовательский интерфейс в Steam (-vgui)",
   "Button_AddNew": "Добавить аккаунт",
   "Button_SaveCurrent": "Сохранить текущий",

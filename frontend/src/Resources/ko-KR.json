@@ -41,6 +41,8 @@
   "Steam_CheckVac": "계정 VAC 상태 확인",
   "Steam_OverrideDefaultState": "기본 로그인 상태 덮어쓰기:",
   "Steam_StartSilent": "스위치에서 작업 트레이에 Steam 열기 ('-silent' 로 Steam 시작)",
+  "Steam_OfflineMode": "Steam 오프라인 모드",
+  "Tooltip_SteamOfflineMode": "계정 전환 후 Steam을 '-offline' 옵션으로 시작합니다. 앱의 오프라인 모드 설정과는 별개입니다.",
   "Steam_OldUi": "Steam에서 이전 UI 사용(-vgui)",
   "Button_AddNew": "새 계정 추가",
   "Button_SaveCurrent": "현재 상태 저장",

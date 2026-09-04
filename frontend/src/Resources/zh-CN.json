@@ -41,6 +41,8 @@
   "Steam_CheckVac": "检查账户 VAC 状态",
   "Steam_OverrideDefaultState": "覆盖默认登录状态：",
   "Steam_StartSilent": "切换时将 Steam 打开到任务栏托盘（使用 '-silent' 启动 Steam）",
+  "Steam_OfflineMode": "Steam 离线模式",
+  "Tooltip_SteamOfflineMode": "切换账户后使用 '-offline' 启动 Steam。此设置与应用的离线模式设置相互独立。",
   "Steam_OldUi": "在 Steam 中使用旧版界面 (-vgui)",
   "Button_AddNew": "新增",
   "Button_SaveCurrent": "保存当前",

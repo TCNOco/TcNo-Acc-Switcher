@@ -41,6 +41,8 @@
   "Steam_CheckVac": "בדוק את מצב VAC של החשבון",
   "Steam_OverrideDefaultState": "דרוס מצב התחברות כברירת מחדל:",
   "Steam_StartSilent": "פתח את Steam למגש המשימות בעת החלפה (הפעל את Steam עם '-silent')",
+  "Steam_OfflineMode": "מצב לא מקוון של Steam",
+  "Tooltip_SteamOfflineMode": "הפעל את Steam עם '-offline' לאחר מעבר בין חשבונות. אפשרות זו נפרדת מהגדרת „מצב לא מקוון” של האפליקציה.",
   "Steam_OldUi": "השתמש בממשק המשתמש הישן ב-Steam (-vgui)",
   "Button_AddNew": "הוסף",
   "Button_SaveCurrent": "שמור נוכחי",

@@ -41,6 +41,8 @@
   "Steam_CheckVac": "Провери VAC статус налога",
   "Steam_OverrideDefaultState": "Промени подразумеван статус пријављивања:",
   "Steam_StartSilent": "Отвори Steam у системску траку при промени (Покрени Steam са '-silent')",
+  "Steam_OfflineMode": "Steam офлајн режим",
+  "Tooltip_SteamOfflineMode": "Покрени Steam са параметром '-offline' након промене налога. Ово подешавање је одвојено од подешавања „Офлајн режим“ у апликацији.",
   "Steam_OldUi": "Користи стари интерфејс у Steam-у (-vgui)",
   "Button_AddNew": "Додај ново",
   "Button_SaveCurrent": "Сачувај тренутно",

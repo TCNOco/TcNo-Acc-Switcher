@@ -41,6 +41,8 @@
   "Steam_CheckVac": "Проверка VAC състоянието на акаунта",
   "Steam_OverrideDefaultState": "Замяна на състоянието на влизане по подразбиране:",
   "Steam_StartSilent": "Отваряне на Steam в системния трей при превключване (Стартиране на Steam с '-silent')",
+  "Steam_OfflineMode": "Офлайн режим на Steam",
+  "Tooltip_SteamOfflineMode": "Стартира Steam с параметъра '-offline' след превключване на акаунти. Това е отделно от настройката „Офлайн режим“ на приложението.",
   "Steam_OldUi": "Използвайте стар потребителски интерфейс в Steam (-vgui)",
   "Button_AddNew": "Добавяне на нов",
   "Button_SaveCurrent": "Запазване на текущото",

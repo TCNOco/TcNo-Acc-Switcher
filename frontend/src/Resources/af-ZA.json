@@ -41,6 +41,8 @@
   "Steam_CheckVac": "Gaan rekening VAC status na",
   "Steam_OverrideDefaultState": "Ignoreer verstek aanmeldstatus:",
   "Steam_StartSilent": "Maak Steam oop na stelselvak by wisseling (Begin Steam met '-silent')",
+  "Steam_OfflineMode": "Steam se vanlynmodus",
+  "Tooltip_SteamOfflineMode": "Begin Steam met '-offline' nadat jy van rekening gewissel het. Dit is apart van die toepassing se instelling vir Vanlyn modus.",
   "Steam_OldUi": "Gebruik Ou UI in Steam (-vgui)",
   "Button_AddNew": "Voeg nuwe",
   "Button_SaveCurrent": "Stoor huidige",

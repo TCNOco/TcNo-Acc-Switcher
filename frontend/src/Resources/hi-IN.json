@@ -41,6 +41,8 @@
   "Steam_CheckVac": "अकाउंट VAC स्टेटस चेक करें",
   "Steam_OverrideDefaultState": "डिफ़ॉल्ट लॉगिन स्थिति ओवरराइड करें:",
   "Steam_StartSilent": "स्विच पर टास्क ट्रे में Steam खोलें (Steam को '-silent' के साथ शुरू करें)",
+  "Steam_OfflineMode": "Steam ऑफ़लाइन मोड",
+  "Tooltip_SteamOfflineMode": "खाता बदलने के बाद Steam को '-offline' के साथ शुरू करें। यह ऐप की «ऑफ़लाइन मोड» सेटिंग से अलग है।",
   "Steam_OldUi": "Steam में पुरानी UI का उपयोग करें (-vgui)",
   "Button_AddNew": "नया जोड़ें",
   "Button_SaveCurrent": "वर्तमान सहेजें",

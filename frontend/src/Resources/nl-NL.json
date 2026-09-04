@@ -41,6 +41,8 @@
   "Steam_CheckVac": "VAC-status van account controleren",
   "Steam_OverrideDefaultState": "Standaard aanmeldstatus overschrijven:",
   "Steam_StartSilent": "Steam openen in systeemvak bij wisselen (Steam starten met '-silent')",
+  "Steam_OfflineMode": "Steam-offlinemodus",
+  "Tooltip_SteamOfflineMode": "Start Steam met '-offline' nadat je van account bent gewisseld. Dit staat los van de instelling Offline-modus van de app.",
   "Steam_OldUi": "Oude gebruikersinterface gebruiken in Steam (-vgui)",
   "Button_AddNew": "Nieuwe toevoegen",
   "Button_SaveCurrent": "Huidige opslaan",

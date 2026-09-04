@@ -7,14 +7,14 @@ import {
 } from "./steamGuardDrop";
 
 function adapter(): SteamGuardDropAdapter & {
-  importMaFiles: ReturnType<typeof vi.fn>;
-  decodeQrScreenshot: ReturnType<typeof vi.fn>;
-  reportError: ReturnType<typeof vi.fn>;
+  importMaFiles: ReturnType<typeof vi.fn<(paths: string[]) => Promise<void>>>;
+  decodeQrScreenshot: ReturnType<typeof vi.fn<(path: string) => Promise<void>>>;
+  reportError: ReturnType<typeof vi.fn<(error: unknown) => void>>;
 } {
   return {
-    importMaFiles: vi.fn().mockResolvedValue(undefined),
-    decodeQrScreenshot: vi.fn().mockResolvedValue(undefined),
-    reportError: vi.fn(),
+    importMaFiles: vi.fn<(paths: string[]) => Promise<void>>().mockResolvedValue(undefined),
+    decodeQrScreenshot: vi.fn<(path: string) => Promise<void>>().mockResolvedValue(undefined),
+    reportError: vi.fn<(error: unknown) => void>(),
   };
 }
 

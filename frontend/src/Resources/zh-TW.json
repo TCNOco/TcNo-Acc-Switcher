@@ -41,6 +41,8 @@
   "Steam_CheckVac": "檢查帳戶 VAC 狀態",
   "Steam_OverrideDefaultState": "覆寫預設登入狀態：",
   "Steam_StartSilent": "切換時將 Steam 開到工作列通知區域（使用 '-silent' 啟動 Steam）",
+  "Steam_OfflineMode": "Steam 離線模式",
+  "Tooltip_SteamOfflineMode": "切換帳戶後使用 '-offline' 啟動 Steam。此設定與應用程式的離線模式設定彼此獨立。",
   "Steam_OldUi": "在 Steam 中使用舊版介面 (-vgui)",
   "Button_AddNew": "新增",
   "Button_SaveCurrent": "儲存目前狀態",

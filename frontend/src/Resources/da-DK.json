@@ -41,6 +41,8 @@
   "Steam_CheckVac": "Tjek kontoens VAC-status",
   "Steam_OverrideDefaultState": "Tilsidesæt standard login-tilstand:",
   "Steam_StartSilent": "Åbn Steam til procesbakken ved skift (Start Steam med \"-silent\")",
+  "Steam_OfflineMode": "Steam-offlinetilstand",
+  "Tooltip_SteamOfflineMode": "Start Steam med '-offline' efter kontoskift. Dette er uafhængigt af appens indstilling for offlinetilstand.",
   "Steam_OldUi": "Brug gammel brugergrænseflade i Steam (-vgui)",
   "Button_AddNew": "Tilføj ny",
   "Button_SaveCurrent": "Gem nuværende",

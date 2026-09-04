@@ -41,6 +41,8 @@
   "Steam_CheckVac": "Verifică statusul VAC",
   "Steam_OverrideDefaultState": "Suprascrie starea implicită de conectare:",
   "Steam_StartSilent": "Deschideți Steam în bara de activități pe comutator (Porniți Steam cu „-silent”)",
+  "Steam_OfflineMode": "Modul offline Steam",
+  "Tooltip_SteamOfflineMode": "Porniți Steam cu '-offline' după schimbarea contului. Această opțiune este separată de setarea Modul offline a aplicației.",
   "Steam_OldUi": "Utilizați vechea interfață de utilizare în Steam (-vgui)",
   "Button_AddNew": "Adăugă",
   "Button_SaveCurrent": "Salvează Actual",

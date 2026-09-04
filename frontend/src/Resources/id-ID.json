@@ -41,6 +41,8 @@
   "Steam_CheckVac": "Periksa status VAC akun",
   "Steam_OverrideDefaultState": "Mengganti keadaan login default:",
   "Steam_StartSilent": "Buka Steam ke baki tugas saat beralih (Mulai Steam dengan '-silent')",
+  "Steam_OfflineMode": "Mode Offline Steam",
+  "Tooltip_SteamOfflineMode": "Jalankan Steam dengan '-offline' setelah berganti akun. Ini terpisah dari pengaturan Mode Offline aplikasi.",
   "Steam_OldUi": "Gunakan UI Lama di Steam (-vgui)",
   "Button_AddNew": "Tambah Baru",
   "Button_SaveCurrent": "Simpan Saat Ini",

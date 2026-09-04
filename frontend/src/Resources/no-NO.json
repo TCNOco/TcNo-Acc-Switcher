@@ -41,6 +41,8 @@
   "Steam_CheckVac": "Sjekk kontoens VAC-status",
   "Steam_OverrideDefaultState": "Overstyr standard påloggingstilstand:",
   "Steam_StartSilent": "Åpne Steam til oppgaveskuffen på bryteren (start Steam med '-silent')",
+  "Steam_OfflineMode": "Steams frakoblede modus",
+  "Tooltip_SteamOfflineMode": "Start Steam med '-offline' etter at du har byttet konto. Dette er separat fra appens innstilling for frakoblet modus.",
   "Steam_OldUi": "Bruk gammelt brukergrensesnitt i Steam (-vgui)",
   "Button_AddNew": "Legg til ny",
   "Button_SaveCurrent": "Lagre gjeldende",

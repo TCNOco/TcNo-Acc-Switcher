@@ -41,6 +41,8 @@
   "Steam_CheckVac": "Skontrolujte stav VAC účtu",
   "Steam_OverrideDefaultState": "Prepísať predvolený stav prihlásenia:",
   "Steam_StartSilent": "Pri prepnutí účtov otvoriť Steam minimalizovaný do systémovej lišty (Spustiť Steam s '-silent')",
+  "Steam_OfflineMode": "Režim offline služby Steam",
+  "Tooltip_SteamOfflineMode": "Po prepnutí účtov spustiť Steam s parametrom '-offline'. Toto nastavenie je oddelené od nastavenia „Režim offline“ v aplikácii.",
   "Steam_OldUi": "Použiť staré používateľské rozhranie v službe Steam (-vgui)",
   "Button_AddNew": "Pridať nové",
   "Button_SaveCurrent": "Uložiť aktuálny",

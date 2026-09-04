@@ -41,6 +41,8 @@
   "Steam_CheckVac": "Hesap VAC durumunu kontrol et",
   "Steam_OverrideDefaultState": "Varsayılan oturum açma durumunu geçersiz kıl:",
   "Steam_StartSilent": "Hesap değiştirirken Steam'i görev çubuğuna simge durumuna küçülterek aç (Steam'i '-silent' ile başlat)",
+  "Steam_OfflineMode": "Steam Çevrimdışı Modu",
+  "Tooltip_SteamOfflineMode": "Hesap değiştirdikten sonra Steam'i '-offline' ile başlatın. Bu seçenek, uygulamanın «Çevrimdışı Mod» ayarından ayrıdır.",
   "Steam_OldUi": "Steam'de Eski Kullanıcı Arayüzünü Kullanın (-vgui)",
   "Button_AddNew": "Yeni Ekle",
   "Button_SaveCurrent": "Mevcut Oturumu Kaydet",

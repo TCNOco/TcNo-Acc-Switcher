@@ -263,8 +263,10 @@ function buildMenu() {
   return { root, search, alpha, parentAction, parentLi, submenuSearch, submenuLeaf, omega };
 }
 
-function navDeps(): KeyboardNavDeps & { expandSubmenuForLi: ReturnType<typeof vi.fn> } {
-  return { expandSubmenuForLi: vi.fn() };
+function navDeps(): KeyboardNavDeps & {
+  expandSubmenuForLi: ReturnType<typeof vi.fn<(liHasSubmenu: HTMLElement) => void>>;
+} {
+  return { expandSubmenuForLi: vi.fn<(liHasSubmenu: HTMLElement) => void>() };
 }
 
 describe("context menu keyboard navigation", () => {

@@ -41,6 +41,8 @@
   "Steam_CheckVac": "Tarkista tilin VAC-tila",
   "Steam_OverrideDefaultState": "Ohita oletuskirjautumistila:",
   "Steam_StartSilent": "Avaa Steam ilmoitusalueelle vaihdon yhteydessä (käynnistä Steam parametrilla '-silent')",
+  "Steam_OfflineMode": "Steamin offline-tila",
+  "Tooltip_SteamOfflineMode": "Käynnistä Steam parametrilla '-offline' tilin vaihtamisen jälkeen. Tämä on erillinen sovelluksen Offline-tila-asetuksesta.",
   "Steam_OldUi": "Käytä vanhaa käyttöliittymää Steamissä (-vgui)",
   "Button_AddNew": "Lisää uusi",
   "Button_SaveCurrent": "Tallenna nykyinen",

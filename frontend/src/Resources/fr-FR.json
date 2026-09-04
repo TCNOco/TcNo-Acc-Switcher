@@ -41,6 +41,8 @@
   "Steam_CheckVac": "Vérifier le statut VAC du compte",
   "Steam_OverrideDefaultState": "Remplacer l'état de connexion par défaut :",
   "Steam_StartSilent": "Ouvrir Steam dans la barre des tâches au changement (Démarrer Steam avec '-silent')",
+  "Steam_OfflineMode": "Mode hors ligne de Steam",
+  "Tooltip_SteamOfflineMode": "Lancez Steam avec '-offline' après avoir changé de compte. Cette option est indépendante du paramètre Mode hors ligne de l'application.",
   "Steam_OldUi": "Utiliser l'ancienne interface utilisateur dans Steam (-vgui)",
   "Button_AddNew": "Ajouter",
   "Button_SaveCurrent": "Enregistrer le compte actuel",

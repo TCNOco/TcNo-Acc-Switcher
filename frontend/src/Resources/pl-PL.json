@@ -41,6 +41,8 @@
   "Steam_CheckVac": "Sprawdź status VAC konta",
   "Steam_OverrideDefaultState": "Zastąp domyślny stan logowania:",
   "Steam_StartSilent": "Otwórz Steam w zasobniku zadań (Uruchom Steam z '-silent')",
+  "Steam_OfflineMode": "Tryb offline Steam",
+  "Tooltip_SteamOfflineMode": "Uruchom Steam z parametrem '-offline' po przełączeniu konta. To ustawienie jest niezależne od ustawienia „Tryb offline” aplikacji.",
   "Steam_OldUi": "Użyj starego interfejsu użytkownika w Steam (-vgui)",
   "Button_AddNew": "Dodaj nowe",
   "Button_SaveCurrent": "Zapisz bieżące",

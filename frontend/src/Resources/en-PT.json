@@ -41,6 +41,8 @@
   "Steam_CheckVac": "Check yer VAC status",
   "Steam_OverrideDefaultState": "Override default boardin' state:",
   "Steam_StartSilent": "Open Steam t' task tray on switch (Start Steam wit' '-silent')",
+  "Steam_OfflineMode": "Steam Off the Grid Mode",
+  "Tooltip_SteamOfflineMode": "Start Steam wit' '-offline' after switchin' accounts. This be separate from the app's Off the Grid Mode settin'.",
   "Steam_OldUi": "Use Ole UI in Steam (-vgui)",
   "Button_AddNew": "Add New Cap'n",
   "Button_SaveCurrent": "Save Cap'n",

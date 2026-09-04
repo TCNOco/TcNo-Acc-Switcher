@@ -41,6 +41,8 @@
   "Steam_CheckVac": "تحقق من حالة VAC لحساب ستيم",
   "Steam_OverrideDefaultState": "حالة الحساب الافتراضية:",
   "Steam_StartSilent": "فتح Steam في علبة النظام عند التبديل (بدء Steam باستخدام '-silent')",
+  "Steam_OfflineMode": "وضع عدم الاتصال في Steam",
+  "Tooltip_SteamOfflineMode": "شغّل Steam باستخدام '-offline' بعد تبديل الحسابات. هذا الخيار منفصل عن إعداد «الوضع غير المتصل بالإنترنت» في التطبيق.",
   "Steam_OldUi": "استخدام واجهة المستخدم القديمة في Steam (باستخدام -vgui)",
   "Button_AddNew": "اضف حساب",
   "Button_SaveCurrent": "حفظ ملف الحساب الحالي",

@@ -41,6 +41,8 @@
   "Steam_CheckVac": "Kiểm tra trạng thái VAC của tài khoản",
   "Steam_OverrideDefaultState": "Ghi đè trạng thái đăng nhập mặc định:",
   "Steam_StartSilent": "Mở Steam vào khay tác vụ khi chuyển (khởi động Steam với '-silent')",
+  "Steam_OfflineMode": "Chế độ ngoại tuyến của Steam",
+  "Tooltip_SteamOfflineMode": "Khởi động Steam với '-offline' sau khi chuyển đổi tài khoản. Tùy chọn này tách biệt với cài đặt Chế độ ngoại tuyến của ứng dụng.",
   "Steam_OldUi": "Dùng giao diện cũ trong Steam (-vgui)",
   "Button_AddNew": "Thêm mới",
   "Button_SaveCurrent": "Lưu hiện tại",

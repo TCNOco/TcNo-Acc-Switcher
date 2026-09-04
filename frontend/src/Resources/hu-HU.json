@@ -41,6 +41,8 @@
   "Steam_CheckVac": "Fiók VAC állapotának ellenőrzése",
   "Steam_OverrideDefaultState": "Alapértelmezett bejelentkezési állapot felülbírálása:",
   "Steam_StartSilent": "Steam megnyitása a tálcára váltáskor (Steam indítása '-silent' paraméterrel)",
+  "Steam_OfflineMode": "Steam offline mód",
+  "Tooltip_SteamOfflineMode": "Fiókváltás után a Steam az '-offline' paraméterrel indul. Ez elkülönül az alkalmazás Offline mód beállításától.",
   "Steam_OldUi": "Régi felhasználói felület használata a Steamben (-vgui)",
   "Button_AddNew": "Új hozzáadása",
   "Button_SaveCurrent": "Aktuális mentése",
