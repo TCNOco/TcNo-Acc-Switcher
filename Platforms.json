@@ -677,6 +677,32 @@
           ".xml"
         ]
       }
+    },
+    "Spotify (Windows Store)": {
+      "Identifiers": [ "spots", "spotifystore" ],
+      "ExeLocationDefault": "C:\\Windows\\explorer.exe",
+      "GetPathFromShortcutNamed": "Spotify",
+      "ExeExtraArgs": "shell:AppsFolder\\SpotifyAB.SpotifyMusic_zpdnekdrzrea0!Spotify",
+      "ExesToEnd": [ "Spotify.exe" ],
+      "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+      "LoginFiles": {
+        "%LocalAppData%\\Packages\\SpotifyAB.SpotifyMusic_zpdnekdrzrea0\\LocalState\\Spotify\\content_settings": "content_settings",
+        "%LocalAppData%\\Packages\\SpotifyAB.SpotifyMusic_zpdnekdrzrea0\\LocalState\\Spotify\\dbrts": "dbrts",
+        "%LocalAppData%\\Packages\\SpotifyAB.SpotifyMusic_zpdnekdrzrea0\\LocalState\\Spotify\\es_counters.dat": "es_counters.dat",
+        "%LocalAppData%\\Packages\\SpotifyAB.SpotifyMusic_zpdnekdrzrea0\\LocalState\\Spotify\\offline.bnk": "offline.bnk",
+        "%LocalAppData%\\Packages\\SpotifyAB.SpotifyMusic_zpdnekdrzrea0\\LocalState\\Spotify\\pe_counters.dat": "pe_counters.dat",
+        "%LocalAppData%\\Packages\\SpotifyAB.SpotifyMusic_zpdnekdrzrea0\\LocalState\\Spotify\\prefs": "prefs"
+      },
+      "AllFilesRequired": false,
+      "ExitBeforeInteract": true,
+      "DisabledByDefault": true,
+      "Extras": {
+        "ClosingMethod": "Electron",
+        "ForceClosingMethod": true,
+        "SearchStartMenuForIcon": true
+      },
+      "UniqueIdFile": "%LocalAppData%\\Packages\\SpotifyAB.SpotifyMusic_zpdnekdrzrea0\\LocalState\\Spotify\\prefs",
+      "UniqueIdRegex": "autologin.username=\"(.*)\""
     }
   },
   "Platform-WIP": {
