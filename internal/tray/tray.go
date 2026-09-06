@@ -321,6 +321,9 @@ func menuBitmapForAccount(platformKey, arg string) []byte {
 		return nil
 	}
 	for _, imageID := range trayImageCandidateIDs(platformKey, uid) {
+		if imageID != uid && profileimage.HasManualProfileMarker(platformKey, uid) {
+			continue
+		}
 		p, ok := profileimage.CachedFilePath(platformKey, imageID)
 		if !ok {
 			continue
