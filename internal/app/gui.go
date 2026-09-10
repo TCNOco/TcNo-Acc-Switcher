@@ -274,7 +274,7 @@ func RunGUI(params RunGUIParams) {
 	}
 	var ipcStop func()
 	wailsApp.OnShutdown(func() {
-		params.DiscordRPC.Stop()
+		params.DiscordRPC.StopForExit()
 		if ipcStop != nil {
 			ipcStop()
 		}
