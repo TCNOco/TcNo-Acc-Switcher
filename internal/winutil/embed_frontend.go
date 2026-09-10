@@ -4,6 +4,7 @@ import (
 	"errors"
 	iofs "io/fs"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"sync"
 	"unicode"
@@ -91,9 +92,18 @@ func embeddedPathIsUnderPlatformArt(path string) bool {
 		strings.HasPrefix(low, "img/platform/")
 }
 
-// normalizePlatformArtKey folds case and strips non-alphanumeric characters so
+var platformArtSuffix = regexp.MustCompile(`^(.*?)\s*\(([^()]+)\)$`)
+
+// normalizePlatformArtKey shares artwork across parenthesized platform variants,
+// matching the frontend platformArtworkName rule. It folds case and punctuation so
 // e.g. "Battle.net" (Platforms.json) matches "BattleNet.svg" on disk.
 func normalizePlatformArtKey(s string) string {
+	s = strings.TrimSpace(s)
+	if match := platformArtSuffix.FindStringSubmatch(s); match != nil {
+		if base := strings.TrimSpace(match[1]); base != "" {
+			s = base
+		}
+	}
 	var b strings.Builder
 	for _, r := range strings.ToLower(s) {
 		if unicode.IsLetter(r) || unicode.IsNumber(r) {

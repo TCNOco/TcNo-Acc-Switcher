@@ -29,6 +29,12 @@ func TestPlatformArtStemMatchesKey(t *testing.T) {
 		{"Epic Games", "Epic Games", true},
 		{"Steam", "Steam", true},
 		{"Steam", "Steamy", false},
+		{"Spotify", "Spotify (Windows Store)", true},
+		{"Spotify", "Spotify (Snap)", true},
+		{"Spotify", "Spotify (xyz)", true},
+		{"Discord", "Discord (Flatpak)", true},
+		{"OBS Studio", "OBS Studio (AppImage)", true},
+		{"Discord", "Discord Canary", false},
 		{"GOG Galaxy", "GOG Galaxy", true},
 	}
 	for _, tc := range cases {
