@@ -12,7 +12,6 @@ import (
 	"TcNo-Acc-Switcher/internal/app"
 	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/basic"
-	"TcNo-Acc-Switcher/internal/buildmode"
 	"TcNo-Acc-Switcher/internal/cli"
 	"TcNo-Acc-Switcher/internal/controllerinput"
 	"TcNo-Acc-Switcher/internal/crashlog"
@@ -300,7 +299,7 @@ func serviceList() []application.Service {
 	if err != nil {
 		log.Printf("steam browser data path: %v", err)
 	}
-	steamBrowserSvc = steambrowser.NewService(steamguard.NewBrowserSessionSource(steamGuardSvc), browserDataPath, buildmode.IsDebugBuild())
+	steamBrowserSvc = steambrowser.NewService(steamguard.NewBrowserSessionSource(steamGuardSvc), browserDataPath, true)
 
 	return []application.Service{
 		application.NewService(&FilesystemService{}),

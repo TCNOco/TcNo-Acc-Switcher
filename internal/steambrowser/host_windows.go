@@ -551,9 +551,9 @@ func (v *windowsView) refresh(loading *bool) {
 
 // applySettings decides what the remote page is allowed to do.
 //
-// Developer tools follow the build: on in a debug build, where they are the
-// only way to see why a page misbehaves, and off in a release one, where they
-// would hand a page's console to anyone who reaches this window.
+// Developer tools follow the service setting, allowing page inspection in
+// both debug and release builds.
+// Users can inspect pages through the default context menu.
 //
 // The default context menu stays on, unlike everywhere else in the application.
 // It is what supplies "open link in new window", which is how a link reaches

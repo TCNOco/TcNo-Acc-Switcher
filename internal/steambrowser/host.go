@@ -33,7 +33,7 @@ type ViewOptions struct {
 	Profile string
 	// DataPath is the user data folder every profile lives under.
 	DataPath string
-	// DevTools enables the content view's developer tools. Off in production.
+	// DevTools enables the content view's developer tools.
 	DevTools bool
 	// ReservedTop is how far down the host window's client area the view
 	// starts, in physical pixels. It covers everything drawn above the page:
@@ -88,7 +88,7 @@ type View interface {
 	// two end up disagreeing on a scaled display.
 	SetTopInset(top int) error
 	// OpenDevTools opens the engine's inspector for this view. Available only
-	// where the build enabled it.
+	// where the service enabled it.
 	OpenDevTools() error
 	// Close releases the view and its native resources.
 	Close()

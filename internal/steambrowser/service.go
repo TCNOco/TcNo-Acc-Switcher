@@ -418,12 +418,12 @@ func (s *Service) Certificate(ctx context.Context, sessionID string) (Certificat
 	return FetchCertificate(ctx, current.state.URL)
 }
 
-// OpenDevTools opens the inspector for a window's page. Refused unless the
-// build enabled developer tools, so a release build cannot be talked into
-// handing over a page's console.
+// OpenDevTools opens the inspector for a window's page when the service has
+// developer tools enabled.
+// The setting also controls the native content view inspector.
 func (s *Service) OpenDevTools(sessionID string) error {
 	if !s.devTools {
-		return errors.New("steambrowser: developer tools are not enabled in this build")
+		return errors.New("steambrowser: developer tools are not enabled")
 	}
 	return s.command(sessionID, View.OpenDevTools)
 }
