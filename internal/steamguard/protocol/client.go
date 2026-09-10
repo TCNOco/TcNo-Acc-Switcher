@@ -3,6 +3,8 @@
 package protocol
 
 import (
+	"TcNo-Acc-Switcher/internal/systemproxy"
+
 	"bytes"
 	"context"
 	"crypto/tls"
@@ -99,13 +101,13 @@ func NewClient(options Options) *Client {
 	return &Client{transport: transport}
 }
 
-// NewTransport returns the production transport. It ignores proxy environment
-// variables so authentication traffic cannot be redirected by process state.
+// NewTransport returns the production transport using the system proxy.
+// TLS verification, host policy, and request limits also apply through proxies.
 func NewTransport() *http.Transport {
 	return &http.Transport{
-		Proxy:                  nil,
-		DialContext:            (&net.Dialer{Timeout: 10 * time.Second, KeepAlive: 30 * time.Second}).DialContext,
-		ForceAttemptHTTP2:      true,
+		Proxy:             systemproxy.Proxy,
+		DialContext:       (&net.Dialer{Timeout: 10 * time.Second, KeepAlive: 30 * time.Second}).DialContext,
+		ForceAttemptHTTP2: true,
 		// Sized for the concurrent sweeps rather than a single request: the CS2 and
 		// owned games sweeps both read several accounts at once against
 		// steamcommunity.com, so two idle slots meant fresh TLS handshakes.

@@ -82,7 +82,7 @@ func TestDefaultClientRejectsRedirectsAndPinsTransportLimits(t *testing.T) {
 	if !ok {
 		t.Fatalf("transport type = %T", httpClient.Transport)
 	}
-	if httpClient.Timeout != RequestTimeout || transport.TLSClientConfig.MinVersion != tls.VersionTLS12 ||
+	if transport.Proxy == nil || httpClient.Timeout != RequestTimeout || transport.TLSClientConfig.MinVersion != tls.VersionTLS12 ||
 		transport.ResponseHeaderTimeout <= 0 || transport.TLSHandshakeTimeout <= 0 {
 		t.Fatalf("network limits are not configured")
 	}

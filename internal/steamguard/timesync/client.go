@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"TcNo-Acc-Switcher/internal/steamguard/otp"
+	"TcNo-Acc-Switcher/internal/systemproxy"
 )
 
 const (
@@ -64,7 +65,7 @@ type Client struct {
 func NewClient() *Client {
 	dialer := &net.Dialer{Timeout: 3 * time.Second, KeepAlive: 30 * time.Second}
 	transport := &http.Transport{
-		Proxy:                 nil,
+		Proxy:                 systemproxy.Proxy,
 		DialContext:           dialer.DialContext,
 		ForceAttemptHTTP2:     true,
 		MaxIdleConns:          4,

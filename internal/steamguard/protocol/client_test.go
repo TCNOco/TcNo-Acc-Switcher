@@ -752,3 +752,14 @@ func response(request *http.Request, status int, header http.Header, body []byte
 		Request:       request,
 	}
 }
+
+func TestProductionTransportUsesProxyAndKeepsTLSVerification(t *testing.T) {
+	transport := NewTransport()
+	defer transport.CloseIdleConnections()
+	if transport.Proxy == nil {
+		t.Fatal("production Steam Guard transport bypasses system proxy")
+	}
+	if transport.TLSClientConfig == nil || transport.TLSClientConfig.InsecureSkipVerify {
+		t.Fatal("production Steam Guard transport must verify TLS certificates")
+	}
+}
