@@ -2,6 +2,7 @@ package logsanitize
 
 import (
 	"fmt"
+	"regexp"
 	"sort"
 	"strings"
 
@@ -15,20 +16,47 @@ type secretReplacement struct {
 
 // Redact replaces known account identifiers in text with accountN aliases (best-effort).
 func Redact(text string) string {
+	return redactWithAccounts(text, collectAccountIdentifiers())
+}
+
+func redactWithAccounts(text string, accounts [][]string) string {
 	text = logredact.RedactText(text)
-	reps := collectReplacements()
+	reps := replacementsForAccounts(accounts)
 	if len(reps) == 0 {
 		return text
 	}
-	out := text
+	// Replace once: an account actually named "account1" must not rewrite an
+	// alias inserted for a different account. Regex matching also preserves
+	// byte offsets when Unicode case folding changes a character's length.
+	patterns := make([]string, 0, len(reps))
+	replacements := make(map[string]string, len(reps))
 	for _, r := range reps {
-		out = replaceCI(out, r.secret, r.replacement)
+		patterns = append(patterns, regexp.QuoteMeta(r.secret))
+		replacements[strings.ToLower(r.secret)] = r.replacement
 	}
-	return out
+	pattern, err := regexp.Compile("(?i)" + strings.Join(patterns, "|"))
+	if err != nil {
+		return "[diagnostic text omitted: account redaction failed]"
+	}
+	return pattern.ReplaceAllStringFunc(text, func(match string) string {
+		if replacement, ok := replacements[strings.ToLower(match)]; ok {
+			return replacement
+		}
+		for _, r := range reps {
+			if strings.EqualFold(match, r.secret) {
+				return r.replacement
+			}
+		}
+		return "[account]"
+	})
 }
 
 func collectReplacements() []secretReplacement {
-	accounts := collectAccountIdentifiers()
+	return replacementsForAccounts(collectAccountIdentifiers())
+}
+
+func replacementsForAccounts(accounts [][]string) []secretReplacement {
+	accounts = mergeAccountGroups(accounts)
 	if len(accounts) == 0 {
 		return nil
 	}
@@ -91,4 +119,52 @@ func replaceCI(s, old, new string) string {
 		i = j + len(old)
 	}
 	return b.String()
+}
+
+// mergeAccountGroups keeps usernames, SteamID64, and userdata IDs on the same
+// alias even when an attempt initially knew only the target's ID.
+func mergeAccountGroups(accounts [][]string) [][]string {
+	parent := make([]int, len(accounts))
+	for i := range parent {
+		parent[i] = i
+	}
+	var root func(int) int
+	root = func(i int) int {
+		for parent[i] != i {
+			parent[i] = parent[parent[i]]
+			i = parent[i]
+		}
+		return i
+	}
+	owners := map[string]int{}
+	for i, group := range accounts {
+		for _, id := range group {
+			key := strings.ToLower(strings.TrimSpace(id))
+			if key == "" {
+				continue
+			}
+			if previous, ok := owners[key]; ok {
+				a, b := root(i), root(previous)
+				if a < b {
+					parent[b] = a
+				} else {
+					parent[a] = b
+				}
+			} else {
+				owners[key] = i
+			}
+		}
+	}
+	merged := make([][]string, len(accounts))
+	for i, group := range accounts {
+		r := root(i)
+		merged[r] = append(merged[r], group...)
+	}
+	var out [][]string
+	for _, group := range merged {
+		if len(group) > 0 {
+			out = append(out, group)
+		}
+	}
+	return out
 }

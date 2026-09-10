@@ -26,6 +26,8 @@ func Init() {
 	mu.Lock()
 	defer mu.Unlock()
 	lines = nil
+	switchAttempts = nil
+	nextSwitchID = 0
 	ready = true
 }
 

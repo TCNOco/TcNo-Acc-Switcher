@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"TcNo-Acc-Switcher/internal/actionlog"
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/security"
@@ -27,6 +28,11 @@ const steamOfflineLaunchArg = "-offline"
 
 // SwapToAccount: empty steamID64 clears AutoLoginUser (Add New). personaState -1 uses Steam_OverrideState; < -1 skips localconfig persona edit. extraLaunchArgs append after settings argv.
 func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string) (err error) {
+	attempt := actionlog.BeginSwitch("Steam", steamID64)
+	attempt.Account(steamDiagnosticIDs(steamID64, "", "")...)
+	result := "incomplete"
+	defer func() { attempt.Finish(result, err) }()
+	attempt.Next("require_unlocked")
 	if err := security.RequireUnlocked(); err != nil {
 		return err
 	}
@@ -39,10 +45,17 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 	}()
 	platform.EmitActionBarStatusI18n("Status_Init")
 
+	attempt.Next("load_settings")
 	st, err := LoadSettings()
 	if err != nil {
 		return err
 	}
+	attempt.Note(map[string]any{
+		"flow": "steam_client_switch", "auto_start": st.AutoStart,
+		"offline": steamOfflineModeEnabled(st), "closing_method": st.ClosingMethod,
+		"run_as_admin": st.RunAsAdmin, "app_elevated": winutil.IsProcessElevated(),
+		"show_account_chooser": st.ShowSteamSwitcher, "extra_argument_count": len(extraLaunchArgs),
+	})
 	exeDir, err := platform.ResolveExeDir()
 	if err != nil {
 		return err
@@ -55,6 +68,7 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 	if err != nil {
 		return err
 	}
+	attempt.Next("resolve_install")
 	root, err := ResolveInstallFolder(exeDir, st, app, raw)
 	if err != nil {
 		return err
@@ -66,10 +80,13 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 	if root == "" {
 		return fmt.Errorf("steam install folder not found")
 	}
+	attempt.Note(map[string]any{"steam_root": root, "steam_process_observed_before": steamIsRunning()})
+	recordSteamSwitchState(attempt, root, steamID64, false)
 
 	if tr := strings.TrimSpace(steamID64); tr != "" && len(extraLaunchArgs) == 0 {
-		if users, err := ParseLoginUsers(LoginUsersPath(root)); err == nil {
+		if users, readErr := ParseLoginUsers(LoginUsersPath(root)); readErr == nil {
 			if a := ActiveSessionSteamID64(users); a != "" && strings.EqualFold(strings.TrimSpace(a), tr) {
+				result = "skipped_matching_account_markers"
 				return nil
 			}
 		}
@@ -78,51 +95,63 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 	// Before anything is closed: a switch that cannot produce a login name has
 	// nothing to write, and finding that out after the kill left the user with
 	// Steam restarted and no account selected.
+	attempt.Next("preflight_target")
 	if err := preflightSwitchTarget(root, strings.TrimSpace(steamID64)); err != nil {
 		return err
 	}
-
 	pS := personaState
 	if pS == -1 {
 		pS = st.SteamOverrideState
 	}
-
 	gameMode := platform.InGamescopeSession()
+	attempt.Note(map[string]any{"game_mode": gameMode})
 	// Everything below closes Steam, and in Game Mode this process is inside
 	// Steam's tree and dies with it - before any of the writing happens. The
 	// helper is outside that tree and finishes the job.
 	if shouldHandOffSwitch(gameMode, runningAsSwitchHelper()) {
-		return handOffSwitch(steamID64, pS)
+		attempt.Next("handoff_helper")
+		err = handOffSwitch(steamID64, pS)
+		result = "handed_off_to_helper"
+		return err
 	}
 
+	attempt.Next("close_steam")
 	platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatform", "Steam")
 	if err := winutil.ErrIfCannotKill(steamKillNames, winutil.ClosingMethod(st.ClosingMethod)); err != nil {
 		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", "Steam")
 		return err
 	}
-	if err := winutil.KillByNameWithOpts(steamKillNames, winutil.ClosingMethod(st.ClosingMethod), nativeQuitOpts(root)); err != nil {
-		steamLog().Warn("kill steam processes", slog.Any("err", err))
+	if closeErr := winutil.KillByNameWithOpts(steamKillNames, winutil.ClosingMethod(st.ClosingMethod), nativeQuitOpts(root)); closeErr != nil {
+		attempt.Warning("close_steam", closeErr)
+		steamLog().Warn("kill steam processes", slog.Any("err", closeErr))
 	}
+	attempt.Note(map[string]any{"steam_process_observed_after_close": steamIsRunning()})
 
+	attempt.Next("update_login")
 	platform.EmitActionBarStatusI18n("Status_ActionBar_UpdatingSteamLogin")
-
 	if err := writeLoginUsersAndAutoLogin(root, steamID64, steamOfflineModeEnabled(st)); err != nil {
 		return err
 	}
+	attempt.Next("verify_login_file")
+	recordSteamSwitchState(attempt, root, steamID64, true)
 
-	if err := setShowSteamSwitcher(root, st.ShowSteamSwitcher); err != nil {
-		steamLog().Warn("config.vdf AlwaysShowUserChooser", slog.Any("err", err))
+	attempt.Next("update_preferences")
+	if preferenceErr := setShowSteamSwitcher(root, st.ShowSteamSwitcher); preferenceErr != nil {
+		attempt.Warning("account_chooser_setting", preferenceErr)
+		steamLog().Warn("config.vdf AlwaysShowUserChooser", slog.Any("err", preferenceErr))
 	}
-
 	if pS >= 0 && strings.TrimSpace(steamID64) != "" {
 		platform.EmitActionBarStatusI18n("Status_ActionBar_UpdatingSteamPersona")
 		platform.EmitActionBarStatusI18nVars("Status_UpdatingFile", map[string]string{"file": "localconfig.vdf"})
-		if err := setPersonaStateLocalConfig(root, steamID64, pS); err != nil {
-			steamLog().Warn("localconfig ePersonaState", slog.Any("err", err))
+		if personaErr := setPersonaStateLocalConfig(root, steamID64, pS); personaErr != nil {
+			attempt.Warning("persona_setting", personaErr)
+			steamLog().Warn("localconfig ePersonaState", slog.Any("err", personaErr))
 		}
 	}
 
+	attempt.Next("record_switch")
 	RecordTrayRecentAfterSwap(steamID64)
+	// These existing counters track settings changes, not authenticated logins.
 	stability.OnSuccessfulSwitch("Steam")
 	if err := stats.IncrementSwitches("Steam"); err != nil {
 		return err
@@ -130,10 +159,13 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 	platform.TriggerDiscordPresenceRefresh()
 
 	if !startsSteamAfterSwap(st.AutoStart, gameMode) {
+		attempt.Note(map[string]any{"launch": "skipped_auto_start_disabled"})
+		result = "settings_applied_launch_disabled"
 		tray.MaybeHideMainWindow()
 		return nil
 	}
 
+	attempt.Next("launch_steam")
 	platform.EmitActionBarStatusI18nPlatform("Status_StartingPlatform", "Steam")
 	args := buildSteamArgs(st, extraLaunchArgs)
 	exe := SteamExePath(root)
@@ -143,9 +175,13 @@ func SwapToAccount(steamID64 string, personaState int, extraLaunchArgs []string)
 		WorkingDir:    root,
 		AsDesktopUser: winutil.IsProcessElevated() && !st.RunAsAdmin,
 	}
+	// Never record raw launch arguments: they can contain passwords or tokens.
+	attempt.Note(map[string]any{"executable": exe, "argument_count": len(args), "as_desktop_user": opts.AsDesktopUser})
 	if err := winutil.Start(exe, args, opts); err != nil {
 		return err
 	}
+	attempt.Note(map[string]any{"steam_process_observed_after_launch": steamIsRunning()})
+	result = "launch_requested_login_unverified"
 	tray.MaybeHideMainWindow()
 	return nil
 }
