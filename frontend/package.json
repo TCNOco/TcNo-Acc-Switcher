@@ -15,7 +15,7 @@
     "minify:svg": "svgo --config svgo.config.mjs -r -f public/img"
   },
   "dependencies": {
-    "@wailsio/runtime": "3.0.0-beta.16",
+    "@wailsio/runtime": "3.1.0",
     "yaml": "2.9.0"
   },
   "devDependencies": {

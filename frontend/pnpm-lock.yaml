@@ -15,8 +15,8 @@ importers:
   .:
     dependencies:
       '@wailsio/runtime':
-        specifier: 3.0.0-beta.16
-        version: 3.0.0-beta.16
+        specifier: 3.1.0
+        version: 3.1.0
       yaml:
         specifier: 2.9.0
         version: 2.9.0
@@ -308,8 +308,8 @@ packages:
   '@vitest/spy@5.0.0':
     resolution: {integrity: sha512-uy+luWBAPw9XfthoHi5AkfHUnuPYEESjl0p/r+meoBnU8bxg5GDQ3Ey8MjcJ6sqahkL4PFyrvfMJJBw7LbU06g==}
 
-  '@wailsio/runtime@3.0.0-beta.16':
-    resolution: {integrity: sha512-IzaYrUKYDmvWDXf3Pqfl0onT1R5T5YHTx+AnK9vX4MyuE1PF3lXZmQrtvtfYNAsBnL+9e+iCJvIROGhjyf1rew==}
+  '@wailsio/runtime@3.1.0':
+    resolution: {integrity: sha512-noEAedvRyO8TLCrqhGwzrp+mbMxAIDa2rYmdJQOzvJV9MxgaZeXAJGNBiMiKMTSSy4ESOtQi4VH/5heSzi6ZmA==}
 
   acorn@8.18.0:
     resolution: {integrity: sha512-lGq+9yr1/GuAWaVYIHRjvvySG5/4VfKIvC8EWxStPdcDh/Ka7FG3twP6v4d5BkravUilhIAsG4Qj83t02LWUPQ==}
@@ -922,7 +922,7 @@ snapshots:
 
   '@vitest/spy@5.0.0': {}
 
-  '@wailsio/runtime@3.0.0-beta.16': {}
+  '@wailsio/runtime@3.1.0': {}
 
   acorn@8.18.0: {}
 

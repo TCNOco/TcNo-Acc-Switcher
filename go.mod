@@ -1,11 +1,11 @@
 module TcNo-Acc-Switcher
 
-go 1.26.5
+go 1.26.10
 
 require (
-	github.com/Jleagle/steam-go v0.0.0-20260702210647-a0025544c8f4
-	github.com/Microsoft/go-winio v0.6.2
-	github.com/antchfx/htmlquery v1.3.6
+	github.com/Jleagle/steam-go v0.0.0-20260923192236-76605a554b75
+	github.com/Microsoft/go-winio v0.6.4
+	github.com/antchfx/htmlquery v1.3.7
 	github.com/danieljoos/wincred v1.2.3
 	github.com/go-ctap/ctaphid v0.7.0
 	github.com/go-ctap/winhello v0.1.0
@@ -20,34 +20,35 @@ require (
 	github.com/srwiley/rasterx v0.0.0-20220730225603-2ab79fcdd4ef
 	github.com/syndtr/goleveldb v1.0.0
 	github.com/tc-hib/winres v0.3.1
-	github.com/tidwall/gjson v1.19.0
+	github.com/tidwall/gjson v1.20.0
 	github.com/tidwall/sjson v1.2.5
-	github.com/wailsapp/wails/v3 v3.0.0-beta.16
-	golang.org/x/crypto v0.56.0
-	golang.org/x/image v0.45.0
-	golang.org/x/mod v0.40.0
-	golang.org/x/net v0.58.0
-	golang.org/x/sync v0.22.0
-	golang.org/x/sys v0.47.0
-	golang.org/x/text v0.41.0
+	github.com/wailsapp/wails/v3 v3.1.0
+	golang.org/x/crypto v0.58.0
+	golang.org/x/image v0.47.0
+	golang.org/x/mod v0.42.0
+	golang.org/x/net v0.62.0
+	golang.org/x/sync v0.24.0
+	golang.org/x/sys v0.49.0
+	golang.org/x/text v0.43.0
 )
 
 require (
 	git.sr.ht/~jackmordaunt/go-toast/v2 v2.0.3 // indirect
-	github.com/adrg/xdg v0.5.3 // indirect
-	github.com/antchfx/xpath v1.3.8 // indirect
+	github.com/antchfx/xpath v1.3.9 // indirect
 	github.com/coder/websocket v1.8.15 // indirect
-	github.com/fxamacker/cbor/v2 v2.9.3 // indirect
-	github.com/godbus/dbus/v5 v5.2.2 // indirect
+	github.com/ebitengine/purego v0.11.3 // indirect
+	github.com/fxamacker/cbor/v2 v2.10.0 // indirect
+	github.com/godbus/dbus/v5 v5.2.4 // indirect
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
 	github.com/golang/snappy v1.0.0 // indirect
-	github.com/mattn/go-colorable v0.1.15 // indirect
-	github.com/mattn/go-isatty v0.0.24 // indirect
-	github.com/onsi/gomega v1.34.1 // indirect
+	github.com/onsi/gomega v1.44.0 // indirect
+	github.com/stretchr/objx v0.8.0 // indirect
+	github.com/stretchr/testify v1.12.1 // indirect
 	github.com/tidwall/match v1.2.0 // indirect
-	github.com/tidwall/pretty v1.2.1 // indirect
+	github.com/tidwall/pretty v1.2.2 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
-	golang.org/x/exp v0.0.0-20260528193900-50dc527dd6c7 // indirect
+	go.yaml.in/yaml/v3 v3.0.6 // indirect
+	golang.org/x/term v0.47.0 // indirect
 	golang.org/x/xerrors v0.0.0-20240903120638-7835f813f4da // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
 )
