@@ -187,11 +187,20 @@ func saveCurrentAfterKill(deps FlowDeps, accountName string, fc FlowContext) err
 		return fmt.Errorf("mkdir %s: %w", destRoot, err)
 	}
 
+	if isEpicNewLauncherFlow(fc) {
+		if err := saveEpicNewLauncherSnapshot(destRoot, uid); err != nil {
+			return err
+		}
+	}
+
 	regDump := map[string]regDumpEntry{}
 
 	platform.EmitActionBarStatusI18n("Status_CopyingFiles")
 	logLoginFilesOrder("saveCurrentAfterKill", fc)
 	for liveKey, cacheRel := range fc.Descriptor.LoginFiles {
+		if isEpicNewLauncherFlow(fc) {
+			continue
+		}
 		liveKey = strings.TrimSpace(liveKey)
 		if isREG(liveKey) {
 			platform.EmitActionBarStatusI18n("Status_UpdatingRegistry")
@@ -363,7 +372,7 @@ func saveCurrentAfterKill(deps FlowDeps, accountName string, fc FlowContext) err
 		}
 	}
 
-	if strings.EqualFold(strings.TrimSpace(fc.Descriptor.UniqueIdMethod), "REGKEY") {
+	if !isEpicNewLauncherFlow(fc) && strings.EqualFold(strings.TrimSpace(fc.Descriptor.UniqueIdMethod), "REGKEY") {
 		platform.EmitActionBarStatusI18n("Status_UpdatingRegistry")
 		uidKey := strings.TrimSpace(fc.Descriptor.UniqueIdFile)
 		enc := stripREG(uidKey)
@@ -491,6 +500,9 @@ func Login(deps FlowDeps, fc FlowContext, accountName string) error {
 		return err
 	}
 	defer cleanup()
+	if isEpicNewLauncherFlow(fc) {
+		return restoreEpicNewLauncherSnapshot(srcRoot, uniqueID)
+	}
 	regData, _ := os.ReadFile(filepath.Join(srcRoot, "reg.json"))
 	var regDump map[string]regDumpEntry
 	if len(regData) > 0 {
@@ -684,6 +696,9 @@ func Login(deps FlowDeps, fc FlowContext, accountName string) error {
 }
 
 func ClearCurrentLogin(deps FlowDeps, fc FlowContext) error {
+	if isEpicNewLauncherFlow(fc) {
+		return clearEpicNewLauncherSession()
+	}
 	ctx := fc.PathCtx
 	folder := fc.Folder
 	for _, p := range fc.Descriptor.PathListToClear {
@@ -780,8 +795,13 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 		logFlow().Debug("swap short-circuit: already on requested account", "platform", platformKey, "uniqueID", uniqueID)
 		return nil
 	}
+	initialUniqueIDReadFailed := curErr != nil
 	if curErr != nil {
-		logFlow().Warn("swap: current unique ID unreadable; will proceed without saving previous session", "platform", platformKey, "err", curErr)
+		if isEpicNewLauncherFlow(fc) {
+			logFlow().Warn("swap: new Epic launcher unique ID unreadable; will retry after closing launcher", "platform", platformKey, "err", curErr)
+		} else {
+			logFlow().Warn("swap: current unique ID unreadable; will proceed without saving previous session", "platform", platformKey, "err", curErr)
+		}
 	}
 
 	if err := killPlatformExes(deps, fc); err != nil {
@@ -792,9 +812,17 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 	if err != nil {
 		return err
 	}
+	if isEpicNewLauncherFlow(fc) && initialUniqueIDReadFailed {
+		cur, curErr = ReadUniqueID(platformKey, d, folder)
+		if curErr != nil {
+			logFlow().Warn("swap: new Epic launcher unique ID still unreadable after closing launcher", "platform", platformKey, "err", curErr)
+		}
+	}
 	if curErr == nil && strings.TrimSpace(cur) != "" {
 		if prevName, ok := ids[cur]; ok {
-			if !strings.EqualFold(strings.TrimSpace(cur), strings.TrimSpace(uniqueID)) {
+			needsFreshSnapshot := !strings.EqualFold(strings.TrimSpace(cur), strings.TrimSpace(uniqueID)) ||
+				(isEpicNewLauncherFlow(fc) && initialUniqueIDReadFailed)
+			if needsFreshSnapshot {
 				platform.EmitActionBarStatusI18n("Status_ActionBar_SavingSession")
 				if err := saveCurrentAfterKill(deps, prevName, fc); err != nil {
 					return wrapNeedsAdminIfPermission(err)

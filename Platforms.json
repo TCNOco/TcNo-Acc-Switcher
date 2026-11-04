@@ -31,15 +31,21 @@
     },
     "Epic Games": {
       "Identifiers": [ "e", "epg", "epic", "epicgames" ],
-      "ExeLocationDefault": "%ProgramFiles(x86)%\\Epic Games\\Launcher\\Portal\\Binaries\\Win32\\EpicGamesLauncher.exe",
+      "ExeLocationDefault": [
+        "%LocalAppData%\\Epic Games\\Launcher\\EpicGamesLauncher.exe",
+        "%ProgramFiles(x86)%\\Epic Games\\Launcher\\Portal\\Binaries\\Win64\\EpicGamesLauncher.exe",
+        "%ProgramFiles(x86)%\\Epic Games\\Launcher\\Portal\\Binaries\\Win32\\EpicGamesLauncher.exe"
+      ],
       "GetPathFromShortcutNamed": "Epic Games Launcher",
-      "ExesToEnd": [ "EpicGamesLauncher.exe" ],
+      "ExesToEnd": [ "EpicGamesLauncher.exe", "EpicWebHelper.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
       "LoginFiles": {
         "%LocalAppData%\\EpicGamesLauncher\\Saved\\Config\\WindowsEditor\\GameUserSettings.ini": "GameUserSettings.ini",
         "REG:HKCU\\Software\\Epic Games\\Unreal Engine\\Identifiers:AccountId": "UNIQUE_ID"
       },
       "AllFilesRequired": true,
+      "ExitBeforeInteract": true,
+      "ExitBeforeSave": true,
       "Extras": {
         "ClosingMethod": "TaskKill",
         "CachePaths": [

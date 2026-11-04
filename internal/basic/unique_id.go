@@ -28,6 +28,17 @@ func ReadUniqueID(platformKey string, d platform.Descriptor, platformFolder stri
 	ctx := platform.PathTokenContext{PlatformFolder: platformFolder}
 	slog.Debug("read unique id begin", "platform", platformKey, "method", method, "file", d.UniqueIdFile)
 
+	// The new Epic launcher stores its account identifier in a DPAPI-protected
+	// token file instead of the legacy launcher's registry value. Keep this
+	// detection path-based so old launcher installations retain their current
+	// REGKEY behavior with the same platform descriptor.
+	if strings.EqualFold(strings.TrimSpace(platformKey), epicNewLauncherPlatformKey) &&
+		isEpicNewLauncherFolder(platformFolder) {
+		id, err := epicNewLauncherCurrentUniqueID()
+		logUniqueIDResult(platformKey, "EPIC_NEW_LAUNCHER", id, err)
+		return id, err
+	}
+
 	switch strings.ToUpper(method) {
 	case "REGKEY":
 		id, err := uniqueFromRegKey(d)
