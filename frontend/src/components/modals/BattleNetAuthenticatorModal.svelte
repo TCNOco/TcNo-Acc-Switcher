@@ -18,6 +18,7 @@
   let accounts: BattleNetAccount[] = [], preview: BattleNetAccount[] = [];
   let serial = "", code = "", expires = 0, remaining = 0, error = "";
   let busy = false, ready = false, configured = true, mounted = false, closed = false, polling = false;
+  let copyingCode = false;
   let enrollment = "", enrollmentState = "";
   let appPassword = "", appPasswordRequired = false;
   let rememberForSession = false, hasSecurityKey: boolean | undefined;
@@ -255,6 +256,19 @@ async function grant() {
     });
   }
 
+  async function copyCode(): Promise<void> {
+    if (busy || closed || copyingCode || screen !== "home" || !code) return;
+    copyingCode = true;
+    try {
+      await call("CopyBattleNetCode", serial, token);
+      if (!closed) pushToast({ type: "success", message: $t("Authenticator_Copied") });
+    } catch (cause) {
+      if (!closed) pushToast({ type: "error", message: formatToastWithError($t("Toast_CopyFailed"), cause) });
+    } finally {
+      copyingCode = false;
+    }
+  }
+
   async function copyRecovery(field: "serial" | "restoreCode" | "uri"): Promise<void> {
     if (busy || closed || !recovery?.[field]) return;
     try {
@@ -267,10 +281,9 @@ async function grant() {
 
   const actions: BattleNetActions = {
     navigate, pickImport, previewImport, importSelected, enroll, cancelEnrollment, restore, recover,
-    exportSelected, acknowledgeBackup, rename, link, copyRecovery,
+    exportSelected, acknowledgeBackup, rename, link, copyCode, copyRecovery,
     selectAccount: () => { code = ""; expires = 0; remaining = 0; recovery = null; error = ""; },
     showRecovery: () => run(async () => { recovery = await call("RevealBattleNetRecovery", serial, token); }),
-    copyCode: () => run(async () => { await call("CopyBattleNetCode", serial, token); pushToast({ type: "success", message: $t("Authenticator_Copied") }); }),
     browse: () => run(async () => { await call("OpenBattleNetAccount", serial, token); }),
     pickKeyfile: () => call("PickVaultKeyfile"),
     openEnrollmentAccount: () => run(async () => { await call("OpenBattleNetEnrollmentAccount", enrollment, token); }),
