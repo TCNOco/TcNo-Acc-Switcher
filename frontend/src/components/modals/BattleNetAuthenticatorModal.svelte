@@ -19,6 +19,8 @@
   let serial = "", code = "", expires = 0, remaining = 0, error = "";
   let busy = false, ready = false, configured = true, mounted = false, closed = false, polling = false;
   let copyingCode = false;
+  let accountNameRefresh: Promise<void> | null = null;
+  let nextAccountNameRefresh = 0;
   let enrollment = "", enrollmentState = "";
   let appPassword = "", appPasswordRequired = false;
   let rememberForSession = false, hasSecurityKey: boolean | undefined;
@@ -79,6 +81,8 @@ async function grant() {
     busy = true;
     error = "";
     try {
+      if (accountNameRefresh) await accountNameRefresh;
+      if (closed) return;
       await action();
     } catch (cause) {
       code = "";
@@ -259,7 +263,10 @@ async function grant() {
   async function copyCode(): Promise<void> {
     if (busy || closed || copyingCode || screen !== "home" || !code) return;
     copyingCode = true;
+    const requestedSerial = serial;
     try {
+      if (accountNameRefresh) await accountNameRefresh;
+      if (closed || busy || requestedSerial !== serial || screen !== "home" || !code) return;
       await call("CopyBattleNetCode", serial, token);
       if (!closed) pushToast({ type: "success", message: $t("Authenticator_Copied") });
     } catch (cause) {
@@ -267,6 +274,16 @@ async function grant() {
     } finally {
       copyingCode = false;
     }
+  }
+
+  async function refreshAccountName(requestedSerial: string): Promise<void> {
+    try {
+      const changed = await call("RefreshBattleNetAccountName", requestedSerial, token);
+      if (changed && !closed) {
+        await grant();
+        await refresh();
+      }
+    } catch { }
   }
 
   async function copyRecovery(field: "serial" | "restoreCode" | "uri"): Promise<void> {
@@ -333,15 +350,23 @@ async function grant() {
         }
         return;
       }
-      if (!ready || !serial || screen !== "home") return;
+      if (!ready || !serial || !["home", "recovery"].includes(screen)) return;
       polling = true;
       const requestedSerial = serial;
       try {
-        const result = await call("GetBattleNetCode", requestedSerial, token);
-        if (!closed && screen === "home" && requestedSerial === serial) {
-          code = result.code;
-          expires = result.expiresAt;
-          remaining = Math.max(0, Math.ceil((expires - Date.now()) / 1000));
+        if (screen === "home") {
+          const result = await call("GetBattleNetCode", requestedSerial, token);
+          if (!closed && screen === "home" && requestedSerial === serial) {
+            code = result.code;
+            expires = result.expiresAt;
+            remaining = Math.max(0, Math.ceil((expires - Date.now()) / 1000));
+          }
+        }
+        if (!closed && !busy && !copyingCode && serial === requestedSerial && Date.now() >= nextAccountNameRefresh) {
+          nextAccountNameRefresh = Date.now() + 5000;
+          accountNameRefresh = refreshAccountName(requestedSerial);
+          await accountNameRefresh;
+          accountNameRefresh = null;
         }
       } catch {
         if (!closed && screen === "home" && requestedSerial === serial) {
