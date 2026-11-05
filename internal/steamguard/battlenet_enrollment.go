@@ -40,7 +40,8 @@ type battleNetRuntime struct {
 	browser         *steambrowser.Service
 	operation       *battleNetOperation
 	client          battleNetEnrollmentClient
-	readAccountName func(context.Context, *steambrowser.Service, string) (string, error)
+	readAccountName func(context.Context, *steambrowser.Service, string) (steambrowser.BattleNetAccountIdentity, error)
+	identityStatus  map[string]string
 }
 
 type battleNetEnrollmentClient interface {
@@ -50,7 +51,7 @@ type battleNetEnrollmentClient interface {
 func ConfigureBattleNetBrowser(s *Service, browser *steambrowser.Service) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	s.battleNet = &battleNetRuntime{browser: browser, client: battlenetauth.NewClient(), readAccountName: steambrowser.ReadBattleNetAccountName}
+	s.battleNet = &battleNetRuntime{browser: browser, client: battlenetauth.NewClient(), readAccountName: steambrowser.ReadBattleNetAccountIdentity}
 }
 
 func (s *Service) BeginBattleNetEnrollment(token string) (BattleNetEnrollmentStatus, error) {

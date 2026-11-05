@@ -4,33 +4,41 @@ import { describe, expect, it } from "vitest";
 
 const script = readFileSync(new URL("../../../internal/steambrowser/battlenet_account_name.js", import.meta.url), "utf8");
 const node = (text: string, visible = true) => ({ innerText: text, textContent: text, getClientRects: () => visible ? [{}] : [] });
-function root(dedicated: unknown[] = [], headers: unknown[] = [], children: unknown[] = []) {
+function root(dedicated: unknown[] = [], headers: unknown[] = [], children: unknown[] = [], parts: unknown[] = []) {
   return { querySelectorAll: (selector: string) => {
-    const nodes = [...dedicated, ...headers, ...children];
+    const nodes = [...dedicated, ...headers, ...children, ...parts];
     if (selector === "*") return nodes;
-    if (selector === "blz-nav" || selector === "blz-nav, blz-nav-battlenet") {
-      return nodes.filter(node => {
-        const tag = (node as { tagName?: string }).tagName?.toLowerCase();
-        return tag === "blz-nav" || (tag === "blz-nav-battlenet" && selector.includes("blz-nav-battlenet"));
-      });
-    }
+    if (selector.startsWith('[part="text"]')) return parts;
     return selector.startsWith("[data-testid") ? dedicated : headers;
   } };
+}
+function navigation(text: string) {
+  const tooltip = root([], [], [], [node(text, false)]);
+  const link = { tagName: "BLZ-NAV-LINK", shadowRoot: tooltip };
+  const menu = root([], [], [link]);
+  return root([], [], [{ tagName: "BLZ-NAV-BATTLENET", shadowRoot: menu }]);
 }
 function read(document: ReturnType<typeof root>, origin = "https://account.battle.net", pathname = "/security") {
   const window: { top?: unknown } = {};
   window.top = window;
-  return runInNewContext(script, { window, document, location: { origin, pathname } }) as { name: string } | null;
+  return runInNewContext(script, { window, document, location: { origin, pathname } }) as { name: string; email: string } | null;
 }
 
 describe("Battle.net Security account name capture", () => {
-  it("reads the navigation component user fields while its account menu is closed", () => {
-    const nav = { ...node("Account"), tagName: "BLZ-NAV", user: { battletag: "Example#1234", email: "test@example.invalid" } };
-    expect(read(root([], [nav]))?.name).toBe("Example#1234");
+  it("reads the rendered account tooltip while the menu is closed", () => {
+    expect(read(navigation("Example\n#1234\ntest@example.invalid"))?.name).toBe("Example#1234");
   });
   it("reads the regional Battle.net navigation component without opening its hover menu", () => {
-    const nav = { ...node("Example"), tagName: "BLZ-NAV-BATTLENET", user: { battletag: "Example#1234", email: "test@example.invalid" } };
-    expect(read(root([], [nav]), "https://eu.account.battle.net")?.name).toBe("Example#1234");
+    expect(read(navigation("Example\n#1234\ntest@example.invalid"), "https://eu.account.battle.net")?.name).toBe("Example#1234");
+  });
+  it("reads the full email from a tooltip without a layout box", () => {
+    const identity = read(navigation("Example\n#1234\ntest@example.invalid"), "https://eu.account.battle.net");
+    expect(identity?.name).toBe("Example#1234");
+    expect(identity?.email).toBe("test@example.invalid");
+  });
+  it("does not read account-like text in unrelated component internals", () => {
+    const shadowRoot = root([], [], [], [node("Example#1234 test@example.invalid")]);
+    expect(read(root([], [], [{ tagName: "UNRELATED-COMPONENT", shadowRoot }]))?.name).toBe("");
   });
   it.each(["eu", "us", "kr", "tw", "cn"])("accepts the %s account Security origin", region => {
     expect(read(root([], [node("Example#1234")]), `https://${region}.account.battle.net`)?.name).toBe("Example#1234");

@@ -29,3 +29,19 @@ func TestBattleNetAccountNameSource(t *testing.T) {
 		t.Fatal("unsigned page did not produce an empty identity")
 	}
 }
+
+func TestBattleNetIdentityRequiresUnmaskedAccountEmail(t *testing.T) {
+	for _, email := range []string{"test@example.invalid", "t***@example.invalid", "Example <test@example.invalid>", "not-an-email"} {
+		raw, _ := json.Marshal(map[string]string{"source": "https://eu.account.battle.net/security", "name": "Example#1234", "email": email})
+		identity, err := parseBattleNetAccountIdentity(string(raw))
+		if err != nil || identity.Name != "Example#1234" {
+			t.Fatal("email formatting discarded the BattleTag")
+		}
+		if email == "test@example.invalid" && identity.Email != email {
+			t.Fatal("full email was discarded")
+		}
+		if email != "test@example.invalid" && identity.Email != "" {
+			t.Fatal("ambiguous email can link the wrong account")
+		}
+	}
+}

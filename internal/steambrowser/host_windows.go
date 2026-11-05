@@ -48,7 +48,7 @@ type windowsView struct {
 	onDownload          func(string)
 	interceptNavigation func(string) bool
 	accountNameHandler  *webview2.ICoreWebView2ExecuteScriptCompletedHandler
-	accountNameResult   func(string, error)
+	accountNameResult   func(BattleNetAccountIdentity, error)
 	navigationVersion   uint64
 	accountNameVersion  uint64
 
@@ -404,7 +404,7 @@ func (v *windowsView) Close() {
 	v.closeOnce.Do(func() {
 		if complete := v.accountNameResult; complete != nil {
 			v.accountNameResult = nil
-			complete("", ErrNoSuchWindow)
+			complete(BattleNetAccountIdentity{}, ErrNoSuchWindow)
 		}
 		if v.chromium != nil {
 			v.chromium.Close()
@@ -459,7 +459,7 @@ func (v *windowsView) NavigationStarting(_ *webview2.ICoreWebView2, raw *webview
 	return 0
 }
 
-func (v *windowsView) readBattleNetAccountName(complete func(string, error)) error {
+func (v *windowsView) readBattleNetAccountName(complete func(BattleNetAccountIdentity, error)) error {
 	if v.platform != PlatformBattleNet || v.chromium == nil || v.accountNameResult != nil {
 		return errBattleNetAccountName
 	}
@@ -469,7 +469,7 @@ func (v *windowsView) readBattleNetAccountName(complete func(string, error)) err
 	}
 	source, err := view.GetSource()
 	if err != nil || !battleNetSecurityPage(source) {
-		complete("", err)
+		complete(BattleNetAccountIdentity{}, err)
 		return nil
 	}
 	if v.accountNameHandler == nil {
@@ -492,21 +492,21 @@ func (v *windowsView) ExecuteScriptCompleted(errorCode uintptr, raw *uint16) uin
 		return 0
 	}
 	if errorCode != 0 || v.chromium == nil || v.accountNameVersion != v.navigationVersion {
-		complete("", errBattleNetAccountName)
+		complete(BattleNetAccountIdentity{}, errBattleNetAccountName)
 		return 0
 	}
 	view := v.chromium.GetWebView()
 	if view == nil {
-		complete("", ErrNoSuchWindow)
+		complete(BattleNetAccountIdentity{}, ErrNoSuchWindow)
 		return 0
 	}
 	source, err := view.GetSource()
 	if err != nil || !battleNetSecurityPage(source) {
-		complete("", errBattleNetAccountName)
+		complete(BattleNetAccountIdentity{}, errBattleNetAccountName)
 		return 0
 	}
-	name, err := parseBattleNetAccountName(webview2.UTF16PtrToString(raw))
-	complete(name, err)
+	identity, err := parseBattleNetAccountIdentity(webview2.UTF16PtrToString(raw))
+	complete(identity, err)
 	return 0
 }
 

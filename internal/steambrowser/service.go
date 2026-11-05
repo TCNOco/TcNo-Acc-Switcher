@@ -422,11 +422,7 @@ func (s *Service) Stop(sessionID string) error {
 // State returns the last reported state, for a toolbar that has just mounted and
 // missed the events so far.
 func (s *Service) State(sessionID string) (ViewState, error) {
-	current, err := s.sessions.get(sessionID)
-	if err != nil {
-		return ViewState{}, err
-	}
-	return current.state, nil
+	return s.sessions.state(sessionID)
 }
 
 // Certificate describes the certificate for a window's current page.

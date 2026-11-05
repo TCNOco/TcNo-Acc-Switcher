@@ -5,6 +5,7 @@ import (
 	_ "embed"
 	"encoding/json"
 	"errors"
+	"net/mail"
 	"net/url"
 	"regexp"
 	"strings"
@@ -26,53 +27,72 @@ func battleNetSecurityPage(raw string) bool {
 }
 
 func parseBattleNetAccountName(raw string) (string, error) {
+	identity, err := parseBattleNetAccountIdentity(raw)
+	return identity.Name, err
+}
+
+type BattleNetAccountIdentity struct {
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+
+func parseBattleNetAccountIdentity(raw string) (BattleNetAccountIdentity, error) {
+	var empty BattleNetAccountIdentity
 	if raw == "null" {
-		return "", nil
+		return empty, nil
 	}
 	if len(raw) > 2048 {
-		return "", errBattleNetAccountName
+		return empty, errBattleNetAccountName
 	}
 	var result struct {
 		Source string `json:"source"`
 		Name   string `json:"name"`
+		Email  string `json:"email"`
 	}
 	if json.Unmarshal([]byte(raw), &result) != nil || !battleNetSecurityPage(result.Source) {
-		return "", errBattleNetAccountName
+		return empty, errBattleNetAccountName
 	}
 	name := strings.TrimSpace(result.Name)
 	if len(name) > 320 || !utf8.ValidString(name) {
-		return "", errBattleNetAccountName
+		return empty, errBattleNetAccountName
 	}
 	for _, c := range name {
 		if unicode.IsControl(c) || unicode.Is(unicode.Cf, c) {
-			return "", errBattleNetAccountName
+			return empty, errBattleNetAccountName
 		}
 	}
-	return name, nil
+	email := strings.TrimSpace(result.Email)
+	if email != "" {
+		address, err := mail.ParseAddress(email)
+		if err != nil || address.Address != email || len(email) > 320 || strings.ContainsAny(email, "*\r\n") {
+			email = ""
+		}
+	}
+	return BattleNetAccountIdentity{Name: name, Email: email}, nil
 }
 
 type battleNetAccountNameReader interface {
-	readBattleNetAccountName(func(string, error)) error
+	readBattleNetAccountName(func(BattleNetAccountIdentity, error)) error
 }
 
-func ReadBattleNetAccountName(ctx context.Context, s *Service, profile string) (string, error) {
+func ReadBattleNetAccountIdentity(ctx context.Context, s *Service, profile string) (BattleNetAccountIdentity, error) {
 	if s == nil || application.Get() == nil {
-		return "", nil
+		return BattleNetAccountIdentity{}, nil
 	}
 	type result struct {
-		name string
-		err  error
+		identity BattleNetAccountIdentity
+		err      error
 	}
 	done := make(chan result, 1)
-	complete := func(name string, err error) {
+	complete := func(identity BattleNetAccountIdentity, err error) {
 		select {
-		case done <- result{name, err}:
+		case done <- result{identity, err}:
 		default:
 		}
 	}
 	application.InvokeAsync(func() {
 		if ctx.Err() != nil {
-			complete("", ctx.Err())
+			complete(BattleNetAccountIdentity{}, ctx.Err())
 			return
 		}
 		for _, id := range s.sessions.ids() {
@@ -82,17 +102,17 @@ func ReadBattleNetAccountName(ctx context.Context, s *Service, profile string) (
 			}
 			if reader, ok := current.view.(battleNetAccountNameReader); ok {
 				if err := reader.readBattleNetAccountName(complete); err != nil {
-					complete("", err)
+					complete(BattleNetAccountIdentity{}, err)
 				}
 				return
 			}
 		}
-		complete("", nil)
+		complete(BattleNetAccountIdentity{}, nil)
 	})
 	select {
 	case value := <-done:
-		return value.name, value.err
+		return value.identity, value.err
 	case <-ctx.Done():
-		return "", ctx.Err()
+		return BattleNetAccountIdentity{}, ctx.Err()
 	}
 }

@@ -124,7 +124,10 @@ func (c *Client) RestoreWithRecovery(ctx context.Context, accountIdentifier, ser
 	if err != nil {
 		return Account{}, err
 	}
-	a := Account{Version: 1, Serial: serial, AccountName: strings.TrimSpace(accountIdentifier), RestoreCode: restoreCode, DeviceSecret: textField(o, "deviceSecret"), Pending: true, RequiresAccountSetup: accountSetupRequired(o)}
+	a := Account{Version: 1, Serial: serial, AccountName: strings.TrimSpace(accountIdentifier), AccountLink: strings.TrimSpace(accountIdentifier), RestoreCode: restoreCode, DeviceSecret: textField(o, "deviceSecret"), Pending: true, RequiresAccountSetup: accountSetupRequired(o)}
+	if !strings.Contains(a.AccountLink, "@") {
+		a.AccountLink = ""
+	}
 	if err := a.Validate(); err != nil {
 		if setupOnlyResponse(o) {
 			return Account{}, ErrAccountVerification

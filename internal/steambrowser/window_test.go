@@ -69,6 +69,23 @@ func TestGameDataDestinations(t *testing.T) {
 	}
 }
 
+func TestReservedBrowserStateIsLoading(t *testing.T) {
+	r := newRegistry()
+	id, err := r.reserve()
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := &Service{sessions: r}
+	state, err := s.State(id)
+	if err != nil || !state.Loading {
+		t.Fatal("opening toolbar reported a missing session")
+	}
+	r.release(id)
+	if _, err := s.State(id); err != ErrNoSuchWindow {
+		t.Fatal("closed session still had a toolbar state")
+	}
+}
+
 func TestRegistryEnforcesTheWindowCap(t *testing.T) {
 	r := newRegistry()
 	for i := 0; i < MaxWindows; i++ {

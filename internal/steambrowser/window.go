@@ -160,6 +160,19 @@ func (r *registry) setState(id string, state ViewState) {
 	}
 }
 
+func (r *registry) state(id string) (ViewState, error) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	s, exists := r.sessions[id]
+	if !exists {
+		return ViewState{}, ErrNoSuchWindow
+	}
+	if s == nil {
+		return ViewState{Loading: true}, nil
+	}
+	return s.state, nil
+}
+
 func (r *registry) count() int {
 	r.mu.Lock()
 	defer r.mu.Unlock()

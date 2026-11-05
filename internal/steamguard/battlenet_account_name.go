@@ -3,6 +3,7 @@ package steamguard
 import (
 	"context"
 	"encoding/json"
+	"log/slog"
 	"time"
 
 	"TcNo-Acc-Switcher/internal/battlenetauth"
@@ -22,25 +23,40 @@ func (s *Service) RefreshBattleNetAccountName(serial, token string) (bool, error
 		s.mu.Unlock()
 		return false, err
 	}
-	if s.battleNet == nil || (a.Label != "" && a.Label != a.Serial) {
+	if s.battleNet == nil {
 		s.mu.Unlock()
 		return false, nil
 	}
-	profile, previousName := battleNetBrowserProfile(a), a.AccountName
+	profile, previousName, previousLink := battleNetBrowserProfile(a), a.AccountName, a.AccountLink
 	a = battlenetauth.Account{}
 	browser, read := s.battleNet.browser, s.battleNet.readAccountName
 	if read == nil {
-		read = steambrowser.ReadBattleNetAccountName
+		read = steambrowser.ReadBattleNetAccountIdentity
 	}
 	s.mu.Unlock()
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
-	name, err := read(ctx, browser, profile)
-	if err != nil || name == "" || name == previousName {
-		return false, err
-	}
+	identity, err := read(ctx, browser, profile)
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	if s.battleNet != nil {
+		status := "waiting-for-account"
+		if err != nil {
+			status = "read-failed"
+		} else if identity.Name != "" {
+			status = "available"
+		}
+		if s.battleNet.identityStatus == nil {
+			s.battleNet.identityStatus = map[string]string{}
+		}
+		if s.battleNet.identityStatus[profile] != status {
+			s.battleNet.identityStatus[profile] = status
+			slog.Debug("Battle.net account identity lookup", "profile", profile, "status", status)
+		}
+	}
+	if err != nil || identity.Name == "" || (identity.Name == previousName && (previousLink != "" || identity.Email == "")) {
+		return false, err
+	}
 	currentVault, err := s.battleNetVaultLocked(token)
 	if err != nil {
 		return false, err
@@ -52,10 +68,13 @@ func (s *Service) RefreshBattleNetAccountName(serial, token string) (bool, error
 	if err != nil {
 		return false, err
 	}
-	if (a.Label != "" && a.Label != a.Serial) || a.AccountName != previousName || battleNetBrowserProfile(a) != profile {
+	if a.AccountName != previousName || a.AccountLink != previousLink || battleNetBrowserProfile(a) != profile {
 		return false, nil
 	}
-	a.AccountName = name
+	a.AccountName = identity.Name
+	if a.AccountLink == "" {
+		a.AccountLink = identity.Email
+	}
 	if err := a.Validate(); err != nil {
 		return false, err
 	}
@@ -67,5 +86,6 @@ func (s *Service) RefreshBattleNetAccountName(serial, token string) (bool, error
 	if _, err := v.PutProviderRecord(vault.ProviderBattleNet, a.Serial, raw); err != nil {
 		return false, err
 	}
+	slog.Debug("Battle.net account identity saved", "profile", profile, "linked", a.AccountLink != "")
 	return true, nil
 }

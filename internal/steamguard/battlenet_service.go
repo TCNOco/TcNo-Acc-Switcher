@@ -209,10 +209,40 @@ func (s *Service) CopyBattleNetCode(serial, token string) error {
 	if err != nil {
 		return err
 	}
+	return s.copyBattleNetCodeView(view)
+}
+
+func (s *Service) CopyBattleNetCodeForAccount(serial, accountID, token string) error {
+	s.mu.Lock()
+	v, err := s.battleNetVaultLocked(token)
+	if err != nil {
+		s.mu.Unlock()
+		return err
+	}
+	a, err := battleNetRecord(v, serial)
+	if err != nil {
+		s.mu.Unlock()
+		return err
+	}
+	if strings.TrimSpace(accountID) == "" || !strings.EqualFold(strings.TrimSpace(a.AccountLink), strings.TrimSpace(accountID)) {
+		s.mu.Unlock()
+		return errors.New("this authenticator is no longer linked to the selected account")
+	}
+	code, expires, err := a.Code(time.Now())
+	s.mu.Unlock()
+	if err != nil {
+		return err
+	}
+	return s.copyBattleNetCodeView(BattleNetCodeView{Code: code, ExpiresAt: expires * 1000})
+}
+
+func (s *Service) copyBattleNetCodeView(view BattleNetCodeView) error {
 	defer func() { view.Code = "" }()
+	s.mu.Lock()
 	clipboard, ok := s.clipboard.(interface {
 		CopyNumeric(string, time.Duration) error
 	})
+	s.mu.Unlock()
 	if !ok {
 		return ErrSensitiveView
 	}
