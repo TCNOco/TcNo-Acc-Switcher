@@ -233,24 +233,7 @@ func readBattleNetImport(source string) ([]byte, error) {
 	}
 	switch strings.ToLower(filepath.Ext(source)) {
 	case ".png", ".jpg", ".jpeg":
-		frame, err := qrimage.Load(source)
-		if err != nil {
-			return nil, battlenetauth.ErrInvalid
-		}
-		defer frame.Wipe()
-		bitmap, err := gozxing.NewBinaryBitmapFromImage(frame.Image())
-		if err != nil {
-			return nil, battlenetauth.ErrInvalid
-		}
-		results, err := multiqr.NewQRCodeMultiReader().DecodeMultiple(bitmap, nil)
-		if err != nil || len(results) != 1 {
-			return nil, battlenetauth.ErrInvalid
-		}
-		payload := results[0].GetText()
-		if _, err := battlenetauth.ParseURI(payload); err != nil {
-			return nil, err
-		}
-		return []byte(payload), nil
+		return readBattleNetQRImage(source)
 	}
 	f, err := os.Open(source)
 	if err != nil {
@@ -270,6 +253,34 @@ func readBattleNetImport(source string) ([]byte, error) {
 		return nil, battlenetauth.ErrInvalid
 	}
 	return raw, nil
+}
+
+func readBattleNetQRImage(source string) (payload []byte, resultErr error) {
+	defer func() {
+		if recover() != nil {
+			wipe(payload)
+			payload = nil
+			resultErr = battlenetauth.ErrInvalid
+		}
+	}()
+	frame, err := qrimage.Load(source)
+	if err != nil {
+		return nil, battlenetauth.ErrInvalid
+	}
+	defer frame.Wipe()
+	bitmap, err := gozxing.NewBinaryBitmapFromImage(frame.Image())
+	if err != nil {
+		return nil, battlenetauth.ErrInvalid
+	}
+	results, err := multiqr.NewQRCodeMultiReader().DecodeMultiple(bitmap, nil)
+	if err != nil || len(results) != 1 {
+		return nil, battlenetauth.ErrInvalid
+	}
+	text := results[0].GetText()
+	if _, err := battlenetauth.ParseURI(text); err != nil {
+		return nil, err
+	}
+	return []byte(text), nil
 }
 
 func validateCredentialImportPath(path string) error {
@@ -439,6 +450,12 @@ func (s *Service) LinkBattleNetAccount(serial, accountID, label, token string) e
 func (s *Service) ExportBattleNet(serials []string, password, keyfilePath, backupKey, exportPassword, token string) (string, error) {
 	if err := passwordpolicy.ValidateNew(exportPassword); err != nil {
 		return "", err
+	}
+	s.mu.Lock()
+	_, authErr := s.battleNetVaultLocked(token)
+	s.mu.Unlock()
+	if authErr != nil {
+		return "", authErr
 	}
 	app := application.Get()
 	if app == nil {

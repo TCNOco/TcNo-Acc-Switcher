@@ -21,4 +21,12 @@ func TestBattleNetBackupSummaryDoesNotExposeSecrets(t *testing.T) {
 	if summary.accountName != "Battle.net: Example" || summary.tokenExpiry != 0 || strings.Contains(summary.accountName, a.DeviceSecret) || strings.Contains(summary.accountName, a.RestoreCode) {
 		t.Fatal("incorrect or sensitive backup summary")
 	}
+	if err := validateBattleNetBackupIdentity("battlenet:"+a.Serial, raw); err != nil {
+		t.Fatal(err)
+	}
+	for _, identity := range []string{"76561198000000000", "battlenet:EU-1234-5678-9012"} {
+		if err := validateBattleNetBackupIdentity(identity, raw); err == nil {
+			t.Fatal("mismatched backup identity accepted")
+		}
+	}
 }

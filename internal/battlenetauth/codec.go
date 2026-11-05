@@ -131,6 +131,12 @@ func parseExternal(raw []byte) (Account, error) {
 }
 
 func parseExternalObject(o map[string]json.RawMessage) (Account, error) {
+	if raw, ok := o["version"]; ok {
+		var version int
+		if json.Unmarshal(raw, &version) != nil || version != 1 {
+			return Account{}, ErrInvalid
+		}
+	}
 	a := Account{Version: 1, Serial: strings.ToUpper(textField(o, "serial")), RestoreCode: strings.ToUpper(textField(o, "restoreCode")), DeviceSecret: strings.ToLower(textField(o, "deviceSecret")), Label: textField(o, "label")}
 	for _, encoded := range []string{textField(o, "base32Secret"), textField(o, "totpUrl")} {
 		if encoded == "" {
@@ -251,4 +257,3 @@ func Export(accounts []Account, password string) ([]byte, error) {
 	aead, _ := cipher.NewGCM(block)
 	return json.Marshal(map[string]any{"format": 2, "kdf": "scrypt", "scrypt": map[string]int{"n": 131072, "r": 8, "p": 1}, "salt": base64.StdEncoding.EncodeToString(salt), "nonce": base64.StdEncoding.EncodeToString(nonce), "ciphertext": base64.StdEncoding.EncodeToString(aead.Seal(nil, nonce, plain, nil))})
 }
-

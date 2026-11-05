@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"TcNo-Acc-Switcher/internal/battlenetauth"
+	"TcNo-Acc-Switcher/internal/security"
 	"TcNo-Acc-Switcher/internal/steambrowser"
 	"TcNo-Acc-Switcher/internal/steamguard/securemem"
 	"TcNo-Acc-Switcher/internal/steamguard/vault"
@@ -27,6 +28,7 @@ type BattleNetEnrollmentStatus struct {
 }
 
 type battleNetOperation struct {
+	vault   *vault.Vault
 	status  BattleNetEnrollmentStatus
 	token   string
 	expires time.Time
@@ -67,11 +69,14 @@ func (s *Service) BeginBattleNetEnrollment(token string) (BattleNetEnrollmentSta
 		return BattleNetEnrollmentStatus{}, errors.New("recover the previous enrollment result before enrolling again")
 	}
 	if previous := s.battleNet.operation; previous != nil && time.Now().Before(previous.expires) && (previous.status.State == "waiting" || previous.status.State == "saving") {
-		s.mu.Unlock()
-		return BattleNetEnrollmentStatus{}, ErrSteamOperationBusy
+		if _, err := s.capabilities.Resolve(previous.token); err == nil {
+			s.mu.Unlock()
+			return BattleNetEnrollmentStatus{}, ErrSteamOperationBusy
+		}
+		previous.status.State = "canceled"
 	}
 	id := rand.Text()
-	op := &battleNetOperation{status: BattleNetEnrollmentStatus{Handle: id, State: "waiting"}, token: token, expires: time.Now().Add(5 * time.Minute)}
+	op := &battleNetOperation{vault: v, status: BattleNetEnrollmentStatus{Handle: id, State: "waiting"}, token: token, expires: time.Now().Add(5 * time.Minute)}
 	s.battleNet.operation = op
 	browser := s.battleNet.browser
 	s.mu.Unlock()
@@ -105,7 +110,7 @@ func (s *Service) completeBattleNetEnrollment(op *battleNetOperation, sessionTok
 	if s.battleNet == nil || s.battleNet.operation != op || op.status.State != "waiting" || !time.Now().Before(op.expires) {
 		return
 	}
-	v, err := s.battleNetVaultLocked(op.token)
+	v, err := s.battleNetOperationVaultLocked(op)
 	if err != nil {
 		op.status.State = "failed"
 		op.status.Error = "Unlock the vault and start enrollment again"
@@ -151,7 +156,37 @@ func (s *Service) completeBattleNetEnrollment(op *battleNetOperation, sessionTok
 	op.status.State = "pending-backup"
 }
 
+func (s *Service) battleNetOperationVaultLocked(op *battleNetOperation) (*vault.Vault, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return nil, err
+	}
+	v, exists, err := s.openVaultLocked()
+	if err != nil {
+		return nil, err
+	}
+	if !exists || v != op.vault || v.IsLocked() {
+		return nil, vault.ErrLocked
+	}
+	binding, err := s.capabilities.Resolve(op.token)
+	if err != nil {
+		return nil, err
+	}
+	if binding.AccountID != battleNetView || binding.WindowName != mainWindowName || binding.Scope != modalCapabilityScope {
+		return nil, ErrSensitiveView
+	}
+	s.contentProtectionMu.Lock()
+	lease, ok := s.contentProtectionLeases[binding.LeaseID]
+	s.contentProtectionMu.Unlock()
+	if !ok || lease.binding != binding {
+		return nil, ErrSensitiveView
+	}
+	return v, nil
+}
+
 func (s *Service) GetBattleNetEnrollmentStatus(handle, token string) (BattleNetEnrollmentStatus, error) {
+	if err := security.RequireUnlocked(); err != nil {
+		return BattleNetEnrollmentStatus{}, err
+	}
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if s.battleNet == nil || s.battleNet.operation == nil {

@@ -178,7 +178,7 @@ onMount(() => {
       {#if recovery}<p>{$t("Authenticator_RecoveryWarning")}</p><p>{recovery.serial}</p><p>{recovery.restoreCode}</p><img src={recovery.qrImage} alt={$t("Authenticator_QR")} width="240" height="240" /><textarea readonly value={recovery.uri}></textarea>{/if}
       {#if recovery&&accounts.find(a=>a.serial===serial)?.pending}<button disabled={busy} on:click={()=>run(async()=>{await call("AcknowledgeBattleNetBackup",serial,token);recovery=null;await grant();await refresh();})}>{$t("Authenticator_BackupAcknowledged")}</button>{/if}
     {/if}
-    <fieldset disabled={busy}>
+    <fieldset disabled={busy||!!enrollment}>
       <legend>{$t("Authenticator_Import")}</legend>
       <label>{$t("Authenticator_Source")}<input bind:value={source} /></label>
       <button on:click={pick}>{$t("Authenticator_ChooseFile")}</button>

@@ -185,6 +185,10 @@ func (s *Service) planStagedRestoreMerge(stage string, live, backup vault.Creden
 		if getErr != nil {
 			return RestoreMergePlan{}, getErr
 		}
+		if err := validateBattleNetBackupIdentity(record.SteamID64, plaintext); err != nil {
+			wipe(plaintext)
+			return RestoreMergePlan{}, err
+		}
 		summary, parseErr := describeBackupRecord(plaintext)
 		wipe(plaintext)
 		if parseErr != nil {
@@ -275,6 +279,10 @@ func (s *Service) CommitRestoreMergeWithFactors(password, backupPassword, backup
 		plaintext, getErr := staged.Get(record.ID)
 		if getErr != nil {
 			return result, getErr
+		}
+		if err := validateBattleNetBackupIdentity(record.SteamID64, plaintext); err != nil {
+			wipe(plaintext)
+			return result, err
 		}
 		steamID64, state, commitErr := commitBackupRecord(v, plaintext)
 		wipe(plaintext)
@@ -418,6 +426,21 @@ func describeBackupRecord(plaintext []byte) (backupRecordSummary, error) {
 	default:
 		return backupRecordSummary{}, ErrInvalidImport
 	}
+}
+
+func validateBattleNetBackupIdentity(identity string, plain []byte) error {
+	a, err := battlenetauth.ParseAccount(plain)
+	if err != nil {
+		if strings.HasPrefix(identity, "battlenet:") {
+			return ErrInvalidImport
+		}
+		return nil
+	}
+	expected, err := vault.ProviderIdentity(vault.ProviderBattleNet, a.Serial)
+	if err != nil || identity != expected {
+		return ErrInvalidImport
+	}
+	return nil
 }
 
 // commitBackupRecord writes a staged record into the live vault in its own
