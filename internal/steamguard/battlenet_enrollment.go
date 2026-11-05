@@ -145,7 +145,7 @@ func (s *Service) completeBattleNetEnrollment(op *battleNetOperation, sessionTok
 		op.status.State = "failed"
 		op.status.Error = err.Error()
 		if s.battleNet.pending != nil {
-			op.status.Error = "The authenticator was returned but saving did not finish. Use Recover saved enrollment results before enrolling again. " + op.status.Error
+			op.status.Error = "Setup completed but could not be saved. Use Recover unsaved setup before trying again. " + op.status.Error
 		}
 		return
 	}

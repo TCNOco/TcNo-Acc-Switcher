@@ -1,0 +1,41 @@
+export type BattleNetAccount = {
+  serial: string;
+  label: string;
+  pending: boolean;
+  hasRestoreCode: boolean;
+  accountLink: string;
+};
+
+export type BattleNetScreen = "home" | "add" | "enroll" | "import" | "restore" | "export" | "recovery" | "rename";
+
+export type BattleNetRecovery = { serial: string; restoreCode: string; uri: string; qrImage: string };
+
+export function emptyBattleNetForm() {
+  return {
+    source: "", sourcePassword: "", selected: [] as string[], replaceExisting: false,
+    accountIdentifier: "", restoreSerial: "", restoreCode: "",
+    password: "", keyfile: "", backupKey: "", exportPassword: "", accountLabel: "",
+  };
+}
+
+export type BattleNetForm = ReturnType<typeof emptyBattleNetForm>;
+
+export type BattleNetActions = {
+  navigate: (screen: BattleNetScreen) => void;
+  selectAccount: () => void;
+  pickImport: () => void;
+  previewImport: () => void;
+  importSelected: () => void;
+  enroll: () => void;
+  cancelEnrollment: () => void;
+  restore: () => void;
+  recover: () => void;
+  exportSelected: () => void;
+  showRecovery: () => void;
+  acknowledgeBackup: () => void;
+  copyCode: () => void;
+  browse: () => void;
+  rename: () => void;
+  link: () => void;
+  pickKeyfile: () => Promise<string>;
+};
