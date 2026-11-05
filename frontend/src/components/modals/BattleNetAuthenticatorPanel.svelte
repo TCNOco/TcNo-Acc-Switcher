@@ -76,13 +76,16 @@
   {:else if screen === "add"}
     <div class="choices">
       <button type="button" class="btnicontext choice modal-primary" disabled={busy} on:click={() => actions.navigate("enroll")}>
-        <strong>{$t("Authenticator_Enroll")}</strong><span>{$t("Authenticator_EnrollHint")}</span>
+        <svg class="choice-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M3 9h18M7 6.5h.01M10 6.5h.01" /></svg>
+        <span class="choice-copy"><strong>{$t("Authenticator_Enroll")}</strong><span class="choice-hint">{$t("Authenticator_EnrollHint")}</span></span>
       </button>
       <button type="button" class="btnicontext choice" disabled={busy} on:click={() => actions.navigate("import")}>
-        <strong>{$t("Authenticator_Import")}</strong><span>{$t("Authenticator_ImportHint")}</span>
+        <svg class="choice-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-6-6Zm0 0v6h6M12 12v6m-3-3 3 3 3-3" /></svg>
+        <span class="choice-copy"><strong>{$t("Authenticator_Import")}</strong><span class="choice-hint">{$t("Authenticator_ImportHint")}</span></span>
       </button>
       <button type="button" class="btnicontext choice" disabled={busy} on:click={() => actions.navigate("restore")}>
-        <strong>{$t("Authenticator_Restore")}</strong><span>{$t("Authenticator_RestoreHint")}</span>
+        <svg class="choice-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4v5h5M3 9a9 9 0 1 1 0 6m9-8v5l3 2" /></svg>
+        <span class="choice-copy"><strong>{$t("Authenticator_Restore")}</strong><span class="choice-hint">{$t("Authenticator_RestoreHint")}</span></span>
       </button>
     </div>
     <details class="recover-setup">
@@ -184,9 +187,11 @@
   .expiry { text-align: center; }
   .empty { display: grid; justify-items: center; gap: 0.75rem; padding: 1rem 0; text-align: center; }
   .choices { display: grid; gap: 0.5rem; }
-  .choices .choice { display: flex; flex-direction: column; align-items: flex-start; gap: 0.25rem; width: 100%; padding: 0.75rem 1rem; text-align: left; white-space: normal; }
+  .choices .choice { display: flex; align-items: center; justify-content: flex-start; gap: 0.9rem; width: 100%; padding: 0.75rem 1rem; text-align: left; white-space: normal; }
+  .choices .choice .choice-icon { flex: none; width: 1.8rem; height: 1.8rem; fill: none !important; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+  .choice-copy { display: grid; gap: 0.25rem; min-width: 0; }
   .choice strong { font-weight: 600; }
-  .choice span { font-size: 0.85rem; font-weight: 400; }
+  .choice-hint { font-size: 0.85rem; font-weight: 400; }
   summary { cursor: pointer; }
   .recover-setup { margin-top: 0.25rem; }
   .recover-setup p { margin: 0.5rem 0; }

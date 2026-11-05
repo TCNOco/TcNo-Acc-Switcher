@@ -24,6 +24,35 @@ func TestSessionRedirectValidation(t *testing.T) {
 	}
 }
 
+func TestBattleNetSessionRedirectValidation(t *testing.T) {
+	const token = "EU-012345678901234567890123456789-1111111111"
+	const callback = "https://account.battle.net/login/en/localhost"
+	for _, raw := range []string{callback + "?ST=" + token + "&flowTrackingId=", callback + "/?ST=" + token} {
+		if got, err := SessionTokenFromRedirect(raw); err != nil || got != token {
+			t.Fatal("Battle.net session callback rejected")
+		}
+	}
+	for _, raw := range []string{
+		"http://account.battle.net/login/en/localhost?ST=" + token,
+		"https://account.battle.net:8443/login/en/localhost?ST=" + token,
+		"https://account.battle.net.evil.test/login/en/localhost?ST=" + token,
+		"https://user@account.battle.net/login/en/localhost?ST=" + token,
+		"https://oauth.battle.net/login/en/localhost?ST=" + token,
+		"https://account.battle.net/security?ST=" + token,
+		"https://account.battle.net/login/en/localhost.evil?ST=" + token,
+		"https://account.battle.net/login/en/%6cocalhost?ST=" + token,
+		callback + "?ST=" + token + "&ST=" + token,
+		callback + "?ST=" + token + "&broken=%zz",
+		callback + "?ST=" + token + "#fragment",
+		callback + "?ST=invalid",
+		callback,
+	} {
+		if got, err := SessionTokenFromRedirect(raw); err == nil || got != "" {
+			t.Fatal("unsafe or malformed Battle.net callback accepted")
+		}
+	}
+}
+
 func TestEnrollmentDoesNotRetryOrExposeResponse(t *testing.T) {
 	calls := 0
 	c := NewClient()

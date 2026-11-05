@@ -117,7 +117,13 @@ func SessionTokenFromRedirect(raw string) (string, error) {
 		return "", ErrInvalid
 	}
 	u, err := url.Parse(raw)
-	if err != nil || u.Scheme != "http" || u.Host != "localhost" || u.User != nil || u.Fragment != "" {
+	if err != nil || u.User != nil || u.Fragment != "" {
+		return "", ErrInvalid
+	}
+	localCallback := u.Scheme == "http" && u.Host == "localhost"
+	battleNetCallback := u.Scheme == "https" && u.Host == "account.battle.net" &&
+		(u.EscapedPath() == "/login/en/localhost" || u.EscapedPath() == "/login/en/localhost/")
+	if !localCallback && !battleNetCallback {
 		return "", ErrInvalid
 	}
 	query, err := url.ParseQuery(u.RawQuery)

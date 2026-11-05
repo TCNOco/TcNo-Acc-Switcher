@@ -8,9 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"net/url"
 	"strings"
-	"sync"
 	"time"
 
 	"TcNo-Acc-Switcher/internal/battlenetauth"
@@ -33,7 +31,6 @@ type battleNetOperation struct {
 	token   string
 	expires time.Time
 	cancel  context.CancelFunc
-	consume sync.Once
 }
 
 type battleNetRuntime struct {
@@ -80,20 +77,9 @@ func (s *Service) BeginBattleNetEnrollment(token string) (BattleNetEnrollmentSta
 	s.battleNet.operation = op
 	browser := s.battleNet.browser
 	s.mu.Unlock()
-	err = steambrowser.OpenBattleNetLogin(browser, "battlenet-"+strings.ToLower(id), func(raw string) bool {
-		parsed, parseErr := url.Parse(raw)
-		if parseErr != nil {
-			return true
-		}
-		if parsed.Hostname() == "localhost" {
-			sessionToken, err := battlenetauth.SessionTokenFromRedirect(raw)
-			if err == nil {
-				op.consume.Do(func() { go s.completeBattleNetEnrollment(op, sessionToken) })
-			}
-			return true
-		}
-		return !steambrowser.Classify(steambrowser.PlatformBattleNet, raw).Trusted
-	})
+	err = steambrowser.OpenBattleNetLogin(browser, "battlenet-"+strings.ToLower(id), battleNetEnrollmentNavigation(func(sessionToken string) {
+		go s.completeBattleNetEnrollment(op, sessionToken)
+	}))
 	if err != nil {
 		s.mu.Lock()
 		op.status.State = "failed"
