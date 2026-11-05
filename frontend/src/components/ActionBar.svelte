@@ -15,6 +15,8 @@
   import { buildFilterMenuItems } from "../lib/filterMenu";
   import { prefetchPage } from "../lib/pageLoaders";
   import { steamGuardActionAccount } from "../stores/steamGuardAction";
+  import { authenticatorAction } from "../stores/authenticatorAction";
+  import { openAuthenticator } from "../lib/authenticators";
   import { emitSteamGuardMenuRequest } from "../lib/steam/steamGuardMenuRequest";
   import "../styles/actionbar.scss";
   // Lazy: neither renders on the home screen, which is the page the startup
@@ -36,6 +38,8 @@
   $: platformName = isPlatformPage ? (r as Extract<Route, { page: "platform" }>).platformName : "";
   $: showSaveCurrent = !!platformName && platformName !== "Steam";
   $: steamGuardShortcut = platformName === "Steam" ? $steamGuardActionAccount : null;
+  $: authenticatorProvider = $authenticatorAction.platformKey === platformName ? $authenticatorAction.provider : "";
+  $: authenticatorTitle = platformName === "Steam" ? $t("Context_SteamGuard") : $t("Authenticator_Title");
   $: steamGamesMode = platformName === "Steam" && $steamPageTab === "games";
   $: isActionBusy = $platformActionBusy.busy;
   let filterBtn: HTMLButtonElement | undefined;
@@ -151,13 +155,13 @@
         </button
       >
       {/if}
-      {#if platformName === "Steam"}
+      {#if platformName === "Steam" || authenticatorProvider}
         <button
-          class="square actionbar__steam-guard"
+          class="square actionbar__authenticator"
           type="button"
-          aria-label={$t("Context_SteamGuard")}
-          use:tooltip={$t("Context_SteamGuard")}
-          on:click={openSteamGuardAccounts}
+          aria-label={authenticatorTitle}
+          use:tooltip={authenticatorTitle}
+          on:click={() => platformName === "Steam" ? openSteamGuardAccounts() : void openAuthenticator(authenticatorProvider)}
           >
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 2.25 4 5.3v5.8c0 5.05 3.35 9.5 8 10.65 4.65-1.15 8-5.6 8-10.65V5.3L12 2.25Zm0 2.15 6 2.3v4.4c0 3.9-2.45 7.45-6 8.55-3.55-1.1-6-4.65-6-8.55V6.7l6-2.3Z"/>

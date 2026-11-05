@@ -16,9 +16,11 @@
   import { LaunchPlatform } from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import { formatToastWithError } from "../lib/formatWailsError";
   import { offerRestartIfNeedsAdmin, isNeedsAdminError } from "../lib/adminFlow";
-  import { openPrompt, openAlert } from "../stores/modal";
+  import { openPrompt } from "../stores/modal";
+  import { onDestroy } from "svelte";
+  import { openAuthenticator } from "../lib/authenticators";
+  import { publishAuthenticatorAction, clearAuthenticatorAction } from "../stores/authenticatorAction";
   import { Call } from "@wailsio/runtime";
-  import BattleNetAuthenticatorModal from "../components/modals/BattleNetAuthenticatorModal.svelte";
   import "../styles/platformAccountsShared.scss";
 
   const PROFILE_FALLBACK = "/img/BasicDefault.webp";
@@ -37,13 +39,25 @@
   export let name: string;
 
   let authenticatorProvider = "";
+  let disposed = false;
   async function loadAuthenticatorProvider(platformName: string) {
     authenticatorProvider="";
-    try { const provider=await Call.ByName("TcNo-Acc-Switcher/internal/basic.BasicService.GetAuthenticatorProvider",platformName);if(name===platformName)authenticatorProvider=provider; } catch { if(name===platformName)authenticatorProvider=""; }
+    publishAuthenticatorAction(platformName, "");
+    try {
+      const provider = await Call.ByName("TcNo-Acc-Switcher/internal/basic.BasicService.GetAuthenticatorProvider", platformName);
+      if (!disposed && name === platformName) {
+        authenticatorProvider = provider;
+        publishAuthenticatorAction(platformName, provider);
+      }
+    } catch { if (!disposed && name === platformName) clearAuthenticatorAction(platformName); }
   }
+  onDestroy(() => { disposed = true; clearAuthenticatorAction(name); });
   $: void loadAuthenticatorProvider(name);
   function authenticatorMenu(account?: BasicRow): MenuItemDef[] {
-    return authenticatorProvider === "battlenet" ? [{label:get(t)("Authenticator_Title"),action:()=>{void openAlert({title:get(t)("Authenticator_Title"),bodyComponent:BattleNetAuthenticatorModal,bodyProps:{accountLink:account?.uniqueId??"",suggestedLabel:account?.displayName??""}});}}] : [];
+    return authenticatorProvider === "battlenet" ? [{
+      label: get(t)("Authenticator_Title"),
+      action: () => { void openAuthenticator(authenticatorProvider, account?.uniqueId ?? "", account?.displayName ?? ""); },
+    }] : [];
   }
 
   $: adapter = {
