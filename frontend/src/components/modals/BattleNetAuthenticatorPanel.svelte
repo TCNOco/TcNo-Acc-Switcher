@@ -22,7 +22,7 @@
 
   $: account = accounts.find(item => item.serial === serial);
   $: titleKey = {
-    home: "Authenticator_Title", add: "Authenticator_Add", enroll: "Authenticator_Enroll",
+    home: "Authenticator_Title", add: "Authenticator_Add", enroll: enrollmentState === "verification-required" ? "Authenticator_AccountSetupTitle" : "Authenticator_Enroll",
     import: "Authenticator_Import", restore: "Authenticator_Restore", export: "Authenticator_Export",
     recovery: "Authenticator_Recovery", rename: "Authenticator_SaveLabel",
   }[screen];
@@ -34,6 +34,9 @@
   {/if}
   {#if error}<p class="error" role="alert">{error}</p>{/if}
   {#if notice}<p class="hint" role="status">{notice}</p>{/if}
+  {#if account?.requiresAccountSetup && (screen === "home" || screen === "recovery")}
+    <p class="hint" role="status">{$t("Authenticator_AccountSetupNotice")}</p>
+  {/if}
 
   {#if screen === "home"}
     {#if accounts.length}
@@ -94,8 +97,15 @@
       <button type="button" class="btnicontext" disabled={busy} on:click={actions.recover}>{$t("Authenticator_CheckRecovery")}</button>
     </details>
   {:else if screen === "enroll"}
-    <p class="hint">{$t("Authenticator_OnlineNotice")}</p>
-    {#if enrollment}
+    {#if enrollmentState !== "verification-required"}<p class="hint">{$t("Authenticator_OnlineNotice")}</p>{/if}
+    {#if enrollmentState === "verification-required"}
+      <p role="status">{$t("Authenticator_AccountSetupRequired")}</p>
+      <p class="hint">{$t("Authenticator_AccountSetupHint")}</p>
+      <div class="actions">
+        <button type="button" class="btnicontext modal-primary" disabled={busy} on:click={actions.openEnrollmentAccount}>{$t("Authenticator_Browse")}</button>
+        <button type="button" class="btnicontext" disabled={busy} on:click={actions.enroll}>{$t("Authenticator_RetrySetup")}</button>
+      </div>
+    {:else if enrollment}
       <p role="status">{$t(enrollmentState === "saving" ? "Authenticator_Saving" : "Authenticator_Waiting")}</p>
       <div class="actions"><button type="button" class="btnicontext" disabled={busy || enrollmentState === "saving"} on:click={actions.cancelEnrollment}>{$t("Authenticator_Cancel")}</button></div>
     {:else}
@@ -154,6 +164,9 @@
     {:else}
       <p>{$t("Authenticator_RecoveryHint")}</p>
       <div class="actions"><button type="button" class="btnicontext modal-primary" disabled={busy} on:click={actions.showRecovery}>{$t("Authenticator_ShowRecovery")}</button></div>
+    {/if}
+    {#if account?.requiresAccountSetup}
+      <div class="actions"><button type="button" class="btnicontext" disabled={busy} on:click={actions.browse}>{$t("Authenticator_Browse")}</button></div>
     {/if}
   {:else if screen === "rename"}
     <form class="stack" on:submit|preventDefault={() => { if (!busy && form.accountLabel.trim()) actions.rename(); }}>

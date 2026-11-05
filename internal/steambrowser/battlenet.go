@@ -2,6 +2,7 @@ package steambrowser
 
 import (
 	"errors"
+
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
@@ -10,6 +11,25 @@ func OpenBattleNetLogin(s *Service, profile string, intercept func(string) bool)
 }
 
 func OpenBattleNetAccount(s *Service, profile string) error {
+	if s != nil {
+		for _, id := range s.sessions.ids() {
+			current, err := s.sessions.get(id)
+			if err != nil || current.platform != PlatformBattleNet || current.profile != profile || current.view == nil {
+				continue
+			}
+			return s.command(id, func(view View) error {
+				if err := view.Navigate("https://account.battle.net/security"); err != nil {
+					return err
+				}
+				if app := application.Get(); app != nil && app.Window != nil {
+					if window, ok := app.Window.GetByName(windowName(id)); ok && window != nil {
+						window.Show().Focus()
+					}
+				}
+				return nil
+			})
+		}
+	}
 	return openBattleNetWindow(s, profile, "https://account.battle.net/security", Site("battlenet-account"), func(raw string) bool { return !Classify(PlatformBattleNet, raw).Trusted })
 }
 
@@ -17,7 +37,9 @@ func openBattleNetWindow(s *Service, profile, destination string, site Site, int
 	if s == nil || !Supported() || intercept == nil {
 		return ErrUnsupportedPlatform
 	}
-	if !s.Available(){return ErrStorageUnavailable}
+	if !s.Available() {
+		return ErrStorageUnavailable
+	}
 	id, err := s.sessions.reserve()
 	if err != nil {
 		return err

@@ -2,6 +2,8 @@ package battlenetauth
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"strings"
@@ -89,5 +91,76 @@ func TestEnrollmentReturnsPendingRecord(t *testing.T) {
 	a, err := c.Enroll(context.Background(), "US-012345678901234567890123456789")
 	if err != nil || !a.Pending || calls != 2 {
 		t.Fatal("enrollment did not produce a valid pending record", err)
+	}
+}
+
+func TestAccountSetupFlagPreservesReturnedCredentials(t *testing.T) {
+	for _, restore := range []bool{false, true} {
+		t.Run(map[bool]string{false: "enroll", true: "restore"}[restore], func(t *testing.T) {
+			calls := 0
+			c := NewClient()
+			c.http.Transport = transportFunc(func(r *http.Request) (*http.Response, error) {
+				calls++
+				body := `{"serial":"EU-1234-5678-9012","restoreCode":"0123456789","deviceSecret":"3132333435363738393031323334353637383930","requireHealup":true}`
+				if !restore && calls == 1 {
+					body = `{"access_token":"fake-bearer"}`
+				}
+				return &http.Response{StatusCode: 200, Body: io.NopCloser(strings.NewReader(body)), Header: http.Header{}}, nil
+			})
+			var a Account
+			var err error
+			if restore {
+				a, err = c.Restore(context.Background(), "fixture@example.test", "EU-1234-5678-9012", "0123456789")
+			} else {
+				a, err = c.Enroll(context.Background(), "EU-012345678901234567890123456789")
+			}
+			if err != nil || !a.RequiresAccountSetup || !a.Pending || a.Validate() != nil {
+				t.Fatal("credentials were discarded because account setup is required")
+			}
+			raw, err := json.Marshal(a)
+			if err != nil {
+				t.Fatal(err)
+			}
+			restored, err := ParseAccount(raw)
+			if err != nil || !restored.RequiresAccountSetup || restored.DeviceSecret != a.DeviceSecret {
+				t.Fatal("saved account lost credentials or setup notice")
+			}
+			if (restore && calls != 1) || (!restore && calls != 2) {
+				t.Fatal("request retried")
+			}
+		})
+	}
+}
+
+func TestAccountSetupWithoutCredentialsStopsWithoutRetry(t *testing.T) {
+	for _, stage := range []string{"sign-in", "enroll", "restore"} {
+		t.Run(stage, func(t *testing.T) {
+			calls := 0
+			c := NewClient()
+			c.http.Transport = transportFunc(func(r *http.Request) (*http.Response, error) {
+				calls++
+				body := `{"requireHealup":true,"private":"must-not-appear"}`
+				if stage == "enroll" && calls == 1 {
+					body = `{"access_token":"fake-bearer"}`
+				}
+				return &http.Response{StatusCode: 200, Body: io.NopCloser(strings.NewReader(body)), Header: http.Header{}}, nil
+			})
+			var err error
+			if stage == "restore" {
+				_, err = c.Restore(context.Background(), "fixture@example.test", "EU-1234-5678-9012", "0123456789")
+			} else {
+				_, err = c.Enroll(context.Background(), "EU-012345678901234567890123456789")
+			}
+			if !errors.Is(err, ErrAccountVerification) || strings.Contains(err.Error(), "must-not-appear") {
+				t.Fatal("incorrect or sensitive setup error")
+			}
+			want := 1
+			if stage == "enroll" {
+				want = 2
+			}
+			if calls != want {
+				t.Fatal("verification requirement caused extra requests")
+			}
+		})
 	}
 }

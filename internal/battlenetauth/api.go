@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-var ErrAccountVerification = errors.New("Battle.net requires additional account verification; complete it in the official account page before retrying")
+var ErrAccountVerification = errors.New("Battle.net requires more account setup; check Account security or the Battle.net mobile app")
 
 type Client struct{ http *http.Client }
 
@@ -48,12 +48,13 @@ func (c *Client) request(ctx context.Context, endpoint, bearer, contentType stri
 	if err != nil {
 		return nil, err
 	}
-	var healup bool
-	_ = json.Unmarshal(o["requireHealup"], &healup)
-	if healup {
-		return nil, ErrAccountVerification
-	}
 	return o, nil
+}
+
+func accountSetupRequired(o map[string]json.RawMessage) bool {
+	var required bool
+	_ = json.Unmarshal(o["requireHealup"], &required)
+	return required
 }
 
 func (c *Client) Enroll(ctx context.Context, sessionToken string) (Account, error) {
@@ -66,6 +67,9 @@ func (c *Client) Enroll(ctx context.Context, sessionToken string) (Account, erro
 	if err != nil {
 		return Account{}, err
 	}
+	if accountSetupRequired(o) {
+		return Account{}, ErrAccountVerification
+	}
 	bearer := textField(o, "access_token")
 	if bearer == "" || len(bearer) > 16384 || strings.ContainsAny(bearer, "\r\n") {
 		return Account{}, ErrInvalid
@@ -75,6 +79,9 @@ func (c *Client) Enroll(ctx context.Context, sessionToken string) (Account, erro
 		return Account{}, err
 	}
 	a, err := parseExternalObject(o)
+	if err != nil && accountSetupRequired(o) {
+		return Account{}, ErrAccountVerification
+	}
 	a.Pending = true
 	return a, err
 }
@@ -92,8 +99,14 @@ func (c *Client) Restore(ctx context.Context, accountIdentifier, serial, restore
 	if err != nil {
 		return Account{}, err
 	}
-	a := Account{Version: 1, Serial: serial, RestoreCode: restoreCode, DeviceSecret: textField(o, "deviceSecret"), Pending: true}
-	return a, a.Validate()
+	a := Account{Version: 1, Serial: serial, RestoreCode: restoreCode, DeviceSecret: textField(o, "deviceSecret"), Pending: true, RequiresAccountSetup: accountSetupRequired(o)}
+	if err := a.Validate(); err != nil {
+		if a.RequiresAccountSetup {
+			return Account{}, ErrAccountVerification
+		}
+		return Account{}, err
+	}
+	return a, nil
 }
 
 func validSessionToken(token string) bool {

@@ -138,6 +138,7 @@ func parseExternalObject(o map[string]json.RawMessage) (Account, error) {
 		}
 	}
 	a := Account{Version: 1, Serial: strings.ToUpper(textField(o, "serial")), RestoreCode: strings.ToUpper(textField(o, "restoreCode")), DeviceSecret: strings.ToLower(textField(o, "deviceSecret")), Label: textField(o, "label")}
+	a.RequiresAccountSetup = accountSetupRequired(o)
 	for _, encoded := range []string{textField(o, "base32Secret"), textField(o, "totpUrl")} {
 		if encoded == "" {
 			continue
@@ -234,7 +235,11 @@ func Export(accounts []Account, password string) ([]byte, error) {
 		if _, exists := entries[a.Serial]; exists {
 			return nil, ErrInvalid
 		}
-		entries[a.Serial] = map[string]any{"serial": a.Serial, "deviceSecret": a.DeviceSecret, "restoreCode": a.RestoreCode, "label": a.Label}
+		entry := map[string]any{"serial": a.Serial, "deviceSecret": a.DeviceSecret, "restoreCode": a.RestoreCode, "label": a.Label}
+		if a.RequiresAccountSetup {
+			entry["requireHealup"] = true
+		}
+		entries[a.Serial] = entry
 	}
 	plain, err := json.Marshal(map[string]any{"version": 1, "entries": entries})
 	if err != nil {

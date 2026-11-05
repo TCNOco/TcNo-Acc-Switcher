@@ -37,7 +37,11 @@ type battleNetRuntime struct {
 	pending   securemem.Handle
 	browser   *steambrowser.Service
 	operation *battleNetOperation
-	client    *battlenetauth.Client
+	client    battleNetEnrollmentClient
+}
+
+type battleNetEnrollmentClient interface {
+	Enroll(context.Context, string) (battlenetauth.Account, error)
 }
 
 func ConfigureBattleNetBrowser(s *Service, browser *steambrowser.Service) {
@@ -128,6 +132,11 @@ func (s *Service) completeBattleNetEnrollment(op *battleNetOperation, sessionTok
 		return a.Serial, raw, err
 	})
 	if err != nil {
+		if errors.Is(err, battlenetauth.ErrAccountVerification) {
+			op.status.State = "verification-required"
+			op.status.Error = err.Error()
+			return
+		}
 		op.status.State = "failed"
 		op.status.Error = err.Error()
 		if s.battleNet.pending != nil {
@@ -140,6 +149,32 @@ func (s *Service) completeBattleNetEnrollment(op *battleNetOperation, sessionTok
 		s.battleNet.pending = nil
 	}
 	op.status.State = "pending-backup"
+}
+
+func (s *Service) OpenBattleNetEnrollmentAccount(handle, token string) error {
+	s.mu.Lock()
+	if s.battleNet == nil || s.battleNet.operation == nil {
+		s.mu.Unlock()
+		return ErrAccountNotFound
+	}
+	op := s.battleNet.operation
+	if op.status.Handle != handle || subtle.ConstantTimeCompare([]byte(op.token), []byte(token)) != 1 || op.status.State != "verification-required" {
+		s.mu.Unlock()
+		return ErrSensitiveView
+	}
+	v, err := s.battleNetVaultLocked(token)
+	if err != nil {
+		s.mu.Unlock()
+		return err
+	}
+	if v != op.vault || v.IsLocked() {
+		s.mu.Unlock()
+		return ErrSensitiveView
+	}
+	browser := s.battleNet.browser
+	profile := "battlenet-" + strings.ToLower(op.status.Handle)
+	s.mu.Unlock()
+	return steambrowser.OpenBattleNetAccount(browser, profile)
 }
 
 func (s *Service) battleNetOperationVaultLocked(op *battleNetOperation) (*vault.Vault, error) {
@@ -201,7 +236,7 @@ func (s *Service) CancelBattleNetEnrollment(handle, token string) error {
 	if op.status.Handle != handle || subtle.ConstantTimeCompare([]byte(op.token), []byte(token)) != 1 {
 		return ErrSensitiveView
 	}
-	if op.status.State == "waiting" {
+	if op.status.State == "waiting" || op.status.State == "verification-required" {
 		op.status.State = "canceled"
 	}
 	if op.cancel != nil {

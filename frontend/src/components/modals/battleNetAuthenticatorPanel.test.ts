@@ -13,6 +13,7 @@ const account = { serial: "EU-1234-5678-9012", label: "Test account", pending: f
 const actions: BattleNetActions = {
   navigate: vi.fn(), selectAccount: vi.fn(), pickImport: vi.fn(), previewImport: vi.fn(), importSelected: vi.fn(),
   enroll: vi.fn(), cancelEnrollment: vi.fn(), restore: vi.fn(), recover: vi.fn(), exportSelected: vi.fn(),
+  openEnrollmentAccount: vi.fn(),
   showRecovery: vi.fn(), acknowledgeBackup: vi.fn(), copyCode: vi.fn(), browse: vi.fn(), rename: vi.fn(), link: vi.fn(),
   pickKeyfile: async () => "",
 };
@@ -22,6 +23,24 @@ function view(props: Partial<ComponentProps<typeof BattleNetAuthenticatorPanel>>
 }
 
 describe("Battle.net authenticator tasks", () => {
+  it("offers account setup instead of another sign-in when verification is required", () => {
+    const html = view({ screen: "enroll", enrollment: "handle", enrollmentState: "verification-required" });
+    expect(html).toContain("Authenticator_AccountSetupRequired");
+    expect(html).toContain("Authenticator_AccountSetupHint");
+    expect(html).toContain("Authenticator_Browse");
+    expect(html).toContain("Authenticator_RetrySetup");
+    expect(html).not.toContain("Authenticator_Waiting");
+    expect(html).not.toContain("Authenticator_OpenBrowser");
+    expect(html).not.toContain("Authenticator_RecoverHint");
+  });
+
+  it("keeps saved recovery details available alongside an account setup notice", () => {
+    const html = view({ screen: "recovery", accounts: [{ ...account, pending: true, requiresAccountSetup: true }], serial: account.serial });
+    expect(html).toContain("Authenticator_AccountSetupNotice");
+    expect(html).toContain("Authenticator_ShowRecovery");
+    expect(html).toContain("Authenticator_Browse");
+    expect(html).not.toContain("Authenticator_RetrySetup");
+  });
   it("starts with one action when no authenticators are saved", () => {
     const html = view();
     expect(html).toContain("Authenticator_EmptyHint");

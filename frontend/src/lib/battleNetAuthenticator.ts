@@ -4,6 +4,7 @@ export type BattleNetAccount = {
   pending: boolean;
   hasRestoreCode: boolean;
   accountLink: string;
+  requiresAccountSetup?: boolean;
 };
 
 export type BattleNetScreen = "home" | "add" | "enroll" | "import" | "restore" | "export" | "recovery" | "rename";
@@ -28,6 +29,7 @@ export type BattleNetActions = {
   importSelected: () => void;
   enroll: () => void;
   cancelEnrollment: () => void;
+  openEnrollmentAccount: () => void;
   restore: () => void;
   recover: () => void;
   exportSelected: () => void;

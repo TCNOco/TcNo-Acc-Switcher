@@ -261,6 +261,7 @@ async function grant() {
     copyCode: () => run(async () => { await call("CopyBattleNetCode", serial, token); notice = $t("Authenticator_Copied"); }),
     browse: () => run(async () => { await call("OpenBattleNetAccount", serial, token); }),
     pickKeyfile: () => call("PickVaultKeyfile"),
+    openEnrollmentAccount: () => run(async () => { await call("OpenBattleNetEnrollmentAccount", enrollment, token); }),
   };
 
   onMount(() => {
@@ -278,7 +279,7 @@ async function grant() {
       remaining = Math.max(0, Math.ceil((expires - Date.now()) / 1000));
       if (!remaining) code = "";
       if (busy || polling || closed) return;
-      if (enrollment) {
+      if (enrollment && enrollmentState !== "verification-required") {
         polling = true;
         try {
           const result = await call("GetBattleNetEnrollmentStatus", enrollment, token);
@@ -291,7 +292,10 @@ async function grant() {
               await refresh();
               serial = result.serial;
               showScreen("recovery");
+              await call("OpenBattleNetAccount", serial, token);
             });
+          } else if (result.state === "verification-required") {
+            await actions.openEnrollmentAccount();
           } else if (["failed", "expired", "canceled"].includes(result.state)) {
             enrollment = "";
             error = result.error || $t(result.state === "expired" ? "Authenticator_EnrollmentExpired" : "Authenticator_EnrollmentFailed");

@@ -75,12 +75,13 @@ func TestURIAndExternalImport(t *testing.T) {
 
 func TestEncryptedVaultCompatibility(t *testing.T) {
 	a := fixture()
+	a.RequiresAccountSetup = true
 	raw, err := Export([]Account{a}, "test password")
 	if err != nil {
 		t.Fatal(err)
 	}
 	got, err := Import(raw, "test password")
-	if err != nil || len(got) != 1 || got[0].DeviceSecret != a.DeviceSecret {
+	if err != nil || len(got) != 1 || got[0].DeviceSecret != a.DeviceSecret || !got[0].RequiresAccountSetup {
 		t.Fatal("encrypted round trip failed", err)
 	}
 	if _, err := Import(raw, "wrong password"); err == nil {
