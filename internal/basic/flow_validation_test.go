@@ -2,9 +2,11 @@ package basic
 
 import (
 	"errors"
+	"os"
 	"testing"
 
 	"TcNo-Acc-Switcher/internal/platform"
+	"TcNo-Acc-Switcher/internal/winutil"
 )
 
 func TestSavedAccountNameCannotReplaceAnotherIdentity(t *testing.T) {
@@ -30,6 +32,11 @@ func TestSavedAccountNameCannotReplaceAnotherIdentity(t *testing.T) {
 
 func TestCredentialSessionRetryDoesNotRewindRefreshedAccount(t *testing.T) {
 	fc := FlowContext{Descriptor: platform.Descriptor{Extras: platform.DescriptorExtras{CredentialSession: &platform.CredentialSessionDescriptor{}}}}
+	for _, err := range []error{nil, os.ErrNotExist, winutil.ErrCredentialNotFound} {
+		if !shouldRestoreSavedSession(fc, "", "account-a", err) {
+			t.Fatalf("signed-out session blocked restoring a saved account: %v", err)
+		}
+	}
 	if !shouldRestoreSavedSession(fc, "", "account-a", errors.New("identity file temporarily locked")) {
 		t.Fatal("unreadable identity did not require target preparation")
 	}

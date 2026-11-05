@@ -6,7 +6,37 @@ import (
 	"path/filepath"
 	"slices"
 	"testing"
+
+	"TcNo-Acc-Switcher/internal/updatecheck"
 )
+
+func TestShippedEpicCredentialSessionCatalogUpgrade(t *testing.T) {
+	raw, err := os.ReadFile(filepath.Join("..", "..", "Platforms.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	version, err := updatecheck.ParsePlatformsJSONVersion(raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !updatecheck.IsVersionNewer(version, "4.0.8") {
+		t.Fatalf("catalog version %q will leave existing 4.0.8 installations on the registry/INI Epic flow", version)
+	}
+	epic, err := ParseDescriptor(raw, "Epic Games")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if epic.Extras.CredentialSession == nil || epic.UniqueIdMethod != "DPAPI_JSON_SELECT" {
+		t.Fatal("updated Epic catalog does not select credential sessions")
+	}
+	legacy, err := ParseDescriptor(raw, "Epic Games (Legacy)")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if legacy.Extras.CredentialSession != nil || legacy.UniqueIdMethod != "REGKEY" {
+		t.Fatal("legacy Epic catalog no longer selects the registry/INI flow")
+	}
+}
 
 func TestMergePlatformsJSON_addAndReplace(t *testing.T) {
 	t.Parallel()

@@ -386,7 +386,10 @@ func prepareCredentialSessionRestore(fc FlowContext, accountName, expectedID str
 	defer cleanup()
 	protected, err := readCredentialSessionFile(filepath.Join(source, cfg.snapshotFile), credentialSessionMaxSnapshotSize)
 	if err != nil {
-		return nil, nil, fmt.Errorf("read saved session; sign in and save this account again if it predates this launcher: %w", err)
+		if os.IsNotExist(err) {
+			return nil, nil, fmt.Errorf("saved account %q has no session for this launcher; sign in to that account in the launcher, then use Save current before switching to it", accountName)
+		}
+		return nil, nil, fmt.Errorf("read saved session for account %q: %w", accountName, err)
 	}
 	plain, err := winutil.DPAPIUnprotect(protected)
 	clear(protected)
