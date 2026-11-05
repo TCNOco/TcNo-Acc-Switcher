@@ -12,7 +12,6 @@
   export let accountLink = "";
   export let busy = false;
   export let error = "";
-  export let notice = "";
   export let enrollment = "";
   export let enrollmentState = "";
   export let preview: BattleNetAccount[] = [];
@@ -49,7 +48,6 @@
     {#key screen}<h2 data-steamguard-focus tabindex="-1" use:focusOnShow>{$t(titleKey)}</h2>{/key}
   {/if}
   {#if error}<p class="error" role="alert">{error}</p>{/if}
-  {#if notice}<p class="hint" role="status">{notice}</p>{/if}
   {#if account?.requiresAccountSetup && (screen === "home" || screen === "recovery")}
     <p class="hint" role="status">{$t("Authenticator_AccountSetupNotice")}</p>
   {/if}
@@ -190,10 +188,10 @@
     {#if recovery}
       <p class="hint">{$t("Authenticator_RecoveryWarning")}</p>
       <dl>
-        <dt>{$t("Authenticator_Serial")}</dt><dd>{recovery.serial}</dd>
-        {#if recovery.restoreCode}<dt>{$t("Authenticator_RestoreCode")}</dt><dd>{recovery.restoreCode}</dd>{/if}
+        <dt>{$t("Authenticator_Serial")}</dt><dd><input class="modal-input recovery-value" aria-label={$t("Authenticator_Serial")} title={$t("Authenticator_CopyValue")} readonly spellcheck="false" autocomplete="off" value={recovery.serial} disabled={busy} on:click={() => actions.copyRecovery("serial")} on:keydown={(event) => runOnEnter(event, () => actions.copyRecovery("serial"))} /></dd>
+        {#if recovery.restoreCode}<dt>{$t("Authenticator_RestoreCode")}</dt><dd><input class="modal-input recovery-value" aria-label={$t("Authenticator_RestoreCode")} title={$t("Authenticator_CopyValue")} readonly spellcheck="false" autocomplete="off" value={recovery.restoreCode} disabled={busy} on:click={() => actions.copyRecovery("restoreCode")} on:keydown={(event) => runOnEnter(event, () => actions.copyRecovery("restoreCode"))} /></dd>{/if}
       </dl>
-      <details><summary>{$t("Authenticator_ShowQR")}</summary><div class="qr"><img src={recovery.qrImage} alt={$t("Authenticator_QR")} width="240" height="240" /><textarea class="modal-input" aria-label={$t("Authenticator_SecretLink")} readonly value={recovery.uri}></textarea></div></details>
+      <details><summary>{$t("Authenticator_ShowQR")}</summary><div class="qr"><img src={recovery.qrImage} alt={$t("Authenticator_QR")} width="240" height="240" /><textarea class="modal-input recovery-value" aria-label={$t("Authenticator_SecretLink")} title={$t("Authenticator_CopyValue")} readonly value={recovery.uri} disabled={busy} on:click={() => actions.copyRecovery("uri")} on:keydown={(event) => runOnEnter(event, () => actions.copyRecovery("uri"))}></textarea></div></details>
       {#if account?.pending}<div class="actions"><button type="button" class="btnicontext modal-primary" disabled={busy} on:click={actions.acknowledgeBackup}>{$t("Authenticator_BackupAcknowledged")}</button></div>{/if}
     {:else}
       <p>{$t("Authenticator_RecoveryHint")}</p>
@@ -249,8 +247,9 @@
   .check input { flex: none; width: auto; margin: 0; }
   .import-selection { min-width: 0; margin: 0; padding: 0.75rem; border: 1px solid var(--modal-border, var(--border-bar-bg)); }
   .import-selection legend { padding: 0 0.25rem; }
-  dl { display: grid; grid-template-columns: auto 1fr; gap: 0.5rem 1rem; margin: 0; }
-  dd { margin: 0; font-family: monospace; overflow-wrap: anywhere; }
+  dl { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 0.5rem 1rem; margin: 0; }
+  dd { margin: 0; min-width: 0; }
+  .recovery-value { width: 100%; min-width: 0; margin: 0; font-family: "Consolas", "Cascadia Mono", monospace; user-select: text; -webkit-user-select: text; cursor: copy; }
   .qr { display: grid; justify-items: center; gap: 0.75rem; margin-top: 0.75rem; }
   .qr img { max-width: 100%; height: auto; }
   @media (prefers-reduced-motion: reduce) { .countdown { transition: none; } }

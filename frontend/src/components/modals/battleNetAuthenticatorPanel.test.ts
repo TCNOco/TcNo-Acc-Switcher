@@ -14,7 +14,7 @@ const actions: BattleNetActions = {
   navigate: vi.fn(), selectAccount: vi.fn(), pickImport: vi.fn(), previewImport: vi.fn(), importSelected: vi.fn(),
   enroll: vi.fn(), cancelEnrollment: vi.fn(), restore: vi.fn(), recover: vi.fn(), exportSelected: vi.fn(),
   openEnrollmentAccount: vi.fn(),
-  showRecovery: vi.fn(), acknowledgeBackup: vi.fn(), copyCode: vi.fn(), browse: vi.fn(), rename: vi.fn(), link: vi.fn(),
+  showRecovery: vi.fn(), acknowledgeBackup: vi.fn(), copyCode: vi.fn(), copyRecovery: vi.fn(), browse: vi.fn(), rename: vi.fn(), link: vi.fn(),
   pickKeyfile: async () => "",
 };
 
@@ -131,6 +131,10 @@ describe("Battle.net authenticator tasks", () => {
     const recovery = { serial: account.serial, restoreCode: "RESTORE123", uri: "otpauth://example", qrImage: "data:image/png;base64,AAAA" };
     const revealed = view({ screen: "recovery", accounts: [{ ...account, pending: true }], serial: account.serial, recovery });
     expect(revealed).toContain("RESTORE123");
+    for (const label of ["Authenticator_Serial", "Authenticator_RestoreCode"]) {
+      expect(revealed).toMatch(new RegExp(`<input[^>]*aria-label="${label}"[^>]*readonly[^>]*value="[^"]+"`));
+    }
+    expect(revealed).toMatch(/<textarea[^>]*class="[^"]*recovery-value[^>]*readonly/);
     expect(revealed).toContain("Authenticator_BackupAcknowledged");
     expect(revealed).toMatch(/<details[^>]*>\s*<summary[^>]*>Authenticator_ShowQR/);
     expect(view({ screen: "recovery", accounts: [account], serial: account.serial, recovery })).not.toContain("Authenticator_BackupAcknowledged");

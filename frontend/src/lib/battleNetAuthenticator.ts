@@ -36,6 +36,7 @@ export type BattleNetActions = {
   showRecovery: () => void;
   acknowledgeBackup: () => void;
   copyCode: () => void;
+  copyRecovery: (field: "serial" | "restoreCode" | "uri") => void;
   browse: () => void;
   rename: () => void;
   link: () => void;

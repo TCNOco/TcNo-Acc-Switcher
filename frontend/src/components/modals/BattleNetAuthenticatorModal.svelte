@@ -2,10 +2,12 @@
   import { onMount } from "svelte";
   import { Call, Events } from "@wailsio/runtime";
   import { t } from "../../stores/i18n";
+  import { pushToast } from "../../stores/toast";
   import { setModalBusy } from "../../stores/modal";
   import { clearModalBackAction, setModalBackAction } from "../../stores/modalBack";
   import { requestModalAutoFit } from "../../lib/modalFrame";
-  import { formatUnknownError } from "../../lib/formatWailsError";
+  import { formatToastWithError, formatUnknownError } from "../../lib/formatWailsError";
+  import { copyText } from "../../lib/clipboard";
   import { emptyBattleNetForm, type BattleNetAccount, type BattleNetActions, type BattleNetRecovery, type BattleNetScreen } from "../../lib/battleNetAuthenticator";
   import AuthenticatorUnlockForm from "./AuthenticatorUnlockForm.svelte";
   import BattleNetAuthenticatorPanel from "./BattleNetAuthenticatorPanel.svelte";
@@ -14,7 +16,7 @@
   const call = (method: string, ...args: unknown[]) => Call.ByName(`TcNo-Acc-Switcher/internal/steamguard.Service.${method}`, ...args);
   let token = "", lease = "", password = "", keyfile = "", backupKey = "";
   let accounts: BattleNetAccount[] = [], preview: BattleNetAccount[] = [];
-  let serial = "", code = "", expires = 0, remaining = 0, error = "", notice = "";
+  let serial = "", code = "", expires = 0, remaining = 0, error = "";
   let busy = false, ready = false, configured = true, mounted = false, closed = false, polling = false;
   let enrollment = "", enrollmentState = "";
   let appPassword = "", appPasswordRequired = false;
@@ -75,7 +77,6 @@ async function grant() {
     if (busy || closed) return;
     busy = true;
     error = "";
-    notice = "";
     try {
       await action();
     } catch (cause) {
@@ -90,7 +91,6 @@ async function grant() {
   function showScreen(next: BattleNetScreen): void {
     screen = next;
     error = "";
-    notice = "";
     recovery = null;
     code = "";
     expires = 0;
@@ -152,7 +152,7 @@ async function grant() {
     await run(async () => {
       preview = await call("PreviewBattleNetImport", form.source.trim(), form.sourcePassword, token);
       form.selected = preview.filter(a => form.replaceExisting || !accounts.some(existing => existing.serial === a.serial)).map(a => a.serial);
-      if (!preview.length) notice = $t("Authenticator_NoImportAccounts");
+      if (!preview.length) pushToast({ type: "info", message: $t("Authenticator_NoImportAccounts") });
     });
   }
 
@@ -165,7 +165,7 @@ async function grant() {
       await refresh();
       serial = imported;
       showScreen("home");
-      notice = $t("Authenticator_Imported");
+      pushToast({ type: "success", message: $t("Authenticator_Imported") });
     });
   }
 
@@ -174,7 +174,7 @@ async function grant() {
       const result = await call("ExportBattleNet", [serial], form.password, form.keyfile, form.backupKey.trim(), form.exportPassword, token);
       if (!result) return;
       showScreen("home");
-      notice = $t("Authenticator_Exported");
+      pushToast({ type: "success", message: $t("Authenticator_Exported") });
     });
   }
 
@@ -197,14 +197,14 @@ async function grant() {
 
   async function restore(): Promise<void> {
     await run(async () => {
-      const restoredSerial = form.restoreSerial.trim().toUpperCase();
+      const restoredSerial = form.restoreSerial.replace(/\s/g, "").toUpperCase();
       await call("RestoreBattleNetAuthenticator", form.accountIdentifier.trim(), restoredSerial, form.restoreCode.trim(), token);
       form.restoreCode = "";
       await grant();
       await refresh();
       serial = accounts.find(a => a.serial.replaceAll("-", "") === restoredSerial.replaceAll("-", ""))?.serial ?? serial;
       showScreen("home");
-      notice = $t("Authenticator_Restored");
+      pushToast({ type: "success", message: $t("Authenticator_Restored") });
     });
   }
 
@@ -218,12 +218,12 @@ async function grant() {
       enrollment = "";
       enrollmentState = "";
       if (!recovered.length) {
-        notice = $t("Authenticator_NoRecovery");
+        pushToast({ type: "info", message: $t("Authenticator_NoRecovery") });
         return;
       }
       serial = recovered[0].serial;
       showScreen("home");
-      notice = $t("Authenticator_Recovered", { count: recovered.length });
+      pushToast({ type: "success", message: $t("Authenticator_Recovered", { count: recovered.length }) });
     });
   }
 
@@ -251,16 +251,26 @@ async function grant() {
       await call("LinkBattleNetAccount", serial, accountLink, suggestedLabel, token);
       await grant();
       await refresh();
-      notice = $t("Authenticator_Linked");
+      pushToast({ type: "success", message: $t("Authenticator_Linked") });
     });
+  }
+
+  async function copyRecovery(field: "serial" | "restoreCode" | "uri"): Promise<void> {
+    if (busy || closed || !recovery?.[field]) return;
+    try {
+      await copyText(recovery[field]);
+      pushToast({ type: "success", message: $t("Toast_Copied") });
+    } catch (cause) {
+      pushToast({ type: "error", message: formatToastWithError($t("Toast_CopyFailed"), cause) });
+    }
   }
 
   const actions: BattleNetActions = {
     navigate, pickImport, previewImport, importSelected, enroll, cancelEnrollment, restore, recover,
-    exportSelected, acknowledgeBackup, rename, link,
-    selectAccount: () => { code = ""; expires = 0; remaining = 0; recovery = null; error = ""; notice = ""; },
+    exportSelected, acknowledgeBackup, rename, link, copyRecovery,
+    selectAccount: () => { code = ""; expires = 0; remaining = 0; recovery = null; error = ""; },
     showRecovery: () => run(async () => { recovery = await call("RevealBattleNetRecovery", serial, token); }),
-    copyCode: () => run(async () => { await call("CopyBattleNetCode", serial, token); notice = $t("Authenticator_Copied"); }),
+    copyCode: () => run(async () => { await call("CopyBattleNetCode", serial, token); pushToast({ type: "success", message: $t("Authenticator_Copied") }); }),
     browse: () => run(async () => { await call("OpenBattleNetAccount", serial, token); }),
     pickKeyfile: () => call("PickVaultKeyfile"),
     openEnrollmentAccount: () => run(async () => { await call("OpenBattleNetEnrollmentAccount", enrollment, token); }),
@@ -365,7 +375,7 @@ async function grant() {
     </AuthenticatorUnlockForm>
   {:else}
     <BattleNetAuthenticatorPanel
-      {screen} {accounts} bind:serial {code} {remaining} {accountLink} {busy} {error} {notice}
+      {screen} {accounts} bind:serial {code} {remaining} {accountLink} {busy} {error}
       {enrollment} {enrollmentState} bind:preview {recovery} bind:form {actions}
     />
   {/if}

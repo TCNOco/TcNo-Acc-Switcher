@@ -36,7 +36,7 @@ func TestCompactSerialEnrollmentAndImports(t *testing.T) {
 }
 
 func TestSerialNormalizationIsStrict(t *testing.T) {
-	for _, raw := range []string{"EU123456789012", "EU-1234-5678-9012", " eu123456789012 "} {
+	for _, raw := range []string{"EU123456789012", "EU-1234-5678-9012", " eu123456789012 ", "EU 1234 5678 9012", " eu\u00a01234\t5678\n9012 ", "EU - 1234 - 5678 - 9012"} {
 		if got, err := NormalizeSerial(raw); err != nil || got != "EU-1234-5678-9012" {
 			t.Fatal("valid serial rejected")
 		}
@@ -45,5 +45,22 @@ func TestSerialNormalizationIsStrict(t *testing.T) {
 		if _, err := NormalizeSerial(raw); err == nil {
 			t.Fatal("malformed serial accepted")
 		}
+	}
+}
+
+func TestRestoreNormalizesSpacedSerial(t *testing.T) {
+	c := NewClient()
+	calls := 0
+	c.http.Transport = transportFunc(func(req *http.Request) (*http.Response, error) {
+		calls++
+		body, err := io.ReadAll(req.Body)
+		if err != nil || !strings.Contains(string(body), `"serial":"EU-1234-5678-9012"`) {
+			t.Fatal("restore request did not use the canonical serial")
+		}
+		return &http.Response{StatusCode: 200, Body: io.NopCloser(strings.NewReader(`{"deviceSecret":"3132333435363738393031323334353637383930"}`)), Header: http.Header{}}, nil
+	})
+	a, err := c.Restore(context.Background(), "test@example.invalid", "EU 1234 5678 9012", "0123456789")
+	if err != nil || a.Serial != "EU-1234-5678-9012" || calls != 1 {
+		t.Fatal("restore rejected a spaced serial or retried the request")
 	}
 }

@@ -13,6 +13,7 @@ import (
 	"regexp"
 	"strings"
 	"time"
+	"unicode"
 )
 
 var ErrInvalid = errors.New("invalid Battle.net authenticator data")
@@ -20,7 +21,12 @@ var serialPattern = regexp.MustCompile(`^(US|EU|KR|TW|CN)-[0-9]{4}-[0-9]{4}-[0-9
 var compactSerialPattern = regexp.MustCompile(`^(US|EU|KR|TW|CN)[0-9]{12}$`)
 
 func NormalizeSerial(raw string) (string, error) {
-	serial := strings.ToUpper(strings.TrimSpace(raw))
+	serial := strings.ToUpper(strings.Map(func(r rune) rune {
+		if unicode.IsSpace(r) {
+			return -1
+		}
+		return r
+	}, raw))
 	if serialPattern.MatchString(serial) {
 		return serial, nil
 	}

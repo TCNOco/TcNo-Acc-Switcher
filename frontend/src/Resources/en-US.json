@@ -73,6 +73,7 @@
   "Authenticator_Rename": "Rename",
   "Authenticator_Linked": "Account linked.",
   "Authenticator_Copied": "Code copied.",
+  "Authenticator_CopyValue": "Click or press Enter to copy.",
   "Authenticator_EnrollmentExpired": "Sign-in expired. Open the browser to try again.",
   "Authenticator_EnrollmentFailed": "Setup failed. Check for unsaved setup before trying again.",
   "Authenticator_AccountSetupNotice": "Authenticator saved. Battle.net requested more account setup.",
