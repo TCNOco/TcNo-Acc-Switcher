@@ -10,15 +10,21 @@ import (
 	"time"
 
 	"TcNo-Acc-Switcher/internal/battlenetauth"
+	"TcNo-Acc-Switcher/internal/passwordpolicy"
+	"TcNo-Acc-Switcher/internal/security"
+	"TcNo-Acc-Switcher/internal/steamguard/qrimage"
 	"TcNo-Acc-Switcher/internal/steamguard/qrrender"
 	"TcNo-Acc-Switcher/internal/steamguard/securefile"
 	"TcNo-Acc-Switcher/internal/steamguard/vault"
+	"github.com/makiuchi-d/gozxing"
+	multiqr "github.com/makiuchi-d/gozxing/multi/qrcode"
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
 const battleNetView = "battlenet-authenticators"
 
 type BattleNetAccountSummary struct {
+	AccountLink    string `json:"accountLink"`
 	Serial         string `json:"serial"`
 	Label          string `json:"label"`
 	Pending        bool   `json:"pending"`
@@ -66,13 +72,22 @@ func (BattleNetCodeView) String() string   { return "Battle.net code (redacted)"
 func (BattleNetCodeView) GoString() string { return "Battle.net code (redacted)" }
 
 func (s *Service) RequestBattleNetView(requestID string) error {
+	if err := security.RequireUnlocked(); err != nil {
+		return err
+	}
 	return s.issueSensitiveView(battleNetView, requestID)
 }
 
 func (s *Service) battleNetVaultLocked(token string) (*vault.Vault, error) {
-	v, err := s.requireVaultLocked()
+	if err := security.RequireUnlocked(); err != nil {
+		return nil, err
+	}
+	v, exists, err := s.openVaultLocked()
 	if err != nil {
 		return nil, err
+	}
+	if !exists {
+		return nil, ErrVaultNotReady
 	}
 	if err := s.authorizeModalLocked(v, battleNetView, token); err != nil {
 		return nil, err
@@ -93,6 +108,9 @@ func (s *Service) UnlockBattleNet(password, keyfilePath, backupKey string, remem
 	if err != nil {
 		return err
 	}
+	if !v.IsLocked() {
+		return nil
+	}
 	err = s.unlockVaultWithLocked(v, creds, remember)
 	if needsSecurityKey(err) {
 		id, secret, keyErr := s.evaluateSecurityKeyLocked(v)
@@ -108,7 +126,7 @@ func (s *Service) UnlockBattleNet(password, keyfilePath, backupKey string, remem
 }
 
 func battleNetSummary(a battlenetauth.Account) BattleNetAccountSummary {
-	return BattleNetAccountSummary{a.Serial, a.Label, a.Pending, a.RestoreCode != ""}
+	return BattleNetAccountSummary{Serial: a.Serial, Label: a.Label, Pending: a.Pending, HasRestoreCode: a.RestoreCode != "", AccountLink: a.AccountLink}
 }
 
 func (s *Service) ListBattleNetAccounts(token string) ([]BattleNetAccountSummary, error) {
@@ -191,7 +209,9 @@ func (s *Service) CopyBattleNetCode(serial, token string) error {
 		return err
 	}
 	defer func() { view.Code = "" }()
-	clipboard, ok := s.clipboard.(interface{ CopyNumeric(string, time.Duration) error })
+	clipboard, ok := s.clipboard.(interface {
+		CopyNumeric(string, time.Duration) error
+	})
 	if !ok {
 		return ErrSensitiveView
 	}
@@ -210,6 +230,27 @@ func readBattleNetImport(source string) ([]byte, error) {
 	}
 	if err := validateCredentialImportPath(source); err != nil {
 		return nil, err
+	}
+	switch strings.ToLower(filepath.Ext(source)) {
+	case ".png", ".jpg", ".jpeg":
+		frame, err := qrimage.Load(source)
+		if err != nil {
+			return nil, battlenetauth.ErrInvalid
+		}
+		defer frame.Wipe()
+		bitmap, err := gozxing.NewBinaryBitmapFromImage(frame.Image())
+		if err != nil {
+			return nil, battlenetauth.ErrInvalid
+		}
+		results, err := multiqr.NewQRCodeMultiReader().DecodeMultiple(bitmap, nil)
+		if err != nil || len(results) != 1 {
+			return nil, battlenetauth.ErrInvalid
+		}
+		payload := results[0].GetText()
+		if _, err := battlenetauth.ParseURI(payload); err != nil {
+			return nil, err
+		}
+		return []byte(payload), nil
 	}
 	f, err := os.Open(source)
 	if err != nil {
@@ -333,7 +374,7 @@ func (s *Service) PickBattleNetImport() (string, error) {
 	if app == nil {
 		return "", ErrUnsupportedInput
 	}
-	dialog := app.Dialog.OpenFile().SetTitle("Import Battle.net authenticators").AddFilter("Authenticator backups", "*.json;*.txt")
+	dialog := app.Dialog.OpenFile().SetTitle("Import Battle.net authenticators").AddFilter("Authenticator backups and QR images", "*.json;*.txt;*.png;*.jpg;*.jpeg")
 	if owner := dialogOwnerWindow(); owner != nil {
 		dialog = dialog.AttachToWindow(owner)
 	}
@@ -344,7 +385,61 @@ func (s *Service) PickBattleNetImport() (string, error) {
 	return path, err
 }
 
+func (s *Service) SetBattleNetLabel(serial, label, token string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	v, err := s.battleNetVaultLocked(token)
+	if err != nil {
+		return err
+	}
+	a, err := battleNetRecord(v, serial)
+	if err != nil {
+		return err
+	}
+	a.Label = strings.TrimSpace(label)
+	if err := a.Validate(); err != nil {
+		return err
+	}
+	raw, err := json.Marshal(a)
+	if err != nil {
+		return err
+	}
+	defer wipe(raw)
+	_, err = v.PutProviderRecord(vault.ProviderBattleNet, a.Serial, raw)
+	return err
+}
+
+func (s *Service) LinkBattleNetAccount(serial, accountID, label, token string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	v, err := s.battleNetVaultLocked(token)
+	if err != nil {
+		return err
+	}
+	a, err := battleNetRecord(v, serial)
+	if err != nil {
+		return err
+	}
+	a.AccountLink = strings.TrimSpace(accountID)
+	if strings.TrimSpace(label) != "" {
+		a.Label = strings.TrimSpace(label)
+	}
+	if err := a.Validate(); err != nil {
+		return err
+	}
+	raw, err := json.Marshal(a)
+	if err != nil {
+		return err
+	}
+	defer wipe(raw)
+	_, err = v.PutProviderRecord(vault.ProviderBattleNet, a.Serial, raw)
+	return err
+}
+
 func (s *Service) ExportBattleNet(serials []string, password, keyfilePath, backupKey, exportPassword, token string) (string, error) {
+	if err := passwordpolicy.ValidateNew(exportPassword); err != nil {
+		return "", err
+	}
 	app := application.Get()
 	if app == nil {
 		return "", ErrUnsupportedInput

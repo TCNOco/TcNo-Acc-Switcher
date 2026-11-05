@@ -26,6 +26,10 @@ func windowName(sessionID string) string {
 // labels, and the strings here are Steam's own product names.
 func siteLabel(site Site) string {
 	switch site {
+	case Site("battlenet-login"):
+		return "Battle.net sign-in"
+	case Site("battlenet-account"):
+		return "Battle.net account security"
 	case SiteCommunity:
 		return "Steam Community"
 	case SiteChat:
@@ -49,7 +53,11 @@ func siteLabel(site Site) string {
 // site would be the wrong one.
 func windowTitle(accountName string, site Site, destination string) string {
 	label := siteLabel(site)
-	if trust := Classify(PlatformSteam, destination); !trust.Trusted && trust.Host != "" {
+	provider := PlatformSteam
+	if site == Site("battlenet-login") || site == Site("battlenet-account") {
+		provider = PlatformBattleNet
+	}
+	if trust := Classify(provider, destination); !trust.Trusted && trust.Host != "" {
 		label = trust.Host
 	}
 	accountName = strings.TrimSpace(accountName)

@@ -18,11 +18,13 @@ import (
 type Platform string
 
 const PlatformSteam Platform = "Steam"
+const PlatformBattleNet Platform = "BattleNet"
 
 // trustedDomains lists the registrable domains a window may show while still
 // presenting itself as the platform's own site. Subdomains are included by the
 // suffix rule in hostMatches, so store./help./login./api. need no entry.
 var trustedDomains = map[Platform][]string{
+	PlatformBattleNet: {"battle.net", "blizzard.com"},
 	PlatformSteam: {
 		"steamcommunity.com",
 		"steampowered.com",

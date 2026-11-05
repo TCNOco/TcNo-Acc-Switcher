@@ -304,6 +304,7 @@ func serviceList() []application.Service {
 		log.Printf("steam browser data path: %v", err)
 	}
 	steamBrowserSvc = steambrowser.NewService(steamguard.NewBrowserSessionSource(steamGuardSvc), browserDataPath, true)
+	steamguard.ConfigureBattleNetBrowser(steamGuardSvc, steamBrowserSvc)
 
 	return []application.Service{
 		application.NewService(&FilesystemService{}),

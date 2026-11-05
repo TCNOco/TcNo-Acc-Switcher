@@ -45,7 +45,8 @@ type ViewOptions struct {
 	// InitialURL is loaded once the cookies are in place.
 	InitialURL string
 	// Platform selects the trust list applied to navigation.
-	Platform Platform
+	Platform            Platform
+	InterceptNavigation func(string) bool
 
 	// OnState is called whenever the page, title or history changes.
 	OnState func(ViewState)

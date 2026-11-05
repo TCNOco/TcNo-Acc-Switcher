@@ -47,8 +47,8 @@
   $: addressHint = !state.url
     ? ""
     : state.trusted
-      ? $t("SteamBrowser_Trusted_Hint", { host: state.host })
-      : $t("SteamBrowser_Untrusted_Hint", { host: state.host });
+      ? $t("AccountBrowser_Trusted_Hint", { host: state.host })
+      : $t("AccountBrowser_Untrusted_Hint", { host: state.host });
 
   function report(next: ViewState): void {
     const moved = next.url !== state.url;

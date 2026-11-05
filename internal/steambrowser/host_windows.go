@@ -43,9 +43,10 @@ type windowsView struct {
 	canBack bool
 	canFwd  bool
 
-	onState     func(ViewState)
-	onNewWindow func(string)
-	onDownload  func(string)
+	onState             func(ViewState)
+	onNewWindow         func(string)
+	onDownload          func(string)
+	interceptNavigation func(string) bool
 
 	// handlers holds the event-handler objects for the view's lifetime.
 	//
@@ -67,11 +68,12 @@ func newView(options ViewOptions) (View, error) {
 	}
 
 	view := &windowsView{
-		platform:    options.Platform,
-		hostWindow:  options.NativeWindow,
-		onState:     options.OnState,
-		onNewWindow: options.OnNewWindow,
-		onDownload:  options.OnDownload,
+		platform:            options.Platform,
+		hostWindow:          options.NativeWindow,
+		onState:             options.OnState,
+		onNewWindow:         options.OnNewWindow,
+		onDownload:          options.OnDownload,
+		interceptNavigation: options.InterceptNavigation,
 	}
 
 	chromium := webview2.NewChromium()
@@ -434,6 +436,10 @@ func (v *windowsView) DocumentTitleChanged(*webview2.ICoreWebView2, uintptr) uin
 func (v *windowsView) NavigationStarting(_ *webview2.ICoreWebView2, raw *webview2.IUnknown) uintptr {
 	if args := webview2.NavigationStartingArgs(raw); args != nil {
 		url, err := args.GetUri()
+		if err == nil && v.interceptNavigation != nil && v.interceptNavigation(url) {
+			_ = args.PutCancel(true)
+			return 0
+		}
 		if err == nil && !navigableScheme(url) {
 			_ = args.PutCancel(true)
 			return 0

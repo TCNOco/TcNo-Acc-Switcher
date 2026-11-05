@@ -228,7 +228,7 @@ func Export(accounts []Account, password string) ([]byte, error) {
 		if _, exists := entries[a.Serial]; exists {
 			return nil, ErrInvalid
 		}
-		entries[a.Serial] = map[string]any{"serial": a.Serial, "deviceSecret": a.DeviceSecret, "restoreCode": a.RestoreCode}
+		entries[a.Serial] = map[string]any{"serial": a.Serial, "deviceSecret": a.DeviceSecret, "restoreCode": a.RestoreCode, "label": a.Label}
 	}
 	plain, err := json.Marshal(map[string]any{"version": 1, "entries": entries})
 	if err != nil {

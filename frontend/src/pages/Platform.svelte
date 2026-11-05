@@ -37,9 +37,14 @@
   export let name: string;
 
   let authenticatorProvider = "";
-  $: void Call.ByName("TcNo-Acc-Switcher/internal/basic.BasicService.GetAuthenticatorProvider", name)
-    .then((provider: string) => { authenticatorProvider = provider; })
-    .catch(() => { authenticatorProvider = ""; });
+  async function loadAuthenticatorProvider(platformName: string) {
+    authenticatorProvider="";
+    try { const provider=await Call.ByName("TcNo-Acc-Switcher/internal/basic.BasicService.GetAuthenticatorProvider",platformName);if(name===platformName)authenticatorProvider=provider; } catch { if(name===platformName)authenticatorProvider=""; }
+  }
+  $: void loadAuthenticatorProvider(name);
+  function authenticatorMenu(account?: BasicRow): MenuItemDef[] {
+    return authenticatorProvider === "battlenet" ? [{label:get(t)("Authenticator_Title"),action:()=>{void openAlert({title:get(t)("Authenticator_Title"),bodyComponent:BattleNetAuthenticatorModal,bodyProps:{accountLink:account?.uniqueId??"",suggestedLabel:account?.displayName??""}});}}] : [];
+  }
 
   $: adapter = {
     platformKey: name,
@@ -109,10 +114,7 @@
     closePlatform: () => BasicService.ClosePlatform(name),
 
     buildMenu: (_a, shared) => [
-      ...(authenticatorProvider === "battlenet" ? [{
-        label: get(t)("Authenticator_Title"),
-        action: () => { void openAlert({ title: get(t)("Authenticator_Title"), bodyComponent: BattleNetAuthenticatorModal }); },
-      }] : []),
+      ...authenticatorMenu(_a),
       shared.swapTo,
       shared.changeName,
       shared.createShortcut,
@@ -122,6 +124,7 @@
       shared.tags,
       shared.gameStats,
     ].filter((x): x is MenuItemDef => x != null),
+    buildBackgroundMenu: () => authenticatorMenu(),
 
     updateEventName: "basic-account-image-updated",
     buildPatch: (raw: unknown) =>

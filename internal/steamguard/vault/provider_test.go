@@ -1,6 +1,10 @@
 package vault
 
-import "testing"
+import (
+	"bytes"
+	"encoding/json"
+	"testing"
+)
 
 func TestProviderIdentityCompatibility(t *testing.T) {
 	steam, err := ProviderIdentity(ProviderSteam, "76561198000000000")
@@ -22,5 +26,41 @@ func TestProviderIdentityCompatibility(t *testing.T) {
 		if _, err := ProviderIdentity(ProviderBattleNet, subject); err == nil {
 			t.Fatal("invalid subject accepted")
 		}
+	}
+}
+
+func TestProviderRecoveryRequiresBothEncryptionLayers(t *testing.T) {
+	key, outer := bytes.Repeat([]byte{1}, 32), bytes.Repeat([]byte{2}, 32)
+	plain := []byte("fixture authenticator")
+	additional := aad(FormatVersion, "vault-id", "", "", "battlenet-recovery")
+	env, err := seal(key, plain, additional)
+	if err != nil {
+		t.Fatal(err)
+	}
+	raw, err := json.Marshal(env)
+	if err != nil {
+		t.Fatal(err)
+	}
+	wrapped, err := sealOuterFile(outer, raw, OuterLayerVersion, outerAAD("vault-id", "", "receipt"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := openOuterFile(bytes.Repeat([]byte{3}, 32), wrapped, OuterLayerVersion, outerAAD("vault-id", "", "receipt")); err == nil {
+		t.Fatal("wrong outer key accepted")
+	}
+	inner, err := openOuterFile(outer, wrapped, OuterLayerVersion, outerAAD("vault-id", "", "receipt"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var recovered envelope
+	if err := json.Unmarshal(inner, &recovered); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := openEnvelope(bytes.Repeat([]byte{3}, 32), recovered, additional); err == nil {
+		t.Fatal("wrong vault key accepted")
+	}
+	got, err := openEnvelope(key, recovered, additional)
+	if err != nil || !bytes.Equal(got, plain) {
+		t.Fatal("recovery round trip failed", err)
 	}
 }

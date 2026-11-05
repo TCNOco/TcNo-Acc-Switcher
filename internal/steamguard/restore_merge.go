@@ -1,6 +1,7 @@
 package steamguard
 
 import (
+	"TcNo-Acc-Switcher/internal/battlenetauth"
 	"errors"
 	"os"
 	"path/filepath"
@@ -163,7 +164,7 @@ func (s *Service) planStagedRestoreMerge(stage string, live, backup vault.Creden
 		defer wipe(live.SecurityKey)
 	}
 	liveExpiry := make(map[string]int64)
-	liveRecords, err := v.List()
+	liveRecords, err := v.ListAllRecords()
 	if err != nil {
 		return RestoreMergePlan{}, err
 	}
@@ -174,7 +175,7 @@ func (s *Service) planStagedRestoreMerge(stage string, live, backup vault.Creden
 		}
 		liveExpiry[record.SteamID64] = expiry
 	}
-	stagedRecords, err := staged.List()
+	stagedRecords, err := staged.ListAllRecords()
 	if err != nil {
 		return RestoreMergePlan{}, err
 	}
@@ -250,7 +251,7 @@ func (s *Service) CommitRestoreMergeWithFactors(password, backupPassword, backup
 		}
 		defer wipe(live.SecurityKey)
 	}
-	liveRecords, err := v.List()
+	liveRecords, err := v.ListAllRecords()
 	if err != nil {
 		return RestoreMergeResult{}, err
 	}
@@ -262,7 +263,7 @@ func (s *Service) CommitRestoreMergeWithFactors(password, backupPassword, backup
 	for _, id := range steamIDs {
 		selected[strings.TrimSpace(id)] = struct{}{}
 	}
-	stagedRecords, err := staged.List()
+	stagedRecords, err := staged.ListAllRecords()
 	if err != nil {
 		return RestoreMergeResult{}, err
 	}
@@ -280,12 +281,16 @@ func (s *Service) CommitRestoreMergeWithFactors(password, backupPassword, backup
 		if commitErr != nil {
 			return result, commitErr
 		}
-		if err := registry.Upsert(steamID64, state); err != nil {
-			return result, err
+		if state != "" {
+			if err := registry.Upsert(steamID64, state); err != nil {
+				return result, err
+			}
 		}
 		// As in restore.go: put merged-in accounts on the switcher's list now,
 		// rather than whenever the Steam page is next opened.
-		s.rememberSteamAccount(steamID64, "")
+		if state != "" {
+			s.rememberSteamAccount(steamID64, "")
+		}
 		if _, was := existing[steamID64]; was {
 			result.Replaced++
 		} else {
@@ -380,6 +385,13 @@ type backupRecordSummary struct {
 //
 // A backup can legitimately contain login-only records, not just maFiles.
 func describeBackupRecord(plaintext []byte) (backupRecordSummary, error) {
+	if a, err := battlenetauth.ParseAccount(plaintext); err == nil {
+		name := a.Label
+		if name == "" {
+			name = a.Serial
+		}
+		return backupRecordSummary{accountName: "Battle.net: " + name}, nil
+	}
 	switch kind := vaultrecord.Sniff(plaintext); kind {
 	case vaultrecord.KindLoginOnly:
 		login, err := loginrecord.Decode(plaintext)
@@ -411,6 +423,11 @@ func describeBackupRecord(plaintext []byte) (backupRecordSummary, error) {
 // commitBackupRecord writes a staged record into the live vault in its own
 // shape, and reports the registry state that shape implies.
 func commitBackupRecord(v *vault.Vault, plaintext []byte) (string, registry.State, error) {
+	if a, err := battlenetauth.ParseAccount(plaintext); err == nil {
+		identity, _ := vault.ProviderIdentity(vault.ProviderBattleNet, a.Serial)
+		_, err = v.PutProviderRecord(vault.ProviderBattleNet, a.Serial, plaintext)
+		return identity, "", err
+	}
 	switch vaultrecord.Sniff(plaintext) {
 	case vaultrecord.KindLoginOnly:
 		login, err := loginrecord.Decode(plaintext)

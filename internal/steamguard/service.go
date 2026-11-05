@@ -202,6 +202,7 @@ type ImportResult struct {
 }
 
 type Service struct {
+	battleNet    *battleNetRuntime
 	mu           sync.Mutex
 	vault        *vault.Vault
 	vaultOptions []vault.Option
@@ -429,6 +430,15 @@ func (s *Service) ServiceShutdown() error {
 	s.stopOwnedGamesSweeper()
 	s.mu.Lock()
 	cancel := s.timeSyncCancel
+	if s.battleNet != nil {
+		if s.battleNet.operation != nil && s.battleNet.operation.cancel != nil {
+			s.battleNet.operation.cancel()
+		}
+		if s.battleNet.pending != nil {
+			_ = s.battleNet.pending.Destroy()
+			s.battleNet.pending = nil
+		}
+	}
 	s.timeSyncCancel = nil
 	clipboard := s.clipboard
 	steamProtocol := s.steamProtocol

@@ -19,19 +19,30 @@ var ErrInvalid = errors.New("invalid Battle.net authenticator data")
 var serialPattern = regexp.MustCompile(`^(US|EU|KR|TW|CN)-[0-9]{4}-[0-9]{4}-[0-9]{4}$`)
 
 type Account struct {
-	Version      int    `json:"version"`
-	Serial       string `json:"serial"`
-	Label        string `json:"label,omitempty"`
-	RestoreCode  string `json:"restoreCode,omitempty"`
-	DeviceSecret string `json:"deviceSecret"`
-	AccountLink  string `json:"accountLink,omitempty"`
-	Pending      bool   `json:"pending,omitempty"`
+	Version        int    `json:"version"`
+	Serial         string `json:"serial"`
+	Label          string `json:"label,omitempty"`
+	RestoreCode    string `json:"restoreCode,omitempty"`
+	DeviceSecret   string `json:"deviceSecret"`
+	AccountLink    string `json:"accountLink,omitempty"`
+	Pending        bool   `json:"pending,omitempty"`
+	BrowserProfile string `json:"browserProfile,omitempty"`
 }
 
 func (Account) String() string   { return "Battle.net authenticator (secret redacted)" }
 func (Account) GoString() string { return "Battle.net authenticator (secret redacted)" }
 
 func (a Account) Validate() error {
+	if a.BrowserProfile != "" {
+		if len(a.BrowserProfile) > 64 || !strings.HasPrefix(a.BrowserProfile, "battlenet-") {
+			return ErrInvalid
+		}
+		for _, c := range a.BrowserProfile {
+			if !(c >= 'a' && c <= 'z' || c >= '0' && c <= '9' || c == '-') {
+				return ErrInvalid
+			}
+		}
+	}
 	if a.Version != 1 || !serialPattern.MatchString(a.Serial) || len(a.Label) > 200 || len(a.AccountLink) > 320 {
 		return ErrInvalid
 	}

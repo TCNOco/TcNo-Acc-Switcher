@@ -162,7 +162,15 @@ func (s *Service) OpenBrowser(accountID, site, modalToken string) (OpenResult, e
 	return OpenResult{SessionID: id, CapabilityRefreshRequired: session.CapabilityRefreshRequired}, nil
 }
 
-func (s *Service) openOnMainThread(id string, credentials WebSession, site Site, destination, profile string, cookies []Cookie) error {
+func (s *Service) openOnMainThread(id string, credentials WebSession, site Site, destination, profile string, cookies []Cookie, intercept ...func(string) bool) error {
+	provider := PlatformSteam
+	var onNavigate func(string) bool
+	if site == Site("battlenet-login") || site == Site("battlenet-account") {
+		provider = PlatformBattleNet
+	}
+	if len(intercept) != 0 {
+		onNavigate = intercept[0]
+	}
 	app := application.Get()
 	if app == nil || app.Window == nil {
 		return errors.New("steambrowser: application is not running")
@@ -193,17 +201,26 @@ func (s *Service) openOnMainThread(id string, credentials WebSession, site Site,
 	})
 
 	view, err := newView(ViewOptions{
-		NativeWindow: nativeWindow,
-		Profile:      profile,
-		DataPath:     s.dataPath,
-		DevTools:     s.devTools,
-		ReservedTop:  scaleForWindow(window, defaultChromeHeight),
-		Cookies:      cookies,
-		InitialURL:   destination,
-		Platform:     PlatformSteam,
-		OnState:      func(state ViewState) { s.publish(id, state) },
-		OnNewWindow:  func(url string) { s.handleNewWindow(id, url) },
-		OnDownload:   func(url string) { s.handleDownload(id, url) },
+		NativeWindow:        nativeWindow,
+		Profile:             profile,
+		DataPath:            s.dataPath,
+		DevTools:            s.devTools,
+		ReservedTop:         scaleForWindow(window, defaultChromeHeight),
+		Cookies:             cookies,
+		InitialURL:          destination,
+		Platform:            provider,
+		InterceptNavigation: onNavigate,
+		OnState:             func(state ViewState) { s.publish(id, state) },
+		OnNewWindow: func(url string) {
+			if provider == PlatformSteam {
+				s.handleNewWindow(id, url)
+			}
+		},
+		OnDownload: func(url string) {
+			if provider == PlatformSteam {
+				s.handleDownload(id, url)
+			}
+		},
 	})
 	if err != nil {
 		unwatch()
@@ -225,7 +242,7 @@ func (s *Service) openOnMainThread(id string, credentials WebSession, site Site,
 		steamID64: credentials.SteamID64,
 		account:   credentials.AccountName,
 		site:      site,
-		platform:  PlatformSteam,
+		platform:  provider,
 		profile:   profile,
 		view:      view,
 	})
