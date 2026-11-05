@@ -20,6 +20,22 @@
   export let form: BattleNetForm;
   export let actions: BattleNetActions;
 
+  $: canPreview = !busy && !!form.source.trim();
+  $: canRestore = !busy && !!form.accountIdentifier.trim() && !!form.restoreSerial.trim() && !!form.restoreCode.trim();
+  $: canExport = !busy && !!form.exportPassword;
+  $: canRename = !busy && !!form.accountLabel.trim();
+
+  function previewImport(): void { if (canPreview) actions.previewImport(); }
+  function restore(): void { if (canRestore) actions.restore(); }
+  function exportSelected(): void { if (canExport) actions.exportSelected(); }
+  function rename(): void { if (canRename) actions.rename(); }
+
+  function runOnEnter(event: KeyboardEvent, action: () => void): void {
+    if (event.key !== "Enter" || event.isComposing) return;
+    event.preventDefault();
+    action();
+  }
+
   $: account = accounts.find(item => item.serial === serial);
   $: titleKey = {
     home: "Authenticator_Title", add: "Authenticator_Add", enroll: enrollmentState === "recovery-required" ? "Authenticator_RecoverResponse" : enrollmentState === "verification-required" ? "Authenticator_AccountSetupTitle" : "Authenticator_Enroll",
@@ -135,12 +151,12 @@
       {/if}
     {/if}
   {:else if screen === "import"}
-    <form class="stack" on:submit|preventDefault={() => { if (!busy && form.source.trim()) actions.previewImport(); }}>
+    <form class="stack" on:submit|preventDefault={previewImport}>
       <p class="hint">{$t("Authenticator_ImportHint")}</p>
-      <label class="field"><span>{$t("Authenticator_Source")}</span><input class="modal-input" bind:value={form.source} disabled={busy} on:input={() => { preview = []; form.selected = []; }} /></label>
+      <label class="field"><span>{$t("Authenticator_Source")}</span><input class="modal-input" bind:value={form.source} disabled={busy} on:input={() => { preview = []; form.selected = []; }} on:keydown={(event) => runOnEnter(event, previewImport)} /></label>
       <div class="actions"><button type="button" class="btnicontext" disabled={busy} on:click={actions.pickImport}>{$t("Authenticator_ChooseFile")}</button></div>
-      <label class="field"><span>{$t("Authenticator_SourcePassword")}</span><input class="modal-input" type="password" bind:value={form.sourcePassword} autocomplete="off" disabled={busy} on:input={() => { preview = []; form.selected = []; }} /></label>
-      <div class="actions"><button type="submit" class="btnicontext" disabled={busy || !form.source.trim()}>{$t("Authenticator_Preview")}</button></div>
+      <label class="field"><span>{$t("Authenticator_SourcePassword")}</span><input class="modal-input" type="password" bind:value={form.sourcePassword} autocomplete="off" disabled={busy} on:input={() => { preview = []; form.selected = []; }} on:keydown={(event) => runOnEnter(event, previewImport)} /></label>
+      <div class="actions"><button type="button" class="btnicontext" disabled={!canPreview} on:click={previewImport}>{$t("Authenticator_Preview")}</button></div>
       {#if preview.length}
         <fieldset disabled={busy} class="stack import-selection">
           <legend>{$t("Authenticator_SelectImport")}</legend>
@@ -155,20 +171,20 @@
       {/if}
     </form>
   {:else if screen === "restore"}
-    <form class="stack" on:submit|preventDefault={() => { if (!busy && form.accountIdentifier.trim() && form.restoreSerial.trim() && form.restoreCode.trim()) actions.restore(); }}>
+    <form class="stack" on:submit|preventDefault={restore}>
       <p class="hint">{$t("Authenticator_RestoreHint")} {$t("Authenticator_OnlineNotice")}</p>
-      <label class="field"><span>{$t("Authenticator_AccountIdentifier")}</span><input class="modal-input" bind:value={form.accountIdentifier} autocomplete="off" disabled={busy} /></label>
-      <label class="field"><span>{$t("Authenticator_Serial")}</span><input class="modal-input" bind:value={form.restoreSerial} disabled={busy} /></label>
-      <label class="field"><span>{$t("Authenticator_RestoreCode")}</span><input class="modal-input" type="password" bind:value={form.restoreCode} autocomplete="off" disabled={busy} /></label>
-      <div class="actions"><button type="submit" class="btnicontext modal-primary" disabled={busy || !form.accountIdentifier.trim() || !form.restoreSerial.trim() || !form.restoreCode.trim()}>{$t("Authenticator_Restore")}</button></div>
+      <label class="field"><span>{$t("Authenticator_AccountIdentifier")}</span><input class="modal-input" bind:value={form.accountIdentifier} autocomplete="off" disabled={busy} on:keydown={(event) => runOnEnter(event, restore)} /></label>
+      <label class="field"><span>{$t("Authenticator_Serial")}</span><input class="modal-input" bind:value={form.restoreSerial} disabled={busy} on:keydown={(event) => runOnEnter(event, restore)} /></label>
+      <label class="field"><span>{$t("Authenticator_RestoreCode")}</span><input class="modal-input" type="password" bind:value={form.restoreCode} autocomplete="off" disabled={busy} on:keydown={(event) => runOnEnter(event, restore)} /></label>
+      <div class="actions"><button type="button" class="btnicontext modal-primary" aria-busy={busy} disabled={!canRestore} on:click={restore}>{$t(busy ? "Authenticator_Restoring" : "Authenticator_Restore")}</button></div>
     </form>
   {:else if screen === "export"}
-    <form class="stack" on:submit|preventDefault={() => { if (!busy && form.exportPassword) actions.exportSelected(); }}>
+    <form class="stack" on:submit|preventDefault={exportSelected}>
       <p class="hint">{$t("Authenticator_ExportHint", { account: account?.label || serial })}</p>
-      <label class="field"><span>{$t("Authenticator_Password")}</span><input class="modal-input" type="password" bind:value={form.password} autocomplete="current-password" disabled={busy} /></label>
-      <SteamGuardVaultFactors idPrefix="battlenet-export" bind:backupKey={form.backupKey} bind:keyfilePath={form.keyfile} {busy} pickKeyfile={actions.pickKeyfile} onSubmit={() => { if (!busy && form.exportPassword) actions.exportSelected(); }} />
-      <label class="field"><span>{$t("Authenticator_ExportPassword")}</span><input class="modal-input" type="password" bind:value={form.exportPassword} autocomplete="new-password" disabled={busy} /></label>
-      <div class="actions"><button type="submit" class="btnicontext modal-primary" disabled={busy || !form.exportPassword}>{$t("Authenticator_Export")}</button></div>
+      <label class="field"><span>{$t("Authenticator_Password")}</span><input class="modal-input" type="password" bind:value={form.password} autocomplete="current-password" disabled={busy} on:keydown={(event) => runOnEnter(event, exportSelected)} /></label>
+      <SteamGuardVaultFactors idPrefix="battlenet-export" bind:backupKey={form.backupKey} bind:keyfilePath={form.keyfile} {busy} pickKeyfile={actions.pickKeyfile} onSubmit={exportSelected} />
+      <label class="field"><span>{$t("Authenticator_ExportPassword")}</span><input class="modal-input" type="password" bind:value={form.exportPassword} autocomplete="new-password" disabled={busy} on:keydown={(event) => runOnEnter(event, exportSelected)} /></label>
+      <div class="actions"><button type="button" class="btnicontext modal-primary" disabled={!canExport} on:click={exportSelected}>{$t("Authenticator_Export")}</button></div>
     </form>
   {:else if screen === "recovery"}
     {#if recovery}
@@ -187,9 +203,9 @@
       <div class="actions"><button type="button" class="btnicontext" disabled={busy} on:click={actions.browse}>{$t("Authenticator_Browse")}</button></div>
     {/if}
   {:else if screen === "rename"}
-    <form class="stack" on:submit|preventDefault={() => { if (!busy && form.accountLabel.trim()) actions.rename(); }}>
-      <label class="field"><span>{$t("Authenticator_Label")}</span><input class="modal-input" bind:value={form.accountLabel} maxlength="200" disabled={busy} /></label>
-      <div class="actions"><button type="submit" class="btnicontext modal-primary" disabled={busy || !form.accountLabel.trim()}>{$t("Authenticator_SaveLabel")}</button></div>
+    <form class="stack" on:submit|preventDefault={rename}>
+      <label class="field"><span>{$t("Authenticator_Label")}</span><input class="modal-input" bind:value={form.accountLabel} maxlength="200" disabled={busy} on:keydown={(event) => runOnEnter(event, rename)} /></label>
+      <div class="actions"><button type="button" class="btnicontext modal-primary" disabled={!canRename} on:click={rename}>{$t("Authenticator_SaveLabel")}</button></div>
     </form>
   {/if}
 </section>

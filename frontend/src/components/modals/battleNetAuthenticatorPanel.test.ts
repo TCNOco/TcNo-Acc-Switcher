@@ -23,6 +23,30 @@ function view(props: Partial<ComponentProps<typeof BattleNetAuthenticatorPanel>>
 }
 
 describe("Battle.net authenticator tasks", () => {
+  it("enables direct Restore activation only with all credentials and no pending request", () => {
+    const form = { ...emptyBattleNetForm(), accountIdentifier: "test@example.invalid", restoreSerial: account.serial, restoreCode: "ABCD123456" };
+    const button = (html: string) => html.match(/<button\b[^>]*>Authenticator_Restore<\/button>/)?.[0];
+    const enabled = button(view({ screen: "restore", form }));
+    expect(enabled).toContain('type="button"');
+    expect(enabled).not.toContain("disabled");
+    for (const key of ["accountIdentifier", "restoreSerial", "restoreCode"] as const) {
+      expect(button(view({ screen: "restore", form: { ...form, [key]: "   " } }))).toContain("disabled");
+    }
+    const pending = view({ screen: "restore", form, busy: true });
+    expect(pending).toMatch(/<button\b[^>]*aria-busy="true"[^>]*disabled[^>]*>Authenticator_Restoring<\/button>/);
+    expect(view({ screen: "restore", form, error: "Restore failed" })).toContain('role="alert">Restore failed');
+  });
+
+  it.each([
+    ["import", "Authenticator_Preview", { source: "backup.json" }],
+    ["export", "Authenticator_Export", { exportPassword: "export password" }],
+    ["rename", "Authenticator_SaveLabel", { accountLabel: "Renamed" }],
+  ] as const)("keeps %s activation independent of native submission", (screen, label, fields) => {
+    const html = view({ screen, form: { ...emptyBattleNetForm(), ...fields } });
+    expect(html).toMatch(new RegExp(`<button\\b[^>]*type="button"[^>]*>${label}</button>`));
+    expect(html).not.toContain('type="submit"');
+  });
+
   it("offers recovery without another enrollment after an uncertain response", () => {
     const html = view({ screen: "enroll", enrollment: "handle", enrollmentState: "recovery-required" });
     expect(html).toContain("Authenticator_RecoveryRequired");

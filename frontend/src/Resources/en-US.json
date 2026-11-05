@@ -17,6 +17,7 @@
   "Authenticator_Browse": "Account security",
   "Authenticator_BackupAcknowledged": "I saved these details",
   "Authenticator_Restore": "Restore authenticator",
+  "Authenticator_Restoring": "Restoring…",
   "Authenticator_AccountIdentifier": "Battle.net email or phone",
   "Authenticator_Serial": "Serial",
   "Authenticator_RestoreCode": "Restore code",
