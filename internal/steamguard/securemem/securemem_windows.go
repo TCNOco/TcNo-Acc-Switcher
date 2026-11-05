@@ -11,7 +11,10 @@ import (
 	"golang.org/x/sys/windows"
 )
 
-const cryptProtectSameProcess = 0x00
+const (
+	cryptProtectSameProcess = 0x00
+	cryptProtectBlockSize   = 16
+)
 
 var (
 	crypt32             = windows.NewLazySystemDLL("crypt32.dll")
@@ -25,29 +28,34 @@ type windowsHandle struct {
 	mu        sync.Mutex
 	address   uintptr
 	buffer    []byte
+	length    int
 	destroyed bool
 }
 
 func newPlatformProtector() Protector { return windowsProtector{} }
 
 func (windowsProtector) Store(secret []byte) (Handle, error) {
-	if len(secret) == 0 || len(secret)%16 != 0 {
+	if len(secret) == 0 {
 		return nil, ErrUnavailable
 	}
-	address, err := windows.VirtualAlloc(0, uintptr(len(secret)), windows.MEM_COMMIT|windows.MEM_RESERVE, windows.PAGE_READWRITE)
+	paddedLength := (len(secret) + cryptProtectBlockSize - 1) &^ (cryptProtectBlockSize - 1)
+	if paddedLength < len(secret) {
+		return nil, ErrUnavailable
+	}
+	address, err := windows.VirtualAlloc(0, uintptr(paddedLength), windows.MEM_COMMIT|windows.MEM_RESERVE, windows.PAGE_READWRITE)
 	if err != nil {
 		return nil, errors.Join(ErrUnavailable, err)
 	}
-	buf := virtualBytes(address, len(secret))
+	buf := virtualBytes(address, paddedLength)
 	copy(buf, secret)
-	if err := windows.VirtualLock(address, uintptr(len(secret))); err != nil {
+	if err := windows.VirtualLock(address, uintptr(len(buf))); err != nil {
 		wipe(buf)
 		_ = windows.VirtualFree(address, 0, windows.MEM_RELEASE)
 		return nil, errors.Join(ErrUnavailable, err)
 	}
-	h := &windowsHandle{address: address, buffer: buf}
+	h := &windowsHandle{address: address, buffer: buf, length: len(secret)}
 	if err := h.protect(); err != nil {
-		_ = windows.VirtualUnlock(address, uintptr(len(secret)))
+		_ = windows.VirtualUnlock(address, uintptr(len(buf)))
 		wipe(buf)
 		_ = windows.VirtualFree(address, 0, windows.MEM_RELEASE)
 		return nil, errors.Join(ErrUnavailable, err)
@@ -87,7 +95,7 @@ func (h *windowsHandle) With(fn func([]byte) error) error {
 	if err := h.unprotect(); err != nil {
 		return errors.Join(ErrUnavailable, err)
 	}
-	copyOfSecret := append([]byte(nil), h.buffer...)
+	copyOfSecret := append([]byte(nil), h.buffer[:h.length]...)
 	protectErr := h.protect()
 	if protectErr != nil {
 		wipe(h.buffer)
@@ -95,6 +103,7 @@ func (h *windowsHandle) With(fn func([]byte) error) error {
 		_ = windows.VirtualFree(h.address, 0, windows.MEM_RELEASE)
 		h.address = 0
 		h.buffer = nil
+		h.length = 0
 		h.destroyed = true
 	}
 	defer func() {
@@ -120,6 +129,7 @@ func (h *windowsHandle) Destroy() error {
 	runtime.KeepAlive(h.buffer)
 	h.address = 0
 	h.buffer = nil
+	h.length = 0
 	h.destroyed = true
 	if unprotectErr != nil || unlockErr != nil || freeErr != nil {
 		return errors.Join(ErrUnavailable, unprotectErr, unlockErr, freeErr)
