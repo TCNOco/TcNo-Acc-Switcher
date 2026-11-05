@@ -92,6 +92,7 @@ describe("Battle.net authenticator tasks", () => {
   it("shows the saved account and copyable code without task forms", () => {
     const html = view({ accounts: [account], serial: account.serial, code: "12345678", remaining: 23 });
     expect(html).toContain("Test account");
+    expect(html).toContain("Test account (EU-1234-5678-9012)");
     expect(html).toContain("12345678");
     expect(html).toContain("Authenticator_Copy");
     expect(html).not.toContain("<form");
@@ -143,6 +144,11 @@ describe("Battle.net authenticator tasks", () => {
   it("marks new authenticators for recovery backup on the code screen", () => {
     expect(view({ accounts: [{ ...account, pending: true }], serial: account.serial })).toContain("Authenticator_BackupNeeded");
     expect(view({ accounts: [account], serial: account.serial })).not.toContain("Authenticator_BackupNeeded");
+  });
+  it("keeps Account security available while an unnamed account is awaiting identification", () => {
+    const html = view({ screen: "recovery", accounts: [{ ...account, label: account.serial }], serial: account.serial });
+    expect(html).toContain("Authenticator_IdentifyAccount");
+    expect(html).toContain("Authenticator_Browse");
   });
 
   it("keeps cancellation available during sign-in and blocks it while saving", () => {

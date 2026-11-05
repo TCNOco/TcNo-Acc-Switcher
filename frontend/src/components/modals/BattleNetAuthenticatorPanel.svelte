@@ -1,7 +1,7 @@
 <script lang="ts">
   import { t } from "../../stores/i18n";
   import { focusOnShow } from "../../lib/actions/focusOnShow";
-  import type { BattleNetAccount, BattleNetActions, BattleNetForm, BattleNetRecovery, BattleNetScreen } from "../../lib/battleNetAuthenticator";
+  import { battleNetAccountLabel, type BattleNetAccount, type BattleNetActions, type BattleNetForm, type BattleNetRecovery, type BattleNetScreen } from "../../lib/battleNetAuthenticator";
   import SteamGuardVaultFactors from "./SteamGuardVaultFactors.svelte";
 
   export let screen: BattleNetScreen;
@@ -51,6 +51,9 @@
   {#if account?.requiresAccountSetup && (screen === "home" || screen === "recovery")}
     <p class="hint" role="status">{$t("Authenticator_AccountSetupNotice")}</p>
   {/if}
+  {#if account && (!account.label || account.label === account.serial) && (screen === "home" || screen === "recovery")}
+    <p class="hint">{$t("Authenticator_IdentifyAccount")}</p>
+  {/if}
 
   {#if screen === "home"}
     {#if accounts.length}
@@ -58,7 +61,7 @@
         <label class="field account-select">
           <span>{$t("Authenticator_Account")}</span>
           <select class="modal-input" bind:value={serial} disabled={busy} on:change={actions.selectAccount}>
-            {#each accounts as item}<option value={item.serial}>{item.label || item.serial}</option>{/each}
+            {#each accounts as item}<option value={item.serial}>{battleNetAccountLabel(item)}</option>{/each}
           </select>
         </label>
         <button type="button" class="btnicontext" disabled={busy} on:click={() => actions.navigate("add")}>{$t("Authenticator_Add")}</button>
@@ -178,7 +181,7 @@
     </form>
   {:else if screen === "export"}
     <form class="stack" on:submit|preventDefault={exportSelected}>
-      <p class="hint">{$t("Authenticator_ExportHint", { account: account?.label || serial })}</p>
+      <p class="hint">{$t("Authenticator_ExportHint", { account: account ? battleNetAccountLabel(account) : serial })}</p>
       <label class="field"><span>{$t("Authenticator_Password")}</span><input class="modal-input" type="password" bind:value={form.password} autocomplete="current-password" disabled={busy} on:keydown={(event) => runOnEnter(event, exportSelected)} /></label>
       <SteamGuardVaultFactors idPrefix="battlenet-export" bind:backupKey={form.backupKey} bind:keyfilePath={form.keyfile} {busy} pickKeyfile={actions.pickKeyfile} onSubmit={exportSelected} />
       <label class="field"><span>{$t("Authenticator_ExportPassword")}</span><input class="modal-input" type="password" bind:value={form.exportPassword} autocomplete="new-password" disabled={busy} on:keydown={(event) => runOnEnter(event, exportSelected)} /></label>
@@ -197,7 +200,7 @@
       <p>{$t("Authenticator_RecoveryHint")}</p>
       <div class="actions"><button type="button" class="btnicontext modal-primary" disabled={busy} on:click={actions.showRecovery}>{$t("Authenticator_ShowRecovery")}</button></div>
     {/if}
-    {#if account?.requiresAccountSetup}
+    {#if account}
       <div class="actions"><button type="button" class="btnicontext" disabled={busy} on:click={actions.browse}>{$t("Authenticator_Browse")}</button></div>
     {/if}
   {:else if screen === "rename"}

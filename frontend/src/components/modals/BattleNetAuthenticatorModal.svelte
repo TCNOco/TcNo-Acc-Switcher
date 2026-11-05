@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { Call, Events } from "@wailsio/runtime";
   import { t } from "../../stores/i18n";
   import { pushToast } from "../../stores/toast";
   import { setModalBusy } from "../../stores/modal";
@@ -11,12 +10,13 @@
   import { emptyBattleNetForm, type BattleNetAccount, type BattleNetActions, type BattleNetRecovery, type BattleNetScreen } from "../../lib/battleNetAuthenticator";
   import AuthenticatorUnlockForm from "./AuthenticatorUnlockForm.svelte";
   import BattleNetAuthenticatorPanel from "./BattleNetAuthenticatorPanel.svelte";
+  import { battleNetCall as call, requestBattleNetView, publishBattleNetAuthenticators } from "../../lib/battleNetAuthenticatorBridge";
 
-  export let accountLink = "", suggestedLabel = "";
-  const call = (method: string, ...args: unknown[]) => Call.ByName(`TcNo-Acc-Switcher/internal/steamguard.Service.${method}`, ...args);
+  export let accountLink = "", suggestedLabel = "", initialSerial = "";
+  export let initialScreen: BattleNetScreen = "home";
   let token = "", lease = "", password = "", keyfile = "", backupKey = "";
   let accounts: BattleNetAccount[] = [], preview: BattleNetAccount[] = [];
-  let serial = "", code = "", expires = 0, remaining = 0, error = "";
+  let serial = initialSerial, code = "", expires = 0, remaining = 0, error = "";
   let busy = false, ready = false, configured = true, mounted = false, closed = false, polling = false;
   let copyingCode = false;
   let accountNameRefresh: Promise<void> | null = null;
@@ -39,31 +39,13 @@ async function grant() {
         await call("EndSensitiveView", token, lease).catch(() => { });
         token = "";
     }
-    const requestId = crypto.randomUUID();
-    await new Promise<void>((resolve, reject) => {
-        const off = Events.On("steamguard:sensitive-view-grant", event => {
-            const data = event.data as {
-                requestId: string;
-                accountId: string;
-                capability: string;
-                lease: string;
-            };
-            if (data?.requestId !== requestId || data.accountId !== "battlenet-authenticators")
-                return;
-            clearTimeout(timer);
-            off();
-            if (closed) {
-                void call("EndSensitiveView", data.capability, data.lease);
-                reject(new Error("closed"));
-                return;
-            }
-            token = data.capability;
-            lease = data.lease;
-            resolve();
-        });
-        const timer = setTimeout(() => { off(); reject(new Error("Authenticator view unavailable")); }, 5000);
-        void call("RequestBattleNetView", requestId).catch(e => { clearTimeout(timer); off(); reject(e); });
-    });
+    const data = await requestBattleNetView();
+    if (closed) {
+      await call("EndSensitiveView", data.capability, data.lease);
+      throw new Error("closed");
+    }
+    token = data.capability;
+    lease = data.lease;
 }
 
   function clearSecrets(): void {
@@ -122,9 +104,16 @@ async function grant() {
   async function refresh(): Promise<void> {
     const result: BattleNetAccount[] = await call("ListBattleNetAccounts", token);
     if (closed) return;
+    const initial = !ready;
     accounts = result;
-    if (!accounts.some(a => a.serial === serial)) serial = accounts.find(a => accountLink && a.accountLink === accountLink)?.serial ?? accounts[0]?.serial ?? "";
+    publishBattleNetAuthenticators(accounts);
+    if (!accounts.some(a => a.serial === serial)) {
+      serial = accounts.find(a => accountLink && a.accountLink.trim().toLowerCase() === accountLink.trim().toLowerCase())?.serial
+        ?? (!accountLink && !initialSerial ? accounts[0]?.serial : "") ?? "";
+    }
     ready = true;
+    if (initial && serial) showScreen(initialScreen);
+    else if (initial && accounts.length && (accountLink || initialSerial)) showScreen("add");
   }
 
   async function unlock(): Promise<void> {

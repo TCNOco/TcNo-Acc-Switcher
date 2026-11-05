@@ -11,6 +11,16 @@ export type BattleNetScreen = "home" | "add" | "enroll" | "import" | "restore" |
 
 export type BattleNetRecovery = { serial: string; restoreCode: string; uri: string; qrImage: string };
 
+export function battleNetAccountLabel(account: Pick<BattleNetAccount, "label" | "serial">): string {
+  const label = account.label.trim();
+  return label && label !== account.serial ? `${label} (${account.serial})` : account.serial;
+}
+
+export function matchingBattleNetAuthenticators(accounts: BattleNetAccount[], accountId: string): BattleNetAccount[] {
+  const id = accountId.trim().toLowerCase();
+  return id ? accounts.filter(account => account.accountLink.trim().toLowerCase() === id) : [];
+}
+
 export function emptyBattleNetForm() {
   return {
     source: "", sourcePassword: "", selected: [] as string[], replaceExisting: false,

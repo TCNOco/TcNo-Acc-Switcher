@@ -77,6 +77,7 @@
   "Authenticator_EnrollmentExpired": "Sign-in expired. Open the browser to try again.",
   "Authenticator_EnrollmentFailed": "Setup failed. Check for unsaved setup before trying again.",
   "Authenticator_AccountSetupNotice": "Authenticator saved. Battle.net requested more account setup.",
+  "Authenticator_IdentifyAccount": "Sign in to Account security to save the account name.",
   "Authenticator_AccountSetupTitle": "Account setup",
   "Authenticator_AccountSetupRequired": "Battle.net needs more account setup. In the browser:",
   "Authenticator_AccountSetupHint": "The missing requirement isn’t specified. Blizzard may require the Battle.net mobile app.",

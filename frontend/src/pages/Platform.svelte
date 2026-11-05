@@ -21,6 +21,8 @@
   import { openAuthenticator } from "../lib/authenticators";
   import { publishAuthenticatorAction, clearAuthenticatorAction } from "../stores/authenticatorAction";
   import { Call } from "@wailsio/runtime";
+  import { buildBattleNetAuthenticatorMenu } from "../lib/battleNetAuthenticatorMenu";
+  import { battleNetCall, battleNetAuthenticatorsNow, refreshBattleNetAuthenticators, withBattleNetView } from "../lib/battleNetAuthenticatorBridge";
   import "../styles/platformAccountsShared.scss";
 
   const PROFILE_FALLBACK = "/img/BasicDefault.webp";
@@ -48,16 +50,23 @@
       if (!disposed && name === platformName) {
         authenticatorProvider = provider;
         publishAuthenticatorAction(platformName, provider);
+        if (provider === "battlenet") void refreshBattleNetAuthenticators();
       }
     } catch { if (!disposed && name === platformName) clearAuthenticatorAction(platformName); }
   }
   onDestroy(() => { disposed = true; clearAuthenticatorAction(name); });
   $: void loadAuthenticatorProvider(name);
   function authenticatorMenu(account?: BasicRow): MenuItemDef[] {
-    return authenticatorProvider === "battlenet" ? [{
-      label: get(t)("Authenticator_Title"),
-      action: () => { void openAuthenticator(authenticatorProvider, account?.uniqueId ?? "", account?.displayName ?? ""); },
-    }] : [];
+    if (authenticatorProvider !== "battlenet") return [];
+    void refreshBattleNetAuthenticators();
+    return [buildBattleNetAuthenticatorMenu(account?.uniqueId ?? "", battleNetAuthenticatorsNow(), get(t), {
+      open: (serial, screen) => { void openAuthenticator(authenticatorProvider, account?.uniqueId ?? "", account?.displayName ?? "", serial, screen); },
+      copy: serial => { void withBattleNetView(token => battleNetCall("CopyBattleNetCodeForAccount", serial, account?.uniqueId ?? "", token))
+        .then(() => pushToast({ type: "success", message: get(t)("Authenticator_Copied") }))
+        .catch(cause => pushToast({ type: "error", message: formatToastWithError(get(t)("Toast_CopyFailed"), cause) })); },
+      browse: serial => { void withBattleNetView(token => battleNetCall("OpenBattleNetAccount", serial, token))
+        .catch(cause => pushToast({ type: "error", message: formatToastWithError(get(t)("Authenticator_Browse"), cause) })); },
+    })];
   }
 
   $: adapter = {
@@ -196,6 +205,7 @@
       try { return await BasicService.SuggestedSaveAccountName(name); }
       catch { return ""; }
     },
+    onAfterLoad: () => { if (authenticatorProvider === "battlenet") void refreshBattleNetAuthenticators(); },
   } satisfies PlatformAccountAdapter<BasicRow>;
 </script>
 
