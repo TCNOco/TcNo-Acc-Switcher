@@ -3,6 +3,7 @@
 package winutil
 
 import (
+	"errors"
 	"fmt"
 	"path/filepath"
 	"strings"
@@ -143,6 +144,25 @@ func IsExeRunning(exeName string) bool {
 	return err == nil && ok
 }
 
+func ProcessImageRunning(names []string) (bool, error) {
+	if len(names) == 0 {
+		return false, nil
+	}
+	running, err := SnapshotRunningExeBasenames()
+	if err != nil {
+		return false, err
+	}
+	for _, name := range names {
+		if strings.HasPrefix(strings.ToUpper(strings.TrimSpace(name)), servicePrefix) {
+			continue
+		}
+		if _, ok := running[strings.ToLower(normalizeExeBase(name))]; ok {
+			return true, nil
+		}
+	}
+	return false, nil
+}
+
 // SnapshotMatchingPIDs maps the PID of every running process whose lowercase image
 // base name is in want to that name. One pass over the process table, for callers
 // that need a starting point before switching to event-driven tracking.
@@ -175,8 +195,9 @@ func utf16FixedToString(b []uint16) string {
 	return windows.UTF16ToString(b[:n])
 }
 
-// waitForImageExit waits until exeImage is gone or maxWait elapses.
-func waitForImageExit(exeImage string, maxWait, poll time.Duration, targetCount int) {
+var errProcessExitTimeout = errors.New("timed out waiting for process exit")
+
+func waitForImageExit(exeImage string, maxWait, poll time.Duration, targetCount int) error {
 	deadline := time.Now().Add(maxWait)
 	start := time.Now()
 	lastReported := -1
@@ -198,75 +219,94 @@ func waitForImageExit(exeImage string, maxWait, poll time.Duration, targetCount 
 		}
 		emitStatus(key, vars)
 	}
-	pids, err := allPIDsForImageName(exeImage)
-	if err != nil || len(pids) == 0 {
-		return
-	}
-
-	// Wait on the real process handles instead of re-reading the process table. The wait
-	// returns the instant the last process dies, so poll only bounds how often the
-	// "waiting for X" status line is refreshed.
-	var handles []windows.Handle
-	var unwaitable []uint32
-	for _, pid := range pids {
-		h, err := windows.OpenProcess(windows.SYNCHRONIZE, false, pid)
-		if err != nil {
-			// ERROR_ACCESS_DENIED means it is alive but we cannot wait on it; anything
-			// else means it is already gone.
-			if err == windows.ERROR_ACCESS_DENIED {
-				unwaitable = append(unwaitable, pid)
-			}
-			continue
-		}
-		handles = append(handles, h)
-	}
-	defer func() {
-		for _, h := range handles {
-			windows.CloseHandle(h)
-		}
-	}()
-
 	if poll <= 0 {
 		poll = 100 * time.Millisecond
 	}
 	for {
+		pids, err := allPIDsForImageName(exeImage)
+		if err != nil {
+			return fmt.Errorf("inspect process %s while waiting for exit: %w", exeImage, err)
+		}
+		if len(pids) == 0 {
+			return nil
+		}
+		if !time.Now().Before(deadline) {
+			return fmt.Errorf("%w: %s", errProcessExitTimeout, exeImage)
+		}
+		if err := waitForProcessHandles(pids, deadline, poll, reportWaitStatus); err != nil {
+			return fmt.Errorf("wait for process %s: %w", exeImage, err)
+		}
+	}
+}
+
+func waitForProcessHandles(pids []uint32, deadline time.Time, poll time.Duration, report func()) error {
+	var handles []windows.Handle
+	unwaitable := false
+	for _, pid := range pids {
+		h, err := windows.OpenProcess(windows.SYNCHRONIZE, false, pid)
+		if err != nil {
+			if errors.Is(err, windows.ERROR_ACCESS_DENIED) {
+				unwaitable = true
+				continue
+			}
+			if errors.Is(err, windows.ERROR_INVALID_PARAMETER) {
+				continue
+			}
+			for _, opened := range handles {
+				windows.CloseHandle(opened)
+			}
+			return fmt.Errorf("open process %d for exit notification: %w", pid, err)
+		}
+		handles = append(handles, h)
+	}
+	opened := handles
+	defer func() {
+		for _, h := range opened {
+			windows.CloseHandle(h)
+		}
+	}()
+	for len(handles) > 0 {
 		remaining := time.Until(deadline)
 		if remaining <= 0 {
-			return
+			return errProcessExitTimeout
 		}
 		chunk := poll
 		if chunk > remaining {
 			chunk = remaining
 		}
-		if len(handles) > 0 {
-			// WaitForMultipleObjects caps at 64 handles; wait them down in batches. With
-			// waitAll set, a batch returns as soon as every handle in it is signalled.
-			batch := handles
-			if len(batch) > maxWaitObjects {
-				batch = batch[:maxWaitObjects]
-			}
-			r, err := windows.WaitForMultipleObjects(batch, true, uint32(chunk/time.Millisecond))
-			if err == nil && r != uint32(windows.WAIT_TIMEOUT) {
-				handles = handles[len(batch):]
-				continue
-			}
-		} else if len(unwaitable) > 0 {
-			time.Sleep(chunk)
+		batch := handles
+		if len(batch) > maxWaitObjects {
+			batch = batch[:maxWaitObjects]
 		}
-		if len(handles) == 0 {
-			if len(unwaitable) == 0 {
-				return
-			}
-			if live, err := allPIDsForImageName(exeImage); err == nil && len(live) == 0 {
-				return
-			}
+		r, err := windows.WaitForMultipleObjects(batch, true, uint32(chunk/time.Millisecond))
+		if err != nil {
+			return err
 		}
-		reportWaitStatus()
+		if r == uint32(windows.WAIT_OBJECT_0) {
+			handles = handles[len(batch):]
+			continue
+		}
+		if r != uint32(windows.WAIT_TIMEOUT) {
+			return fmt.Errorf("unexpected process wait result %d", r)
+		}
+		report()
 	}
+	if unwaitable {
+		remaining := time.Until(deadline)
+		if remaining <= 0 {
+			return errProcessExitTimeout
+		}
+		if remaining < poll {
+			poll = remaining
+		}
+		time.Sleep(poll)
+		report()
+	}
+	return nil
 }
 
 // waitForElectronImageExit polls often so we return immediately once the image is gone; we do not
 // send extra taskkill nudges mid-wait (those can interrupt a partially finished graceful shutdown).
-func waitForElectronImageExit(exeImage string, maxWait time.Duration, targetCount int) {
-	waitForImageExit(exeImage, maxWait, electronPollInterval, targetCount)
+func waitForElectronImageExit(exeImage string, maxWait time.Duration, targetCount int) error {
+	return waitForImageExit(exeImage, maxWait, electronPollInterval, targetCount)
 }

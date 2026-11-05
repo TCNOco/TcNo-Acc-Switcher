@@ -4,12 +4,15 @@ import (
 	"bytes"
 	"crypto/sha1"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
+	"io"
 	"log/slog"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
+	"unicode"
 
 	"TcNo-Acc-Switcher/internal/platform"
 	"TcNo-Acc-Switcher/internal/winutil"
@@ -28,18 +31,11 @@ func ReadUniqueID(platformKey string, d platform.Descriptor, platformFolder stri
 	ctx := platform.PathTokenContext{PlatformFolder: platformFolder}
 	slog.Debug("read unique id begin", "platform", platformKey, "method", method, "file", d.UniqueIdFile)
 
-	// The new Epic launcher stores its account identifier in a DPAPI-protected
-	// token file instead of the legacy launcher's registry value. Keep this
-	// detection path-based so old launcher installations retain their current
-	// REGKEY behavior with the same platform descriptor.
-	if strings.EqualFold(strings.TrimSpace(platformKey), epicNewLauncherPlatformKey) &&
-		isEpicNewLauncherFolder(platformFolder) {
-		id, err := epicNewLauncherCurrentUniqueID()
-		logUniqueIDResult(platformKey, "EPIC_NEW_LAUNCHER", id, err)
-		return id, err
-	}
-
 	switch strings.ToUpper(method) {
+	case "DPAPI_JSON_SELECT":
+		id, err := uniqueFromProtectedJSONSelect(d, ctx)
+		logUniqueIDResult(platformKey, method, id, err)
+		return id, err
 	case "REGKEY":
 		id, err := uniqueFromRegKey(d)
 		logUniqueIDResult(platformKey, method, id, err)
@@ -93,6 +89,10 @@ func uniqueFromLevelDB(d platform.Descriptor, platformFolder string, ctx platfor
 func logUniqueIDResult(platformKey, method, id string, err error) {
 	if err != nil {
 		slog.Debug("read unique id failed", "platform", platformKey, "method", method, "err", err)
+		return
+	}
+	if strings.EqualFold(strings.TrimSpace(method), "DPAPI_JSON_SELECT") {
+		slog.Debug("read unique id success", "platform", platformKey, "method", method)
 		return
 	}
 	slog.Debug("read unique id success", "platform", platformKey, "method", method, "valuePreview", previewLevelDBValue(strings.TrimSpace(id)))
@@ -233,6 +233,179 @@ func uniqueFromJSONSelect(d platform.Descriptor, ctx platform.PathTokenContext) 
 		}
 	}
 	return strings.TrimSpace(s), nil
+}
+
+const maxDescriptorJSONFileSize = 4 << 20
+
+type descriptorJSONQuery struct {
+	filePath  string
+	jsonPath  string
+	delimiter string
+	first     bool
+	last      bool
+}
+
+func parseDescriptorJSONQuery(raw string) (descriptorJSONQuery, error) {
+	var q descriptorJSONQuery
+	var ok bool
+	switch {
+	case isJSONSelectFirst(raw):
+		q.first = true
+		q.filePath, q.jsonPath, q.delimiter, ok = parseJSONSelectWithDelimiter("JSON_SELECT_FIRST", raw)
+	case isJSONSelectLast(raw):
+		q.last = true
+		q.filePath, q.jsonPath, q.delimiter, ok = parseJSONSelectWithDelimiter("JSON_SELECT_LAST", raw)
+	case strings.HasPrefix(strings.TrimSpace(raw), "JSON_SELECT::"):
+		q.filePath, q.jsonPath, ok = parseJSONSelectPlain("JSON_SELECT", raw)
+	}
+	q.filePath = strings.TrimSpace(q.filePath)
+	q.jsonPath = strings.TrimSpace(q.jsonPath)
+	if !ok || q.filePath == "" || q.jsonPath == "" {
+		return descriptorJSONQuery{}, fmt.Errorf("invalid JSON_SELECT reference")
+	}
+	return q, nil
+}
+
+func descriptorJSONResult(data []byte, jsonPath string) (gjson.Result, error) {
+	data = bytes.TrimPrefix(data, []byte{0xef, 0xbb, 0xbf})
+	if !json.Valid(data) {
+		return gjson.Result{}, fmt.Errorf("descriptor JSON is invalid")
+	}
+	if strings.TrimSpace(jsonPath) == "" {
+		return gjson.Result{}, fmt.Errorf("descriptor JSON path is empty")
+	}
+	result := gjson.GetBytes(data, jsonPath)
+	if !result.Exists() || result.Type == gjson.Null {
+		return gjson.Result{}, fmt.Errorf("descriptor JSON value is missing")
+	}
+	return result, nil
+}
+
+func descriptorJSONString(result gjson.Result) (string, error) {
+	if result.Type != gjson.String {
+		return "", fmt.Errorf("descriptor JSON value must be a string")
+	}
+	value := strings.TrimSpace(result.String())
+	if value == "" {
+		return "", fmt.Errorf("descriptor JSON value is empty")
+	}
+	return value, nil
+}
+
+func selectDescriptorJSON(data []byte, jsonPath string) (string, error) {
+	result, err := descriptorJSONResult(data, jsonPath)
+	if err != nil {
+		return "", err
+	}
+	return descriptorJSONString(result)
+}
+
+func (q descriptorJSONQuery) selectValue(data []byte) (string, error) {
+	if !q.first && !q.last {
+		return selectDescriptorJSON(data, q.jsonPath)
+	}
+	result, err := descriptorJSONResult(data, q.jsonPath)
+	if err != nil {
+		return "", err
+	}
+	if result.IsArray() {
+		values := result.Array()
+		if len(values) == 0 {
+			return "", fmt.Errorf("descriptor JSON array is empty")
+		}
+		if q.first {
+			return descriptorJSONString(values[0])
+		}
+		return descriptorJSONString(values[len(values)-1])
+	}
+	value, err := descriptorJSONString(result)
+	if err != nil {
+		return "", err
+	}
+	delimiter := q.delimiter
+	if delimiter == "" {
+		delimiter = ","
+	}
+	parts := strings.Split(value, delimiter)
+	selected := parts[len(parts)-1]
+	if q.first {
+		selected = parts[0]
+	}
+	selected = strings.TrimSpace(selected)
+	if selected == "" {
+		return "", fmt.Errorf("descriptor JSON selected value is empty")
+	}
+	return selected, nil
+}
+
+func readDescriptorJSONFile(path string, protected bool) ([]byte, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, fmt.Errorf("open descriptor JSON file: %w", err)
+	}
+	defer file.Close()
+	data, err := io.ReadAll(io.LimitReader(file, maxDescriptorJSONFileSize+1))
+	if err != nil {
+		clear(data)
+		return nil, fmt.Errorf("read descriptor JSON file: %w", err)
+	}
+	if len(data) > maxDescriptorJSONFileSize {
+		clear(data)
+		return nil, fmt.Errorf("descriptor JSON file exceeds the size limit")
+	}
+	if !protected {
+		return data, nil
+	}
+	decrypted, err := winutil.DPAPIUnprotect(data)
+	clear(data)
+	if err != nil {
+		return nil, fmt.Errorf("decrypt descriptor JSON file: %w", err)
+	}
+	if len(decrypted) > maxDescriptorJSONFileSize {
+		clear(decrypted)
+		return nil, fmt.Errorf("decrypted descriptor JSON exceeds the size limit")
+	}
+	return decrypted, nil
+}
+
+func uniqueFromProtectedJSONSelect(d platform.Descriptor, ctx platform.PathTokenContext) (string, error) {
+	key := strings.TrimSpace(d.UniqueIdFile)
+	if !isJSONSelect(key) {
+		key = "JSON_SELECT::" + key
+	}
+	query, err := parseDescriptorJSONQuery(key)
+	if err != nil {
+		return "", err
+	}
+	if query.first || query.last {
+		return "", fmt.Errorf("protected unique id requires a scalar JSON_SELECT reference")
+	}
+	path := expandPlatformPath(query.filePath, ctx.PlatformFolder, ctx)
+	data, err := readDescriptorJSONFile(path, true)
+	if err != nil {
+		return "", err
+	}
+	defer clear(data)
+	id, err := selectDescriptorJSON(data, query.jsonPath)
+	if err != nil {
+		return "", err
+	}
+	if err := validateDescriptorJSONUniqueID(id); err != nil {
+		return "", err
+	}
+	return id, nil
+}
+
+func validateDescriptorJSONUniqueID(id string) error {
+	if id == "" || len(id) > 128 {
+		return fmt.Errorf("protected JSON unique id has an invalid length")
+	}
+	for _, r := range id {
+		if unicode.IsControl(r) || unicode.IsSpace(r) {
+			return fmt.Errorf("protected JSON unique id contains invalid characters")
+		}
+	}
+	return nil
 }
 
 func builtInUniqueIDRockstarEmail(d platform.Descriptor, ctx platform.PathTokenContext) (string, error) {

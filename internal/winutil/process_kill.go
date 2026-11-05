@@ -3,10 +3,10 @@
 package winutil
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os/exec"
-	"path/filepath"
 	"strings"
 	"sync"
 	"syscall"
@@ -24,6 +24,7 @@ const servicePrefix = "SERVICE:"
 const (
 	gracefulExitMaxWait         = 12 * time.Second
 	gracefulCombinedExitMaxWait = 5 * time.Second
+	forcedExitMaxWait           = 5 * time.Second
 	// gracefulQuitSettle lets a tray app re-create the hidden root window it hides on
 	// first close, so the second WM_CLOSE pass has something to hit.
 	gracefulQuitSettle = 200 * time.Millisecond
@@ -59,6 +60,7 @@ func KillByNameWithOpts(names []string, method ClosingMethod, opts KillOpts) err
 	}
 
 	var wg sync.WaitGroup
+	failures := make(chan error, len(names))
 	for _, name := range names {
 		raw := strings.TrimSpace(name)
 		if raw == "" {
@@ -68,74 +70,129 @@ func KillByNameWithOpts(names []string, method ClosingMethod, opts KillOpts) err
 		go func(raw string) {
 			defer crashlog.Capture()
 			defer wg.Done()
-			if strings.HasPrefix(strings.ToUpper(raw), strings.ToUpper(servicePrefix)) {
-				svcName := strings.TrimSpace(raw[len(servicePrefix):])
-				log.Printf("winutil: stopping service=%s", svcName)
-				if err := stopWindowsService(svcName); err != nil {
-					log.Printf("winutil: stop service failed service=%s err=%v; trying process kill fallback", svcName, err)
-					_ = taskKillIM(svcName+".exe", true)
-				}
-				log.Printf("winutil: stop service done service=%s", svcName)
-				return
+			if err := stopWindowsTarget(raw, m, opts, nativeQuitSent, len(names)); err != nil {
+				failures <- err
 			}
-			base := filepath.Base(raw)
-			if !strings.HasSuffix(strings.ToLower(base), ".exe") {
-				base = raw + ".exe"
-			}
-			// An image that is not running costs two ~350ms taskkill spawns for nothing.
-			// GameOverlayUI.exe is absent on most Steam switches.
-			if running, err := processExistsByImageName(base); err == nil && !running {
-				log.Printf("winutil: skipping process=%s (not running)", base)
-				return
-			}
-			log.Printf("winutil: stopping process=%s method=%s", base, m)
-			switch m {
-			case ClosingTaskKill:
-				_ = taskKillIM(base, true)
-			case ClosingElectron:
-				var prior windows.HWND
-				if opts.BeforeElectronSynth != nil {
-					prior = foregroundHWND()
-					if err := opts.BeforeElectronSynth(); err != nil {
-						log.Printf("winutil: electron prepare err=%v", err)
-					}
-					requestElectronChromiumExit(base, prior, true)
-				} else {
-					requestElectronChromiumExit(base, 0, false)
-				}
-				_ = taskKillIM(base, false)
-				waitForElectronImageExit(base, electronExitMaxWait, len(names))
-				forceKillIfStillRunning(base)
-			case ClosingClose:
-				delivered, join := requestGracefulProcessExit(base, nativeQuitSent)
-				if delivered {
-					waitForImageExit(base, gracefulExitMaxWait, 100*time.Millisecond, len(names))
-				}
-				join()
-				forceKillIfStillRunning(base)
-			default: // Combined
-				delivered, join := requestGracefulProcessExit(base, nativeQuitSent)
-				if delivered {
-					waitForImageExit(base, gracefulCombinedExitMaxWait, 100*time.Millisecond, len(names))
-				}
-				join()
-				forceKillIfStillRunning(base)
-			}
-			log.Printf("winutil: stop process done process=%s", base)
 		}(raw)
 	}
 	wg.Wait()
+	close(failures)
+	var errs []error
+	for err := range failures {
+		errs = append(errs, err)
+	}
+	if err := confirmStoppedProcessImages(names, SnapshotRunningExeBasenames); err != nil {
+		errs = append(errs, err)
+	}
+	if err := errors.Join(errs...); err != nil {
+		return err
+	}
 	log.Printf("winutil: kill completed method=%s", m)
 	return nil
 }
 
-// forceKillIfStillRunning skips the ~350ms taskkill spawn when the image already exited,
-// which is the normal case once the graceful signal actually works.
-func forceKillIfStillRunning(exeImage string) {
-	if running, err := processExistsByImageName(exeImage); err == nil && !running {
-		return
+func stopWindowsTarget(raw string, method ClosingMethod, opts KillOpts, nativeQuitSent bool, targetCount int) error {
+	if strings.HasPrefix(strings.ToUpper(raw), servicePrefix) {
+		name := strings.TrimSpace(raw[len(servicePrefix):])
+		if err := stopWindowsService(name); err != nil {
+			return fmt.Errorf("stop service %s: %w", name, err)
+		}
+		return nil
 	}
-	_ = taskKillIM(exeImage, true)
+	base := normalizeExeBase(raw)
+	running, err := processExistsByImageName(base)
+	if err != nil {
+		return fmt.Errorf("inspect process %s: %w", base, err)
+	}
+	if !running {
+		return nil
+	}
+	log.Printf("winutil: stopping process=%s method=%s", base, method)
+	switch method {
+	case ClosingTaskKill:
+		return forceKillIfStillRunning(base)
+	case ClosingElectron:
+		var prior windows.HWND
+		if opts.BeforeElectronSynth != nil {
+			prior = foregroundHWND()
+			if err := opts.BeforeElectronSynth(); err != nil {
+				return fmt.Errorf("prepare process %s for closing: %w", base, err)
+			}
+			requestElectronChromiumExit(base, prior, true)
+		} else {
+			requestElectronChromiumExit(base, 0, false)
+		}
+		_ = taskKillIM(base, false)
+		if err := waitForElectronImageExit(base, electronExitMaxWait, targetCount); err != nil && !errors.Is(err, errProcessExitTimeout) {
+			return err
+		}
+	default:
+		maxWait := gracefulCombinedExitMaxWait
+		if method == ClosingClose {
+			maxWait = gracefulExitMaxWait
+		}
+		delivered, join := requestGracefulProcessExit(base, nativeQuitSent)
+		var waitErr error
+		if delivered {
+			waitErr = waitForImageExit(base, maxWait, 100*time.Millisecond, targetCount)
+		}
+		join()
+		if waitErr != nil && !errors.Is(waitErr, errProcessExitTimeout) {
+			return waitErr
+		}
+	}
+	return forceKillIfStillRunning(base)
+}
+
+func forceKillIfStillRunning(exeImage string) error {
+	return forceKillAndConfirm(exeImage, processExistsByImageName, func(name string) error {
+		return taskKillIM(name, true)
+	}, func(name string) error {
+		return waitForImageExit(name, forcedExitMaxWait, 100*time.Millisecond, 1)
+	})
+}
+
+func forceKillAndConfirm(exeImage string, running func(string) (bool, error), kill, wait func(string) error) error {
+	alive, err := running(exeImage)
+	if err != nil {
+		return fmt.Errorf("inspect process %s: %w", exeImage, err)
+	}
+	if !alive {
+		return nil
+	}
+	if err := kill(exeImage); err != nil {
+		return fmt.Errorf("terminate process %s: %w", exeImage, err)
+	}
+	if err := wait(exeImage); err != nil {
+		return fmt.Errorf("confirm process %s exited: %w", exeImage, err)
+	}
+	return nil
+}
+
+func confirmStoppedProcessImages(names []string, snapshot func() (map[string]struct{}, error)) error {
+	var images []string
+	for _, name := range names {
+		if strings.HasPrefix(strings.ToUpper(strings.TrimSpace(name)), servicePrefix) {
+			continue
+		}
+		if base := normalizeExeBase(name); base != "" {
+			images = append(images, base)
+		}
+	}
+	if len(images) == 0 {
+		return nil
+	}
+	running, err := snapshot()
+	if err != nil {
+		return fmt.Errorf("confirm platform processes exited: %w", err)
+	}
+	var errs []error
+	for _, base := range images {
+		if _, alive := running[strings.ToLower(base)]; alive {
+			errs = append(errs, fmt.Errorf("process %s is still running", base))
+		}
+	}
+	return errors.Join(errs...)
 }
 
 // requestGracefulProcessExit closes every top-level window for matching PIDs (visible + hidden),
@@ -264,11 +321,33 @@ func stopWindowsService(name string) error {
 	defer m.Disconnect()
 	s, err := m.OpenService(name)
 	if err != nil {
+		if errors.Is(err, windows.ERROR_SERVICE_DOES_NOT_EXIST) {
+			return nil
+		}
 		return err
 	}
 	defer s.Close()
-	_, err = s.Control(svc.Stop)
-	return err
+	status, err := s.Query()
+	if err != nil || status.State == svc.Stopped {
+		return err
+	}
+	_, controlErr := s.Control(svc.Stop)
+	if controlErr != nil && !errors.Is(controlErr, windows.ERROR_SERVICE_NOT_ACTIVE) {
+		if err := forceKillIfStillRunning(name + ".exe"); err != nil {
+			return errors.Join(controlErr, err)
+		}
+	}
+	deadline := time.Now().Add(gracefulExitMaxWait)
+	for {
+		status, err := s.Query()
+		if err != nil || status.State == svc.Stopped {
+			return err
+		}
+		if !time.Now().Before(deadline) {
+			return errors.Join(controlErr, fmt.Errorf("%w: service %s", errProcessExitTimeout, name))
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
 }
 
 func taskKillIM(name string, force bool) error {

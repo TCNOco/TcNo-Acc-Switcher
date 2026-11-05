@@ -3,6 +3,7 @@
 package winutil
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -21,6 +22,8 @@ const (
 	unixKillWait       = 2 * time.Second
 	unixPollInterval   = 100 * time.Millisecond
 )
+
+var errUnixProcessExitTimeout = errors.New("timed out waiting for platform processes to exit")
 
 // KillByName terminates every process whose executable matches one of names.
 func KillByName(names []string, method ClosingMethod, beforeElectronSynth func() error) error {
@@ -47,20 +50,34 @@ func KillByNameWithOpts(names []string, method ClosingMethod, opts KillOpts) err
 		if opts.NativeQuit != nil {
 			if err := opts.NativeQuit(); err != nil {
 				slogWin().Warn("native quit failed; falling back to signals", "err", err)
-			} else if waitForUnixExit(targets, unixNativeQuitWait) {
-				slogWin().Debug("kill completed", "method", m, "via", "native-quit")
-				return nil
+			} else {
+				err := waitForUnixExit(targets, unixNativeQuitWait)
+				if err == nil {
+					slogWin().Debug("kill completed", "method", m, "via", "native-quit")
+					return nil
+				}
+				if !errors.Is(err, errUnixProcessExitTimeout) {
+					return err
+				}
 			}
 		}
-		signalUnixTargets(targets, syscall.SIGTERM)
-		if waitForUnixExit(targets, unixTermWait) {
+		_ = signalUnixTargets(targets, syscall.SIGTERM)
+		err := waitForUnixExit(targets, unixTermWait)
+		if err == nil {
 			slogWin().Debug("kill completed", "method", m, "via", "sigterm")
 			return nil
 		}
+		if !errors.Is(err, errUnixProcessExitTimeout) {
+			return err
+		}
 	}
 
-	signalUnixTargets(targets, syscall.SIGKILL)
-	waitForUnixExit(targets, unixKillWait)
+	if err := signalUnixTargets(targets, syscall.SIGKILL); err != nil {
+		return err
+	}
+	if err := waitForUnixExit(targets, unixKillWait); err != nil {
+		return err
+	}
 	slogWin().Debug("kill completed", "method", m, "via", "sigkill")
 	return nil
 }
@@ -93,24 +110,35 @@ func unixKillTargets(names []string) []string {
 	return out
 }
 
-func signalUnixTargets(targets []string, sig syscall.Signal) {
-	for pid, name := range unixMatchingPIDs(targets) {
+func signalUnixTargets(targets []string, sig syscall.Signal) error {
+	pids, err := unixMatchingPIDsChecked(targets)
+	if err != nil {
+		return fmt.Errorf("find platform processes: %w", err)
+	}
+	var errs []error
+	for pid, name := range pids {
 		if err := syscall.Kill(pid, sig); err != nil && err != syscall.ESRCH {
 			slogWin().Warn("signal failed", "process", name, "pid", pid, "signal", sig.String(), "err", err)
+			errs = append(errs, fmt.Errorf("signal process %s (%d): %w", name, pid, err))
 			continue
 		}
 		slogWin().Debug("signalled", "process", name, "pid", pid, "signal", sig.String())
 	}
+	return errors.Join(errs...)
 }
 
-func waitForUnixExit(targets []string, timeout time.Duration) bool {
+func waitForUnixExit(targets []string, timeout time.Duration) error {
 	deadline := time.Now().Add(timeout)
 	for {
-		if len(unixMatchingPIDs(targets)) == 0 {
-			return true
+		pids, err := unixMatchingPIDsChecked(targets)
+		if err != nil {
+			return fmt.Errorf("confirm platform processes exited: %w", err)
+		}
+		if len(pids) == 0 {
+			return nil
 		}
 		if time.Now().After(deadline) {
-			return false
+			return fmt.Errorf("%w: %s", errUnixProcessExitTimeout, strings.Join(targets, ", "))
 		}
 		time.Sleep(unixPollInterval)
 	}
@@ -120,12 +148,20 @@ func waitForUnixExit(targets []string, timeout time.Duration) bool {
 // never a candidate: a platform image sharing our name would have us signal
 // ourselves.
 func unixMatchingPIDs(targets []string) map[int]string {
+	pids, err := unixMatchingPIDsChecked(targets)
+	if err != nil {
+		slogWin().Warn("read process table", "err", err)
+	}
+	return pids
+}
+
+func unixMatchingPIDsChecked(targets []string) (map[int]string, error) {
 	out := map[int]string{}
 	if len(targets) == 0 {
-		return out
+		return out, nil
 	}
 	self := os.Getpid()
-	forEachProcess(func(pid int, names []string) {
+	err := forEachProcessChecked(func(pid int, names []string) {
 		if pid == self || pid == 1 {
 			return
 		}
@@ -136,7 +172,7 @@ func unixMatchingPIDs(targets []string) map[int]string {
 			}
 		}
 	})
-	return out
+	return out, err
 }
 
 // unixNameMatches compares a process's names against one target.
@@ -206,12 +242,12 @@ func StartAsDesktopUser(exe string, args []string, opts StartOpts) error {
 // SnapshotRunningExeBasenames returns running executable names, lowercased.
 func SnapshotRunningExeBasenames() (map[string]struct{}, error) {
 	out := map[string]struct{}{}
-	forEachProcess(func(_ int, names []string) {
+	err := forEachProcessChecked(func(_ int, names []string) {
 		for _, name := range names {
 			out[strings.ToLower(name)] = struct{}{}
 		}
 	})
-	return out, nil
+	return out, err
 }
 
 func IsExeRunning(name string) bool {
@@ -220,6 +256,11 @@ func IsExeRunning(name string) bool {
 		return false
 	}
 	return len(unixMatchingPIDs(targets)) > 0
+}
+
+func ProcessImageRunning(names []string) (bool, error) {
+	pids, err := unixMatchingPIDsChecked(unixKillTargets(names))
+	return len(pids) > 0, err
 }
 
 // SnapshotMatchingPIDs maps live PIDs to the lowercased name they matched.
@@ -232,9 +273,13 @@ func SnapshotMatchingPIDs(want map[string]struct{}) (map[uint32]string, error) {
 		targets = append(targets, name)
 	}
 	targets = unixKillTargets(targets)
+	pids, err := unixMatchingPIDsChecked(targets)
+	if err != nil {
+		return nil, err
+	}
 
 	out := map[uint32]string{}
-	for pid, name := range unixMatchingPIDs(targets) {
+	for pid, name := range pids {
 		if pid < 0 {
 			continue
 		}

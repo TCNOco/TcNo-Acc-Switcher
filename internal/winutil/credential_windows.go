@@ -20,26 +20,40 @@ const maxGenericCredentialBlob = 2560
 // the Epic Games Launcher and never enumerates unrelated credentials.
 func ReadCredential(target string) (Credential, error) {
 	for _, candidate := range CredentialTargetCandidates(target) {
-		item, err := wincred.GetGenericCredential(candidate)
+		credential, err := readCredentialExact(candidate)
 		if err != nil {
-			if errors.Is(err, wincred.ErrElementNotFound) {
+			if errors.Is(err, ErrCredentialNotFound) {
 				continue
 			}
-			return Credential{}, fmt.Errorf("read generic credential: %w", err)
+			return Credential{}, err
 		}
-
-		blob := append([]byte(nil), item.CredentialBlob...)
-		clear(item.CredentialBlob)
-		return Credential{
-			TargetName:  item.TargetName,
-			UserName:    item.UserName,
-			TargetAlias: item.TargetAlias,
-			Comment:     item.Comment,
-			Persist:     uint32(item.Persist),
-			Blob:        blob,
-		}, nil
+		return credential, nil
 	}
 	return Credential{}, ErrCredentialNotFound
+}
+
+func ReadCredentials(target string) ([]Credential, error) {
+	return readCredentialCandidates(target, readCredentialExact)
+}
+
+func readCredentialExact(target string) (Credential, error) {
+	item, err := wincred.GetGenericCredential(target)
+	if err != nil {
+		if errors.Is(err, wincred.ErrElementNotFound) {
+			return Credential{}, ErrCredentialNotFound
+		}
+		return Credential{}, fmt.Errorf("read generic credential: %w", err)
+	}
+	blob := append([]byte(nil), item.CredentialBlob...)
+	clear(item.CredentialBlob)
+	return Credential{
+		TargetName:  item.TargetName,
+		UserName:    item.UserName,
+		TargetAlias: item.TargetAlias,
+		Comment:     item.Comment,
+		Persist:     uint32(item.Persist),
+		Blob:        blob,
+	}, nil
 }
 
 // WriteCredential updates only the exact target recorded in the snapshot.

@@ -13,10 +13,15 @@ import (
 const procNameMaxLen = 15
 
 func forEachProcess(fn func(pid int, names []string)) {
+	if err := forEachProcessChecked(fn); err != nil {
+		slogWin().Warn("read /proc", "err", err)
+	}
+}
+
+func forEachProcessChecked(fn func(pid int, names []string)) error {
 	entries, err := os.ReadDir("/proc")
 	if err != nil {
-		slogWin().Warn("read /proc", "err", err)
-		return
+		return err
 	}
 	for _, entry := range entries {
 		if !entry.IsDir() {
@@ -43,4 +48,5 @@ func forEachProcess(fn func(pid int, names []string)) {
 		}
 		fn(pid, names)
 	}
+	return nil
 }

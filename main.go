@@ -103,6 +103,10 @@ func init() {
 	steamguard.RegisterForgetHandler(steamGuardSvc)
 
 	platform.SetSteamLaunchHooks(steam.SaveFolderFromConfirmedExe, steam.ResolveSteamExePath)
+	basic.SetFlowWarningReporter(func(titleKey, message string) {
+		app.EmitToast("warning", "i18n:"+titleKey, message, 8000)
+	})
+	basic.RegisterCredentialSessionBackups(basicSvc)
 	platform.SetSteamReset(steam.ResetToDefaults)
 	platform.SetControllerSupportChangedHook(controllerSvc.SetEnabled)
 	platform.SetDiscordPresenceRefreshHook(discordRPC.RefreshAsync)

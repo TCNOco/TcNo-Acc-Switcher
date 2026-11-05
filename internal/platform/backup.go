@@ -10,9 +10,11 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"sync"
 	"time"
 
 	"TcNo-Acc-Switcher/internal/fsutil"
+	"TcNo-Acc-Switcher/internal/paths"
 )
 
 type BackupResult struct {
@@ -27,6 +29,49 @@ type backupMapping struct {
 	archiveRel string
 }
 
+var credentialSessionBackups struct {
+	sync.RWMutex
+	backup  func(string) (BackupResult, error)
+	restore func(string) (BackupResult, error)
+}
+
+func SetCredentialSessionBackupHandlers(backup, restore func(string) (BackupResult, error)) {
+	credentialSessionBackups.Lock()
+	defer credentialSessionBackups.Unlock()
+	credentialSessionBackups.backup = backup
+	credentialSessionBackups.restore = restore
+}
+
+func runCredentialSessionBackup(platformKey string, restore bool) (BackupResult, error) {
+	credentialSessionBackups.RLock()
+	handler := credentialSessionBackups.backup
+	if restore {
+		handler = credentialSessionBackups.restore
+	}
+	credentialSessionBackups.RUnlock()
+	if handler == nil {
+		return BackupResult{}, errors.New("credential session backup handling is unavailable")
+	}
+	return handler(platformKey)
+}
+
+func (p *PlatformService) unlockAndBackupCredentialSession(platformKey string, restore bool) (BackupResult, error) {
+	p.mu.Unlock()
+	return runCredentialSessionBackup(platformKey, restore)
+}
+
+func CredentialSessionBackupDirectory(platformKey string) (string, error) {
+	segment := paths.SanitizePathSegment(strings.TrimSpace(platformKey))
+	if segment == "" {
+		return "", errors.New("invalid credential session backup platform")
+	}
+	root, err := paths.DataRoot()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(root, "SessionRecovery", segment), nil
+}
+
 func (p *PlatformService) HasPlatformBackupFolders(platformKey string) (bool, error) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
@@ -34,6 +79,9 @@ func (p *PlatformService) HasPlatformBackupFolders(platformKey string) (bool, er
 	d, err := p.loadDescriptorUnlocked(platformKey)
 	if err != nil {
 		return false, err
+	}
+	if d.Extras.CredentialSession != nil {
+		return true, nil
 	}
 	for src := range d.Extras.BackupFolders {
 		if strings.TrimSpace(src) != "" {
@@ -49,6 +97,9 @@ func (p *PlatformService) BackupPlatform(platformKey string, everything bool) (B
 	if err != nil {
 		p.mu.Unlock()
 		return BackupResult{}, err
+	}
+	if d.Extras.CredentialSession != nil {
+		return p.unlockAndBackupCredentialSession(platformKey, false)
 	}
 	folder, err := p.getPlatformInstallFolderUnlocked(platformKey)
 	p.mu.Unlock()
@@ -87,7 +138,18 @@ func (p *PlatformService) BackupPlatform(platformKey string, everything bool) (B
 }
 
 func (p *PlatformService) OpenPlatformBackupFolder(platformKey string) error {
-	backupDir, err := platformBackupDir(platformKey)
+	p.mu.Lock()
+	d, err := p.loadDescriptorUnlocked(platformKey)
+	p.mu.Unlock()
+	if err != nil {
+		return err
+	}
+	var backupDir string
+	if d.Extras.CredentialSession != nil {
+		backupDir, err = CredentialSessionBackupDirectory(platformKey)
+	} else {
+		backupDir, err = platformBackupDir(platformKey)
+	}
 	if err != nil {
 		return err
 	}
@@ -103,6 +165,9 @@ func (p *PlatformService) RestoreLatestPlatformBackup(platformKey string) (Backu
 	if err != nil {
 		p.mu.Unlock()
 		return BackupResult{}, err
+	}
+	if d.Extras.CredentialSession != nil {
+		return p.unlockAndBackupCredentialSession(platformKey, true)
 	}
 	folder, err := p.getPlatformInstallFolderUnlocked(platformKey)
 	p.mu.Unlock()

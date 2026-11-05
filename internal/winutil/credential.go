@@ -20,6 +20,39 @@ type Credential struct {
 	Blob        []byte
 }
 
+func readCredentialCandidates(target string, read func(string) (Credential, error)) ([]Credential, error) {
+	var credentials []Credential
+	for _, candidate := range CredentialTargetCandidates(target) {
+		credential, err := read(candidate)
+		if err != nil {
+			clear(credential.Blob)
+			if errors.Is(err, ErrCredentialNotFound) {
+				continue
+			}
+			for _, previous := range credentials {
+				clear(previous.Blob)
+			}
+			return nil, err
+		}
+		duplicate := false
+		for _, previous := range credentials {
+			if strings.EqualFold(previous.TargetName, credential.TargetName) {
+				duplicate = true
+				break
+			}
+		}
+		if duplicate {
+			clear(credential.Blob)
+			continue
+		}
+		credentials = append(credentials, credential)
+	}
+	if len(credentials) == 0 {
+		return nil, ErrCredentialNotFound
+	}
+	return credentials, nil
+}
+
 // CredentialTargetCandidates handles the target form exposed by some legacy
 // Credential Manager entries while keeping reads/deletes scoped to one target.
 func CredentialTargetCandidates(target string) []string {

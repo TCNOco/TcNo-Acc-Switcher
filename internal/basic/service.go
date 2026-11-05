@@ -15,7 +15,6 @@ import (
 	"TcNo-Acc-Switcher/internal/security"
 	"TcNo-Acc-Switcher/internal/stats"
 	"TcNo-Acc-Switcher/internal/tray"
-	"TcNo-Acc-Switcher/internal/winutil"
 )
 
 type BasicService struct {
@@ -127,20 +126,6 @@ func (b *BasicService) SuggestedSaveAccountName(platformKey string) (string, err
 	if platformKey == "" {
 		slog.Debug("suggested save name skipped: empty platform")
 		return "", nil
-	}
-	if d, _, derr := readDescriptor(platformKey); derr == nil && d.ExitBeforeSave {
-		if ps, perr := platform.LoadPlatformSettings(platformKey); perr == nil {
-			if err := winutil.ErrIfCannotKill(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod)); err != nil {
-				slog.Debug("suggested save name pre-kill blocked", "platform", platformKey, "err", err)
-				return "", err
-			}
-			slog.Debug("suggested save name pre-kill", "platform", platformKey, "reason", "ExitBeforeSave")
-			opts := winutil.KillOpts{
-				NativeQuit:          descriptorNativeQuit(b.deps(), FlowContext{PlatformKey: platformKey, Descriptor: d}),
-				BeforeElectronSynth: electronBeforeKillSynth(b.deps(), platformKey, d.ExesToEnd),
-			}
-			_ = winutil.KillByNameWithOpts(d.ExesToEnd, winutil.ClosingMethod(ps.ClosingMethod), opts)
-		}
 	}
 	folder, _ := resolveExeFolder(b.deps(), platformKey)
 	slog.Debug("suggested save name collect begin", "platform", platformKey, "folder", folder)

@@ -58,6 +58,7 @@
   "Tooltip_LaunchAfterSwitch_NameFallback": "the selected account",
   "Toast_AccountSaved": "Account saved.",
   "Toast_AccountSwitched": "Switched account.",
+  "Toast_AccountSwitchedLaunchFailed": "Account switched, but the launcher could not start.",
   "Toast_SwitchFailed": "Could not switch account.",
   "Toast_SaveFailed": "Could not save current session.",
   "Toast_UserDataMoveFailed": "Could not move the user data folder.",

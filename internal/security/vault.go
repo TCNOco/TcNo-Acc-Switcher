@@ -69,6 +69,7 @@ type AccountSave struct {
 	AccountName string
 	DestRoot    string
 	Encrypted   bool
+	normalDir   string
 	journalPath string
 	cleanup     func()
 }
@@ -78,7 +79,28 @@ func BeginAccountSave(platformKey, uniqueID, accountName, normalDir string) (Acc
 	uniqueID = strings.TrimSpace(uniqueID)
 	accountName = strings.TrimSpace(accountName)
 	if !SavedAccountDataEncrypted() {
-		return AccountSave{PlatformKey: platformKey, UniqueID: uniqueID, AccountName: accountName, DestRoot: normalDir}, nil
+		normalDir, err := accountSaveDestination(normalDir)
+		if err != nil {
+			return AccountSave{}, err
+		}
+		parent := filepath.Dir(normalDir)
+		if err := os.MkdirAll(parent, 0o755); err != nil {
+			return AccountSave{}, err
+		}
+		dir, err := os.MkdirTemp(parent, ".account-save-")
+		if err != nil {
+			return AccountSave{}, err
+		}
+		return AccountSave{
+			PlatformKey: platformKey,
+			UniqueID:    uniqueID,
+			AccountName: accountName,
+			DestRoot:    dir,
+			normalDir:   normalDir,
+			cleanup: func() {
+				_ = os.RemoveAll(dir)
+			},
+		}, nil
 	}
 	if err := RequireUnlocked(); err != nil {
 		return AccountSave{}, err
@@ -112,7 +134,20 @@ func BeginAccountSave(platformKey, uniqueID, accountName, normalDir string) (Acc
 
 func CommitAccountSave(save AccountSave, normalDir string) error {
 	if !save.Encrypted {
-		return nil
+		destination, err := accountSaveDestination(normalDir)
+		if err != nil {
+			return err
+		}
+		if destination != save.normalDir {
+			return errors.New("saved account destination changed during capture")
+		}
+		return commitAccountSaveDirectory(save.DestRoot, destination, accountSaveDirectoryOps{
+			lstat:     os.Lstat,
+			mkdirTemp: os.MkdirTemp,
+			rename:    os.Rename,
+			removeAll: os.RemoveAll,
+			syncDir:   syncDirBestEffort,
+		})
 	}
 	defer save.cleanup()
 	key, err := defaultManager.unlockedMasterKey()
@@ -129,6 +164,77 @@ func CommitAccountSave(save AccountSave, normalDir string) error {
 	if save.journalPath != "" {
 		_ = os.Remove(save.journalPath)
 	}
+	return nil
+}
+
+func accountSaveDestination(path string) (string, error) {
+	if strings.TrimSpace(path) == "" {
+		return "", errors.New("saved account destination is empty")
+	}
+	path, err := filepath.Abs(path)
+	if err != nil {
+		return "", err
+	}
+	path = filepath.Clean(path)
+	if filepath.Dir(path) == path {
+		return "", errors.New("saved account destination cannot be a filesystem root")
+	}
+	return path, nil
+}
+
+type accountSaveDirectoryOps struct {
+	lstat     func(string) (os.FileInfo, error)
+	mkdirTemp func(string, string) (string, error)
+	rename    func(string, string) error
+	removeAll func(string) error
+	syncDir   func(string)
+}
+
+func commitAccountSaveDirectory(staged, destination string, ops accountSaveDirectoryOps) error {
+	parent := filepath.Dir(destination)
+	if staged == destination || filepath.Dir(staged) != parent || !strings.HasPrefix(filepath.Base(staged), ".account-save-") {
+		return errors.New("saved account staging directory is invalid")
+	}
+	stageInfo, err := ops.lstat(staged)
+	if err != nil {
+		return fmt.Errorf("inspect captured account: %w", err)
+	}
+	if !stageInfo.IsDir() || stageInfo.Mode()&os.ModeSymlink != 0 {
+		return errors.New("saved account staging path is not a regular directory")
+	}
+	info, err := ops.lstat(destination)
+	if os.IsNotExist(err) {
+		if err := ops.rename(staged, destination); err != nil {
+			return fmt.Errorf("install saved account: %w", err)
+		}
+		ops.syncDir(parent)
+		return nil
+	}
+	if err != nil {
+		return fmt.Errorf("inspect previous saved account: %w", err)
+	}
+	if !info.IsDir() || info.Mode()&os.ModeSymlink != 0 {
+		return errors.New("previous saved account path is not a regular directory")
+	}
+	backupDir, err := ops.mkdirTemp(parent, ".account-save-backup-")
+	if err != nil {
+		return fmt.Errorf("prepare saved account rollback: %w", err)
+	}
+	backup := filepath.Join(backupDir, "previous")
+	if err := ops.rename(destination, backup); err != nil {
+		_ = ops.removeAll(backupDir)
+		return fmt.Errorf("preserve previous saved account: %w", err)
+	}
+	if err := ops.rename(staged, destination); err != nil {
+		if rollbackErr := ops.rename(backup, destination); rollbackErr != nil {
+			return fmt.Errorf("install saved account: %w (rollback failed: %v; previous account kept at %s)", err, rollbackErr, backup)
+		}
+		ops.syncDir(parent)
+		_ = ops.removeAll(backupDir)
+		return fmt.Errorf("install saved account: %w", err)
+	}
+	ops.syncDir(parent)
+	_ = ops.removeAll(backupDir)
 	return nil
 }
 
@@ -500,6 +606,7 @@ func writeAccountBlob(masterKey []byte, platformKey, uniqueID, accountName, dir 
 	if err != nil {
 		return err
 	}
+	defer wipeBytes(plain)
 	aad := accountBlobAAD(platformKey, uniqueID)
 	nonce, ciphertext, err := sealWithKey(masterKey, plain, aad)
 	if err != nil {
@@ -524,7 +631,7 @@ func writeAccountBlob(masterKey []byte, platformKey, uniqueID, accountName, dir 
 	if err != nil {
 		return err
 	}
-	if err := writeFileAtomicDurable(path, append(data, '\n'), 0o600); err != nil {
+	if err := os.MkdirAll(filepath.Dir(path), 0o700); err != nil {
 		return err
 	}
 	testDir, err := os.MkdirTemp(filepath.Dir(path), ".verify-")
@@ -532,7 +639,15 @@ func writeAccountBlob(masterKey []byte, platformKey, uniqueID, accountName, dir 
 		return err
 	}
 	defer os.RemoveAll(testDir)
-	return extractAccountBlob(masterKey, platformKey, uniqueID, testDir)
+	verified, err := decryptAccountBlobData(masterKey, data, platformKey, uniqueID)
+	if err != nil {
+		return err
+	}
+	defer wipeBytes(verified)
+	if err := unpackDir(verified, testDir); err != nil {
+		return err
+	}
+	return writeFileAtomicDurable(path, append(data, '\n'), 0o600)
 }
 
 func extractAccountBlob(masterKey []byte, platformKey, uniqueID, dest string) error {
@@ -561,6 +676,10 @@ func decryptAccountBlobFile(masterKey []byte, path, platformKey, uniqueID string
 	if err != nil {
 		return nil, err
 	}
+	return decryptAccountBlobData(masterKey, data, platformKey, uniqueID)
+}
+
+func decryptAccountBlobData(masterKey, data []byte, platformKey, uniqueID string) ([]byte, error) {
 	var blob encryptedAccountBlob
 	if err := json.Unmarshal(data, &blob); err != nil {
 		return nil, err

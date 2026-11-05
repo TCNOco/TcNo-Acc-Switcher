@@ -8,24 +8,32 @@ import (
 
 const SameAsLoginFiles = "SAME_AS_LOGIN_FILES"
 
+type CredentialSessionDescriptor struct {
+	Target         string   `json:"Target"`
+	SnapshotFile   string   `json:"SnapshotFile"`
+	JSONFiles      []string `json:"JSONFiles,omitempty"`
+	RecoveryCopies int      `json:"RecoveryCopies,omitempty"`
+}
+
 type DescriptorExtras struct {
-	CachePaths              []string          `json:"CachePaths,omitempty"`
-	BackupFolders           map[string]string `json:"BackupFolders,omitempty"`
-	Variables               map[string]string `json:"variables,omitempty"`
-	ProfilePicPath          string            `json:"ProfilePicPath,omitempty"`
-	ProfilePicFromFile      string            `json:"ProfilePicFromFile,omitempty"`
-	ProfilePicRegex         string            `json:"ProfilePicRegex,omitempty"`
-	BuiltInUsernameFile     string            `json:"BuiltInUsernameFile,omitempty"`
-	BuiltInProfileImageFile string            `json:"BuiltInProfileImageFile,omitempty"`
-	BuiltInUserId           string            `json:"BuiltInUserId,omitempty"`
-	ShortcutFolders         []string          `json:"ShortcutFolders,omitempty"`
-	ShortcutIgnore          []string          `json:"ShortcutIgnore,omitempty"`
-	ShortcutIncludeMainExe  *bool             `json:"ShortcutIncludeMainExe,omitempty"`
-	SearchStartMenuForIcon  bool              `json:"SearchStartMenuForIcon,omitempty"`
-	BackupFileTypesInclude  []string          `json:"BackupFileTypesInclude,omitempty"`
-	BackupFileTypesIgnore   []string          `json:"BackupFileTypesIgnore,omitempty"`
-	ClosingMethod           string            `json:"ClosingMethod,omitempty"`
-	ForceClosingMethod      bool              `json:"ForceClosingMethod,omitempty"`
+	CredentialSession       *CredentialSessionDescriptor `json:"CredentialSession,omitempty"`
+	CachePaths              []string                     `json:"CachePaths,omitempty"`
+	BackupFolders           map[string]string            `json:"BackupFolders,omitempty"`
+	Variables               map[string]string            `json:"variables,omitempty"`
+	ProfilePicPath          string                       `json:"ProfilePicPath,omitempty"`
+	ProfilePicFromFile      string                       `json:"ProfilePicFromFile,omitempty"`
+	ProfilePicRegex         string                       `json:"ProfilePicRegex,omitempty"`
+	BuiltInUsernameFile     string                       `json:"BuiltInUsernameFile,omitempty"`
+	BuiltInProfileImageFile string                       `json:"BuiltInProfileImageFile,omitempty"`
+	BuiltInUserId           string                       `json:"BuiltInUserId,omitempty"`
+	ShortcutFolders         []string                     `json:"ShortcutFolders,omitempty"`
+	ShortcutIgnore          []string                     `json:"ShortcutIgnore,omitempty"`
+	ShortcutIncludeMainExe  *bool                        `json:"ShortcutIncludeMainExe,omitempty"`
+	SearchStartMenuForIcon  bool                         `json:"SearchStartMenuForIcon,omitempty"`
+	BackupFileTypesInclude  []string                     `json:"BackupFileTypesInclude,omitempty"`
+	BackupFileTypesIgnore   []string                     `json:"BackupFileTypesIgnore,omitempty"`
+	ClosingMethod           string                       `json:"ClosingMethod,omitempty"`
+	ForceClosingMethod      bool                         `json:"ForceClosingMethod,omitempty"`
 	// QuitArgs are passed to the platform's own executable to ask it to shut itself down,
 	// e.g. "-shutdown" for Steam. Use it when the platform ignores WM_CLOSE - a launcher that
 	// minimises to tray on close never exits, so the graceful window expires on every switch

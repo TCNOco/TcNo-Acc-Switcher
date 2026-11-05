@@ -69,6 +69,31 @@ func resolveDescriptorValue(d platform.Descriptor, raw, folder string, ctx platf
 		return ""
 	}
 	v = strings.TrimSpace(expandDescriptorVariables(v, vars))
+	if isJSONSelect(v) {
+		query, err := parseDescriptorJSONQuery(v)
+		if err != nil {
+			return ""
+		}
+		path := expandPlatformPath(query.filePath, folder, ctx)
+		if saved {
+			path = mapLivePathToSavedPath(d, folder, ctx, path, accountCacheRoot)
+			if strings.TrimSpace(path) == "" {
+				return ""
+			}
+		}
+		data, err := readDescriptorJSONFile(path, false)
+		if err != nil {
+			descriptorVarsLog().Debug("resolve descriptor JSON value failed", "saved", saved, "err", err)
+			return ""
+		}
+		defer clear(data)
+		resolved, err := query.selectValue(data)
+		if err != nil {
+			descriptorVarsLog().Debug("select descriptor JSON value failed", "saved", saved, "err", err)
+			return ""
+		}
+		return strings.TrimSpace(applyVariableTransformPipeline(resolved))
+	}
 	if resolved, handled, err := resolveLatestModifiedFileValue(v, folder, ctx); handled {
 		if err != nil {
 			descriptorVarsLog().Debug("resolve descriptor value via latest modified file failed", "saved", saved, "value", v, "err", err)

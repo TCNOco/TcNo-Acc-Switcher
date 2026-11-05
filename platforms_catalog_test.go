@@ -61,6 +61,10 @@ func assertPlatformsClearOnlyOwnPaths(t *testing.T, file string, raw []byte) {
 		Platforms map[string]struct {
 			PathListToClear []string          `json:"PathListToClear"`
 			LoginFiles      map[string]string `json:"LoginFiles"`
+			Extras          struct {
+				CredentialSession *json.RawMessage `json:"CredentialSession"`
+				CachePaths        []string         `json:"CachePaths"`
+			} `json:"Extras"`
 		} `json:"Platforms"`
 	}
 	if err := json.Unmarshal(raw, &catalog); err != nil {
@@ -77,6 +81,11 @@ func assertPlatformsClearOnlyOwnPaths(t *testing.T, file string, raw []byte) {
 				owned[strings.ToLower(path)] = struct{}{}
 			}
 		}
+		if p.Extras.CredentialSession != nil {
+			for _, path := range p.Extras.CachePaths {
+				owned[strings.ToLower(path)] = struct{}{}
+			}
+		}
 		for _, entry := range p.PathListToClear {
 			if strings.TrimSpace(entry) == "SAME_AS_LOGIN_FILES" {
 				continue
@@ -86,8 +95,7 @@ func assertPlatformsClearOnlyOwnPaths(t *testing.T, file string, raw []byte) {
 				continue
 			}
 			if _, ok := owned[strings.ToLower(path)]; !ok {
-				t.Errorf("%s clears %q, which none of its own LoginFiles reference; "+
-					"a platform must only clear what it saves", name, path)
+				t.Errorf("%s clears %q without a saved login or a declared transactional cache", name, path)
 			}
 		}
 	}

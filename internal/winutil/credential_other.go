@@ -10,6 +10,10 @@ func ReadCredential(target string) (Credential, error) {
 	return Credential{}, errCredentialManagerWindowsOnly
 }
 
+func ReadCredentials(target string) ([]Credential, error) {
+	return nil, errCredentialManagerWindowsOnly
+}
+
 func WriteCredential(credential Credential) error {
 	return errCredentialManagerWindowsOnly
 }

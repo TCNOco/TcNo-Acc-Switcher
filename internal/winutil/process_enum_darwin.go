@@ -19,10 +19,15 @@ const procNameMaxLen = 16
 // proc_pidpath from libproc, and so cgo. Targets longer than the 16 characters
 // the kernel keeps are handled by unixNameMatches.
 func forEachProcess(fn func(pid int, names []string)) {
+	if err := forEachProcessChecked(fn); err != nil {
+		slogWin().Warn("read kern.proc.all", "err", err)
+	}
+}
+
+func forEachProcessChecked(fn func(pid int, names []string)) error {
 	procs, err := unix.SysctlKinfoProcSlice("kern.proc.all")
 	if err != nil {
-		slogWin().Warn("read kern.proc.all", "err", err)
-		return
+		return err
 	}
 	for i := range procs {
 		p := &procs[i]
@@ -39,4 +44,5 @@ func forEachProcess(fn func(pid int, names []string)) {
 		}
 		fn(pid, []string{string(comm)})
 	}
+	return nil
 }
