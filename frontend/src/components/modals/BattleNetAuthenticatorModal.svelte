@@ -202,7 +202,7 @@ async function grant() {
       form.restoreCode = "";
       await grant();
       await refresh();
-      serial = restoredSerial;
+      serial = accounts.find(a => a.serial.replaceAll("-", "") === restoredSerial.replaceAll("-", ""))?.serial ?? serial;
       showScreen("home");
       notice = $t("Authenticator_Restored");
     });
@@ -215,6 +215,8 @@ async function grant() {
       await grant();
       await refresh();
       const recovered = accounts.filter(a => !saved.has(a.serial));
+      enrollment = "";
+      enrollmentState = "";
       if (!recovered.length) {
         notice = $t("Authenticator_NoRecovery");
         return;
@@ -279,7 +281,7 @@ async function grant() {
       remaining = Math.max(0, Math.ceil((expires - Date.now()) / 1000));
       if (!remaining) code = "";
       if (busy || polling || closed) return;
-      if (enrollment && enrollmentState !== "verification-required") {
+      if (enrollment && !["verification-required", "recovery-required"].includes(enrollmentState)) {
         polling = true;
         try {
           const result = await call("GetBattleNetEnrollmentStatus", enrollment, token);
@@ -294,7 +296,7 @@ async function grant() {
               showScreen("recovery");
               await call("OpenBattleNetAccount", serial, token);
             });
-          } else if (result.state === "verification-required") {
+          } else if (result.state === "verification-required" || result.state === "recovery-required") {
             await actions.openEnrollmentAccount();
           } else if (["failed", "expired", "canceled"].includes(result.state)) {
             enrollment = "";

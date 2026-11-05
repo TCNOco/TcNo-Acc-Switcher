@@ -22,7 +22,7 @@
 
   $: account = accounts.find(item => item.serial === serial);
   $: titleKey = {
-    home: "Authenticator_Title", add: "Authenticator_Add", enroll: enrollmentState === "verification-required" ? "Authenticator_AccountSetupTitle" : "Authenticator_Enroll",
+    home: "Authenticator_Title", add: "Authenticator_Add", enroll: enrollmentState === "recovery-required" ? "Authenticator_RecoverResponse" : enrollmentState === "verification-required" ? "Authenticator_AccountSetupTitle" : "Authenticator_Enroll",
     import: "Authenticator_Import", restore: "Authenticator_Restore", export: "Authenticator_Export",
     recovery: "Authenticator_Recovery", rename: "Authenticator_SaveLabel",
   }[screen];
@@ -97,8 +97,15 @@
       <button type="button" class="btnicontext" disabled={busy} on:click={actions.recover}>{$t("Authenticator_CheckRecovery")}</button>
     </details>
   {:else if screen === "enroll"}
-    {#if enrollmentState !== "verification-required"}<p class="hint">{$t("Authenticator_OnlineNotice")}</p>{/if}
-    {#if enrollmentState === "verification-required"}
+    {#if !["verification-required", "recovery-required"].includes(enrollmentState)}<p class="hint">{$t("Authenticator_OnlineNotice")}</p>{/if}
+    {#if enrollmentState === "recovery-required"}
+      <p role="status">{$t("Authenticator_RecoveryRequired")}</p>
+      <p class="hint">{$t("Authenticator_RecoveryRequiredHint")}</p>
+      <div class="actions">
+        <button type="button" class="btnicontext modal-primary" disabled={busy} on:click={actions.recover}>{$t("Authenticator_RecoverResponse")}</button>
+        <button type="button" class="btnicontext" disabled={busy} on:click={actions.openEnrollmentAccount}>{$t("Authenticator_Browse")}</button>
+      </div>
+    {:else if enrollmentState === "verification-required"}
       <p role="status">{$t("Authenticator_AccountSetupRequired")}</p>
       <ol class="setup-steps">
         <li>{$t("Authenticator_AccountSetupStepQuestion")}</li>
@@ -115,6 +122,7 @@
       <p role="status">{$t(enrollmentState === "saving" ? "Authenticator_Saving" : "Authenticator_Waiting")}</p>
       <div class="actions"><button type="button" class="btnicontext" disabled={busy || enrollmentState === "saving"} on:click={actions.cancelEnrollment}>{$t("Authenticator_Cancel")}</button></div>
     {:else}
+      <p class="hint">{$t("Authenticator_EnrollmentEffect")}</p>
       <ol class="setup-steps">
         <li>{$t("Authenticator_EnrollStepSignIn")}</li>
         <li>{$t("Authenticator_EnrollStepSetup")}</li>

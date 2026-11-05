@@ -23,6 +23,14 @@ function view(props: Partial<ComponentProps<typeof BattleNetAuthenticatorPanel>>
 }
 
 describe("Battle.net authenticator tasks", () => {
+  it("offers recovery without another enrollment after an uncertain response", () => {
+    const html = view({ screen: "enroll", enrollment: "handle", enrollmentState: "recovery-required" });
+    expect(html).toContain("Authenticator_RecoveryRequired");
+    expect(html).toContain("Authenticator_RecoverResponse");
+    expect(html).toContain("Authenticator_Browse");
+    expect(html).not.toContain("Authenticator_RetrySetup");
+    expect(html).not.toContain("Authenticator_OpenBrowser");
+  });
   it("offers account setup instead of another sign-in when verification is required", () => {
     const html = view({ screen: "enroll", enrollment: "handle", enrollmentState: "verification-required" });
     expect(html).toContain("Authenticator_AccountSetupRequired");
