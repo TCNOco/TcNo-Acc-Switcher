@@ -107,7 +107,7 @@ func (a *OneOperationAccess) ListRecords() ([]RecordInfo, error) {
 		out = append(out, RecordInfo{ID: record.ID, SteamID64: record.SteamID64})
 	}
 	sort.Slice(out, func(i, j int) bool { return out[i].SteamID64 < out[j].SteamID64 })
-	return out, nil
+	return filterProvider(out, ProviderSteam), nil
 }
 
 // GetRecord decrypts one record inside the current scope. The returned

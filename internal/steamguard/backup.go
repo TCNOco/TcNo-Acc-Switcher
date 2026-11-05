@@ -312,7 +312,7 @@ func verifyCopiedVault(path string, creds vault.Credentials, appPassword string,
 		return err
 	}
 	defer copyVault.Lock()
-	records, err := copyVault.List()
+	records, err := copyVault.ListAllRecords()
 	if err != nil {
 		return err
 	}

@@ -787,6 +787,10 @@ func (v *Vault) getRecordWithKeysLocked(id string, vaultKey, outerKey []byte) ([
 func (v *Vault) Get(id string) ([]byte, error) { return v.GetRecord(id) }
 
 func (v *Vault) ListRecords() ([]RecordInfo, error) {
+	return v.ListProviderRecords(ProviderSteam)
+}
+
+func (v *Vault) ListAllRecords() ([]RecordInfo, error) {
 	v.mu.Lock()
 	defer v.mu.Unlock()
 	var out []RecordInfo
