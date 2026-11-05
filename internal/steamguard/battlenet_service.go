@@ -127,7 +127,7 @@ func (s *Service) UnlockBattleNet(password, keyfilePath, backupKey string, remem
 }
 
 func battleNetSummary(a battlenetauth.Account) BattleNetAccountSummary {
-	return BattleNetAccountSummary{Serial: a.Serial, Label: a.Label, Pending: a.Pending, HasRestoreCode: a.RestoreCode != "", AccountLink: a.AccountLink, RequiresAccountSetup: a.RequiresAccountSetup}
+	return BattleNetAccountSummary{Serial: a.Serial, Label: a.DisplayName(), Pending: a.Pending, HasRestoreCode: a.RestoreCode != "", AccountLink: a.AccountLink, RequiresAccountSetup: a.RequiresAccountSetup}
 }
 
 func (s *Service) ListBattleNetAccounts(token string) ([]BattleNetAccountSummary, error) {

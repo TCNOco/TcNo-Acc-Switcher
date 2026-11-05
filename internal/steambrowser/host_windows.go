@@ -47,6 +47,10 @@ type windowsView struct {
 	onNewWindow         func(string)
 	onDownload          func(string)
 	interceptNavigation func(string) bool
+	accountNameHandler  *webview2.ICoreWebView2ExecuteScriptCompletedHandler
+	accountNameResult   func(string, error)
+	navigationVersion   uint64
+	accountNameVersion  uint64
 
 	// handlers holds the event-handler objects for the view's lifetime.
 	//
@@ -398,6 +402,10 @@ func (v *windowsView) raise() {
 
 func (v *windowsView) Close() {
 	v.closeOnce.Do(func() {
+		if complete := v.accountNameResult; complete != nil {
+			v.accountNameResult = nil
+			complete("", ErrNoSuchWindow)
+		}
 		if v.chromium != nil {
 			v.chromium.Close()
 			v.chromium = nil
@@ -445,8 +453,60 @@ func (v *windowsView) NavigationStarting(_ *webview2.ICoreWebView2, raw *webview
 			return 0
 		}
 	}
+	v.navigationVersion++
 	loading := true
 	v.refresh(&loading)
+	return 0
+}
+
+func (v *windowsView) readBattleNetAccountName(complete func(string, error)) error {
+	if v.platform != PlatformBattleNet || v.chromium == nil || v.accountNameResult != nil {
+		return errBattleNetAccountName
+	}
+	view := v.chromium.GetWebView()
+	if view == nil {
+		return ErrNoSuchWindow
+	}
+	source, err := view.GetSource()
+	if err != nil || !battleNetSecurityPage(source) {
+		complete("", err)
+		return nil
+	}
+	if v.accountNameHandler == nil {
+		v.accountNameHandler = webview2.NewICoreWebView2ExecuteScriptCompletedHandler(v)
+		v.handlers = append(v.handlers, v.accountNameHandler)
+	}
+	v.accountNameResult = complete
+	v.accountNameVersion = v.navigationVersion
+	if err := view.ExecuteScript(battleNetAccountNameScript, v.accountNameHandler); err != nil {
+		v.accountNameResult = nil
+		return errBattleNetAccountName
+	}
+	return nil
+}
+
+func (v *windowsView) ExecuteScriptCompleted(errorCode uintptr, raw *uint16) uintptr {
+	complete := v.accountNameResult
+	v.accountNameResult = nil
+	if complete == nil {
+		return 0
+	}
+	if errorCode != 0 || v.chromium == nil || v.accountNameVersion != v.navigationVersion {
+		complete("", errBattleNetAccountName)
+		return 0
+	}
+	view := v.chromium.GetWebView()
+	if view == nil {
+		complete("", ErrNoSuchWindow)
+		return 0
+	}
+	source, err := view.GetSource()
+	if err != nil || !battleNetSecurityPage(source) {
+		complete("", errBattleNetAccountName)
+		return 0
+	}
+	name, err := parseBattleNetAccountName(webview2.UTF16PtrToString(raw))
+	complete(name, err)
 	return 0
 }
 

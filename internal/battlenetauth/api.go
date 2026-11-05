@@ -110,6 +110,11 @@ func (c *Client) RestoreWithRecovery(ctx context.Context, accountIdentifier, ser
 	if err != nil || len(accountIdentifier) == 0 || len(accountIdentifier) > 320 || len(restoreCode) != 10 {
 		return Account{}, ErrInvalid
 	}
+	for _, c := range accountIdentifier {
+		if c < 32 || c == 127 {
+			return Account{}, ErrInvalid
+		}
+	}
 	body, err := json.Marshal(map[string]string{"accountIdentifier": accountIdentifier, "serial": serial, "restoreCode": restoreCode})
 	if err != nil {
 		return Account{}, ErrInvalid
@@ -119,7 +124,7 @@ func (c *Client) RestoreWithRecovery(ctx context.Context, accountIdentifier, ser
 	if err != nil {
 		return Account{}, err
 	}
-	a := Account{Version: 1, Serial: serial, RestoreCode: restoreCode, DeviceSecret: textField(o, "deviceSecret"), Pending: true, RequiresAccountSetup: accountSetupRequired(o)}
+	a := Account{Version: 1, Serial: serial, AccountName: strings.TrimSpace(accountIdentifier), RestoreCode: restoreCode, DeviceSecret: textField(o, "deviceSecret"), Pending: true, RequiresAccountSetup: accountSetupRequired(o)}
 	if err := a.Validate(); err != nil {
 		if setupOnlyResponse(o) {
 			return Account{}, ErrAccountVerification

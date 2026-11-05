@@ -16,6 +16,8 @@ type iCoreWebView2ExecuteScriptCompletedHandler struct {
 	impl _ICoreWebView2ExecuteScriptCompletedHandlerImpl
 }
 
+type ICoreWebView2ExecuteScriptCompletedHandler = iCoreWebView2ExecuteScriptCompletedHandler
+
 func (i *iCoreWebView2ExecuteScriptCompletedHandler) AddRef() uint32 {
 	ret, _, _ := i.vtbl.AddRef.Call(uintptr(unsafe.Pointer(i)))
 
@@ -63,4 +65,8 @@ func newICoreWebView2ExecuteScriptCompletedHandler(impl _ICoreWebView2ExecuteScr
 		vtbl: &_ICoreWebView2ExecuteScriptCompletedHandlerFn,
 		impl: impl,
 	}
+}
+
+func NewICoreWebView2ExecuteScriptCompletedHandler(impl _ICoreWebView2ExecuteScriptCompletedHandlerImpl) *iCoreWebView2ExecuteScriptCompletedHandler {
+	return newICoreWebView2ExecuteScriptCompletedHandler(impl)
 }

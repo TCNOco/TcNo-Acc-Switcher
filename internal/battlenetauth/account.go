@@ -40,6 +40,7 @@ type Account struct {
 	Version              int    `json:"version"`
 	Serial               string `json:"serial"`
 	Label                string `json:"label,omitempty"`
+	AccountName          string `json:"accountName,omitempty"`
 	RestoreCode          string `json:"restoreCode,omitempty"`
 	DeviceSecret         string `json:"deviceSecret"`
 	AccountLink          string `json:"accountLink,omitempty"`
@@ -62,7 +63,7 @@ func (a Account) Validate() error {
 			}
 		}
 	}
-	if a.Version != 1 || !serialPattern.MatchString(a.Serial) || len(a.Label) > 200 || len(a.AccountLink) > 320 {
+	if a.Version != 1 || !serialPattern.MatchString(a.Serial) || len(a.Label) > 200 || len(a.AccountName) > 320 || len(a.AccountLink) > 320 {
 		return ErrInvalid
 	}
 	secret, err := hex.DecodeString(a.DeviceSecret)
@@ -80,7 +81,7 @@ func (a Account) Validate() error {
 			}
 		}
 	}
-	for _, text := range []string{a.Label, a.AccountLink} {
+	for _, text := range []string{a.Label, a.AccountName, a.AccountLink} {
 		for _, c := range text {
 			if c < 32 || c == 127 {
 				return ErrInvalid
@@ -88,6 +89,16 @@ func (a Account) Validate() error {
 		}
 	}
 	return nil
+}
+
+func (a Account) DisplayName() string {
+	if a.Label != "" && a.Label != a.Serial {
+		return a.Label
+	}
+	if a.AccountName != "" {
+		return a.AccountName
+	}
+	return a.Serial
 }
 
 func (a Account) Code(now time.Time) (string, int64, error) {

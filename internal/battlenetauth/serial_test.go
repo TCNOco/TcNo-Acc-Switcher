@@ -60,7 +60,7 @@ func TestRestoreNormalizesSpacedSerial(t *testing.T) {
 		return &http.Response{StatusCode: 200, Body: io.NopCloser(strings.NewReader(`{"deviceSecret":"3132333435363738393031323334353637383930"}`)), Header: http.Header{}}, nil
 	})
 	a, err := c.Restore(context.Background(), "test@example.invalid", "EU 1234 5678 9012", "0123456789")
-	if err != nil || a.Serial != "EU-1234-5678-9012" || calls != 1 {
+	if err != nil || a.Serial != "EU-1234-5678-9012" || a.AccountName != "test@example.invalid" || calls != 1 {
 		t.Fatal("restore rejected a spaced serial or retried the request")
 	}
 }

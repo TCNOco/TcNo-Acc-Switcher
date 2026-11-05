@@ -394,11 +394,7 @@ type backupRecordSummary struct {
 // A backup can legitimately contain login-only records, not just maFiles.
 func describeBackupRecord(plaintext []byte) (backupRecordSummary, error) {
 	if a, err := battlenetauth.ParseAccount(plaintext); err == nil {
-		name := a.Label
-		if name == "" {
-			name = a.Serial
-		}
-		return backupRecordSummary{accountName: "Battle.net: " + name}, nil
+		return backupRecordSummary{accountName: "Battle.net: " + a.DisplayName()}, nil
 	}
 	switch kind := vaultrecord.Sniff(plaintext); kind {
 	case vaultrecord.KindLoginOnly:

@@ -36,10 +36,11 @@ type battleNetOperation struct {
 var ErrBattleNetResponseRecovery = errors.New("Recover the saved Battle.net response before starting setup again")
 
 type battleNetRuntime struct {
-	pending   securemem.Handle
-	browser   *steambrowser.Service
-	operation *battleNetOperation
-	client    battleNetEnrollmentClient
+	pending         securemem.Handle
+	browser         *steambrowser.Service
+	operation       *battleNetOperation
+	client          battleNetEnrollmentClient
+	readAccountName func(context.Context, *steambrowser.Service, string) (string, error)
 }
 
 type battleNetEnrollmentClient interface {
@@ -49,7 +50,7 @@ type battleNetEnrollmentClient interface {
 func ConfigureBattleNetBrowser(s *Service, browser *steambrowser.Service) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	s.battleNet = &battleNetRuntime{browser: browser, client: battlenetauth.NewClient()}
+	s.battleNet = &battleNetRuntime{browser: browser, client: battlenetauth.NewClient(), readAccountName: steambrowser.ReadBattleNetAccountName}
 }
 
 func (s *Service) BeginBattleNetEnrollment(token string) (BattleNetEnrollmentStatus, error) {
@@ -341,13 +342,17 @@ func (s *Service) OpenBattleNetAccount(serial, token string) error {
 		return ErrUnsupportedInput
 	}
 	browser := s.battleNet.browser
-	profile := a.BrowserProfile
-	if profile == "" {
-		sum := sha256.Sum256([]byte(a.Serial))
-		profile = fmt.Sprintf("battlenet-%x", sum[:16])
-	}
+	profile := battleNetBrowserProfile(a)
 	s.mu.Unlock()
 	return steambrowser.OpenBattleNetAccount(browser, profile)
+}
+
+func battleNetBrowserProfile(a battlenetauth.Account) string {
+	if a.BrowserProfile != "" {
+		return a.BrowserProfile
+	}
+	sum := sha256.Sum256([]byte(a.Serial))
+	return fmt.Sprintf("battlenet-%x", sum[:16])
 }
 
 func (s *Service) AcknowledgeBattleNetBackup(serial, token string) error {
