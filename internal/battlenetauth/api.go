@@ -22,7 +22,11 @@ func NewClient() *Client {
 }
 
 func (c *Client) request(ctx context.Context, endpoint, bearer, contentType string, body []byte, preserve ...func([]byte) error) (map[string]json.RawMessage, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, bytes.NewReader(body))
+	return c.requestMethod(ctx, http.MethodPost, endpoint, bearer, contentType, body, preserve...)
+}
+
+func (c *Client) requestMethod(ctx context.Context, method, endpoint, bearer, contentType string, body []byte, preserve ...func([]byte) error) (map[string]json.RawMessage, error) {
+	req, err := http.NewRequestWithContext(ctx, method, endpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, ErrInvalid
 	}
@@ -71,7 +75,7 @@ func (c *Client) Enroll(ctx context.Context, sessionToken string) (Account, erro
 	return c.EnrollWithRecovery(ctx, sessionToken, nil)
 }
 
-func (c *Client) EnrollWithRecovery(ctx context.Context, sessionToken string, preserve func([]byte) error) (Account, error) {
+func (c *Client) EnrollWithRecovery(ctx context.Context, sessionToken string, preserve func([]byte) error, identityReady ...func(EnrollmentIdentity) error) (Account, error) {
 	if !validSessionToken(sessionToken) {
 		return Account{}, ErrInvalid
 	}
@@ -88,6 +92,21 @@ func (c *Client) EnrollWithRecovery(ctx context.Context, sessionToken string, pr
 	if bearer == "" || len(bearer) > 16384 || strings.ContainsAny(bearer, "\r\n") {
 		return Account{}, ErrInvalid
 	}
+	user, err := c.requestMethod(ctx, http.MethodGet, "https://oauth.battle.net/userinfo", bearer, "application/json", nil)
+	if err != nil {
+		return Account{}, fmt.Errorf("%w: %v", ErrAccountIdentity, err)
+	}
+	identity := EnrollmentIdentity{BattleTag: strings.TrimSpace(textField(user, "battletag")), Email: NormalizeAccountEmail(textField(user, "email"))}
+	if err := identity.Validate(); err != nil {
+		return Account{}, err
+	}
+	for _, ready := range identityReady {
+		if ready != nil {
+			if err := ready(identity); err != nil {
+				return Account{}, err
+			}
+		}
+	}
 	o, err = c.request(ctx, "https://authenticator-rest-api.bnet-identity.blizzard.net/v1/authenticator", bearer, "application/json", nil, preserve)
 	if err != nil {
 		return Account{}, err
@@ -97,6 +116,8 @@ func (c *Client) EnrollWithRecovery(ctx context.Context, sessionToken string, pr
 		return Account{}, ErrAccountVerification
 	}
 	a.Pending = true
+	a.AccountName = identity.BattleTag
+	a.AccountLink = identity.Email
 	return a, err
 }
 

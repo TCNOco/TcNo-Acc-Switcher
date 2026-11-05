@@ -12,11 +12,14 @@ func TestCompactSerialEnrollmentAndImports(t *testing.T) {
 	const response = `{"serial":"EU123456789012","restoreCode":"0123456789","deviceSecret":"3132333435363738393031323334353637383930"}`
 	c := NewClient()
 	calls := 0
-	c.http.Transport = transportFunc(func(*http.Request) (*http.Response, error) {
+	c.http.Transport = transportFunc(func(r *http.Request) (*http.Response, error) {
 		calls++
 		body := response
 		if calls == 1 {
 			body = `{"access_token":"fixture-bearer"}`
+		}
+		if r.URL.Path == "/userinfo" {
+			body = `{"battletag":"Example#1234"}`
 		}
 		return &http.Response{StatusCode: 200, Body: io.NopCloser(strings.NewReader(body)), Header: http.Header{}}, nil
 	})
@@ -30,7 +33,7 @@ func TestCompactSerialEnrollmentAndImports(t *testing.T) {
 			t.Fatal("compact backup serial was not accepted")
 		}
 	}
-	if calls != 2 {
+	if calls != 3 {
 		t.Fatal("enrollment retried")
 	}
 }

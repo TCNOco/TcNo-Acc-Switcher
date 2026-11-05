@@ -18,11 +18,14 @@ func TestEnrollmentResponseIsPreservedBeforeValidation(t *testing.T) {
 		c := NewClient()
 		calls, saves := 0, 0
 		var preserved []byte
-		c.http.Transport = transportFunc(func(*http.Request) (*http.Response, error) {
+		c.http.Transport = transportFunc(func(r *http.Request) (*http.Response, error) {
 			calls++
 			body := response
 			if calls == 1 {
 				body = `{"access_token":"fixture-bearer"}`
+			}
+			if r.URL.Path == "/userinfo" {
+				body = `{"battletag":"Example#1234"}`
 			}
 			return &http.Response{StatusCode: 200, Body: io.NopCloser(strings.NewReader(body)), Header: http.Header{}}, nil
 		})
@@ -31,7 +34,7 @@ func TestEnrollmentResponseIsPreservedBeforeValidation(t *testing.T) {
 			preserved = append([]byte(nil), raw...)
 			return nil
 		})
-		if !errors.Is(err, ErrInvalid) || calls != 2 || saves != 1 || !bytes.Equal(preserved, []byte(response)) {
+		if !errors.Is(err, ErrInvalid) || calls != 3 || saves != 1 || !bytes.Equal(preserved, []byte(response)) {
 			t.Fatal("invalid response was lost or enrollment was retried")
 		}
 	}

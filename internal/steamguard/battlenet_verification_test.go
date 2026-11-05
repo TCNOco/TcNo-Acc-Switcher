@@ -21,8 +21,13 @@ type battleNetVerificationClient struct {
 	response []byte
 }
 
-func (c *battleNetVerificationClient) EnrollWithRecovery(_ context.Context, _ string, preserve func([]byte) error) (battlenetauth.Account, error) {
+func (c *battleNetVerificationClient) EnrollWithRecovery(_ context.Context, _ string, preserve func([]byte) error, ready ...func(battlenetauth.EnrollmentIdentity) error) (battlenetauth.Account, error) {
 	c.calls++
+	for _, notify := range ready {
+		if err := notify(battlenetauth.EnrollmentIdentity{BattleTag: "Fixture#1234"}); err != nil {
+			return battlenetauth.Account{}, err
+		}
+	}
 	response := c.response
 	if response == nil && c.err == nil {
 		response, _ = json.Marshal(c.account)
@@ -73,7 +78,28 @@ func TestBattleNetVerificationNoticeDoesNotDiscardSavedAuthenticator(t *testing.
 		RestoreCode: "0123456789", Pending: true, RequiresAccountSetup: true,
 	}}
 	s, op, _ := battleNetVerificationFixture(t, client)
+	closed := false
+	s.battleNet.readLoginIdentity = func(_ context.Context, _ *steambrowser.Service, profile string) (steambrowser.BattleNetAccountIdentity, error) {
+		if profile != "battlenet-fixture" {
+			t.Fatal("wrong login profile")
+		}
+		if !s.mu.TryLock() {
+			t.Fatal("native identity read holds the service lock")
+		}
+		s.mu.Unlock()
+		return steambrowser.BattleNetAccountIdentity{Email: "fixture@example.test"}, nil
+	}
+	s.battleNet.closeEnrollmentBrowser = func(_ *steambrowser.Service, profile string) {
+		a, err := battleNetRecord(s.vault, client.account.Serial)
+		if err != nil || a.AccountName != "Fixture#1234" || a.AccountLink != "fixture@example.test" || profile != "battlenet-fixture" || op.status.State != "pending-backup" {
+			t.Fatal("browser closed before named authenticator was saved")
+		}
+		closed = true
+	}
 	s.completeBattleNetEnrollment(op, "EU-012345678901234567890123456789")
+	if !closed {
+		t.Fatal("successful enrollment browser was left open")
+	}
 	if op.status.State != "pending-backup" || op.status.Error != "" {
 		t.Fatal("valid authenticator did not reach recovery backup")
 	}
@@ -150,7 +176,7 @@ func TestBattleNetResponseRecoverySurvivesLossOfPendingMemory(t *testing.T) {
 		t.Fatal(err)
 	}
 	a, err := battleNetRecord(s.vault, "EU-1234-5678-9012")
-	if err != nil || a.DeviceSecret != "3132333435363738393031323334353637383930" || !a.Pending {
+	if err != nil || a.DeviceSecret != "3132333435363738393031323334353637383930" || !a.Pending || a.AccountName != "Fixture#1234" {
 		t.Fatal("encrypted response was not recovered")
 	}
 	payloads, err := s.vault.BattleNetRecoveryPayloads()
@@ -165,6 +191,7 @@ func TestBattleNetResponseRecoverySurvivesLossOfPendingMemory(t *testing.T) {
 func TestBattleNetMalformedResponseStaysRecoverableAndBlocksEnrollment(t *testing.T) {
 	client := &battleNetVerificationClient{err: battlenetauth.ErrInvalid, response: []byte(`{"deviceSecret":"unsupported-shape"}`)}
 	s, op, grant := battleNetVerificationFixture(t, client)
+	s.battleNet.closeEnrollmentBrowser = func(*steambrowser.Service, string) { t.Fatal("failed enrollment browser closed") }
 	s.completeBattleNetEnrollment(op, "EU-012345678901234567890123456789")
 	if op.status.State != "recovery-required" {
 		t.Fatal("malformed response allowed normal setup retry")

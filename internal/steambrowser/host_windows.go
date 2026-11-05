@@ -43,14 +43,16 @@ type windowsView struct {
 	canBack bool
 	canFwd  bool
 
-	onState             func(ViewState)
-	onNewWindow         func(string)
-	onDownload          func(string)
-	interceptNavigation func(string) bool
-	accountNameHandler  *webview2.ICoreWebView2ExecuteScriptCompletedHandler
-	accountNameResult   func(BattleNetAccountIdentity, error)
-	navigationVersion   uint64
-	accountNameVersion  uint64
+	onState                func(ViewState)
+	onNewWindow            func(string)
+	onDownload             func(string)
+	interceptNavigation    func(string) bool
+	accountNameHandler     *webview2.ICoreWebView2ExecuteScriptCompletedHandler
+	accountNameResult      func(BattleNetAccountIdentity, error)
+	navigationVersion      uint64
+	accountNameVersion     uint64
+	accountNamePageAllowed func(string) bool
+	accountNameParse       func(string) (BattleNetAccountIdentity, error)
 
 	// handlers holds the event-handler objects for the view's lifetime.
 	//
@@ -460,6 +462,14 @@ func (v *windowsView) NavigationStarting(_ *webview2.ICoreWebView2, raw *webview
 }
 
 func (v *windowsView) readBattleNetAccountName(complete func(BattleNetAccountIdentity, error)) error {
+	return v.readBattleNetIdentity(battleNetAccountNameScript, battleNetSecurityPage, parseBattleNetAccountIdentity, complete)
+}
+
+func (v *windowsView) readBattleNetLoginIdentity(complete func(BattleNetAccountIdentity, error)) error {
+	return v.readBattleNetIdentity(battleNetLoginIdentityScript, battleNetLoginPage, parseBattleNetLoginIdentity, complete)
+}
+
+func (v *windowsView) readBattleNetIdentity(script string, allowed func(string) bool, parse func(string) (BattleNetAccountIdentity, error), complete func(BattleNetAccountIdentity, error)) error {
 	if v.platform != PlatformBattleNet || v.chromium == nil || v.accountNameResult != nil {
 		return errBattleNetAccountName
 	}
@@ -468,7 +478,7 @@ func (v *windowsView) readBattleNetAccountName(complete func(BattleNetAccountIde
 		return ErrNoSuchWindow
 	}
 	source, err := view.GetSource()
-	if err != nil || !battleNetSecurityPage(source) {
+	if err != nil || !allowed(source) {
 		complete(BattleNetAccountIdentity{}, err)
 		return nil
 	}
@@ -478,7 +488,9 @@ func (v *windowsView) readBattleNetAccountName(complete func(BattleNetAccountIde
 	}
 	v.accountNameResult = complete
 	v.accountNameVersion = v.navigationVersion
-	if err := view.ExecuteScript(battleNetAccountNameScript, v.accountNameHandler); err != nil {
+	v.accountNamePageAllowed = allowed
+	v.accountNameParse = parse
+	if err := view.ExecuteScript(script, v.accountNameHandler); err != nil {
 		v.accountNameResult = nil
 		return errBattleNetAccountName
 	}
@@ -501,11 +513,11 @@ func (v *windowsView) ExecuteScriptCompleted(errorCode uintptr, raw *uint16) uin
 		return 0
 	}
 	source, err := view.GetSource()
-	if err != nil || !battleNetSecurityPage(source) {
+	if err != nil || v.accountNamePageAllowed == nil || !v.accountNamePageAllowed(source) {
 		complete(BattleNetAccountIdentity{}, errBattleNetAccountName)
 		return 0
 	}
-	identity, err := parseBattleNetAccountIdentity(webview2.UTF16PtrToString(raw))
+	identity, err := v.accountNameParse(webview2.UTF16PtrToString(raw))
 	complete(identity, err)
 	return 0
 }

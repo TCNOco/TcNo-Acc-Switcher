@@ -62,17 +62,20 @@ func TestEnrollmentDoesNotRetryOrExposeResponse(t *testing.T) {
 		calls++
 		body := `{"access_token":"fake-bearer"}`
 		status := 200
-		if calls == 2 {
+		if calls == 3 {
 			status = 500
 			body = `{"deviceSecret":"do-not-expose-this"}`
 		}
-		if r.URL.Scheme != "https" || r.Method != "POST" {
+		if r.URL.Scheme != "https" || (r.Method != "POST" && r.URL.Path != "/userinfo") {
 			t.Fatal("unsafe API request")
+		}
+		if r.URL.Path == "/userinfo" {
+			body = `{"battletag":"Example#1234"}`
 		}
 		return &http.Response{StatusCode: status, Body: io.NopCloser(strings.NewReader(body)), Header: http.Header{}}, nil
 	})
 	_, err := c.Enroll(context.Background(), "US-012345678901234567890123456789")
-	if err == nil || calls != 2 || strings.Contains(err.Error(), "do-not-expose-this") {
+	if err == nil || calls != 3 || strings.Contains(err.Error(), "do-not-expose-this") {
 		t.Fatal("enrollment retried or exposed response material")
 	}
 }
@@ -83,13 +86,16 @@ func TestEnrollmentReturnsPendingRecord(t *testing.T) {
 	c.http.Transport = transportFunc(func(r *http.Request) (*http.Response, error) {
 		calls++
 		body := `{"access_token":"fake-bearer"}`
-		if calls == 2 {
+		if calls == 3 {
 			body = `{"serial":"US-1234-5678-9012","deviceSecret":"3132333435363738393031323334353637383930","restoreCode":"0123456789"}`
+		}
+		if r.URL.Path == "/userinfo" {
+			body = `{"battletag":"Example#1234"}`
 		}
 		return &http.Response{StatusCode: 200, Body: io.NopCloser(strings.NewReader(body)), Header: http.Header{}}, nil
 	})
 	a, err := c.Enroll(context.Background(), "US-012345678901234567890123456789")
-	if err != nil || !a.Pending || calls != 2 {
+	if err != nil || !a.Pending || calls != 3 {
 		t.Fatal("enrollment did not produce a valid pending record", err)
 	}
 }
@@ -104,6 +110,9 @@ func TestAccountSetupFlagPreservesReturnedCredentials(t *testing.T) {
 				body := `{"serial":"EU-1234-5678-9012","restoreCode":"0123456789","deviceSecret":"3132333435363738393031323334353637383930","requireHealup":true}`
 				if !restore && calls == 1 {
 					body = `{"access_token":"fake-bearer"}`
+				}
+				if r.URL.Path == "/userinfo" {
+					body = `{"battletag":"Example#1234"}`
 				}
 				return &http.Response{StatusCode: 200, Body: io.NopCloser(strings.NewReader(body)), Header: http.Header{}}, nil
 			})
@@ -125,7 +134,7 @@ func TestAccountSetupFlagPreservesReturnedCredentials(t *testing.T) {
 			if err != nil || !restored.RequiresAccountSetup || restored.DeviceSecret != a.DeviceSecret {
 				t.Fatal("saved account lost credentials or setup notice")
 			}
-			if (restore && calls != 1) || (!restore && calls != 2) {
+			if (restore && calls != 1) || (!restore && calls != 3) {
 				t.Fatal("request retried")
 			}
 		})
@@ -143,6 +152,9 @@ func TestAccountSetupWithoutCredentialsStopsWithoutRetry(t *testing.T) {
 				if stage == "enroll" && calls == 1 {
 					body = `{"access_token":"fake-bearer"}`
 				}
+				if r.URL.Path == "/userinfo" {
+					body = `{"battletag":"Example#1234"}`
+				}
 				return &http.Response{StatusCode: 200, Body: io.NopCloser(strings.NewReader(body)), Header: http.Header{}}, nil
 			})
 			var err error
@@ -156,7 +168,7 @@ func TestAccountSetupWithoutCredentialsStopsWithoutRetry(t *testing.T) {
 			}
 			want := 1
 			if stage == "enroll" {
-				want = 2
+				want = 3
 			}
 			if calls != want {
 				t.Fatal("verification requirement caused extra requests")

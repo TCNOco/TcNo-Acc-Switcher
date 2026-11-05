@@ -26,32 +26,35 @@ type BattleNetEnrollmentStatus struct {
 }
 
 type battleNetOperation struct {
-	vault   *vault.Vault
-	status  BattleNetEnrollmentStatus
-	token   string
-	expires time.Time
-	cancel  context.CancelFunc
+	vault    *vault.Vault
+	status   BattleNetEnrollmentStatus
+	token    string
+	expires  time.Time
+	cancel   context.CancelFunc
+	identity battlenetauth.EnrollmentIdentity
 }
 
 var ErrBattleNetResponseRecovery = errors.New("Recover the saved Battle.net response before starting setup again")
 
 type battleNetRuntime struct {
-	pending         securemem.Handle
-	browser         *steambrowser.Service
-	operation       *battleNetOperation
-	client          battleNetEnrollmentClient
-	readAccountName func(context.Context, *steambrowser.Service, string) (steambrowser.BattleNetAccountIdentity, error)
-	identityStatus  map[string]string
+	pending                securemem.Handle
+	browser                *steambrowser.Service
+	operation              *battleNetOperation
+	client                 battleNetEnrollmentClient
+	readAccountName        func(context.Context, *steambrowser.Service, string) (steambrowser.BattleNetAccountIdentity, error)
+	readLoginIdentity      func(context.Context, *steambrowser.Service, string) (steambrowser.BattleNetAccountIdentity, error)
+	closeEnrollmentBrowser func(*steambrowser.Service, string)
+	identityStatus         map[string]string
 }
 
 type battleNetEnrollmentClient interface {
-	EnrollWithRecovery(context.Context, string, func([]byte) error) (battlenetauth.Account, error)
+	EnrollWithRecovery(context.Context, string, func([]byte) error, ...func(battlenetauth.EnrollmentIdentity) error) (battlenetauth.Account, error)
 }
 
 func ConfigureBattleNetBrowser(s *Service, browser *steambrowser.Service) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	s.battleNet = &battleNetRuntime{browser: browser, client: battlenetauth.NewClient(), readAccountName: steambrowser.ReadBattleNetAccountIdentity}
+	s.battleNet = &battleNetRuntime{browser: browser, client: battlenetauth.NewClient(), readAccountName: steambrowser.ReadBattleNetAccountIdentity, readLoginIdentity: steambrowser.ReadBattleNetLoginIdentity, closeEnrollmentBrowser: steambrowser.CloseBattleNetEnrollmentBrowser}
 }
 
 func (s *Service) BeginBattleNetEnrollment(token string) (BattleNetEnrollmentStatus, error) {
@@ -111,14 +114,15 @@ func (s *Service) BeginBattleNetEnrollment(token string) (BattleNetEnrollmentSta
 
 func (s *Service) completeBattleNetEnrollment(op *battleNetOperation, sessionToken string) {
 	s.mu.Lock()
-	defer s.mu.Unlock()
 	if s.battleNet == nil || s.battleNet.operation != op || op.status.State != "waiting" || !time.Now().Before(op.expires) {
+		s.mu.Unlock()
 		return
 	}
 	v, err := s.battleNetOperationVaultLocked(op)
 	if err != nil {
 		op.status.State = "failed"
 		op.status.Error = "Unlock the vault and start enrollment again"
+		s.mu.Unlock()
 		return
 	}
 	op.status.State = "saving"
@@ -126,20 +130,51 @@ func (s *Service) completeBattleNetEnrollment(op *battleNetOperation, sessionTok
 	if probeErr != nil {
 		op.status.State = "failed"
 		op.status.Error = "Protected memory is unavailable; enrollment was not started"
+		s.mu.Unlock()
 		return
 	}
 	_ = probe.Destroy()
 	ctx, cancel := context.WithTimeout(context.Background(), 25*time.Second)
 	defer cancel()
 	op.cancel = cancel
+	runtime := s.battleNet
+	profile := "battlenet-" + strings.ToLower(op.status.Handle)
+	s.mu.Unlock()
+	var loginIdentity steambrowser.BattleNetAccountIdentity
+	if runtime.readLoginIdentity != nil {
+		readCtx, readCancel := context.WithTimeout(ctx, 2*time.Second)
+		loginIdentity, _ = runtime.readLoginIdentity(readCtx, runtime.browser, profile)
+		readCancel()
+	}
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.battleNet != runtime || runtime.operation != op || op.status.State != "saving" {
+		return
+	}
+	if _, err = s.battleNetOperationVaultLocked(op); err != nil || ctx.Err() != nil {
+		op.status.State = "failed"
+		op.status.Error = "Unlock the vault and start enrollment again"
+		return
+	}
 	receiptID, err := v.CaptureProviderRecord(vault.ProviderBattleNet, func(save func([]byte) error) (string, []byte, error) {
-		a, err := s.battleNet.client.EnrollWithRecovery(ctx, sessionToken, s.preserveBattleNetResponse("battlenet-"+strings.ToLower(op.status.Handle), "", "", save))
+		a, err := runtime.client.EnrollWithRecovery(ctx, sessionToken, s.preserveBattleNetResponse(profile, "", "", save, func() battlenetauth.EnrollmentIdentity { return op.identity }), func(identity battlenetauth.EnrollmentIdentity) error {
+			if identity.Email == "" {
+				identity.Email = battlenetauth.NormalizeAccountEmail(loginIdentity.Email)
+			}
+			if err := identity.Validate(); err != nil {
+				return err
+			}
+			op.identity = identity
+			return nil
+		})
 		sessionToken = ""
 		if err != nil {
 			return "", nil, err
 		}
 		op.status.Serial = a.Serial
-		a.BrowserProfile = "battlenet-" + strings.ToLower(op.status.Handle)
+		a.BrowserProfile = profile
+		a.AccountName = op.identity.BattleTag
+		a.AccountLink = op.identity.Email
 		raw, err := json.Marshal(a)
 		return a.Serial, raw, err
 	})
@@ -173,6 +208,9 @@ func (s *Service) completeBattleNetEnrollment(op *battleNetOperation, sessionTok
 		s.battleNet.pending = nil
 	}
 	op.status.State = "pending-backup"
+	if runtime.closeEnrollmentBrowser != nil {
+		runtime.closeEnrollmentBrowser(runtime.browser, profile)
+	}
 }
 
 func (s *Service) OpenBattleNetEnrollmentAccount(handle, token string) error {
@@ -385,12 +423,16 @@ func battleNetRecoveryPending(v *vault.Vault) (bool, error) {
 	return len(payloads) > 0, err
 }
 
-func (s *Service) preserveBattleNetResponse(profile, serial, restoreCode string, save func([]byte) error) func([]byte) error {
+func (s *Service) preserveBattleNetResponse(profile, serial, restoreCode string, save func([]byte) error, identity ...func() battlenetauth.EnrollmentIdentity) func([]byte) error {
 	return func(response []byte) error {
 		if s.battleNet.pending != nil {
 			return ErrBattleNetResponseRecovery
 		}
-		raw, err := battlenetauth.EncodeRecovery(response, profile, serial, restoreCode)
+		var metadata []battlenetauth.EnrollmentIdentity
+		if len(identity) > 0 && identity[0] != nil {
+			metadata = append(metadata, identity[0]())
+		}
+		raw, err := battlenetauth.EncodeRecovery(response, profile, serial, restoreCode, metadata...)
 		if err != nil {
 			return err
 		}

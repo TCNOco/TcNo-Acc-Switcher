@@ -10,6 +10,27 @@ func OpenBattleNetLogin(s *Service, profile string, intercept func(string) bool)
 	return openBattleNetWindow(s, profile, "https://account.battle.net/login/en/?ref=localhost", Site("battlenet-login"), intercept)
 }
 
+func CloseBattleNetEnrollmentBrowser(s *Service, profile string) {
+	if s == nil || application.Get() == nil {
+		return
+	}
+	application.InvokeAsync(func() {
+		app := application.Get()
+		if app == nil || app.Window == nil {
+			return
+		}
+		for _, id := range s.sessions.ids() {
+			current, err := s.sessions.get(id)
+			if err != nil || current.platform != PlatformBattleNet || current.profile != profile || current.site != Site("battlenet-login") {
+				continue
+			}
+			if window, ok := app.Window.GetByName(windowName(id)); ok && window != nil {
+				window.Close()
+			}
+		}
+	})
+}
+
 func OpenBattleNetAccount(s *Service, profile string) error {
 	if s != nil {
 		for _, id := range s.sessions.ids() {

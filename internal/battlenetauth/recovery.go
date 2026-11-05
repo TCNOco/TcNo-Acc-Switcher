@@ -10,14 +10,20 @@ type recoveryResponse struct {
 	BrowserProfile string `json:"browserProfile,omitempty"`
 	Serial         string `json:"serial,omitempty"`
 	RestoreCode    string `json:"restoreCode,omitempty"`
+	AccountName    string `json:"accountName,omitempty"`
+	AccountLink    string `json:"accountLink,omitempty"`
 	Response       []byte `json:"response"`
 }
 
-func EncodeRecovery(response []byte, profile, serial, restoreCode string) ([]byte, error) {
+func EncodeRecovery(response []byte, profile, serial, restoreCode string, identity ...EnrollmentIdentity) ([]byte, error) {
 	if len(response) > maxResponseSize+1 {
 		return nil, ErrInvalid
 	}
-	return json.Marshal(recoveryResponse{Version: 1, Kind: "battlenet-response", BrowserProfile: profile, Serial: serial, RestoreCode: restoreCode, Response: response})
+	saved := recoveryResponse{Version: 1, Kind: "battlenet-response", BrowserProfile: profile, Serial: serial, RestoreCode: restoreCode, Response: response}
+	if len(identity) > 0 && identity[0].Validate() == nil {
+		saved.AccountName, saved.AccountLink = identity[0].BattleTag, identity[0].Email
+	}
+	return json.Marshal(saved)
 }
 
 func RecoverAccount(raw []byte) (Account, error) {
@@ -52,6 +58,8 @@ func RecoverAccount(raw []byte) (Account, error) {
 	}
 	a.Pending = true
 	a.BrowserProfile = saved.BrowserProfile
+	a.AccountName = saved.AccountName
+	a.AccountLink = saved.AccountLink
 	return a, a.Validate()
 }
 
