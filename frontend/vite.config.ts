@@ -3,9 +3,9 @@ import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import wails from "@wailsio/runtime/plugins/vite";
-import { gzipDist } from "./vite-plugin-gzip-dist";
-import { localeValueArrays } from "./vite-plugin-locale-values";
-import { yamlAsJson } from "./vite-plugin-yaml";
+import { gzipDist } from "./vite-plugin-gzip-dist.ts";
+import { localeValueArrays } from "./vite-plugin-locale-values.ts";
+import { yamlAsJson } from "./vite-plugin-yaml.ts";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
