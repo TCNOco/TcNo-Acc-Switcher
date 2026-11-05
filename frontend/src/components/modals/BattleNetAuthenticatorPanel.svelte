@@ -100,6 +100,12 @@
     {#if enrollmentState !== "verification-required"}<p class="hint">{$t("Authenticator_OnlineNotice")}</p>{/if}
     {#if enrollmentState === "verification-required"}
       <p role="status">{$t("Authenticator_AccountSetupRequired")}</p>
+      <ol class="setup-steps">
+        <li>{$t("Authenticator_AccountSetupStepQuestion")}</li>
+        <li>{$t("Authenticator_AccountSetupStepVerification")}</li>
+        <li>{$t("Authenticator_AccountSetupStepAuthenticator")}</li>
+        <li>{$t("Authenticator_AccountSetupStepRetry")}</li>
+      </ol>
       <p class="hint">{$t("Authenticator_AccountSetupHint")}</p>
       <div class="actions">
         <button type="button" class="btnicontext modal-primary" disabled={busy} on:click={actions.openEnrollmentAccount}>{$t("Authenticator_Browse")}</button>
@@ -109,7 +115,11 @@
       <p role="status">{$t(enrollmentState === "saving" ? "Authenticator_Saving" : "Authenticator_Waiting")}</p>
       <div class="actions"><button type="button" class="btnicontext" disabled={busy || enrollmentState === "saving"} on:click={actions.cancelEnrollment}>{$t("Authenticator_Cancel")}</button></div>
     {:else}
-      <p>{$t("Authenticator_EnrollHint")}</p>
+      <ol class="setup-steps">
+        <li>{$t("Authenticator_EnrollStepSignIn")}</li>
+        <li>{$t("Authenticator_EnrollStepSetup")}</li>
+        <li>{$t("Authenticator_EnrollStepBackup")}</li>
+      </ol>
       <div class="actions"><button type="button" class="btnicontext modal-primary" disabled={busy} on:click={actions.enroll}>{$t("Authenticator_OpenBrowser")}</button></div>
       {#if error}
         <p class="hint">{$t("Authenticator_RecoverHint")}</p>
@@ -182,6 +192,8 @@
   h2 { font-size: 1rem; font-weight: 650; }
   h2:focus { outline: none; }
   .hint, .expiry, small { color: var(--whiteSecondary, #d7d7d7); font-size: 0.85rem; }
+  .setup-steps { display: grid; gap: 0.6rem; margin: 0; padding-inline-start: 1.5rem; line-height: 1.45; }
+  .setup-steps li { padding-inline-start: 0.15rem; }
   .error { color: var(--role-error, #ff6b6b); overflow-wrap: anywhere; white-space: pre-line; }
   .field { display: grid; gap: 0.35rem; min-width: 0; width: 100%; padding: 0; text-align: left; }
   .field .modal-input, textarea.modal-input { width: 100%; min-width: 0; margin: 0; }

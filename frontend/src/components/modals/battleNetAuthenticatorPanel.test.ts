@@ -27,6 +27,13 @@ describe("Battle.net authenticator tasks", () => {
     const html = view({ screen: "enroll", enrollment: "handle", enrollmentState: "verification-required" });
     expect(html).toContain("Authenticator_AccountSetupRequired");
     expect(html).toContain("Authenticator_AccountSetupHint");
+    const steps = [...html.matchAll(/<li\b[^>]*>([^<]+)<\/li>/g)].map(match => match[1]);
+    expect(steps).toEqual([
+      "Authenticator_AccountSetupStepQuestion",
+      "Authenticator_AccountSetupStepVerification",
+      "Authenticator_AccountSetupStepAuthenticator",
+      "Authenticator_AccountSetupStepRetry",
+    ]);
     expect(html).toContain("Authenticator_Browse");
     expect(html).toContain("Authenticator_RetrySetup");
     expect(html).not.toContain("Authenticator_Waiting");
