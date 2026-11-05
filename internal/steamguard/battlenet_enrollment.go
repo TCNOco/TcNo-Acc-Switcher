@@ -33,6 +33,8 @@ type battleNetOperation struct {
 	cancel  context.CancelFunc
 }
 
+var ErrBattleNetResponseRecovery = errors.New("Recover the saved Battle.net response before starting setup again")
+
 type battleNetRuntime struct {
 	pending   securemem.Handle
 	browser   *steambrowser.Service
@@ -41,7 +43,7 @@ type battleNetRuntime struct {
 }
 
 type battleNetEnrollmentClient interface {
-	Enroll(context.Context, string) (battlenetauth.Account, error)
+	EnrollWithRecovery(context.Context, string, func([]byte) error) (battlenetauth.Account, error)
 }
 
 func ConfigureBattleNetBrowser(s *Service, browser *steambrowser.Service) {
@@ -65,9 +67,20 @@ func (s *Service) BeginBattleNetEnrollment(token string) (BattleNetEnrollmentSta
 		s.mu.Unlock()
 		return BattleNetEnrollmentStatus{}, ErrUnsupportedInput
 	}
+	if s.battleNet.operation != nil && s.battleNet.operation.status.State == "recovery-required" {
+		s.mu.Unlock()
+		return BattleNetEnrollmentStatus{}, ErrBattleNetResponseRecovery
+	}
 	if s.battleNet.pending != nil {
 		s.mu.Unlock()
 		return BattleNetEnrollmentStatus{}, errors.New("recover the previous enrollment result before enrolling again")
+	}
+	if pending, err := battleNetRecoveryPending(v); err != nil {
+		s.mu.Unlock()
+		return BattleNetEnrollmentStatus{}, err
+	} else if pending {
+		s.mu.Unlock()
+		return BattleNetEnrollmentStatus{}, ErrBattleNetResponseRecovery
 	}
 	if previous := s.battleNet.operation; previous != nil && time.Now().Before(previous.expires) && (previous.status.State == "waiting" || previous.status.State == "saving") {
 		if _, err := s.capabilities.Resolve(previous.token); err == nil {
@@ -117,8 +130,8 @@ func (s *Service) completeBattleNetEnrollment(op *battleNetOperation, sessionTok
 	ctx, cancel := context.WithTimeout(context.Background(), 25*time.Second)
 	defer cancel()
 	op.cancel = cancel
-	err = v.CaptureProviderRecord(vault.ProviderBattleNet, func() (string, []byte, error) {
-		a, err := s.battleNet.client.Enroll(ctx, sessionToken)
+	receiptID, err := v.CaptureProviderRecord(vault.ProviderBattleNet, func(save func([]byte) error) (string, []byte, error) {
+		a, err := s.battleNet.client.EnrollWithRecovery(ctx, sessionToken, s.preserveBattleNetResponse("battlenet-"+strings.ToLower(op.status.Handle), "", "", save))
 		sessionToken = ""
 		if err != nil {
 			return "", nil, err
@@ -126,21 +139,30 @@ func (s *Service) completeBattleNetEnrollment(op *battleNetOperation, sessionTok
 		op.status.Serial = a.Serial
 		a.BrowserProfile = "battlenet-" + strings.ToLower(op.status.Handle)
 		raw, err := json.Marshal(a)
-		if err == nil {
-			s.battleNet.pending, err = securemem.New().Store(raw)
-		}
 		return a.Serial, raw, err
 	})
 	if err != nil {
 		if errors.Is(err, battlenetauth.ErrAccountVerification) {
+			if receiptID != "" {
+				if completeErr := v.CompleteBattleNetRecovery(receiptID); completeErr != nil {
+					op.status.State = "recovery-required"
+					op.status.Error = ErrBattleNetResponseRecovery.Error()
+					return
+				}
+			}
+			if s.battleNet.pending != nil {
+				_ = s.battleNet.pending.Destroy()
+				s.battleNet.pending = nil
+			}
 			op.status.State = "verification-required"
 			op.status.Error = err.Error()
 			return
 		}
 		op.status.State = "failed"
 		op.status.Error = err.Error()
-		if s.battleNet.pending != nil {
-			op.status.Error = "Setup completed but could not be saved. Use Recover unsaved setup before trying again. " + op.status.Error
+		if receiptID != "" || s.battleNet.pending != nil || errors.Is(err, ErrBattleNetResponseRecovery) {
+			op.status.State = "recovery-required"
+			op.status.Error = ErrBattleNetResponseRecovery.Error()
 		}
 		return
 	}
@@ -158,7 +180,7 @@ func (s *Service) OpenBattleNetEnrollmentAccount(handle, token string) error {
 		return ErrAccountNotFound
 	}
 	op := s.battleNet.operation
-	if op.status.Handle != handle || subtle.ConstantTimeCompare([]byte(op.token), []byte(token)) != 1 || op.status.State != "verification-required" {
+	if op.status.Handle != handle || subtle.ConstantTimeCompare([]byte(op.token), []byte(token)) != 1 || (op.status.State != "verification-required" && op.status.State != "recovery-required") {
 		s.mu.Unlock()
 		return ErrSensitiveView
 	}
@@ -246,7 +268,11 @@ func (s *Service) CancelBattleNetEnrollment(handle, token string) error {
 }
 
 func (s *Service) RestoreBattleNetAuthenticator(accountIdentifier, serial, restoreCode, token string) error {
-	serial = strings.ToUpper(strings.TrimSpace(serial))
+	var err error
+	serial, err = battlenetauth.NormalizeSerial(serial)
+	if err != nil {
+		return err
+	}
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	v, err := s.battleNetVaultLocked(token)
@@ -267,17 +293,30 @@ func (s *Service) RestoreBattleNetAuthenticator(accountIdentifier, serial, resto
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 25*time.Second)
 	defer cancel()
-	err = v.CaptureProviderRecord(vault.ProviderBattleNet, func() (string, []byte, error) {
-		a, err := client.Restore(ctx, accountIdentifier, strings.ToUpper(serial), strings.ToUpper(restoreCode))
+	if pending, err := battleNetRecoveryPending(v); err != nil {
+		return err
+	} else if pending {
+		return ErrBattleNetResponseRecovery
+	}
+	receiptID, err := v.CaptureProviderRecord(vault.ProviderBattleNet, func(save func([]byte) error) (string, []byte, error) {
+		a, err := client.RestoreWithRecovery(ctx, accountIdentifier, serial, strings.ToUpper(restoreCode), s.preserveBattleNetResponse("", serial, strings.ToUpper(restoreCode), save))
 		if err != nil {
 			return "", nil, err
 		}
 		raw, err := json.Marshal(a)
-		if err == nil {
-			s.battleNet.pending, err = securemem.New().Store(raw)
-		}
 		return a.Serial, raw, err
 	})
+	if errors.Is(err, battlenetauth.ErrAccountVerification) && receiptID != "" {
+		if completeErr := v.CompleteBattleNetRecovery(receiptID); completeErr != nil {
+			return ErrBattleNetResponseRecovery
+		}
+		if s.battleNet.pending != nil {
+			_ = s.battleNet.pending.Destroy()
+			s.battleNet.pending = nil
+		}
+	} else if err != nil && (receiptID != "" || s.battleNet.pending != nil) {
+		return ErrBattleNetResponseRecovery
+	}
 	if err == nil && s.battleNet.pending != nil {
 		_ = s.battleNet.pending.Destroy()
 		s.battleNet.pending = nil
@@ -332,6 +371,35 @@ func (s *Service) AcknowledgeBattleNetBackup(serial, token string) error {
 	return err
 }
 
+func battleNetRecoveryPending(v *vault.Vault) (bool, error) {
+	payloads, err := v.BattleNetRecoveryPayloads()
+	for _, payload := range payloads {
+		wipe(payload.Plaintext)
+	}
+	return len(payloads) > 0, err
+}
+
+func (s *Service) preserveBattleNetResponse(profile, serial, restoreCode string, save func([]byte) error) func([]byte) error {
+	return func(response []byte) error {
+		if s.battleNet.pending != nil {
+			return ErrBattleNetResponseRecovery
+		}
+		raw, err := battlenetauth.EncodeRecovery(response, profile, serial, restoreCode)
+		if err != nil {
+			return err
+		}
+		defer wipe(raw)
+		handle, memoryErr := securemem.New().Store(raw)
+		if memoryErr == nil {
+			s.battleNet.pending = handle
+		}
+		if err := save(raw); err != nil {
+			return ErrBattleNetResponseRecovery
+		}
+		return nil
+	}
+}
+
 func (s *Service) RecoverBattleNetEnrollments(token string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -339,48 +407,75 @@ func (s *Service) RecoverBattleNetEnrollments(token string) error {
 	if err != nil {
 		return err
 	}
-	if s.battleNet != nil && s.battleNet.pending != nil {
-		err := s.battleNet.pending.With(func(raw []byte) error {
-			a, err := battlenetauth.ParseAccount(raw)
-			if err != nil {
-				return err
-			}
-			if _, err := battleNetRecord(v, a.Serial); err == nil {
-				return nil
-			} else if !errors.Is(err, ErrAccountNotFound) {
-				return err
-			}
-			_, err = v.PutProviderRecord(vault.ProviderBattleNet, a.Serial, raw)
-			return err
-		})
-		if err != nil {
-			return err
-		}
-		_ = s.battleNet.pending.Destroy()
-		s.battleNet.pending = nil
-	}
 	payloads, err := v.BattleNetRecoveryPayloads()
 	if err != nil {
 		return err
 	}
 	defer func() {
-		for _, raw := range payloads {
-			wipe(raw)
+		for _, payload := range payloads {
+			wipe(payload.Plaintext)
 		}
 	}()
-	updates := []vault.RecordUpdate{}
-	for _, raw := range payloads {
-		a, err := battlenetauth.ParseAccount(raw)
-		if err != nil {
+	if s.battleNet != nil && s.battleNet.pending != nil {
+		if err := s.battleNet.pending.With(func(raw []byte) error {
+			payloads = append(payloads, vault.BattleNetRecoveryPayload{Plaintext: append([]byte(nil), raw...)})
+			return nil
+		}); err != nil {
 			return err
 		}
-		if _, err := battleNetRecord(v, a.Serial); err == nil {
+	}
+	if len(payloads) == 0 && s.battleNet != nil && s.battleNet.operation != nil && s.battleNet.operation.status.State == "recovery-required" {
+		return ErrBattleNetResponseRecovery
+	}
+	updates := []vault.RecordUpdate{}
+	recovered := map[string]string{}
+	for _, payload := range payloads {
+		a, err := battlenetauth.RecoverAccount(payload.Plaintext)
+		if errors.Is(err, battlenetauth.ErrAccountVerification) {
+			continue
+		}
+		if err != nil {
+			return ErrBattleNetResponseRecovery
+		}
+		if secret, seen := recovered[a.Serial]; seen {
+			if secret != a.DeviceSecret {
+				return vault.ErrAlreadyExists
+			}
+			continue
+		}
+		recovered[a.Serial] = a.DeviceSecret
+		if existing, err := battleNetRecord(v, a.Serial); err == nil {
+			if existing.DeviceSecret != a.DeviceSecret {
+				return vault.ErrAlreadyExists
+			}
 			continue
 		} else if !errors.Is(err, ErrAccountNotFound) {
 			return err
 		}
+		raw, err := json.Marshal(a)
+		if err != nil {
+			return err
+		}
+		defer wipe(raw)
 		identity, _ := vault.ProviderIdentity(vault.ProviderBattleNet, a.Serial)
 		updates = append(updates, vault.RecordUpdate{SteamID64: identity, Plaintext: raw})
 	}
-	return v.PutRecords(updates)
+	if err := v.PutRecords(updates); err != nil {
+		return err
+	}
+	for _, payload := range payloads {
+		if payload.ID != "" {
+			if err := v.CompleteBattleNetRecovery(payload.ID); err != nil {
+				return err
+			}
+		}
+	}
+	if s.battleNet != nil && s.battleNet.pending != nil {
+		_ = s.battleNet.pending.Destroy()
+		s.battleNet.pending = nil
+	}
+	if s.battleNet != nil && s.battleNet.operation != nil && s.battleNet.operation.status.State == "recovery-required" {
+		s.battleNet.operation.status.State = "canceled"
+	}
+	return nil
 }

@@ -21,7 +21,7 @@ func NewClient() *Client {
 	return &Client{http: &http.Client{Timeout: 20 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return errors.New("authenticator API redirect refused") }}}
 }
 
-func (c *Client) request(ctx context.Context, endpoint, bearer, contentType string, body []byte) (map[string]json.RawMessage, error) {
+func (c *Client) request(ctx context.Context, endpoint, bearer, contentType string, body []byte, preserve ...func([]byte) error) (map[string]json.RawMessage, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, ErrInvalid
@@ -33,17 +33,27 @@ func (c *Client) request(ctx context.Context, endpoint, bearer, contentType stri
 	}
 	response, err := c.http.Do(req)
 	if err != nil {
+		if len(preserve) > 0 && preserve[0] != nil {
+			if saveErr := preserve[0](nil); saveErr != nil {
+				return nil, saveErr
+			}
+		}
 		return nil, errors.New("Battle.net authenticator request failed; its outcome may be unknown, so enrollment was not retried")
 	}
 	defer response.Body.Close()
+	raw, readErr := io.ReadAll(io.LimitReader(response.Body, maxResponseSize+1))
+	defer clear(raw)
+	if len(preserve) > 0 && preserve[0] != nil {
+		if err := preserve[0](raw); err != nil {
+			return nil, err
+		}
+	}
 	if response.StatusCode < 200 || response.StatusCode >= 300 {
 		return nil, fmt.Errorf("Battle.net authenticator request returned HTTP %d", response.StatusCode)
 	}
-	raw, err := io.ReadAll(io.LimitReader(response.Body, 65537))
-	if err != nil || len(raw) > 65536 {
+	if readErr != nil || len(raw) > maxResponseSize {
 		return nil, ErrInvalid
 	}
-	defer clear(raw)
 	o, err := decodeObject(raw)
 	if err != nil {
 		return nil, err
@@ -58,6 +68,10 @@ func accountSetupRequired(o map[string]json.RawMessage) bool {
 }
 
 func (c *Client) Enroll(ctx context.Context, sessionToken string) (Account, error) {
+	return c.EnrollWithRecovery(ctx, sessionToken, nil)
+}
+
+func (c *Client) EnrollWithRecovery(ctx context.Context, sessionToken string, preserve func([]byte) error) (Account, error) {
 	if !validSessionToken(sessionToken) {
 		return Account{}, ErrInvalid
 	}
@@ -74,12 +88,12 @@ func (c *Client) Enroll(ctx context.Context, sessionToken string) (Account, erro
 	if bearer == "" || len(bearer) > 16384 || strings.ContainsAny(bearer, "\r\n") {
 		return Account{}, ErrInvalid
 	}
-	o, err = c.request(ctx, "https://authenticator-rest-api.bnet-identity.blizzard.net/v1/authenticator", bearer, "application/json", nil)
+	o, err = c.request(ctx, "https://authenticator-rest-api.bnet-identity.blizzard.net/v1/authenticator", bearer, "application/json", nil, preserve)
 	if err != nil {
 		return Account{}, err
 	}
 	a, err := parseExternalObject(o)
-	if err != nil && accountSetupRequired(o) {
+	if err != nil && setupOnlyResponse(o) {
 		return Account{}, ErrAccountVerification
 	}
 	a.Pending = true
@@ -87,7 +101,13 @@ func (c *Client) Enroll(ctx context.Context, sessionToken string) (Account, erro
 }
 
 func (c *Client) Restore(ctx context.Context, accountIdentifier, serial, restoreCode string) (Account, error) {
-	if len(accountIdentifier) == 0 || len(accountIdentifier) > 320 || !serialPattern.MatchString(serial) || len(restoreCode) != 10 {
+	return c.RestoreWithRecovery(ctx, accountIdentifier, serial, restoreCode, nil)
+}
+
+func (c *Client) RestoreWithRecovery(ctx context.Context, accountIdentifier, serial, restoreCode string, preserve func([]byte) error) (Account, error) {
+	var err error
+	serial, err = NormalizeSerial(serial)
+	if err != nil || len(accountIdentifier) == 0 || len(accountIdentifier) > 320 || len(restoreCode) != 10 {
 		return Account{}, ErrInvalid
 	}
 	body, err := json.Marshal(map[string]string{"accountIdentifier": accountIdentifier, "serial": serial, "restoreCode": restoreCode})
@@ -95,13 +115,13 @@ func (c *Client) Restore(ctx context.Context, accountIdentifier, serial, restore
 		return Account{}, ErrInvalid
 	}
 	defer clear(body)
-	o, err := c.request(ctx, "https://authenticator-rest-api.bnet-identity.blizzard.net/v2/authenticator/device", "", "application/json", body)
+	o, err := c.request(ctx, "https://authenticator-rest-api.bnet-identity.blizzard.net/v2/authenticator/device", "", "application/json", body, preserve)
 	if err != nil {
 		return Account{}, err
 	}
 	a := Account{Version: 1, Serial: serial, RestoreCode: restoreCode, DeviceSecret: textField(o, "deviceSecret"), Pending: true, RequiresAccountSetup: accountSetupRequired(o)}
 	if err := a.Validate(); err != nil {
-		if a.RequiresAccountSetup {
+		if setupOnlyResponse(o) {
 			return Account{}, ErrAccountVerification
 		}
 		return Account{}, err

@@ -69,18 +69,62 @@ func (v *Vault) PutProviderRecord(provider Provider, subject string, plaintext [
 	return v.PutRecord(identity, plaintext)
 }
 
-func (v *Vault) CaptureProviderRecord(provider Provider, capture func() (string, []byte, error)) error {
+type BattleNetRecoveryPayload struct {
+	ID        string
+	Plaintext []byte
+}
+
+func (BattleNetRecoveryPayload) String() string   { return "Battle.net recovery payload (redacted)" }
+func (BattleNetRecoveryPayload) GoString() string { return "Battle.net recovery payload (redacted)" }
+
+func (v *Vault) CaptureProviderRecord(provider Provider, capture func(func([]byte) error) (string, []byte, error)) (string, error) {
 	if provider != ProviderBattleNet || capture == nil {
-		return ErrInvalidFormat
+		return "", ErrInvalidFormat
 	}
 	v.mu.Lock()
 	defer v.mu.Unlock()
-	return v.withKeysLocked(func(key, outerKey []byte) error {
+	receiptName := ""
+	err := v.withKeysLocked(func(key, outerKey []byte) error {
 		ring, err := v.loadKeyring(key, outerKey)
 		if err != nil {
 			return err
 		}
-		subject, plain, err := capture()
+		saveRecovery := func(plain []byte) error {
+			if receiptName != "" || len(plain) > 128<<10 {
+				return ErrInvalidFormat
+			}
+			recovery, err := seal(key, plain, aad(FormatVersion, v.header.VaultID, "", "", "battlenet-recovery"))
+			if err != nil {
+				return err
+			}
+			raw, err := json.Marshal(recovery)
+			if err != nil {
+				return err
+			}
+			defer wipe(raw)
+			id, err := randomID()
+			if err != nil {
+				return err
+			}
+			name := "battlenet-recovery-" + id + ".json"
+			payload, err := sealOuterFile(outerKey, raw, v.header.OuterVersion, outerAAD(v.header.VaultID, "", name))
+			if err != nil {
+				return err
+			}
+			defer wipe(payload)
+			receipt := providerRecoveryFile{Version: 1, OuterVersion: v.header.OuterVersion, Payload: payload}
+			encoded, err := json.Marshal(receipt)
+			if err != nil {
+				return err
+			}
+			defer wipe(encoded)
+			if err := atomicWrite(filepath.Join(v.root, name), encoded, 0o600, v.opts.hardener); err != nil {
+				return err
+			}
+			receiptName = name
+			return nil
+		}
+		subject, plain, err := capture(saveRecovery)
 		defer wipe(plain)
 		if err != nil {
 			return err
@@ -94,33 +138,10 @@ func (v *Vault) CaptureProviderRecord(provider Provider, capture func() (string,
 				return ErrAlreadyExists
 			}
 		}
-		recovery, err := seal(key, plain, aad(FormatVersion, v.header.VaultID, "", "", "battlenet-recovery"))
-		if err != nil {
-			return err
-		}
-		raw, err := json.Marshal(recovery)
-		if err != nil {
-			return err
-		}
-		defer wipe(raw)
-		id, err := randomID()
-		if err != nil {
-			return err
-		}
-		name := "battlenet-recovery-" + id + ".json"
-		payload, err := sealOuterFile(outerKey, raw, v.header.OuterVersion, outerAAD(v.header.VaultID, "", name))
-		if err != nil {
-			return err
-		}
-		defer wipe(payload)
-		receipt := providerRecoveryFile{Version: 1, OuterVersion: v.header.OuterVersion, Payload: payload}
-		encoded, err := json.Marshal(receipt)
-		if err != nil {
-			return err
-		}
-		defer wipe(encoded)
-		if err := atomicWrite(filepath.Join(v.root, name), encoded, 0o600, v.opts.hardener); err != nil {
-			return err
+		if receiptName == "" {
+			if err := saveRecovery(plain); err != nil {
+				return err
+			}
 		}
 		staged := map[string][]byte{}
 		if _, err := v.stageRecordLocked(key, &ring, staged, identity, plain); err != nil {
@@ -133,20 +154,41 @@ func (v *Vault) CaptureProviderRecord(provider Provider, capture func() (string,
 		if err := v.commitGenerationLocked(key, outerKey, v.header, ring, files); err != nil {
 			return err
 		}
-		receipt.Committed = true
-		encoded, err = json.Marshal(receipt)
-		if err != nil {
-			return err
-		}
-		defer wipe(encoded)
-		return atomicWrite(filepath.Join(v.root, name), encoded, 0o600, v.opts.hardener)
+		return v.completeBattleNetRecoveryLocked(receiptName)
 	})
+	return receiptName, err
 }
 
-func (v *Vault) BattleNetRecoveryPayloads() ([][]byte, error) {
+func (v *Vault) completeBattleNetRecoveryLocked(id string) error {
+	if len(id) > 128 || filepath.Base(id) != id || strings.ContainsAny(id, "/\\:") || !strings.HasPrefix(id, "battlenet-recovery-") || !strings.HasSuffix(id, ".json") {
+		return ErrInvalidFormat
+	}
+	var receipt providerRecoveryFile
+	if err := readJSONFile(filepath.Join(v.root, id), 512<<10, &receipt); err != nil {
+		return err
+	}
+	if receipt.Version != 1 {
+		return ErrInvalidFormat
+	}
+	receipt.Committed = true
+	raw, err := json.Marshal(receipt)
+	if err != nil {
+		return err
+	}
+	defer wipe(raw)
+	return atomicWrite(filepath.Join(v.root, id), raw, 0o600, v.opts.hardener)
+}
+
+func (v *Vault) CompleteBattleNetRecovery(id string) error {
 	v.mu.Lock()
 	defer v.mu.Unlock()
-	out := [][]byte{}
+	return v.withKeysLocked(func([]byte, []byte) error { return v.completeBattleNetRecoveryLocked(id) })
+}
+
+func (v *Vault) BattleNetRecoveryPayloads() ([]BattleNetRecoveryPayload, error) {
+	v.mu.Lock()
+	defer v.mu.Unlock()
+	out := []BattleNetRecoveryPayload{}
 	err := v.withKeysLocked(func(key, outerKey []byte) error {
 		entries, err := os.ReadDir(v.root)
 		if err != nil {
@@ -161,7 +203,7 @@ func (v *Vault) BattleNetRecoveryPayloads() ([][]byte, error) {
 				return ErrInvalidFormat
 			}
 			var receipt providerRecoveryFile
-			if err := readJSONFile(filepath.Join(v.root, name), 65536, &receipt); err != nil {
+			if err := readJSONFile(filepath.Join(v.root, name), 512<<10, &receipt); err != nil {
 				return err
 			}
 			if receipt.Version != 1 {
@@ -184,13 +226,13 @@ func (v *Vault) BattleNetRecoveryPayloads() ([][]byte, error) {
 			if err != nil {
 				return err
 			}
-			out = append(out, plain)
+			out = append(out, BattleNetRecoveryPayload{ID: name, Plaintext: plain})
 		}
 		return nil
 	})
 	if err != nil {
 		for _, raw := range out {
-			wipe(raw)
+			wipe(raw.Plaintext)
 		}
 		return nil, err
 	}

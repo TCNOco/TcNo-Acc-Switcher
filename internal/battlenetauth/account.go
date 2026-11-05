@@ -17,6 +17,18 @@ import (
 
 var ErrInvalid = errors.New("invalid Battle.net authenticator data")
 var serialPattern = regexp.MustCompile(`^(US|EU|KR|TW|CN)-[0-9]{4}-[0-9]{4}-[0-9]{4}$`)
+var compactSerialPattern = regexp.MustCompile(`^(US|EU|KR|TW|CN)[0-9]{12}$`)
+
+func NormalizeSerial(raw string) (string, error) {
+	serial := strings.ToUpper(strings.TrimSpace(raw))
+	if serialPattern.MatchString(serial) {
+		return serial, nil
+	}
+	if !compactSerialPattern.MatchString(serial) {
+		return "", ErrInvalid
+	}
+	return serial[:2] + "-" + serial[2:6] + "-" + serial[6:10] + "-" + serial[10:], nil
+}
 
 type Account struct {
 	Version              int    `json:"version"`
@@ -126,7 +138,11 @@ func ParseURI(raw string) (Account, error) {
 	if err != nil {
 		return Account{}, ErrInvalid
 	}
-	a := Account{Version: 1, Serial: strings.ToUpper(label), DeviceSecret: hex.EncodeToString(secret)}
+	serial, err := NormalizeSerial(label)
+	if err != nil {
+		return Account{}, err
+	}
+	a := Account{Version: 1, Serial: serial, DeviceSecret: hex.EncodeToString(secret)}
 	return a, a.Validate()
 }
 

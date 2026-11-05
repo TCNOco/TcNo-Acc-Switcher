@@ -108,7 +108,8 @@ func Import(raw []byte, password string) ([]Account, error) {
 		out := make([]Account, 0, len(items))
 		for _, key := range keys {
 			a, err := parseExternal(items[key])
-			if err != nil || a.Serial != key {
+			serial, serialErr := NormalizeSerial(key)
+			if err != nil || serialErr != nil || a.Serial != serial {
 				return nil, ErrInvalid
 			}
 			out = append(out, a)
@@ -137,7 +138,11 @@ func parseExternalObject(o map[string]json.RawMessage) (Account, error) {
 			return Account{}, ErrInvalid
 		}
 	}
-	a := Account{Version: 1, Serial: strings.ToUpper(textField(o, "serial")), RestoreCode: strings.ToUpper(textField(o, "restoreCode")), DeviceSecret: strings.ToLower(textField(o, "deviceSecret")), Label: textField(o, "label")}
+	serial, err := NormalizeSerial(textField(o, "serial"))
+	if err != nil {
+		return Account{}, err
+	}
+	a := Account{Version: 1, Serial: serial, RestoreCode: strings.ToUpper(textField(o, "restoreCode")), DeviceSecret: strings.ToLower(textField(o, "deviceSecret")), Label: textField(o, "label")}
 	a.RequiresAccountSetup = accountSetupRequired(o)
 	for _, encoded := range []string{textField(o, "base32Secret"), textField(o, "totpUrl")} {
 		if encoded == "" {
