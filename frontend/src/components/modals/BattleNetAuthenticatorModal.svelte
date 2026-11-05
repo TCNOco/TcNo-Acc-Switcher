@@ -323,9 +323,8 @@ async function grant() {
               await refresh();
               serial = result.serial;
               showScreen("recovery");
-              await call("OpenBattleNetAccount", serial, token);
             });
-          } else if (result.state === "verification-required" || result.state === "recovery-required") {
+          } else if (result.state === "verification-required") {
             await actions.openEnrollmentAccount();
           } else if (["failed", "expired", "canceled"].includes(result.state)) {
             enrollment = "";

@@ -73,11 +73,11 @@ describe("Battle.net authenticator tasks", () => {
     expect(html).not.toContain("Authenticator_RecoverHint");
   });
 
-  it("keeps saved recovery details available alongside an account setup notice", () => {
+  it("keeps recovery focused on backup even with an account setup notice", () => {
     const html = view({ screen: "recovery", accounts: [{ ...account, pending: true, requiresAccountSetup: true }], serial: account.serial });
     expect(html).toContain("Authenticator_AccountSetupNotice");
     expect(html).toContain("Authenticator_ShowRecovery");
-    expect(html).toContain("Authenticator_Browse");
+    expect(html).not.toContain("Authenticator_Browse");
     expect(html).not.toContain("Authenticator_RetrySetup");
   });
   it("starts with one action when no authenticators are saved", () => {
@@ -145,10 +145,10 @@ describe("Battle.net authenticator tasks", () => {
     expect(view({ accounts: [{ ...account, pending: true }], serial: account.serial })).toContain("Authenticator_BackupNeeded");
     expect(view({ accounts: [account], serial: account.serial })).not.toContain("Authenticator_BackupNeeded");
   });
-  it("keeps Account security available while an unnamed account is awaiting identification", () => {
+  it("does not ask users to sign in again on the recovery screen", () => {
     const html = view({ screen: "recovery", accounts: [{ ...account, label: account.serial }], serial: account.serial });
-    expect(html).toContain("Authenticator_IdentifyAccount");
-    expect(html).toContain("Authenticator_Browse");
+    expect(html).not.toContain("Authenticator_IdentifyAccount");
+    expect(html).not.toContain("Authenticator_Browse");
   });
 
   it("keeps cancellation available during sign-in and blocks it while saving", () => {

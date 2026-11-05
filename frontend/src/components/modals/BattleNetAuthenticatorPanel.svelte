@@ -51,7 +51,7 @@
   {#if account?.requiresAccountSetup && (screen === "home" || screen === "recovery")}
     <p class="hint" role="status">{$t("Authenticator_AccountSetupNotice")}</p>
   {/if}
-  {#if account && (!account.label || account.label === account.serial) && (screen === "home" || screen === "recovery")}
+  {#if account && (!account.label || account.label === account.serial) && screen === "home"}
     <p class="hint">{$t("Authenticator_IdentifyAccount")}</p>
   {/if}
 
@@ -146,10 +146,6 @@
         <li>{$t("Authenticator_EnrollStepBackup")}</li>
       </ol>
       <div class="actions"><button type="button" class="btnicontext modal-primary" disabled={busy} on:click={actions.enroll}>{$t("Authenticator_OpenBrowser")}</button></div>
-      {#if error}
-        <p class="hint">{$t("Authenticator_RecoverHint")}</p>
-        <div class="actions"><button type="button" class="btnicontext" disabled={busy} on:click={actions.recover}>{$t("Authenticator_Recover")}</button></div>
-      {/if}
     {/if}
   {:else if screen === "import"}
     <form class="stack" on:submit|preventDefault={previewImport}>
@@ -199,9 +195,6 @@
     {:else}
       <p>{$t("Authenticator_RecoveryHint")}</p>
       <div class="actions"><button type="button" class="btnicontext modal-primary" disabled={busy} on:click={actions.showRecovery}>{$t("Authenticator_ShowRecovery")}</button></div>
-    {/if}
-    {#if account}
-      <div class="actions"><button type="button" class="btnicontext" disabled={busy} on:click={actions.browse}>{$t("Authenticator_Browse")}</button></div>
     {/if}
   {:else if screen === "rename"}
     <form class="stack" on:submit|preventDefault={rename}>
