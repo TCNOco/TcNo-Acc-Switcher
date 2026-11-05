@@ -2,6 +2,8 @@
 import { onMount } from "svelte";
 import { Call, Events } from "@wailsio/runtime";
 import { t } from "../../stores/i18n";
+import AuthenticatorUnlockForm from "./AuthenticatorUnlockForm.svelte";
+import SteamGuardVaultFactors from "./SteamGuardVaultFactors.svelte";
 type Summary = {
     serial: string;
     label: string;
@@ -17,6 +19,7 @@ let closed = false, polling = false;
 let enrollment = "", enrollmentState = "", accountIdentifier = "", restoreSerial = "", restoreCode = "";
 let replaceExisting = false, accountLabel = "";
 let appPassword = "", appPasswordRequired = false;
+let rememberForSession = false, hasSecurityKey: boolean | undefined;
 let recovery: {
     serial: string;
     restoreCode: string;
@@ -82,10 +85,22 @@ async function run(action: () => Promise<void>) {
 }
 async function refresh() { accounts = await call("ListBattleNetAccounts", token); if (!accounts.some(a => a.serial === serial))
     serial = accounts.find(a => accountLink && a.accountLink === accountLink)?.serial ?? accounts[0]?.serial ?? ""; ready = true; }
-async function unlock() { await run(async () => { if (!configured) {
-    await call("Initialize", password, appPassword);
-    configured = true;
-} appPassword = ""; await grant(); await call("UnlockBattleNet", password, keyfile, backupKey, false, token); password = ""; backupKey = ""; await refresh(); }); }
+async function unlock() {
+    await run(async () => {
+        if (!configured) {
+            await call("Initialize", password, appPassword);
+            configured = true;
+        }
+        appPassword = "";
+        await grant();
+        await call("UnlockBattleNet", password, keyfile, backupKey.trim(), rememberForSession, token);
+        password = "";
+        keyfile = "";
+        backupKey = "";
+        await refresh();
+    });
+}
+const pickKeyfile = (): Promise<string> => call("PickVaultKeyfile");
 async function pick() { await run(async () => { source = await call("PickBattleNetImport"); preview = []; }); }
 async function inspect() { await run(async () => { preview = await call("PreviewBattleNetImport", source, sourcePassword, token); selected = preview.filter(a => !accounts.some(existing => existing.serial === a.serial)).map(a => a.serial); }); }
 async function importSelected() { await run(async () => { await call("ImportBattleNet", source, sourcePassword, selected, replaceExisting, token); sourcePassword = ""; preview = []; replaceExisting = false; await grant(); await refresh(); }); }
@@ -98,7 +113,7 @@ async function enroll() { await run(async () => { const result = await call("Beg
 async function restore() { await run(async () => { await call("RestoreBattleNetAuthenticator", accountIdentifier, restoreSerial, restoreCode, token); restoreCode = ""; await grant(); await refresh(); serial = restoreSerial.trim().toUpperCase(); }); }
 async function recover() { await run(async () => { await call("RecoverBattleNetEnrollments", token); await grant(); await refresh(); }); }
 onMount(() => {
-    void run(async () => { const status = await call("GetSettingsStatus"); configured = status.vaultConfigured; appPasswordRequired = status.savedAccountDataEncrypted; await grant(); if (status.unlocked)
+    void run(async () => { const status = await call("GetSettingsStatus"); configured = status.vaultConfigured; appPasswordRequired = status.savedAccountDataEncrypted; rememberForSession = status.rememberPasswordForSession; hasSecurityKey = status.hasSecurityKey; await grant(); if (status.unlocked)
         await refresh(); });
     const timer = setInterval(async () => {
         remaining = Math.max(0, Math.ceil((expires - Date.now()) / 1000));
@@ -151,15 +166,31 @@ onMount(() => {
 </script>
 
 <div class="authenticator">
-  {#if error}<p role="alert">{error}</p>{/if}
   {#if !ready}
-    <p>{$t(configured?"Authenticator_Unlock":"Authenticator_Create")}</p>
-    <label>{$t("Authenticator_Password")}<input type="password" bind:value={password} autocomplete="off" /></label>
-    {#if !configured&&appPasswordRequired}<label>{$t("Authenticator_AppPassword")}<input type="password" bind:value={appPassword} autocomplete="off" /></label>{/if}
-    <label>{$t("Authenticator_Keyfile")}<input bind:value={keyfile} /></label>
-    <label>{$t("Authenticator_BackupKey")}<input type="password" bind:value={backupKey} autocomplete="off" /></label>
-    <button disabled={busy||!token} on:click={unlock}>{$t(configured?"Authenticator_Unlock":"Authenticator_Create")}</button>
+    <AuthenticatorUnlockForm
+      idPrefix="battlenet-authenticator"
+      bind:password
+      bind:keyfilePath={keyfile}
+      bind:backupKey
+      bind:rememberForSession
+      {busy}
+      {error}
+      {hasSecurityKey}
+      {pickKeyfile}
+      available={!!token}
+      creating={!configured}
+      onUnlock={unlock}
+      onSecurityKey={unlock}
+    >
+      {#if !configured && appPasswordRequired}
+        <label class="app-password">
+          <span>{$t("Authenticator_AppPassword")}</span>
+          <input class="modal-input" type="password" bind:value={appPassword} autocomplete="current-password" disabled={busy} />
+        </label>
+      {/if}
+    </AuthenticatorUnlockForm>
   {:else}
+    {#if error}<p role="alert">{error}</p>{/if}
     <p>{$t("Authenticator_OnlineNotice")}</p>
     <button disabled={busy||!!enrollment} on:click={enroll}>{$t("Authenticator_Enroll")}</button>
     {#if enrollment}<p role="status">{$t("Authenticator_Waiting")}</p><button on:click={()=>run(async()=>{await call("CancelBattleNetEnrollment",enrollment,token);enrollment="";})}>{$t("Authenticator_Cancel")}</button>{/if}
@@ -202,8 +233,7 @@ onMount(() => {
         <legend>{$t("Authenticator_Export")}</legend>
         <label>{$t("Authenticator_Password")}<input type="password" bind:value={password} autocomplete="off" /></label>
         <label>{$t("Authenticator_ExportPassword")}<input type="password" bind:value={exportPassword} autocomplete="new-password" /></label>
-        <label>{$t("Authenticator_Keyfile")}<input bind:value={keyfile} /></label>
-        <label>{$t("Authenticator_BackupKey")}<input type="password" bind:value={backupKey} autocomplete="off" /></label>
+        <SteamGuardVaultFactors idPrefix="battlenet-export" bind:backupKey bind:keyfilePath={keyfile} {busy} {pickKeyfile} onSubmit={() => { if (exportPassword) void exportSelected(); }} />
         <button disabled={!exportPassword} on:click={exportSelected}>{$t("Authenticator_Export")}</button>
       </fieldset>
     {/if}
@@ -211,5 +241,11 @@ onMount(() => {
 </div>
 
 <style>
-  .authenticator{display:grid;gap:12px;min-width:360px}label{display:grid;gap:4px}input,select{width:100%}input[type=checkbox]{width:auto}fieldset{display:grid;gap:10px} .auth-code{font-family:monospace;font-size:2.5rem;text-align:center;letter-spacing:.15em}progress{width:100%}
+  .authenticator { display: flex; flex: 0 1 auto; flex-direction: column; gap: 12px; width: 100%; min-width: 0; max-width: 40rem; margin: auto; color: var(--white, #fff); }
+  :global(.modalFG:not(.modalFG--ready)) .authenticator { width: 34rem; }
+  .authenticator :global(button) { margin: 0; }
+  .app-password { gap: 0.35rem; padding: 0; text-align: left; }
+  .app-password .modal-input { min-width: 0; margin: 0; }
+  @media (max-width: 640px) { :global(.modalFG:not(.modalFG--ready)) .authenticator { width: 100%; } }
+  label{display:grid;gap:4px}input,select{width:100%}input[type=checkbox]{width:auto}fieldset{display:grid;gap:10px} .auth-code{font-family:monospace;font-size:2.5rem;text-align:center;letter-spacing:.15em}progress{width:100%}
 </style>

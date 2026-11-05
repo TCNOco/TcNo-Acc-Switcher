@@ -7,9 +7,10 @@ import type {
   SteamGuardModalEntry,
 } from "../lib/steamGuardModal";
 
-type ModalBase = { id: number };
+type ModalBase = { id: number; authenticatorLayout?: boolean };
 
 export type ModalBodyOptions = {
+  authenticatorLayout?: boolean;
   body?: string;
   bodyComponent?: Component<any>;
   bodyProps?: Record<string, unknown>;

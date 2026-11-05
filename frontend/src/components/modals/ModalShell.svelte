@@ -30,6 +30,7 @@
   export let kind = "";
   export let title = "";
   export let modalId = 0;
+  export let authenticatorLayout = false;
 
   const dispatch = createEventDispatcher<{ cancel: void }>();
 
@@ -43,14 +44,14 @@
    */
   const SHORT_BODY_KINDS = new Set(["alert", "confirm", "prompt"]);
 
-  function minFrameWidth(modalKind: string): number {
+  function minFrameWidth(modalKind: string, isAuthenticator: boolean): number {
     if (modalKind === "folder") return MODAL_FRAME_MIN_W_FOLDER;
-    if (modalKind === "steamGuard") return MODAL_FRAME_MIN_W_STEAM_GUARD;
+    if (modalKind === "steamGuard" || isAuthenticator) return MODAL_FRAME_MIN_W_STEAM_GUARD;
     return MODAL_FRAME_MIN_W;
   }
 
   $: modalMinSize = {
-    minW: minFrameWidth(kind),
+    minW: minFrameWidth(kind, authenticatorLayout),
     minH: kind === "folder" ? MODAL_FRAME_MIN_H_FOLDER : MODAL_FRAME_MIN_H,
   };
 
@@ -232,7 +233,7 @@
     class="modalFG"
     class:modalFG--ready={frameReady}
     class:modalFilePicker={kind === "folder"}
-    class:modalSteamGuard={kind === "steamGuard"}
+    class:modalSteamGuard={kind === "steamGuard" || authenticatorLayout}
     class:modalShortBody={SHORT_BODY_KINDS.has(kind)}
     bind:this={modalFgEl}
     use:modalFocus={{ onEscape: onCancel, initialFocus: preferredInitialFocus }}

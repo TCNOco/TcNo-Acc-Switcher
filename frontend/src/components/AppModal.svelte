@@ -60,17 +60,22 @@
     kind={shown.kind}
     title={modalTitle}
     modalId={shown.id}
+    authenticatorLayout={shown.authenticatorLayout ?? false}
     on:cancel={cancelActiveModal}
   >
     {#key shown.id}
       {#if shown.kind === "alert" || shown.kind === "alertNoButton"}
-        <AlertModalBody
-          dismissLabel={shown.kind === "alert" ? (shown.dismissLabel ?? $t("Ok")) : undefined}
-          html={shown.body}
-          component={shown.bodyComponent}
-          componentProps={shown.bodyProps}
-          on:resolve={onResolveAlert}
-        />
+        {#if shown.authenticatorLayout && shown.bodyComponent}
+          <svelte:component this={shown.bodyComponent} {...shown.bodyProps ?? {}} />
+        {:else}
+          <AlertModalBody
+            dismissLabel={shown.kind === "alert" ? (shown.dismissLabel ?? $t("Ok")) : undefined}
+            html={shown.body}
+            component={shown.bodyComponent}
+            componentProps={shown.bodyProps}
+            on:resolve={onResolveAlert}
+          />
+        {/if}
       {:else if shown.kind === "confirm"}
         <ConfirmModalBody
           html={shown.body}

@@ -52,6 +52,7 @@
 	  import { focusOnShow } from "../../lib/actions/focusOnShow";
 	  import SteamAccountAvatar from "../SteamAccountAvatar.svelte";
   import SteamGuardVaultFactors from "./SteamGuardVaultFactors.svelte";
+  import AuthenticatorUnlockForm from "./AuthenticatorUnlockForm.svelte";
 	  import { loadSteamGuardSwitcherProfile } from "../../lib/steamGuardBridge";
 	  import type { SteamAccountRow } from "../../lib/steam/types";
 	  import type { SteamBrowserSite } from "../../lib/steam/steamBrowserSites";
@@ -2591,12 +2592,20 @@
       <p>{$t("SteamGuard_Loading")}</p>
     </section>
   {:else if state.screen === "locked"}
-    <form class="steam-guard__stack steam-guard__unlock-form" on:submit|preventDefault={unlockAccount}>
-      <!--
-        Only when this unlock is for one account. Opened from the action bar it
-        leads to the account picker instead, and naming an account there would
-        claim a choice the user has not made yet.
-      -->
+    <AuthenticatorUnlockForm
+      idPrefix="steam-guard"
+      bind:password
+      bind:keyfilePath={unlockKeyfilePath}
+      bind:backupKey={unlockBackupKey}
+      bind:rememberForSession
+      {busy}
+      error={inlineError}
+      hasSecurityKey={vaultStatus?.hasSecurityKey}
+      pickKeyfile={controller.pickKeyfile}
+      onUnlock={unlockAccount}
+      onSecurityKey={unlockWithSecurityKey}
+    >
+      <svelte:fragment slot="identity">
       {#if !openAllAccountsOnReady}
         <div class="steam-guard__identity">
           <span class="steam-guard__identity-avatar">
@@ -2610,74 +2619,8 @@
           </span>
         </div>
       {/if}
-      <p>{$t("SteamGuard_Unlock_Body")}</p>
-      <label class="steam-guard__field" for="steam-guard-password">
-        <span>{$t("SteamGuard_Field_Password")}</span>
-        <input
-          id="steam-guard-password"
-          class="modal-input"
-          bind:value={password}
-          type="password"
-          autocomplete="current-password"
-          disabled={busy}
-          data-steamguard-focus
-          use:focusOnShow={!busy}
-          aria-invalid={inlineError ? "true" : undefined}
-          aria-describedby={inlineError ? "steam-guard-unlock-error" : undefined}
-          on:keydown={(event) => runOnEnter(event, unlockAccount)}
-        />
-      </label>
-      <!-- A vault can have a keyfile or a backup key enrolled, and then the
-           password alone will not open it. Offered on every unlock rather than
-           only after a failure: the user knows what they enrolled, and a
-           password-only vault simply leaves these empty. -->
-      <SteamGuardVaultFactors
-        idPrefix="steam-guard"
-        bind:backupKey={unlockBackupKey}
-        bind:keyfilePath={unlockKeyfilePath}
-        {busy}
-        pickKeyfile={controller.pickKeyfile}
-        onSubmit={unlockAccount}
-      />
-      {#if inlineError}
-        <p id="steam-guard-unlock-error" class="steam-guard__error" role="alert">{inlineError}</p>
-      {/if}
-      <div class="steam-guard__actions steam-guard__actions--split">
-        <div class="steam-guard__check">
-          <span class="form-check">
-            <input id="steam-guard-remember-session" class="form-check-input" bind:checked={rememberForSession} type="checkbox" disabled={busy} />
-            <label class="form-check-label" for="steam-guard-remember-session" aria-hidden="true"></label>
-          </span>
-          <label for="steam-guard-remember-session">{$t("SteamGuard_RememberMe")}</label>
-        </div>
-        <div class="steam-guard__actions-group">
-          <!-- Its own button because it needs nothing typed in, which is the one
-               thing Unlock cannot allow without letting an empty form through.
-               Always shown, so the option is not a secret; disabled only once
-               the vault has said it has no key to ask for. -->
-          <button
-            class="btnicontext"
-            type="button"
-            disabled={busy || vaultStatus?.hasSecurityKey === false}
-            title={vaultStatus?.hasSecurityKey === false ? $t("SteamGuard_Unlock_NoSecurityKey") : ""}
-            on:click={() => void unlockWithSecurityKey()}
-          >
-            {$t("SteamGuard_Unlock_SecurityKey")}
-          </button>
-          <!-- A backup key opens the vault on its own, so requiring a password
-               here would make that factor unusable. -->
-          <button
-            class="btnicontext modal-primary"
-            type="button"
-            disabled={busy || (password.length === 0 && unlockKeyfilePath === "" && unlockBackupKey.trim() === "")}
-            on:click={unlockAccount}
-          >
-            <svg class="steam-guard__icon" viewBox={ICONS.key.box} aria-hidden="true"><path d={ICONS.key.path} /></svg>
-            {busy ? $t("SteamGuard_Unlocking") : $t("SteamGuard_Unlock")}
-          </button>
-        </div>
-      </div>
-    </form>
+      </svelte:fragment>
+    </AuthenticatorUnlockForm>
   {:else if state.screen === "account-code"}
     <section class="steam-guard__stack">
       <div class="steam-guard__identity" data-steamguard-focus tabindex="-1">

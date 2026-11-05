@@ -1,25 +1,20 @@
 import { readFileSync } from "node:fs";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import { render } from "svelte/server";
+import type { ComponentProps } from "svelte";
+import AuthenticatorUnlockForm from "./AuthenticatorUnlockForm.svelte";
 
-const source = readFileSync(new URL("./SteamGuardModalBody.svelte", import.meta.url), "utf8");
+vi.mock("../../stores/i18n", async () => {
+  const { readable } = await import("svelte/store");
+  return { t: readable((key: string) => key) };
+});
+
+const source = readFileSync(new URL("./SteamGuardModalBody.svelte", import.meta.url), "utf8").replace(/\r\n/g, "\n");
 
 function fragmentAfter(marker: string, length = 1_000): string {
   const index = source.indexOf(marker);
   expect(index).toBeGreaterThanOrEqual(0);
   return source.slice(index, index + length);
-}
-
-/**
- * The whole actions row, to its closing tag rather than a fixed number of
- * characters: a window sized by hand fails the next time a button is added,
- * which says nothing about whether the row still works.
- */
-function unlockActionsRow(): string {
-  const start = source.indexOf("steam-guard__actions steam-guard__actions--split");
-  expect(start).toBeGreaterThanOrEqual(0);
-  const end = source.indexOf("</form>", start);
-  expect(end).toBeGreaterThan(start);
-  return source.slice(start, end);
 }
 
 /** A function's body up to a marker inside it, rather than a hand-sized window. */
@@ -50,36 +45,56 @@ function vaultPreparationForm(): string {
 }
 
 describe("Steam Guard unlock activation", () => {
-  it("directly handles Enter and click for account unlock", () => {
-    const password = fragmentAfter('id="steam-guard-password"');
-    expect(password).toContain("runOnEnter(event, unlockAccount)");
+  const form = (props: Partial<ComponentProps<typeof AuthenticatorUnlockForm>> = {}) => render(AuthenticatorUnlockForm, {
+    props: {
+      idPrefix: "steam-guard",
+      onUnlock: () => {},
+      pickKeyfile: async () => "",
+      ...props,
+    },
+  }).body;
 
-    const actions = unlockActionsRow();
-    expect(actions).toContain('type="button"');
-    expect(actions).toContain("on:click={unlockAccount}");
-    expect(actions).toContain('busy ? $t("SteamGuard_Unlocking") : $t("SteamGuard_Unlock")');
+  function primaryDisabled(html: string): boolean {
+    const button = html.match(/<button[^>]*class="[^"]*modal-primary[^>]*>/)?.[0];
+    expect(button).toBeDefined();
+    return /\sdisabled(?:[\s=>])/.test(button!);
+  }
+
+  it("requires credentials while allowing backup keys and keyfiles without a password", () => {
+    expect(primaryDisabled(form())).toBe(true);
+    for (const credentials of [{ password: "password" }, { keyfilePath: "C:/keys/vault.key" }, { backupKey: "recovery-key" }]) {
+      expect(primaryDisabled(form(credentials))).toBe(false);
+    }
+    expect(primaryDisabled(form({ backupKey: "   " }))).toBe(true);
+    expect(primaryDisabled(form({ password: "password", busy: true }))).toBe(true);
+    expect(primaryDisabled(form({ password: "password", available: false }))).toBe(true);
   });
 
-  // A security key needs nothing typed in, which is the one thing the Unlock
-  // button cannot allow without letting an empty form through. It gets its own
-  // button, and that button is not hidden behind knowing a key is enrolled.
-  it("offers the security key beside Unlock, on its own handler", () => {
-    const actions = unlockActionsRow();
-    expect(actions).toContain("on:click={() => void unlockWithSecurityKey()}");
-    expect(actions).toContain('$t("SteamGuard_Unlock_SecurityKey")');
-
-    // Unlock still requires something typed: the empty case is the other button.
-    expect(actions).toContain(
-      'disabled={busy || (password.length === 0 && unlockKeyfilePath === "" && unlockBackupKey.trim() === "")}',
-    );
+  it("offers the same factor picker and session controls for either provider", () => {
+    for (const idPrefix of ["steam-guard", "battlenet-authenticator"]) {
+      const html = form({ idPrefix });
+      expect(html).toContain(`id="${idPrefix}-password"`);
+      expect(html).toContain(`id="${idPrefix}-backup-key"`);
+      expect(html).toContain("SteamGuard_Unlock_ChooseKeyfile");
+      expect(html).toContain(`for="${idPrefix}-remember-session"`);
+      expect(html).toContain("SteamGuard_Unlock_SecurityKey");
+      expect(html).toContain("SteamGuard_Unlock");
+    }
   });
 
-  it("keeps Remember Me and Unlock on the same row", () => {
-    const row = unlockActionsRow();
-    const remember = row.indexOf('for="steam-guard-remember-session"');
-    const unlock = row.indexOf("on:click={unlockAccount}");
-    expect(remember).toBeGreaterThanOrEqual(0);
-    expect(unlock).toBeGreaterThan(remember);
+  it("disables unavailable security keys and displays accessible unlock errors", () => {
+    const html = form({ hasSecurityKey: false, error: "Wrong password" });
+    expect(html).toMatch(/<button[^>]*disabled[^>]*>\s*SteamGuard_Unlock_SecurityKey/);
+    expect(html).toContain('aria-describedby="steam-guard-unlock-error"');
+    expect(html).toContain('role="alert">Wrong password');
+  });
+
+  it("keeps recovery controls out of vault creation", () => {
+    const html = form({ creating: true });
+    expect(html).toContain('autocomplete="new-password"');
+    expect(html).not.toContain("SteamGuard_Unlock_ChooseKeyfile");
+    expect(html).not.toContain("SteamGuard_Unlock_SecurityKey");
+    expect(html).not.toContain("SteamGuard_RememberMe");
   });
 
   // Dismissing without navigating left the header button clearing the QR status

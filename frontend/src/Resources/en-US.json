@@ -25,6 +25,7 @@
   "Authenticator_RecoveryWarning": "This QR and URL contain your authenticator secret. Only share them with an authenticator app you trust.",
   "Authenticator_QR": "Authenticator export QR code",
   "Authenticator_Unlock": "Unlock shared authenticator vault",
+  "Authenticator_Unlock_Body": "Enter the password for the shared authenticator vault.",
   "Authenticator_Create": "Create shared authenticator vault",
   "Authenticator_Password": "Vault password",
   "Authenticator_Keyfile": "Keyfile path (if required)",
