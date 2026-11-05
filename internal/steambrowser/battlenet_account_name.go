@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/url"
+	"regexp"
 	"strings"
 	"unicode"
 	"unicode/utf8"
@@ -17,10 +18,11 @@ import (
 var battleNetAccountNameScript string
 
 var errBattleNetAccountName = errors.New("Battle.net account name is unavailable")
+var battleNetAccountHost = regexp.MustCompile(`^(?:(?:eu|us|kr|tw|cn)\.)?account\.battle\.net$`)
 
 func battleNetSecurityPage(raw string) bool {
 	u, err := url.Parse(raw)
-	return err == nil && u.Scheme == "https" && u.Host == "account.battle.net" && u.User == nil && (u.EscapedPath() == "/security" || u.EscapedPath() == "/security/")
+	return err == nil && u.Scheme == "https" && battleNetAccountHost.MatchString(u.Host) && u.User == nil && (u.EscapedPath() == "/security" || u.EscapedPath() == "/security/")
 }
 
 func parseBattleNetAccountName(raw string) (string, error) {

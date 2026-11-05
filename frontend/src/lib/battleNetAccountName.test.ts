@@ -5,7 +5,17 @@ import { describe, expect, it } from "vitest";
 const script = readFileSync(new URL("../../../internal/steambrowser/battlenet_account_name.js", import.meta.url), "utf8");
 const node = (text: string, visible = true) => ({ innerText: text, textContent: text, getClientRects: () => visible ? [{}] : [] });
 function root(dedicated: unknown[] = [], headers: unknown[] = [], children: unknown[] = []) {
-  return { querySelectorAll: (selector: string) => selector === "*" ? [...dedicated, ...headers, ...children] : selector.startsWith("[data-testid") ? dedicated : headers };
+  return { querySelectorAll: (selector: string) => {
+    const nodes = [...dedicated, ...headers, ...children];
+    if (selector === "*") return nodes;
+    if (selector === "blz-nav" || selector === "blz-nav, blz-nav-battlenet") {
+      return nodes.filter(node => {
+        const tag = (node as { tagName?: string }).tagName?.toLowerCase();
+        return tag === "blz-nav" || (tag === "blz-nav-battlenet" && selector.includes("blz-nav-battlenet"));
+      });
+    }
+    return selector.startsWith("[data-testid") ? dedicated : headers;
+  } };
 }
 function read(document: ReturnType<typeof root>, origin = "https://account.battle.net", pathname = "/security") {
   const window: { top?: unknown } = {};
@@ -15,8 +25,15 @@ function read(document: ReturnType<typeof root>, origin = "https://account.battl
 
 describe("Battle.net Security account name capture", () => {
   it("reads the navigation component user fields while its account menu is closed", () => {
-    const nav = { ...node("Account"), user: { battletag: "Example#1234", email: "test@example.invalid" } };
+    const nav = { ...node("Account"), tagName: "BLZ-NAV", user: { battletag: "Example#1234", email: "test@example.invalid" } };
     expect(read(root([], [nav]))?.name).toBe("Example#1234");
+  });
+  it("reads the regional Battle.net navigation component without opening its hover menu", () => {
+    const nav = { ...node("Example"), tagName: "BLZ-NAV-BATTLENET", user: { battletag: "Example#1234", email: "test@example.invalid" } };
+    expect(read(root([], [nav]), "https://eu.account.battle.net")?.name).toBe("Example#1234");
+  });
+  it.each(["eu", "us", "kr", "tw", "cn"])("accepts the %s account Security origin", region => {
+    expect(read(root([], [node("Example#1234")]), `https://${region}.account.battle.net`)?.name).toBe("Example#1234");
   });
   it("prefers the BattleTag over the email in the account header", () => {
     expect(read(root([], [node("Example#1234 test@example.invalid Manage account")]))?.name).toBe("Example#1234");
@@ -35,6 +52,9 @@ describe("Battle.net Security account name capture", () => {
   it("ignores login pages, unrelated hosts, hidden elements, and body text", () => {
     const header = root([], [node("Example#1234")]);
     expect(read(header, "https://account.battle.net.evil.test")).toBeNull();
+    expect(read(header, "https://eu.account.battle.net.evil.test")).toBeNull();
+    expect(read(header, "https://unknown.account.battle.net")).toBeNull();
+    expect(read(header, "http://eu.account.battle.net")).toBeNull();
     expect(read(header, "https://account.battle.net", "/login/en/")).toBeNull();
     expect(read(root([], [node("Example#1234", false)], [node("Body example: Example#9999")] ))?.name).toBe("");
   });

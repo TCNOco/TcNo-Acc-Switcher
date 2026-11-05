@@ -1,5 +1,5 @@
 (() => {
-  if (window.top !== window || location.origin !== "https://account.battle.net" || !/^\/security\/?$/.test(location.pathname)) return null;
+  if (window.top !== window || !/^https:\/\/(?:(?:eu|us|kr|tw|cn)\.)?account\.battle\.net$/.test(location.origin) || !/^\/security\/?$/.test(location.pathname)) return null;
   const roots = [document];
   for (let i = 0; i < roots.length && i < 32; i++) {
     for (const node of Array.from(roots[i].querySelectorAll("*")).slice(0, 6000)) {
@@ -10,7 +10,7 @@
   const tagPattern = /[\p{L}\p{N}][\p{L}\p{N}\p{M}_-]{1,31}#[0-9]{3,12}/gu;
   const emailPattern = /[A-Za-z0-9.!#$%&'*+\/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+/g;
   for (const root of roots) {
-    for (const nav of root.querySelectorAll("blz-nav")) {
+    for (const nav of root.querySelectorAll("blz-nav, blz-nav-battlenet")) {
       if (!nav.getClientRects().length) continue;
       const tag = typeof nav.user?.battletag === "string" ? nav.user.battletag.trim() : "";
       const email = typeof nav.user?.email === "string" ? nav.user.email.trim() : "";
@@ -24,7 +24,7 @@
   }
   for (const root of roots) {
     const dedicated = root.querySelectorAll('[data-testid*="battletag" i], [id*="battletag" i], [class*="battletag" i], [class*="battle-tag" i], [slot="username"], [slot="account-name"]');
-    const headers = root.querySelectorAll('header, nav, [role="navigation"], blz-nav, blz-navbar, blz-account-menu, blz-profile-menu');
+    const headers = root.querySelectorAll('header, nav, [role="navigation"], blz-nav, blz-nav-battlenet, blz-navbar, blz-account-menu, blz-profile-menu');
     for (const node of [...dedicated, ...headers]) {
       if (!node.getClientRects().length) continue;
       const text = (node.innerText || node.textContent || "").trim().slice(0, 4096).replace(/\s*#\s*(\d{3,12})/g, "#$1");
