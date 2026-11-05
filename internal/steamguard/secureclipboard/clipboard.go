@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	codeLength       = 5
+	codeLength       = 8
 	steamAlphabet    = "23456789BCDFGHJKMNPQRTVWXY"
 	MaxClipboardLife = 31 * time.Second
 	clearRetryDelay  = 100 * time.Millisecond
@@ -43,10 +43,10 @@ type code [codeLength]byte
 
 func parseCode(value string) (code, error) {
 	var parsed code
-	if len(value) != codeLength {
+	if len(value) != 5 {
 		return parsed, ErrInvalidCode
 	}
-	for i := range parsed {
+	for i := range value {
 		if !isSteamCodeByte(value[i]) {
 			parsed.wipe()
 			return parsed, ErrInvalidCode
@@ -123,6 +123,33 @@ func (m *Manager) Copy(value string, lifetime time.Duration) error {
 	if err != nil {
 		return err
 	}
+	return m.copyParsed(parsed, lifetime)
+}
+
+func (m *Manager) CopyNumeric(value string, lifetime time.Duration) error {
+	parsed, err := parseNumericCode(value)
+	if err != nil {
+		return err
+	}
+	return m.copyParsed(parsed, lifetime)
+}
+
+func parseNumericCode(value string) (code, error) {
+	var parsed code
+	if len(value) != 8 {
+		return parsed, ErrInvalidCode
+	}
+	for i := range value {
+		if value[i] < '0' || value[i] > '9' {
+			parsed.wipe()
+			return parsed, ErrInvalidCode
+		}
+		parsed[i] = value[i]
+	}
+	return parsed, nil
+}
+
+func (m *Manager) copyParsed(parsed code, lifetime time.Duration) error {
 	defer parsed.wipe()
 	if lifetime <= 0 || lifetime > MaxClipboardLife {
 		return ErrInvalidLifetime

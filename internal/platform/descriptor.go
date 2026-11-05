@@ -16,6 +16,7 @@ type CredentialSessionDescriptor struct {
 }
 
 type DescriptorExtras struct {
+	AuthenticatorProvider   string                       `json:"AuthenticatorProvider,omitempty"`
 	CredentialSession       *CredentialSessionDescriptor `json:"CredentialSession,omitempty"`
 	CachePaths              []string                     `json:"CachePaths,omitempty"`
 	BackupFolders           map[string]string            `json:"BackupFolders,omitempty"`

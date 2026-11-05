@@ -615,6 +615,7 @@
       "UniqueIdFile": "%AppData%\\Battle.net\\Battle.net.config::Client.SavedAccountNames",
       "UniqueIdMethod": "JSON_SELECT_FIRST,",
       "Extras": {
+        "AuthenticatorProvider": "battlenet",
         "ClosingMethod": "TaskKill",
         "BuiltInUsernameFile": "SQLITE:%LocalAppData%\\Battle.net\\CachedData.db|SELECT battle_tag FROM login_cache WHERE account_id_lo = '%BuiltInUserId%'",
         "BuiltInUserId": "LATEST_MODIFIED_FILE:%LocalAppData%\\Battle.net\\Logs\\battle.net-*.log"
@@ -741,5 +742,5 @@
   },
   "Platform-WIP": {
   },
-  "Version": "4.0.9"
+  "Version": "4.0.10"
 }

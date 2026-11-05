@@ -135,7 +135,7 @@ func currentCodeDigest() ([sha256.Size]byte, bool, error) {
 		return zero, false, wrapCallError(callErr)
 	}
 	size, _, callErr := procGlobalSize.Call(handle)
-	if size < uintptr((codeLength+1)*2) {
+	if size < uintptr(12) {
 		if size == 0 {
 			return zero, false, wrapCallError(callErr)
 		}
@@ -147,17 +147,25 @@ func currentCodeDigest() ([sha256.Size]byte, bool, error) {
 	}
 	defer procGlobalUnlock.Call(handle)
 
-	units := unsafe.Slice((*uint16)(unsafe.Add(unsafe.Pointer(nil), address)), codeLength+1)
+	count := min(int(size/2), codeLength+1)
+	units := unsafe.Slice((*uint16)(unsafe.Add(unsafe.Pointer(nil), address)), count)
 	var parsed code
 	defer parsed.wipe()
-	for i := range parsed {
-		if units[i] > 0x7f || !isSteamCodeByte(byte(units[i])) {
+	length := 0
+	for length < len(units) && units[length] != 0 {
+		length++
+	}
+	if length != 5 && length != 8 || length >= len(units) {
+		return zero, false, nil
+	}
+	for i := 0; i < length; i++ {
+		if units[i] > 0x7f {
+			return zero, false, nil
+		}
+		if length == 5 && !isSteamCodeByte(byte(units[i])) || length == 8 && (units[i] < '0' || units[i] > '9') {
 			return zero, false, nil
 		}
 		parsed[i] = byte(units[i])
-	}
-	if units[codeLength] != 0 {
-		return zero, false, nil
 	}
 	runtime.KeepAlive(units)
 	return sha256.Sum256(parsed[:]), true, nil

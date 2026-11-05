@@ -16,7 +16,9 @@
   import { LaunchPlatform } from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
   import { formatToastWithError } from "../lib/formatWailsError";
   import { offerRestartIfNeedsAdmin, isNeedsAdminError } from "../lib/adminFlow";
-  import { openPrompt } from "../stores/modal";
+  import { openPrompt, openAlert } from "../stores/modal";
+  import { Call } from "@wailsio/runtime";
+  import BattleNetAuthenticatorModal from "../components/modals/BattleNetAuthenticatorModal.svelte";
   import "../styles/platformAccountsShared.scss";
 
   const PROFILE_FALLBACK = "/img/BasicDefault.webp";
@@ -33,6 +35,11 @@
   };
 
   export let name: string;
+
+  let authenticatorProvider = "";
+  $: void Call.ByName("TcNo-Acc-Switcher/internal/basic.BasicService.GetAuthenticatorProvider", name)
+    .then((provider: string) => { authenticatorProvider = provider; })
+    .catch(() => { authenticatorProvider = ""; });
 
   $: adapter = {
     platformKey: name,
@@ -102,6 +109,10 @@
     closePlatform: () => BasicService.ClosePlatform(name),
 
     buildMenu: (_a, shared) => [
+      ...(authenticatorProvider === "battlenet" ? [{
+        label: get(t)("Authenticator_Title"),
+        action: () => { void openAlert({ title: get(t)("Authenticator_Title"), bodyComponent: BattleNetAuthenticatorModal }); },
+      }] : []),
       shared.swapTo,
       shared.changeName,
       shared.createShortcut,
