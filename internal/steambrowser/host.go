@@ -6,6 +6,7 @@ import "errors"
 // Windows has one today; see the notes on View for what a macOS or Linux
 // implementation has to provide.
 var ErrUnsupportedPlatform = errors.New("steambrowser: session windows are not supported on this platform")
+var ErrStorageUnavailable = errors.New("account browser storage is unavailable; check the startup log for the data migration error")
 
 // ViewState is everything the toolbar draws itself from. It is pushed to the
 // frontend on every change rather than polled, so the URL bar and the

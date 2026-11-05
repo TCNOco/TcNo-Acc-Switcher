@@ -1,5 +1,7 @@
 {
   "Authenticator_Title": "Battle.net Authenticator",
+  "Authenticator_Settings_Title": "Authenticators",
+  "Authenticator_Settings_Folder": "Authenticator vault folder",
   "Authenticator_LinkAccount": "Link selected authenticator to this switcher account",
   "Authenticator_AppPassword": "Current application password",
   "AccountBrowser_Trusted_Hint": "{host} is a trusted site for this account platform.",

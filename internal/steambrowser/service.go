@@ -95,7 +95,7 @@ func (s *Service) ServiceName() string { return "SteamBrowserService" }
 
 // Available reports whether this build can open session windows, so the UI can
 // hide the entry points rather than offering something that always fails.
-func (s *Service) Available() bool { return Supported() }
+func (s *Service) Available() bool { return Supported() && strings.TrimSpace(s.dataPath) != "" }
 
 // OpenBrowser opens a window signed in as accountID and returns its id.
 //
@@ -104,6 +104,9 @@ func (s *Service) Available() bool { return Supported() }
 func (s *Service) OpenBrowser(accountID, site, modalToken string) (OpenResult, error) {
 	if !Supported() {
 		return OpenResult{}, ErrUnsupportedPlatform
+	}
+	if !s.Available() {
+		return OpenResult{}, ErrStorageUnavailable
 	}
 	if s.source == nil {
 		return OpenResult{}, errors.New("steambrowser: no session source")

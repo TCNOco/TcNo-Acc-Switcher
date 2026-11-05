@@ -14,6 +14,7 @@ import (
 	"strings"
 	"sync"
 
+	"TcNo-Acc-Switcher/internal/authenticatorstorage"
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
 )
@@ -62,7 +63,7 @@ func RootPath() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(root, "SteamGuard"), nil
+	return authenticatorstorage.Directory(root, "SteamGuard", "Authenticators")
 }
 
 func IndexPath() (string, error) {

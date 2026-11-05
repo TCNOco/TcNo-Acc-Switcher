@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	backupNamePrefix = "TcNo-Acc-Switcher-SteamGuard-Backup-"
+	backupNamePrefix = "TcNo-Acc-Switcher-Authenticators-Backup-"
 	backupMaxFiles   = 4096
 	backupMaxFile    = int64(64 << 20)
 	backupMaxTotal   = int64(1 << 30)
@@ -52,7 +52,7 @@ func (s *Service) CreateVerifiedBackupWithFactors(steamGuardPassword, appPasswor
 		return "", errors.New("application not initialised")
 	}
 	dialog := app.Dialog.OpenFile().
-		SetTitle("Choose a folder for the encrypted Steam Guard backup").
+		SetTitle("Choose a folder for the encrypted authenticator backup").
 		CanChooseDirectories(true).
 		CanChooseFiles(false)
 	if owner := dialogOwnerWindow(); owner != nil {

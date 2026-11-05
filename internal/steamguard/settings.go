@@ -6,10 +6,10 @@ import (
 	"errors"
 	"io"
 	"os"
-	"path/filepath"
 	"strings"
 	"time"
 
+	"TcNo-Acc-Switcher/internal/authenticatorstorage"
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
 	"TcNo-Acc-Switcher/internal/steamguard/registry"
@@ -17,7 +17,7 @@ import (
 
 const (
 	settingsVersion = 1
-	settingsName    = "SteamGuard.json"
+	settingsName    = "Authenticators.json"
 	maxSettingsSize = 64 << 10
 )
 
@@ -38,7 +38,7 @@ func settingsPath() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(root, "Settings", settingsName), nil
+	return authenticatorstorage.Settings(root)
 }
 
 // settingsFileExists distinguishes "the user has never chosen" from "the user

@@ -18,7 +18,7 @@ import (
 	"TcNo-Acc-Switcher/internal/steamguard/vaultrecord"
 )
 
-const restoreStagePrefix = "SteamGuard-RestoreStage-"
+const restoreStagePrefix = "Authenticators-RestoreStage-"
 
 var (
 	ErrRestoreMergeRequiresVault = errors.New("Steam Guard restore merge requires a configured vault")

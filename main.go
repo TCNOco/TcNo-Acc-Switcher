@@ -299,9 +299,9 @@ func serviceList() []application.Service {
 	// a failure is worth logging rather than swallowing. Without it the service
 	// still registers and reports itself unavailable, so the UI hides the entry
 	// points instead of offering something that cannot work.
-	browserDataPath, err := paths.SteamBrowserDir()
+	browserDataPath, err := paths.AccountBrowserDir()
 	if err != nil {
-		log.Printf("steam browser data path: %v", err)
+		log.Printf("account browser data path: %v", err)
 	}
 	steamBrowserSvc = steambrowser.NewService(steamguard.NewBrowserSessionSource(steamGuardSvc), browserDataPath, true)
 	steamguard.ConfigureBattleNetBrowser(steamGuardSvc, steamBrowserSvc)

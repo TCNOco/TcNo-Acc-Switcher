@@ -410,7 +410,7 @@ func (s *Service) PickVaultKeyfile() (string, error) {
 		return "", ErrFactorCancelled
 	}
 	dialog := app.Dialog.OpenFile()
-	dialog.SetMessage("Select your Steam Guard keyfile")
+	dialog.SetMessage("Select your authenticator vault keyfile")
 	dialog.AddFilter("Text file", "*.txt")
 	dialog.CanChooseFiles(true)
 	if owner := dialogOwnerWindow(); owner != nil {
@@ -463,8 +463,8 @@ func (s *Service) SaveVaultBackupKey(code string) (string, error) {
 		return "", ErrFactorCancelled
 	}
 	dialog := app.Dialog.SaveFile()
-	dialog.SetMessage("Save Steam Guard backup key")
-	dialog.SetFilename("steam-guard-backup-key.txt")
+	dialog.SetMessage("Save authenticator vault backup key")
+	dialog.SetFilename("authenticator-backup-key.txt")
 	dialog.AddFilter("Text file", "*.txt")
 	if owner := dialogOwnerWindow(); owner != nil {
 		dialog.AttachToWindow(owner)
@@ -952,7 +952,7 @@ func saveKeyfileDialog(keyfile vault.Keyfile) (string, error) {
 	}
 	dialog := app.Dialog.SaveFile()
 	dialog.SetMessage("Save Steam Guard keyfile")
-	dialog.SetFilename("steam-guard-keyfile.txt")
+	dialog.SetFilename("authenticator-keyfile.txt")
 	dialog.AddFilter("Text file", "*.txt")
 	if owner := dialogOwnerWindow(); owner != nil {
 		dialog.AttachToWindow(owner)

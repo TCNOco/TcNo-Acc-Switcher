@@ -17,6 +17,7 @@ func openBattleNetWindow(s *Service, profile, destination string, site Site, int
 	if s == nil || !Supported() || intercept == nil {
 		return ErrUnsupportedPlatform
 	}
+	if !s.Available(){return ErrStorageUnavailable}
 	id, err := s.sessions.reserve()
 	if err != nil {
 		return err

@@ -146,8 +146,8 @@
       await loadFactors();
       const folder = $steamGuardSettings.status.folderPath;
       await openAlert({
-        title: "Replace your Steam Guard backup",
-        body: "Your old backup uses the previous password. Create a new verified backup of the full Steam Guard folder:<br><code>" +
+        title: "Replace your authenticator backup",
+        body: "Your old backup uses the previous password. Create a new verified backup of the full authenticator vault folder:<br><code>" +
           escapeHtml(folder || "Path unavailable") + "</code><br><br>Forgotten passwords cannot be recovered.",
       });
     } catch (error) {
@@ -523,7 +523,7 @@
 <section class="steam-guard-settings settings-group" aria-labelledby="steam-guard-settings-title">
   <div class="steam-guard-heading-row">
     <!-- h2 to match the sibling sections of the Steam settings page it lives on. -->
-    <h2 id="steam-guard-settings-title" class="SettingsHeader">{$t("SteamGuard_Settings_Title")}</h2>
+    <h2 id="steam-guard-settings-title" class="SettingsHeader">{$t("Authenticator_Settings_Title")}</h2>
     {#if $steamGuardSettings.availability === "error"}
       <span class="steam-guard-service-state" role="status">{$t("SteamGuard_Settings_StatusError")}</span>
     {:else if !ready}
@@ -557,7 +557,7 @@
   </div>
 
   <div class="steam-guard-path-block">
-    <span class="steam-guard-label">{$t("SteamGuard_Settings_Folder")}</span>
+    <span class="steam-guard-label">{$t("Authenticator_Settings_Folder")}</span>
     <code id={pathId} dir="ltr" title={path || $t("SteamGuard_Settings_PathUnavailable")}>
       {path || $t("SteamGuard_Settings_PathUnavailable")}
     </code>
