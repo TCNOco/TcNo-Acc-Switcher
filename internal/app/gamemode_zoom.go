@@ -25,20 +25,35 @@ func gameModeZoom(screenWidth int) float64 {
 	return math.Max(1, math.Min(2, float64(screenWidth)/gameModeCSSWidth))
 }
 
-// applyGameModeZoom magnifies the UI when there is one app on a handheld screen.
-// Anywhere else the user's own window size is the answer and this does nothing.
-func applyGameModeZoom(win application.Window) {
-	if win == nil || !platform.InGamescopeSession() {
+// Explicit scale applies to the main window. Automatic keeps handheld scaling.
+func applyInterfaceScale(win application.Window, scale float64) {
+	if win == nil {
 		return
 	}
-	screen, err := win.GetScreen()
-	if err != nil || screen == nil {
-		// Better a readable guess than a UI too small to operate.
-		slog.Warn("game mode: could not read the screen, scaling to 2x", "err", err)
-		win.SetZoom(2)
-		return
+	gameMode := platform.InGamescopeSession()
+	width := 0
+	if scale == 0 && gameMode {
+		screen, err := win.GetScreen()
+		if err == nil && screen != nil {
+			width = screen.Size.Width
+		} else {
+			slog.Warn("game mode: could not read the screen, scaling to 2x", "err", err)
+		}
 	}
-	zoom := gameModeZoom(screen.Size.Width)
-	slog.Info("game mode: scaling the UI to the panel", "screenWidth", screen.Size.Width, "zoom", zoom)
+	zoom := mainWindowZoom(scale, gameMode, width)
+	win.SetMinSize(int(math.Round(mainWindowMinWidth*zoom)), int(math.Round(mainWindowMinHeight*zoom)))
 	win.SetZoom(zoom)
+}
+
+func mainWindowZoom(scale float64, gameMode bool, screenWidth int) float64 {
+	if scale != 0 {
+		return scale
+	}
+	if !gameMode {
+		return 1
+	}
+	if screenWidth <= 0 {
+		return 2
+	}
+	return gameModeZoom(screenWidth)
 }

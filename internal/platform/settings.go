@@ -22,6 +22,9 @@ type AppSettings struct {
 
 	Theme string `json:"theme,omitempty"`
 
+	// Zero selects automatic handheld scaling; other values are window zoom factors.
+	InterfaceScale float64 `json:"interfaceScale,omitempty"`
+
 	ThemeAccentPreset string `json:"themeAccentPreset,omitempty"`
 	ThemeAccentCustom string `json:"themeAccentCustom,omitempty"`
 
@@ -211,6 +214,9 @@ func normalizeAppSettingsShape(s *AppSettings) {
 	}
 	if s.Language == "" {
 		s.Language = "en-US"
+	}
+	if !validInterfaceScale(s.InterfaceScale) {
+		s.InterfaceScale = 0
 	}
 	if s.PlatformExePaths == nil {
 		s.PlatformExePaths = map[string]string{}

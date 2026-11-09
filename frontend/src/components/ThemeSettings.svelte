@@ -12,6 +12,7 @@
   import SettingsGroup from "./settings/SettingsGroup.svelte";
   import SettingsToggle from "./settings/SettingsToggle.svelte";
   import { animationsEnabled, setAnimationsEnabled } from "../stores/animationSettings";
+  import InterfaceScaleSettings from "./InterfaceScaleSettings.svelte";
 
   $: showResetToThemeBg = !!$currentThemeBgUrl && ($appBgInfo.hasImage || $userOverriddenAppBg);
 
@@ -76,6 +77,7 @@
   </div>
 
   <div class="settings-grid">
+    <InterfaceScaleSettings />
     <SettingsToggle
       id="theme-reduce-motion"
       checked={!$animationsEnabled}

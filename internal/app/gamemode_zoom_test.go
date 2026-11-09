@@ -2,6 +2,22 @@ package app
 
 import "testing"
 
+func TestMainWindowZoomManualAndAutomatic(t *testing.T) {
+	for _, tc := range []struct {
+		scale    float64
+		gameMode bool
+		width    int
+		want     float64
+	}{
+		{0, false, 1920, 1}, {0, true, 1280, 1280.0 / gameModeCSSWidth},
+		{0, true, 0, 2}, {0.75, false, 1920, 0.75}, {1.25, true, 1280, 1.25},
+	} {
+		if got := mainWindowZoom(tc.scale, tc.gameMode, tc.width); got != tc.want {
+			t.Fatalf("manual=%v handheld=%t width=%d: got %v want %v", tc.scale, tc.gameMode, tc.width, got, tc.want)
+		}
+	}
+}
+
 func TestGameModeZoom(t *testing.T) {
 	cases := []struct {
 		name        string
