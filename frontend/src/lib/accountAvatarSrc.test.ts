@@ -40,6 +40,19 @@ describe("accountAvatarSrc", () => {
     expect(accountAvatarSrc({ ...base, imageUrl: "", pending: true })).toBe("/img/BasicDefault.webp");
   });
 
+  it("keeps an expired cached avatar while its refresh is pending", () => {
+    const src = accountAvatarSrc({ ...base, imageUrl: "/img/profiles/steam/account.jpg", pending: true });
+    expect(src).toContain("/img/profiles/steam/account.jpg");
+    expect(src).not.toBe(base.fallback);
+  });
+
+  it("keeps cached avatars offline even when a refresh was pending", () => {
+    expect(accountAvatarSrc({ ...base, imageUrl: "/img/profiles/steam/account.jpg", pending: true, offline: true }))
+      .toContain("/img/profiles/steam/account.jpg");
+    expect(accountAvatarSrc({ ...base, imageUrl: "", pending: true, offline: true }))
+      .toBe("generated:salt:Steam:76561198000000001");
+  });
+
   it("generates rather than falling back when offline blocks a remote avatar", () => {
     expect(accountAvatarSrc({ ...base, offline: true })).toBe("generated:salt:Steam:76561198000000001");
   });

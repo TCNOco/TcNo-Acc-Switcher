@@ -559,6 +559,9 @@ func (r *Refresher) exchange(ctx context.Context, steamID uint64, refreshToken s
 			return protocol.TokenResult{}, err
 		}
 		var protocolErr *protocol.Error
+		if errors.As(remoteErr, &protocolErr) && protocolErr.Code == protocol.CodeTransport {
+			return protocol.TokenResult{}, ErrOffline
+		}
 		if errors.As(remoteErr, &protocolErr) &&
 			(protocolErr.Code == protocol.CodeInvalidResponse || protocolErr.Code == protocol.CodeResponseTooLarge) {
 			return protocol.TokenResult{}, ErrInvalidResponse

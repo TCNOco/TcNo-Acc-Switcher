@@ -30,9 +30,6 @@ export function accountAvatarSrc(input: AccountAvatarInput): string {
   if (input.streamer) {
     return accountAvatar(input.salt, input.platformKey, input.accountKey) || input.fallback;
   }
-  if (input.pending) {
-    return input.fallback;
-  }
   const real = offlineSafeImageSrc(
     input.offline,
     withAssetCacheBust(input.imageUrl, input.epoch),
@@ -40,6 +37,9 @@ export function accountAvatarSrc(input: AccountAvatarInput): string {
   );
   if (real) {
     return real;
+  }
+  if (input.pending && !input.offline) {
+    return input.fallback;
   }
   return accountAvatar(input.salt, input.platformKey, input.accountKey) || input.fallback;
 }

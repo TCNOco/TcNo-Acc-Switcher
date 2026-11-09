@@ -576,6 +576,7 @@
   "Toast_GameDataRestored": "Successfully restored game data for this account.",
   "Toast_NoValidSteamId": "Unable to find a valid Steam ID.",
   "Toast_FailedUpdateCheck": "Failed to check for updates",
+  "Toast_UpdateCheckOffline": "Could not reach the update server. Check your internet connection and try again.",
   "Toast_UpToDate": "You're up-to-date!",
   "Toast_StartedGame": "{program} started successfully.",
   "Toast_ClosedProgram": "{program} was closed.",

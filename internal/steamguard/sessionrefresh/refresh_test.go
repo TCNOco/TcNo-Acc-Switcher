@@ -337,6 +337,18 @@ func TestRefreshSanitizesRemoteFailure(t *testing.T) {
 	}
 }
 
+func TestDisconnectedRefreshPreservesStoredSession(t *testing.T) {
+	storage := oneRecordVault(t, activeAccount(t, testSteamID, "old", "refresh-secret"))
+	before := make(map[string][]byte)
+	for id, data := range storage.data {
+		before[id] = append([]byte(nil), data...)
+	}
+	_, err := New(&fakeClient{err: &protocol.Error{Code: protocol.CodeTransport, State: protocol.StateRetryable}}, storage).Refresh(context.Background(), testSteamID)
+	if !errors.Is(err, ErrOffline) || storage.puts != 0 || !reflect.DeepEqual(before, storage.data) {
+		t.Fatalf("disconnection changed the saved session: err=%v puts=%d", err, storage.puts)
+	}
+}
+
 func TestRefreshTransactionFailureLeavesOriginalRecord(t *testing.T) {
 	original := activeAccount(t, testSteamID, "old-access", "old-refresh")
 	storage := oneRecordVault(t, original)

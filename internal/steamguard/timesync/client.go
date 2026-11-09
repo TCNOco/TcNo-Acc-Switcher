@@ -15,6 +15,7 @@ import (
 	"strconv"
 	"time"
 
+	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/steamguard/otp"
 	"TcNo-Acc-Switcher/internal/systemproxy"
 )
@@ -63,8 +64,19 @@ type Client struct {
 
 // NewClient creates a client with bounded network timeouts and no redirects.
 func NewClient() *Client {
+	httpClient := &http.Client{
+		Transport: appclient.OfflineTransport(newTransport()),
+		Timeout:   RequestTimeout,
+		CheckRedirect: func(_ *http.Request, _ []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
+	}
+	return NewClientWithDependencies(httpClient, systemClock{})
+}
+
+func newTransport() *http.Transport {
 	dialer := &net.Dialer{Timeout: 3 * time.Second, KeepAlive: 30 * time.Second}
-	transport := &http.Transport{
+	return &http.Transport{
 		Proxy:                 systemproxy.Proxy,
 		DialContext:           dialer.DialContext,
 		ForceAttemptHTTP2:     true,
@@ -77,14 +89,6 @@ func NewClient() *Client {
 		DisableCompression:    true,
 		TLSClientConfig:       &tls.Config{MinVersion: tls.VersionTLS12},
 	}
-	httpClient := &http.Client{
-		Transport: transport,
-		Timeout:   RequestTimeout,
-		CheckRedirect: func(_ *http.Request, _ []*http.Request) error {
-			return http.ErrUseLastResponse
-		},
-	}
-	return NewClientWithDependencies(httpClient, systemClock{})
 }
 
 // NewClientWithDependencies creates a client around injected testable dependencies.

@@ -11,6 +11,8 @@ import (
 	"net/url"
 	"strings"
 	"time"
+
+	"TcNo-Acc-Switcher/internal/appclient"
 )
 
 var ErrAccountVerification = errors.New("Battle.net requires more account setup; check Account security or the Battle.net mobile app")
@@ -18,7 +20,7 @@ var ErrAccountVerification = errors.New("Battle.net requires more account setup;
 type Client struct{ http *http.Client }
 
 func NewClient() *Client {
-	return &Client{http: &http.Client{Timeout: 20 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return errors.New("authenticator API redirect refused") }}}
+	return &Client{http: &http.Client{Timeout: 20 * time.Second, Transport: appclient.OfflineTransport(nil), CheckRedirect: func(*http.Request, []*http.Request) error { return errors.New("authenticator API redirect refused") }}}
 }
 
 func (c *Client) request(ctx context.Context, endpoint, bearer, contentType string, body []byte, preserve ...func([]byte) error) (map[string]json.RawMessage, error) {
@@ -26,6 +28,9 @@ func (c *Client) request(ctx context.Context, endpoint, bearer, contentType stri
 }
 
 func (c *Client) requestMethod(ctx context.Context, method, endpoint, bearer, contentType string, body []byte, preserve ...func([]byte) error) (map[string]json.RawMessage, error) {
+	if appclient.IsOfflineMode() {
+		return nil, appclient.ErrOfflineMode
+	}
 	req, err := http.NewRequestWithContext(ctx, method, endpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, ErrInvalid

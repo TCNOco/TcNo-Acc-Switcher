@@ -65,7 +65,7 @@ func (b *BasicService) StartBasicProfileImageRefresh(platformKey string) {
 	go b.runProfileImageRefresh(strings.TrimSpace(platformKey))
 }
 
-// RefreshAllBasicProfileImages deletes cached remote profile images for every known account, then starts a background re-download (like Steam "Refresh images").
+// RefreshAllBasicProfileImages refreshes automated images while retaining the last good files.
 func (b *BasicService) RefreshAllBasicProfileImages(platformKey string) error {
 	if err := security.RequireUnlocked(); err != nil {
 		return err
@@ -74,19 +74,8 @@ func (b *BasicService) RefreshAllBasicProfileImages(platformKey string) error {
 	if platformKey == "" {
 		return nil
 	}
-	f, err := readIdsFile(platformKey)
-	if err != nil {
+	if err := profileimage.MarkAutomatedProfileCachesStale(platformKey); err != nil {
 		return err
-	}
-	for uid := range f.IDs {
-		uid = strings.TrimSpace(uid)
-		if uid == "" {
-			continue
-		}
-		if profileimage.HasManualProfileMarker(platformKey, uid) {
-			continue
-		}
-		_ = profileimage.DeleteCached(platformKey, uid)
 	}
 	b.runProfileImageRefreshBypassCooldown(platformKey)
 	return nil
@@ -108,7 +97,7 @@ func (b *BasicService) PlatformProfileImagesSavedPerAccount(platformKey string) 
 	return platformProfileImagesSavedPerAccount(platformKey)
 }
 
-// RefreshSavedBasicProfileImages clears and requeues profile image downloads from account-saved source files.
+// RefreshSavedBasicProfileImages requeues saved sources without discarding the current images.
 func (b *BasicService) RefreshSavedBasicProfileImages(platformKey string) error {
 	if err := security.RequireUnlocked(); err != nil {
 		return err
@@ -117,7 +106,7 @@ func (b *BasicService) RefreshSavedBasicProfileImages(platformKey string) error 
 	if platformKey == "" || !platformProfileImagesSavedPerAccount(platformKey) {
 		return nil
 	}
-	if err := profileimage.DeleteAutomatedProfileCaches(platformKey); err != nil {
+	if err := profileimage.MarkAutomatedProfileCachesStale(platformKey); err != nil {
 		return err
 	}
 	f, err := readIdsFile(platformKey)
@@ -257,10 +246,11 @@ func (b *BasicService) runProfileImageRefresh(platformKey string) {
 			ctx2 := platform.PathTokenContext{PlatformFolder: folder, UniqueID: uid}
 			url, err := profilePicPathResolved(tpl, folder, ctx2)
 			if err != nil || strings.TrimSpace(url) == "" || !remoteProfilePicTemplate(url) {
+				cached, _ := profileimage.FindCached(platformKey, uid)
 				emitAccountImagePatch(AccountImagePatch{
 					PlatformKey:        platformKey,
 					UniqueID:           uid,
-					ImageURL:           "",
+					ImageURL:           cached,
 					AvatarPending:      false,
 					ManualProfileImage: profileimage.HasManualProfileMarker(platformKey, uid),
 				})

@@ -216,49 +216,61 @@ func downloadSteamAccountAvatars(
 	steamID64, avatarFullURL, miniProfileHTML string,
 	useMiniProfile bool,
 	maxAgeDays int,
-) (imageURL, staticURL string, err error) {
+) (imageURL, staticURL string, stale bool, err error) {
 	avatarFullURL = strings.TrimSpace(avatarFullURL)
 	steamID64 = strings.TrimSpace(steamID64)
 	if avatarFullURL == "" {
-		return "", "", fmt.Errorf("empty avatar URL")
+		return "", "", false, fmt.Errorf("empty avatar URL")
 	}
 	if profileimage.HasManualProfileMarker(PlatformKey, steamID64) {
 		if u, ok := profileimage.FindCached(PlatformKey, steamID64); ok {
 			imageURL, staticURL = resolveManualAvatarDisplay(u)
-			return imageURL, staticURL, nil
+			return imageURL, staticURL, false, nil
 		}
-		return "", "", fmt.Errorf("manual profile marker without cached file")
+		return "", "", false, fmt.Errorf("manual profile marker without cached file")
 	}
 
 	if !useMiniProfile {
 		res, derr := profileimage.DownloadIfNeeded(ctx, client, PlatformKey, steamID64, avatarFullURL, maxAgeDays)
 		if derr != nil {
-			return "", "", derr
+			return "", "", false, derr
 		}
 		if res == nil {
-			return "", "", fmt.Errorf("avatar download failed")
+			return "", "", false, fmt.Errorf("avatar download failed")
 		}
-		return res.PublicURL, "", nil
+		return res.PublicURL, "", res.Stale, nil
 	}
 
 	staticID := steamStaticAvatarID(steamID64)
 	staticRes, derr := profileimage.DownloadIfNeeded(ctx, client, PlatformKey, staticID, avatarFullURL, maxAgeDays)
 	if derr != nil {
-		return "", "", derr
+		return "", "", false, derr
 	}
 	if staticRes == nil {
-		return "", "", fmt.Errorf("static avatar download failed")
+		return "", "", false, fmt.Errorf("static avatar download failed")
 	}
 	staticURL = staticRes.PublicURL
+	if staticRes.Stale {
+		if cached, ok := profileimage.FindCached(PlatformKey, steamID64); ok {
+			return cached, staticURL, true, nil
+		}
+		return staticURL, staticURL, true, nil
+	}
 
 	mediaSrc := ExtractMiniprofileAvatarMediaURL(miniProfileHTML)
 	if mediaSrc != "" {
-		_ = profileimage.DeleteCachedImageFilesOnly(PlatformKey, steamID64)
-		animRes, aerr := profileimage.DownloadIfNeeded(ctx, client, PlatformKey, steamID64, mediaSrc, maxAgeDays)
+		mediaMaxAge := maxAgeDays
+		if cachedPath, ok := profileimage.CachedFilePath(PlatformKey, steamID64); ok {
+			if ext := strings.ToLower(filepath.Ext(cachedPath)); ext != ".webm" && ext != ".mp4" && ext != ".gif" {
+				mediaMaxAge = 0
+			}
+		}
+		animRes, aerr := profileimage.DownloadIfNeeded(ctx, client, PlatformKey, steamID64, mediaSrc, mediaMaxAge)
 		if aerr == nil && animRes != nil {
-			return animRes.PublicURL, staticURL, nil
+			return animRes.PublicURL, staticURL, animRes.Stale, nil
 		}
 		if aerr != nil {
+			stale = true
 			steamLog().Debug("animated avatar download failed, using static fallback",
 				slog.String("steamId", tailSteamID(steamID64)),
 				slog.Any("err", aerr))
@@ -271,18 +283,18 @@ func downloadSteamAccountAvatars(
 	// retiring a cached animation on the strength of it is exactly how one
 	// transient 500 reset every tile to its static image. Only a fragment we
 	// actually hold is allowed to answer the question.
-	if strings.TrimSpace(miniProfileHTML) == "" {
+	if strings.TrimSpace(miniProfileHTML) == "" || miniprofileHasAvatarAnimation(miniProfileHTML) {
 		if cached, ok := profileimage.FindCached(PlatformKey, steamID64); ok {
-			return cached, staticURL, nil
+			return cached, staticURL, stale, nil
 		}
-		return staticURL, staticURL, nil
+		return staticURL, staticURL, stale, nil
 	}
 
 	// No animated media: the full-quality static is the avatar. A plain-key
 	// leftover — an old medium-quality copy or a since-removed animation —
 	// would otherwise keep being found and shown instead of it.
 	_ = profileimage.DeleteCached(PlatformKey, steamID64)
-	return staticURL, staticURL, nil
+	return staticURL, staticURL, stale, nil
 }
 
 func (s *SteamService) migrateExePathFromAppSettings(exeDir string, st *Settings, app *platform.AppSettings) error {
@@ -432,7 +444,7 @@ func (s *SteamService) RefreshVACStatus() error {
 	if err := security.RequireUnlocked(); err != nil {
 		return err
 	}
-	if err := ClearVACProfileCaches(); err != nil {
+	if err := markVACProfileCachesStale(); err != nil {
 		return err
 	}
 	s.StartSteamProfileRefresh()
@@ -460,10 +472,12 @@ func (s *SteamService) RefreshAllSteamImages() error {
 	if err := security.RequireUnlocked(); err != nil {
 		return err
 	}
-	if err := ClearVACProfileCaches(); err != nil {
+	if err := markVACProfileCachesStale(); err != nil {
 		return err
 	}
-	_ = ClearAllMiniprofileHTMLCache()
+	if err := markAllMiniprofileCachesStale(); err != nil {
+		return err
+	}
 	dir, err := profileimage.ProfileDir(PlatformKey)
 	if err != nil {
 		return err
@@ -487,15 +501,8 @@ func (s *SteamService) RefreshAllSteamImages() error {
 	return nil
 }
 
-// dropStaleMiniprofileFragment retires the cached miniprofile fragment once the
-// assets it points at are due for replacement.
-//
-// It must not delete those assets: DownloadIfNeeded already re-fetches anything
-// past its expiry and retires the file it supersedes, and deleting them here
-// blanks every tile for the whole of the round.
-//
-// It takes the answers from a Lookup, so the caller can hand one directory
-// snapshot to a whole refresh round.
+// dropStaleMiniprofileFragment marks the fragment stale when its assets need a
+// refresh. The last good fragment and its name remain readable while offline.
 func dropStaleMiniprofileFragment(avatars profileimage.Lookup, steamID64 string, maxAgeDays int) {
 	ids := []string{
 		steamID64,
@@ -504,7 +511,7 @@ func dropStaleMiniprofileFragment(avatars profileimage.Lookup, steamID64 string,
 		steamID64 + "_nameplate",
 		steamID64 + "_featuredbadge",
 	}
-	expired := deleteMiniprofileCacheIfOlder(steamID64, maxAgeDays)
+	expired := false
 	for _, id := range ids {
 		if id == steamID64 && avatars.HasManualProfileMarker(steamID64) {
 			continue
@@ -514,7 +521,9 @@ func dropStaleMiniprofileFragment(avatars profileimage.Lookup, steamID64 string,
 		}
 	}
 	if expired {
-		deleteMiniprofileCache(steamID64)
+		if path, err := miniprofileCachePath(steamID64); err == nil {
+			_ = markCacheFileStale(path)
+		}
 	}
 }
 
@@ -542,15 +551,6 @@ func (s *SteamService) cancelProfileRefreshRetryLocked() {
 		s.refreshRetry.Stop()
 		s.refreshRetry = nil
 	}
-}
-
-// profileRefreshQuiet reports whether an unreachable account should keep the
-// tile it already has instead of replacing it with an error the next retry is
-// about to clear.
-func (s *SteamService) profileRefreshQuiet() bool {
-	s.refreshMu.Lock()
-	defer s.refreshMu.Unlock()
-	return s.refreshFailures < profileRefreshQuietFailures
 }
 
 // noteProfileRefreshOutcome records whether Steam answered this round and, when
@@ -689,7 +689,6 @@ func (s *SteamService) runProfileRefresh() {
 	// Steam over the same adapter, so if any of them could not reach it the
 	// round is worth repeating.
 	var unreachable atomic.Bool
-	quiet := s.profileRefreshQuiet()
 
 	for _, u := range users {
 		u := u
@@ -734,15 +733,22 @@ func (s *SteamService) runProfileRefresh() {
 					slog.Any("err", err))
 				if isTransientProfileRefreshError(err) {
 					unreachable.Store(true)
-					if quiet {
-						patch.Error, patch.MetaPending = "", true
-						patch.AvatarPending = false
-						s.emit(patch)
-						return
-					}
+					patch.Error, patch.MetaPending, patch.AvatarPending = "", false, false
+					s.emit(patch)
+					return
 				}
 				patch.Error, patch.MetaPending = profileRefreshErrorState(err, false)
 				patch.AvatarPending = false
+				s.emit(patch)
+				return
+			}
+			if fields.Stale {
+				unreachable.Store(true)
+				if !fields.Private {
+					patch.Vac, patch.Ltd = fields.VacBanned, fields.Limited
+				}
+				patch.DisplayName = CachedCommunityDisplayName(u.SteamID64)
+				patch.MetaPending, patch.AvatarPending = false, false
 				s.emit(patch)
 				return
 			}
@@ -771,8 +777,11 @@ func (s *SteamService) runProfileRefresh() {
 
 			if st.SteamShowMiniProfile || st.SteamShowAvatarFrame {
 				mctx, mcancel := context.WithTimeout(ctx, 15*time.Second)
-				frameSrc, miniHTML, mErr := FetchMiniprofile(mctx, appclient.Shared, u.SteamID64, st.SteamImageExpiryTime)
+				frameSrc, miniHTML, miniStale, mErr := fetchMiniprofile(mctx, appclient.Shared, u.SteamID64, st.SteamImageExpiryTime)
 				mcancel()
+				if miniStale || mErr != nil {
+					unreachable.Store(true)
+				}
 				if mErr != nil {
 					steamLog().Warn("miniprofile fetch failed",
 						slog.String("steamId", tailSteamID(u.SteamID64)),
@@ -784,7 +793,7 @@ func (s *SteamService) runProfileRefresh() {
 					patch.MiniProfileHTML = ReadCachedMiniprofileHTML(u.SteamID64)
 				} else {
 					patch.MiniProfileHTML = miniHTML
-					if n := ExtractMiniprofileDisplayName(miniHTML); n != "" {
+					if n := ExtractMiniprofileDisplayName(miniHTML); n != "" && !miniStale {
 						patch.DisplayName = n
 					}
 					if st.SteamShowAvatarFrame && strings.HasPrefix(strings.TrimSpace(frameSrc), "/img/") {
@@ -854,10 +863,13 @@ func (s *SteamService) runProfileRefresh() {
 			s.emit(patch)
 
 			ictx, icancel := context.WithTimeout(ctx, 20*time.Second)
-			imageURL, staticURL, err := downloadSteamAccountAvatars(
+			imageURL, staticURL, imageStale, err := downloadSteamAccountAvatars(
 				ictx, appclient.Shared, u.SteamID64, fields.AvatarFullURL, patch.MiniProfileHTML, useMiniProfile, st.SteamImageExpiryTime,
 			)
 			icancel()
+			if imageStale {
+				unreachable.Store(true)
+			}
 			if err == nil {
 				patch.ImageURL = imageURL
 				patch.StaticImageURL = staticURL
@@ -878,7 +890,7 @@ func (s *SteamService) runProfileRefresh() {
 					unreachable.Store(true)
 				}
 				patch.Error = ""
-				if !transient || !quiet {
+				if !transient {
 					patch.Error, _ = profileRefreshErrorState(err, false)
 				}
 				patch.AvatarPending = false

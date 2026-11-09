@@ -132,8 +132,6 @@ func MarkAutomatedProfileCachesStale(platformKey string) error {
 		path := filepath.Join(dir, name)
 		ext := filepath.Ext(name)
 		if _, ok := knownProfileImageExts[strings.ToLower(ext)]; !ok {
-			// Not an image, so nothing renders it and nothing will replace it.
-			_ = os.Remove(path)
 			continue
 		}
 		if HasManualProfileMarker(platformKey, MainAvatarStemFromCacheStem(strings.TrimSuffix(name, ext))) {
@@ -440,11 +438,12 @@ func extFromURL(u string) string {
 type DownloadResult struct {
 	PublicURL string
 	LocalPath string
+	Stale     bool
 }
 
 // DownloadIfNeeded GETs imageSourceURL and writes wwwroot/img/profiles/<platform>/<id>.<ext>.
 // Skips download if a fresh cached file exists (not older than maxAgeDays).
-func DownloadIfNeeded(ctx context.Context, client *http.Client, platformKey, accountID, imageSourceURL string, maxAgeDays int) (*DownloadResult, error) {
+func DownloadIfNeeded(ctx context.Context, client *http.Client, platformKey, accountID, imageSourceURL string, maxAgeDays int) (result *DownloadResult, err error) {
 	if strings.TrimSpace(imageSourceURL) == "" {
 		return nil, fmt.Errorf("empty image URL")
 	}
@@ -483,6 +482,15 @@ func DownloadIfNeeded(ctx context.Context, client *http.Client, platformKey, acc
 			LocalPath: existingPath,
 		}, nil
 	}
+	// Expiry requests a refresh; it does not make a usable image invalid.
+	defer func() {
+		if err != nil && existingPath != "" && ctx.Err() != context.Canceled {
+			if st, statErr := os.Stat(existingPath); statErr == nil && st.Size() > 0 {
+				result = &DownloadResult{PublicURL: PublicPath(platformKey, accountID, existingExt), LocalPath: existingPath, Stale: true}
+				err = nil
+			}
+		}
+	}()
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, imageSourceURL, nil)
 	if err != nil {
@@ -515,9 +523,15 @@ func DownloadIfNeeded(ctx context.Context, client *http.Client, platformKey, acc
 	}
 
 	dest := filepath.Join(dir, accountID+"."+ext)
-	data, err := io.ReadAll(io.LimitReader(resp.Body, maxBody))
+	data, err := io.ReadAll(io.LimitReader(resp.Body, maxBody+1))
 	if err != nil {
 		return nil, err
+	}
+	if len(data) == 0 || int64(len(data)) > maxBody {
+		return nil, fmt.Errorf("image body is empty or exceeds size limit")
+	}
+	if strings.HasPrefix(http.DetectContentType(data), "text/html") {
+		return nil, fmt.Errorf("image request returned an HTML page")
 	}
 	if err := fsutil.WriteFileAtomic(dest, data, 0o644); err != nil {
 		return nil, err

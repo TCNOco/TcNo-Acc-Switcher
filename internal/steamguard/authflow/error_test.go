@@ -33,6 +33,11 @@ func TestProtocolFailureNamesItsCause(t *testing.T) {
 			want:  "result 3",
 		},
 		{
+			name:  "no connection",
+			cause: &protocol.Error{Code: protocol.CodeTransport, State: protocol.StateRetryable},
+			want:  "could not connect to Steam",
+		},
+		{
 			name:  "no detail at all",
 			cause: &protocol.Error{Code: protocol.CodeInvalidResponse},
 			want:  "invalid_response",

@@ -2,6 +2,7 @@ package updatecheck
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -11,6 +12,8 @@ import (
 	"TcNo-Acc-Switcher/internal/api"
 	"TcNo-Acc-Switcher/internal/appclient"
 )
+
+var errInvalidVersionResponse = errors.New("updatecheck: server returned an invalid version response")
 
 const (
 	failStateFile    = "TcNo-Acc-Switcher.lastUpdateCheckFail.json"
@@ -76,6 +79,9 @@ func FetchLatestVersion(ctx context.Context, client *http.Client, currentVersion
 	}
 	lines := strings.SplitN(strings.TrimSpace(string(body)), "\n", 2)
 	version = strings.TrimSpace(lines[0])
+	if _, err := ParseVersionClock(version); err != nil {
+		return "", "", errInvalidVersionResponse
+	}
 	if len(lines) > 1 {
 		message = strings.TrimSpace(lines[1])
 	}
@@ -108,6 +114,9 @@ func FetchLaunchAPICheck(ctx context.Context, currentVersion string) LaunchAPICh
 func HandleLaunchAPICheckResult(result LaunchAPICheckResult, exeDir string, currentVersion string, onUpdateAvailable func(message string), onCheckFailed func()) {
 	err := result.Err
 	if err != nil {
+		if appclient.IsConnectivityError(err) || errors.Is(err, errInvalidVersionResponse) {
+			return
+		}
 		if shouldEmitFailToast(exeDir) {
 			_ = writeFailTimestamp(exeDir)
 			if onCheckFailed != nil {
@@ -129,13 +138,16 @@ func RunLaunchAPICheck(ctx context.Context, exeDir string, currentVersion string
 	HandleLaunchAPICheckResult(FetchLaunchAPICheck(ctx, currentVersion), exeDir, currentVersion, onUpdateAvailable, onCheckFailed)
 }
 
-// RunManualCheck checks for updates on user request. Returns "available", "up-to-date", or "failed".
+// RunManualCheck returns "available", "up-to-date", "offline", or "failed".
 func RunManualCheck(ctx context.Context, currentVersion string, onUpdateAvailable func(message string)) string {
 	if appclient.IsOfflineMode() {
-		return "failed"
+		return "offline"
 	}
 	latest, message, err := FetchLatestVersion(ctx, appclient.Shared, currentVersion)
 	if err != nil {
+		if appclient.IsConnectivityError(err) {
+			return "offline"
+		}
 		return "failed"
 	}
 	if IsUpToDate(currentVersion, latest) {

@@ -19,23 +19,36 @@ import (
 )
 
 func FetchMiniprofile(ctx context.Context, client *http.Client, steamID64 string, maxAgeDays int) (frameImgURL string, sanitizedHTML string, err error) {
+	frameImgURL, sanitizedHTML, _, err = fetchMiniprofile(ctx, client, steamID64, maxAgeDays)
+	return
+}
+
+func fetchMiniprofile(ctx context.Context, client *http.Client, steamID64 string, maxAgeDays int) (frameImgURL string, sanitizedHTML string, stale bool, err error) {
 	steamID64 = strings.TrimSpace(steamID64)
 	if steamID64 == "" {
-		return "", "", fmt.Errorf("empty steam id")
+		return "", "", false, fmt.Errorf("empty steam id")
 	}
 	formats, ferr := FormatsFromID64(steamID64)
 	if ferr != nil {
-		return "", "", fmt.Errorf("steam id: %w", ferr)
+		return "", "", false, fmt.Errorf("steam id: %w", ferr)
 	}
 	id32 := strings.TrimSpace(formats.ID32)
 	if id32 == "" {
-		return "", "", fmt.Errorf("could not derive steam id32")
+		return "", "", false, fmt.Errorf("could not derive steam id32")
 	}
 
 	cachePath, err := miniprofileCachePath(steamID64)
 	if err != nil {
-		return "", "", err
+		return "", "", false, err
 	}
+	defer func() {
+		if err != nil && ctx.Err() != context.Canceled {
+			if cached := ReadCachedMiniprofileHTML(steamID64); cached != "" {
+				frameImgURL = extractAvatarFrameImgURL(cached)
+				sanitizedHTML, stale, err = cached, true, nil
+			}
+		}
+	}()
 
 	var page string
 	fromDisk := false
@@ -53,16 +66,16 @@ func FetchMiniprofile(ctx context.Context, client *http.Client, steamID64 string
 		// Only the cache miss is metered. A fragment served from disk costs Steam
 		// nothing and must not spend from a budget of fifteen a minute.
 		if lerr := miniprofileLimiter.acquire(ctx); lerr != nil {
-			return "", "", lerr
+			return "", "", false, lerr
 		}
 		req, rerr := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 		if rerr != nil {
-			return "", "", rerr
+			return "", "", false, rerr
 		}
 		req.Header.Set("User-Agent", "TcNo Account Switcher")
 		resp, derr := client.Do(req)
 		if derr != nil {
-			return "", "", derr
+			return "", "", false, derr
 		}
 		defer resp.Body.Close()
 		if resp.StatusCode < 200 || resp.StatusCode >= 300 {
@@ -76,18 +89,20 @@ func FetchMiniprofile(ctx context.Context, client *http.Client, steamID64 string
 					slog.Int("status", resp.StatusCode),
 					slog.Duration("for", miniprofilePenalty))
 			}
-			return "", "", fmt.Errorf("miniprofile HTTP %d", resp.StatusCode)
+			return "", "", false, fmt.Errorf("miniprofile HTTP %d", resp.StatusCode)
 		}
-		body, rerr := io.ReadAll(io.LimitReader(resp.Body, 2<<20))
+		body, rerr := io.ReadAll(io.LimitReader(resp.Body, (2<<20)+1))
 		if rerr != nil {
-			return "", "", rerr
+			return "", "", false, rerr
+		}
+		if len(body) > 2<<20 {
+			return "", "", false, fmt.Errorf("miniprofile response exceeds size limit")
 		}
 		page = string(body)
 		container := extractMiniprofileContainerHTML(page)
 		sanitizedHTML = sanitizeMiniprofileHTML(container)
-		if strings.TrimSpace(container) != "" && strings.TrimSpace(sanitizedHTML) == "" {
-			steamLog().Warn("miniprofile sanitize produced empty output",
-				slog.String("steamId", tailSteamID(steamID64)))
+		if strings.TrimSpace(sanitizedHTML) == "" {
+			return "", "", false, fmt.Errorf("miniprofile response contains no usable profile")
 		}
 		if strings.TrimSpace(sanitizedHTML) != "" {
 			rewritten, embErr := embedMiniprofileHTMLAssets(ctx, client, steamID64, sanitizedHTML, maxAgeDays)
@@ -95,6 +110,7 @@ func FetchMiniprofile(ctx context.Context, client *http.Client, steamID64 string
 				steamLog().Warn("miniprofile asset embed failed",
 					slog.String("steamId", tailSteamID(steamID64)),
 					slog.Any("err", embErr))
+				return "", "", false, embErr
 			} else if strings.TrimSpace(rewritten) != "" {
 				sanitizedHTML = rewritten
 			}
@@ -108,10 +124,10 @@ func FetchMiniprofile(ctx context.Context, client *http.Client, steamID64 string
 
 	doc, err := html.Parse(strings.NewReader(page))
 	if err != nil {
-		return "", strings.TrimSpace(sanitizedHTML), nil
+		return "", strings.TrimSpace(sanitizedHTML), false, nil
 	}
 	frameImgURL = extractAvatarFrameImgURLFromDoc(doc)
-	return frameImgURL, strings.TrimSpace(sanitizedHTML), nil
+	return frameImgURL, strings.TrimSpace(sanitizedHTML), false, nil
 }
 
 func inferVideoMIME(publicPath, hint string) string {
@@ -162,6 +178,9 @@ func embedMiniprofileHTMLAssets(ctx context.Context, client *http.Client, steamI
 		srcURL, mimeHint := pickNameplateSource(nameplate)
 		if srcURL != "" {
 			res, derr := profileimage.DownloadIfNeeded(ctx, client, PlatformKey, steamID64+"_nameplate", srcURL, maxAgeDays)
+			if derr != nil {
+				return "", derr
+			}
 			if derr == nil && res != nil {
 				mt := inferVideoMIME(res.PublicURL, mimeHint)
 				htmlRemoveAllChildren(nameplate)
@@ -181,6 +200,9 @@ func embedMiniprofileHTMLAssets(ctx context.Context, client *http.Client, steamI
 		u := attrVal(feat, "src")
 		if u != "" {
 			res, derr := profileimage.DownloadIfNeeded(ctx, client, PlatformKey, steamID64+"_featuredbadge", u, maxAgeDays)
+			if derr != nil {
+				return "", derr
+			}
 			if derr == nil && res != nil {
 				setAttr(feat, "src", res.PublicURL)
 				removeAttr(feat, "srcset")
@@ -195,6 +217,9 @@ func embedMiniprofileHTMLAssets(ctx context.Context, client *http.Client, steamI
 		if img := firstDescendantElement(frame, "img"); img != nil {
 			if u := attrVal(img, "src"); strings.HasPrefix(strings.ToLower(u), "https://") && isSafeSteamAssetURL(u) {
 				res, derr := profileimage.DownloadIfNeeded(ctx, client, PlatformKey, steamID64+"_frame", u, maxAgeDays)
+				if derr != nil {
+					return "", derr
+				}
 				if derr == nil && res != nil {
 					setAttr(img, "src", res.PublicURL)
 					removeAttr(img, "srcset")
@@ -217,7 +242,11 @@ func embedMiniprofileHTMLAssets(ctx context.Context, client *http.Client, steamI
 					}
 				}
 				if !ok {
-					if res, derr := profileimage.DownloadIfNeeded(ctx, client, PlatformKey, steamID64+"_mini", u, maxAgeDays); derr == nil && res != nil {
+					res, derr := profileimage.DownloadIfNeeded(ctx, client, PlatformKey, steamID64+"_mini", u, maxAgeDays)
+					if derr != nil {
+						return "", derr
+					}
+					if res != nil {
 						local, ok = res.PublicURL, true
 					}
 				}
@@ -345,6 +374,26 @@ func ExtractMiniprofileAvatarMediaURL(fragment string) string {
 		}
 	}
 	return ""
+}
+
+// A localized animation is still present even though it needs no remote download.
+func miniprofileHasAvatarAnimation(fragment string) bool {
+	body, err := parseFragmentInBody(fragment)
+	if err != nil || body == nil {
+		return false
+	}
+	mount := findMiniprofileAvatarMountPoint(body)
+	if mount == nil {
+		return false
+	}
+	if firstDescendantElement(mount, "video") != nil {
+		return true
+	}
+	if img := firstDescendantElement(mount, "img"); img != nil {
+		source := strings.SplitN(attrVal(img, "src"), "?", 2)[0]
+		return strings.HasSuffix(strings.ToLower(source), ".gif")
+	}
+	return false
 }
 
 func ReplaceMiniprofileMainAvatar(fragment, publicAvatarURL string) string {

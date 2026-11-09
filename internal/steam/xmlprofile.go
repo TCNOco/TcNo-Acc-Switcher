@@ -21,6 +21,8 @@ const xmlCacheTTL = 24 * time.Hour
 // ProfileXMLFields are extracted from community profile ?xml=1.
 type ProfileXMLFields struct {
 	SteamID64 string
+	// Stale means a failed refresh used the last valid cached response.
+	Stale bool
 	// CommunityDisplayName is the public profile title from <steamID> (not the login name).
 	CommunityDisplayName string
 	VacBanned            bool
@@ -84,11 +86,25 @@ func xmlCachePath(steamID64 string) (string, error) {
 }
 
 // FetchProfileXML downloads or loads cached profile XML and parses ban/avatar fields.
-func FetchProfileXML(ctx context.Context, client *http.Client, steamID64 string) (ProfileXMLFields, error) {
+func FetchProfileXML(ctx context.Context, client *http.Client, steamID64 string) (fields ProfileXMLFields, err error) {
 	cache, err := xmlCachePath(steamID64)
 	if err != nil {
 		return ProfileXMLFields{}, err
 	}
+	defer func() {
+		if err == nil || ctx.Err() == context.Canceled {
+			return
+		}
+		data, readErr := os.ReadFile(cache)
+		if readErr != nil {
+			return
+		}
+		doc, parseErr := parseProfileXMLDoc(data)
+		if parseErr == nil {
+			fields = profileXMLFields(doc)
+			fields.Stale, err = true, nil
+		}
+	}()
 	url := fmt.Sprintf("https://steamcommunity.com/profiles/%s?xml=1", steamID64)
 
 	var data []byte
@@ -114,9 +130,12 @@ func FetchProfileXML(ctx context.Context, client *http.Client, steamID64 string)
 		if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 			return ProfileXMLFields{}, &profileXMLHTTPError{StatusCode: resp.StatusCode}
 		}
-		data, err = io.ReadAll(io.LimitReader(resp.Body, 4<<20))
+		data, err = io.ReadAll(io.LimitReader(resp.Body, (4<<20)+1))
 		if err != nil {
 			return ProfileXMLFields{}, err
+		}
+		if len(data) > 4<<20 {
+			return ProfileXMLFields{}, &profileXMLBodyError{err: errors.New("profile response exceeds size limit")}
 		}
 	}
 
@@ -135,16 +154,18 @@ func FetchProfileXML(ctx context.Context, client *http.Client, steamID64 string)
 		_ = os.MkdirAll(filepath.Dir(cache), 0o755)
 		_ = fsutil.WriteFileAtomic(cache, data, 0o644)
 	}
-	if len(doc.PrivacyMessage) > 0 && strings.TrimSpace(doc.PrivacyMessage[0]) != "" {
-		return ProfileXMLFields{SteamID64: doc.SteamID64, Private: true}, nil
-	}
+	return profileXMLFields(doc), nil
+}
+
+func profileXMLFields(doc xmlProfileDoc) ProfileXMLFields {
 	return ProfileXMLFields{
 		SteamID64:            strings.TrimSpace(doc.SteamID64),
 		CommunityDisplayName: strings.TrimSpace(doc.SteamCommunityTitle),
 		VacBanned:            strings.TrimSpace(doc.VacBanned) == "1",
 		Limited:              strings.TrimSpace(doc.IsLimited) == "1",
 		AvatarFullURL:        strings.TrimSpace(doc.AvatarFull),
-	}, nil
+		Private:              len(doc.PrivacyMessage) > 0 && strings.TrimSpace(doc.PrivacyMessage[0]) != "",
+	}
 }
 
 // CachedCommunityDisplayName returns the freshest known public persona label for an account.

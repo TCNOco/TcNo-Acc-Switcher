@@ -61,7 +61,7 @@ func PublicURL(subdir, filename string) string {
 
 // DownloadIfNeeded GETs imageURL and writes wwwroot/img/<subdir>/<filename>.
 // Skips download when a fresh cached file exists (not older than maxAgeDays).
-func DownloadIfNeeded(ctx context.Context, client *http.Client, subdir, imageURL string, maxAgeDays int) (string, error) {
+func DownloadIfNeeded(ctx context.Context, client *http.Client, subdir, imageURL string, maxAgeDays int) (publicURL string, err error) {
 	filename, err := FilenameFromURL(imageURL)
 	if err != nil {
 		return "", err
@@ -74,6 +74,13 @@ func DownloadIfNeeded(ctx context.Context, client *http.Client, subdir, imageURL
 		return "", err
 	}
 	dest := filepath.Join(dir, filename)
+	defer func() {
+		if err != nil && ctx.Err() != context.Canceled {
+			if st, statErr := os.Stat(dest); statErr == nil && !st.IsDir() && st.Size() > 0 {
+				publicURL, err = PublicURL(subdir, filename), nil
+			}
+		}
+	}()
 	if st, statErr := os.Stat(dest); statErr == nil && !st.IsDir() && !profileimage.FileOlderThanDays(dest, maxAgeDays) {
 		return PublicURL(subdir, filename), nil
 	}
@@ -91,12 +98,15 @@ func DownloadIfNeeded(ctx context.Context, client *http.Client, subdir, imageURL
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		return "", fmt.Errorf("image HTTP %d", resp.StatusCode)
 	}
-	raw, err := io.ReadAll(io.LimitReader(resp.Body, maxImageBytes))
+	raw, err := io.ReadAll(io.LimitReader(resp.Body, maxImageBytes+1))
 	if err != nil {
 		return "", err
 	}
-	if len(raw) == 0 {
-		return "", fmt.Errorf("empty image body")
+	if len(raw) == 0 || len(raw) > maxImageBytes {
+		return "", fmt.Errorf("image body is empty or exceeds size limit")
+	}
+	if strings.HasPrefix(http.DetectContentType(raw), "text/html") {
+		return "", fmt.Errorf("image request returned an HTML page")
 	}
 	if err := fsutil.WriteFileAtomic(dest, raw, 0o644); err != nil {
 		return "", err

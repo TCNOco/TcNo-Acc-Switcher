@@ -224,6 +224,9 @@ func (e *Error) protocolCause() string {
 		return "Steam returned HTTP " + strconv.Itoa(e.StatusCode)
 	}
 	if e.ProtocolCode != "" {
+		if e.ProtocolCode == string(protocol.CodeTransport) {
+			return "could not connect to Steam; check your connection and try again"
+		}
 		return e.ProtocolCode
 	}
 	return "the Steam protocol call failed"

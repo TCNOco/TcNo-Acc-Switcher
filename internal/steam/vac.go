@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
@@ -26,19 +25,11 @@ func vacCachePath() (string, error) {
 	return filepath.Join(r, "VACCache", "SteamVACCache.json"), nil
 }
 
-// LoadVacCache reads the cache; deletes the file if older than maxAgeDays (same semantics as C# DeletedOutdatedFile).
-func LoadVacCache(maxAgeDays int) ([]VacEntry, error) {
+// LoadVacCache retains the last known flags until a successful profile refresh replaces them.
+func LoadVacCache(_ int) ([]VacEntry, error) {
 	p, err := vacCachePath()
 	if err != nil {
 		return nil, err
-	}
-	if maxAgeDays > 0 {
-		if st, err := os.Stat(p); err == nil && !st.IsDir() {
-			if time.Since(st.ModTime()) > time.Duration(maxAgeDays)*24*time.Hour {
-				_ = os.Remove(p)
-				return nil, nil
-			}
-		}
 	}
 	data, err := os.ReadFile(p)
 	if err != nil {

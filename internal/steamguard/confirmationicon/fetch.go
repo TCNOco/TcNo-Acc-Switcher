@@ -15,6 +15,8 @@ import (
 	"strings"
 	"time"
 
+	"TcNo-Acc-Switcher/internal/appclient"
+
 	"golang.org/x/image/webp"
 )
 
@@ -143,7 +145,7 @@ func newFetcher(policy Policy, transport http.RoundTripper) (*Fetcher, error) {
 		transport = secureTransport()
 	}
 	fetcher.client = &http.Client{
-		Transport: transport,
+		Transport: appclient.OfflineTransport(transport),
 		Timeout:   normalized.Timeout,
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			if len(via) >= 3 {

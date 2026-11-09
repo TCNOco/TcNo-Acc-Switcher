@@ -79,7 +79,7 @@ func TestProfileRefreshRetryDelayGrowsAndCaps(t *testing.T) {
 	}
 }
 
-func TestProfileRefreshOutcomeSchedulesRetryAndGoesLoudOnlyAfterQuietRounds(t *testing.T) {
+func TestProfileRefreshOutcomeSchedulesRetryAndResetsAfterRecovery(t *testing.T) {
 	svc := NewSteamService()
 	t.Cleanup(func() {
 		svc.refreshMu.Lock()
@@ -87,14 +87,8 @@ func TestProfileRefreshOutcomeSchedulesRetryAndGoesLoudOnlyAfterQuietRounds(t *t
 		svc.refreshMu.Unlock()
 	})
 
-	if !svc.profileRefreshQuiet() {
-		t.Fatal("the first round must not paint an error on every tile")
-	}
-	for i := 0; i < profileRefreshQuietFailures; i++ {
+	for i := 0; i < 3; i++ {
 		svc.noteProfileRefreshOutcome(true)
-	}
-	if svc.profileRefreshQuiet() {
-		t.Fatalf("after %d unreachable rounds the user has to be told", profileRefreshQuietFailures)
 	}
 
 	svc.refreshMu.Lock()
@@ -111,8 +105,5 @@ func TestProfileRefreshOutcomeSchedulesRetryAndGoesLoudOnlyAfterQuietRounds(t *t
 	svc.refreshMu.Unlock()
 	if stillScheduled || failures != 0 {
 		t.Fatalf("a reachable round must clear the retry and the streak; got scheduled=%t failures=%d", stillScheduled, failures)
-	}
-	if !svc.profileRefreshQuiet() {
-		t.Fatal("the streak must reset once Steam answers again")
 	}
 }

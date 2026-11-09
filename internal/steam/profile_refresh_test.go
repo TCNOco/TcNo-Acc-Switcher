@@ -110,10 +110,8 @@ func TestFetchProfileXMLWithRetryPreservesPermanentError(t *testing.T) {
 	}
 }
 
-// The metadata caches are dropped so they are read again; the images are not.
-// An avatar deleted the instant the user presses refresh leaves the tile blank
-// for as long as the round takes.
-func TestRefreshAllSteamImagesClearsMetadataButKeepsImages(t *testing.T) {
+// A refresh must keep all last-known data until its replacement arrives.
+func TestRefreshAllSteamImagesKeepsMetadataAndImages(t *testing.T) {
 	paths.ResetForTest(t.TempDir())
 
 	const steamID = "76561198000000000"
@@ -147,9 +145,11 @@ func TestRefreshAllSteamImagesClearsMetadataButKeepsImages(t *testing.T) {
 	}
 	stopRefreshTimer(svc)
 
-	assertMissing(t, xmlPath)
-	assertMissing(t, miniPath)
-	assertMissing(t, vacPath)
+	assertStale(t, xmlPath)
+	assertStale(t, miniPath)
+	if rows, err := LoadVacCache(1); err != nil || len(rows) != 1 {
+		t.Fatalf("refresh discarded ban metadata: rows=%v err=%v", rows, err)
+	}
 	assertStale(t, imagePath)
 }
 

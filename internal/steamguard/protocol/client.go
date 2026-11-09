@@ -3,6 +3,7 @@
 package protocol
 
 import (
+	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/systemproxy"
 
 	"bytes"
@@ -98,7 +99,7 @@ func NewClient(options Options) *Client {
 	if transport == nil {
 		transport = NewTransport()
 	}
-	return &Client{transport: transport}
+	return &Client{transport: appclient.OfflineTransport(transport)}
 }
 
 // NewTransport returns the production transport using the system proxy.

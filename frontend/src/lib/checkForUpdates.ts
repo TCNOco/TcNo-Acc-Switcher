@@ -26,7 +26,13 @@ export async function checkForUpdatesManually(): Promise<void> {
   });
   try {
     const result = await PlatformService.CheckForUpdatesManually();
-    if (result === "failed" || result === "offline") {
+    if (result === "offline") {
+      pushToast({
+        type: "info",
+        message: get(t)("Toast_UpdateCheckOffline"),
+        duration: 5000,
+      });
+    } else if (result === "failed") {
       pushToast({
         type: "error",
         message: get(t)("Toast_FailedUpdateCheck"),

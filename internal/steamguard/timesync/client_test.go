@@ -11,6 +11,7 @@ import (
 	"testing"
 	"time"
 
+	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/steamguard/otp"
 )
 
@@ -78,13 +79,23 @@ func TestDefaultClientRejectsRedirectsAndPinsTransportLimits(t *testing.T) {
 	if !errors.Is(redirectErr, http.ErrUseLastResponse) {
 		t.Fatalf("redirect error = %v", redirectErr)
 	}
-	transport, ok := httpClient.Transport.(*http.Transport)
-	if !ok {
-		t.Fatalf("transport type = %T", httpClient.Transport)
-	}
+	transport := newTransport()
 	if transport.Proxy == nil || httpClient.Timeout != RequestTimeout || transport.TLSClientConfig.MinVersion != tls.VersionTLS12 ||
 		transport.ResponseHeaderTimeout <= 0 || transport.TLSHandshakeTimeout <= 0 {
 		t.Fatalf("network limits are not configured")
+	}
+}
+
+func TestDefaultClientHonorsOfflineMode(t *testing.T) {
+	appclient.SetOfflineMode(true)
+	defer appclient.SetOfflineMode(false)
+	client := NewClient().doer.(*http.Client)
+	request, err := http.NewRequest(http.MethodPost, Endpoint, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := client.Do(request); !errors.Is(err, appclient.ErrOfflineMode) {
+		t.Fatalf("time sync did not block its HTTP request offline: %v", err)
 	}
 }
 

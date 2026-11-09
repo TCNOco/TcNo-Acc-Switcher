@@ -15,6 +15,7 @@ import (
 
 	buildinfo "TcNo-Acc-Switcher/build"
 	"TcNo-Acc-Switcher/internal/api"
+	"TcNo-Acc-Switcher/internal/appclient"
 	"TcNo-Acc-Switcher/internal/crashlog"
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
@@ -356,7 +357,7 @@ func TryUploadDaily(statsEnabled, statsShare, offlineMode bool) error {
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("User-Agent", api.UserAgent(buildinfo.Version()))
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := appclient.Shared.Do(req)
 	if err != nil {
 		return err
 	}
