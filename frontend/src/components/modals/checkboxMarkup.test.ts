@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 
 const promptSource = readFileSync(new URL("./PromptModalBody.svelte", import.meta.url), "utf8");
 const steamGuardSource = readFileSync(new URL("./SteamGuardModalBody.svelte", import.meta.url), "utf8");
+const unlockSource = readFileSync(new URL("./AuthenticatorUnlockForm.svelte", import.meta.url), "utf8");
 
 function expectStyledCheckbox(source: string, inputMarker: string, labelMarker: string): void {
   const inputIndex = source.indexOf(inputMarker);
@@ -23,10 +24,11 @@ describe("modal checkbox markup", () => {
   });
 
   it("uses visible app checkboxes for both Steam Guard Remember Me controls", () => {
+    expect(steamGuardSource).toContain('idPrefix="steam-guard"');
     expectStyledCheckbox(
-      steamGuardSource,
-      'id="steam-guard-remember-session"',
-      'for="steam-guard-remember-session"',
+      unlockSource,
+      'id="{idPrefix}-remember-session"',
+      'for="{idPrefix}-remember-session"',
     );
     expectStyledCheckbox(
       steamGuardSource,
