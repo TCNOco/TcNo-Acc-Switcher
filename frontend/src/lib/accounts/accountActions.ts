@@ -83,8 +83,11 @@ export async function handlePlatformActionKind(
     if (kind === "saveCurrent") {
       if (ctx.adapter.saveCurrent) {
         actionBarStatus.set(get(t)("Status_ActionBar_PreparingSave"));
-        const saved = await ctx.adapter.saveCurrent();
-        if (saved) ctx.scheduleAccountsRefresh();
+        try {
+          const saved = await ctx.adapter.saveCurrent();
+          if (saved) ctx.scheduleAccountsRefresh();
+        } catch (e) { await reportSaveFailure(e, ctx); }
+        finally { actionBarStatus.set(""); }
       }
       return;
     }

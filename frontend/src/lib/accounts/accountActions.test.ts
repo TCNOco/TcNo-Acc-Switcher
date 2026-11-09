@@ -55,6 +55,7 @@ vi.mock("../../stores/i18n", () => ({
 
 import {
   launchPlatformForSelection,
+  handlePlatformActionKind,
   swapToLogin,
 } from "./accountActions";
 
@@ -105,6 +106,33 @@ function createContext(overrides: Partial<Parameters<typeof swapToLogin>[0]> = {
 describe("accountActions", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  it.each(["Discord", "Discord PTB", "Ubisoft", "EA Desktop"])("clears cancelled save status for %s", async (name) => {
+    const saveCurrent = vi.fn(async () => false);
+    const ctx = createContext({ name });
+    ctx.adapter = { ...ctx.adapter, saveCurrent };
+
+    await handlePlatformActionKind("saveCurrent", ctx);
+
+    expect(saveCurrent).toHaveBeenCalledOnce();
+    expect(actionBarStatusSet).toHaveBeenLastCalledWith("");
+    expect(ctx.scheduleAccountsRefresh).not.toHaveBeenCalled();
+    expect(ctx.setIsActionBusy).toHaveBeenLastCalledWith(false);
+    expect(platformActionBusySet).toHaveBeenLastCalledWith({ busy: false, platformKey: "" });
+    expect(pushToast).not.toHaveBeenCalled();
+  });
+
+  it("clears save status and reports a rejected save", async () => {
+    const ctx = createContext();
+    ctx.adapter = { ...ctx.adapter, saveCurrent: vi.fn(async () => { throw new Error("save failed"); }) };
+
+    await handlePlatformActionKind("saveCurrent", ctx);
+
+    expect(actionBarStatusSet).toHaveBeenLastCalledWith("");
+    expect(ctx.scheduleAccountsRefresh).not.toHaveBeenCalled();
+    expect(ctx.setIsActionBusy).toHaveBeenLastCalledWith(false);
+    expect(pushToast).toHaveBeenCalledWith(expect.objectContaining({ type: "error" }));
   });
 
   it("swaps to the selected account and schedules a refresh", async () => {

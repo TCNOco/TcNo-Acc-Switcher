@@ -188,7 +188,7 @@ export function openPrompt(
   } & ModalBodyOptions,
 ): Promise<string | null> {
   return new Promise((resolve) => {
-    resolver = resolve as (value: unknown) => void;
+    resolver = (value) => resolve(typeof value === "string" ? value : null);
     activeModal.set({
       id: bumpId(),
       kind: "prompt",
