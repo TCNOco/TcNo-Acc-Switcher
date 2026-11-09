@@ -1,3 +1,4 @@
+import * as AppEvents from "../../bindings/events/index.js";
 import { derived, get, writable } from "svelte/store";
 import { Events } from "@wailsio/runtime";
 import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
@@ -78,7 +79,7 @@ function normalize(raw: unknown): StreamerState {
 
 /** Hydrates from the backend and keeps up with detection. Returns an unsubscriber. */
 export async function initStreamerMode(): Promise<() => void> {
-  const off = Events.On("streamer-mode-changed", (ev: { data?: unknown }) => {
+  const off = Events.On(AppEvents.StreamerModeChanged, (ev: { data?: unknown }) => {
     applyState(normalize(ev?.data));
   });
   try {

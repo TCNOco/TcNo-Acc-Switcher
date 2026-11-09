@@ -1,3 +1,4 @@
+import * as AppEvents from "../../bindings/events/index.js";
 import { Call, Events } from "@wailsio/runtime";
 import { get, writable } from "svelte/store";
 import type { BattleNetAccount } from "./battleNetAuthenticator";
@@ -13,8 +14,8 @@ export function publishBattleNetAuthenticators(accounts: BattleNetAccount[]): vo
 export function requestBattleNetView(): Promise<{ capability: string; lease: string }> {
   const requestId = crypto.randomUUID();
   return new Promise((resolve, reject) => {
-    const off = Events.On("steamguard:sensitive-view-grant", event => {
-      const data = event.data as { requestId: string; accountId: string; capability: string; lease: string };
+    const off = Events.On(AppEvents.SteamguardSensitiveViewGrant, event => {
+      const data = event.data;
       if (data?.requestId !== requestId || data.accountId !== "battlenet-authenticators") return;
       clearTimeout(timer);
       off();

@@ -43,7 +43,10 @@ const contextMenuMock = vi.hoisted(() => ({
   closeContextMenu: vi.fn(),
 }));
 
-vi.mock("@wailsio/runtime", () => runtimeMock);
+vi.mock("@wailsio/runtime", async (importOriginal) => ({
+  ...await importOriginal<typeof import("@wailsio/runtime")>(),
+  ...runtimeMock,
+}));
 vi.mock("./inputModality", () => inputModalityMock);
 vi.mock("../stores/modal", () => ({
   activeModal: { subscribe: () => () => {} },

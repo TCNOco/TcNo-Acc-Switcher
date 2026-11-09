@@ -1,3 +1,4 @@
+import * as AppEvents from "../../bindings/events/index.js";
 import { Events } from "@wailsio/runtime";
 import { get } from "svelte/store";
 import { activeModal, cancelActiveModal, modalBusy } from "../stores/modal";
@@ -50,7 +51,7 @@ export type ControllerAction =
   | "historyBack"
   | "historyForward";
 
-export const CONTROLLER_ACTION_EVENT = "controller:action";
+export const CONTROLLER_ACTION_EVENT = AppEvents.ControllerAction;
 
 type RepeatableAction = Extract<ControllerAction, "up" | "down" | "left" | "right">;
 

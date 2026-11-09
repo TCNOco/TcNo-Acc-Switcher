@@ -1,4 +1,5 @@
 <script lang="ts">
+  import * as AppEvents from "../bindings/events/index.js";
   import { onMount } from "svelte";
   import { get } from "svelte/store";
   import { fade, fly } from "svelte/transition";
@@ -407,7 +408,7 @@
       controllerInput.setEnabled(enabled);
     });
     void loadControllerSupportEnabled();
-    const offNav = Events.On("navigate", (ev) => {
+    const offNav = Events.On(AppEvents.Navigate, (ev) => {
       const raw = typeof ev.data === "string" ? ev.data : "";
       applyNavigateJSON(raw);
     });
@@ -427,7 +428,7 @@
       setTimeout(schedulePrefetch, 1500);
     }
 
-    const offUpdateFail = Events.On("update-check-failed", () => {
+    const offUpdateFail = Events.On(AppEvents.UpdateCheckFailed, () => {
       pushToast({
         type: "error",
         title: "",
@@ -436,10 +437,8 @@
       });
     });
 
-    const offPlatformsFound = Events.On("platforms-json-update-found", (ev) => {
-      const version = typeof ev.data === "object" && ev.data && "version" in ev.data
-        ? String((ev.data as { version?: string }).version ?? "")
-        : "";
+    const offPlatformsFound = Events.On(AppEvents.PlatformsJsonUpdateFound, (ev) => {
+      const version = ev.data?.version ?? "";
       pushToast({
         type: "info",
         title: "",
@@ -448,10 +447,8 @@
       });
     });
 
-    const offPlatformsUpdated = Events.On("platforms-json-updated", (ev) => {
-      const version = typeof ev.data === "object" && ev.data && "version" in ev.data
-        ? String((ev.data as { version?: string }).version ?? "")
-        : "";
+    const offPlatformsUpdated = Events.On(AppEvents.PlatformsJsonUpdated, (ev) => {
+      const version = ev.data?.version ?? "";
       pushToast({
         type: "success",
         title: "",
@@ -460,14 +457,13 @@
       });
     });
 
-    const offUserDataMoveProgress = Events.On("userdata-move-progress", (ev) => {
+    const offUserDataMoveProgress = Events.On(AppEvents.UserdataMoveProgress, (ev) => {
       const data = ev.data;
       if (typeof data !== "object" || !data) return;
-      const payload = data as { phase?: string; done?: number; total?: number };
       applyUserDataMoveProgress({
-        phase: payload.phase,
-        done: payload.done,
-        total: payload.total,
+        phase: data.phase,
+        done: data.done,
+        total: data.total,
       });
     });
 
@@ -487,7 +483,7 @@
       return { key };
     }
 
-    const off = Events.On("action-bar-status", (ev) => {
+    const off = Events.On(AppEvents.ActionBarStatus, (ev) => {
       const raw = typeof ev.data === "string" ? ev.data : "";
       if (raw.startsWith("i18n:")) {
         const { key, vars } = parseI18nPayload(raw);

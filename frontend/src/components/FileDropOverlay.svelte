@@ -1,4 +1,5 @@
 <script lang="ts">
+  import * as AppEvents from "../../bindings/events/index.js";
   import { onDestroy, onMount } from "svelte";
   import { get } from "svelte/store";
   import { Events } from "@wailsio/runtime";
@@ -9,7 +10,7 @@
   import { handleSteamGuardDrop } from "../stores/steamGuardDrop";
   import { t } from "../stores/i18n";
 
-  const FILES_DROPPED = "files-dropped";
+  const FILES_DROPPED = AppEvents.FilesDropped;
 
   let overlayActive = false;
   let dragCategory: DragFileCategory = "shortcut";

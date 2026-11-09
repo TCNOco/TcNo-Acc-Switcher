@@ -1,4 +1,5 @@
 <script lang="ts">
+  import * as AppEvents from "../../bindings/events/index.js";
   /**
    * The toolbar for a Steam Guard session window.
    *
@@ -146,7 +147,7 @@
     observer = new ResizeObserver(reportHeight);
     if (chrome) observer.observe(chrome);
 
-    offState = Events.On("steambrowser:state", (event: { data: ViewState }) => {
+    offState = Events.On(AppEvents.SteambrowserState, (event: { data: ViewState }) => {
       if (event?.data) report(event.data);
     });
     // The window may have navigated before this component mounted.

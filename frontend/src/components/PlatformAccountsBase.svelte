@@ -1,4 +1,5 @@
 <script lang="ts" context="module">
+  import * as AppEvents from "../../bindings/events/index.js";
   export type { GameStatMetricDTO } from "./PlatformAccountAdapter";
 </script>
 
@@ -1066,7 +1067,7 @@
       }));
     }
 
-    offGameStatsUpdated = Events.On("basic-game-stats-updated", (ev) => {
+    offGameStatsUpdated = Events.On(AppEvents.BasicGameStatsUpdated, (ev) => {
       const p = ev.data as { platformKey?: string; uniqueId?: string };
       if ((p.platformKey ?? "").trim() !== name.trim()) return;
       const uid = (p.uniqueId ?? "").trim();

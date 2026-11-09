@@ -1,3 +1,4 @@
+import * as AppEvents from "../../../bindings/events/index.js";
 import { Events } from "@wailsio/runtime";
 import { get } from "svelte/store";
 import { offlineMode } from "../../stores/offlineMode";
@@ -22,7 +23,7 @@ const MODAL_PRIMARY_STYLE_ID = "tcno-modal-primary-overlay";
 const MODAL_PRIMARY_STYLE_ATTR = "data-tcno-modal-primary-overlay";
 const THEME_FONT_LINK_ATTR = "data-tcno-google-fonts-theme";
 
-const WINDOWS_ACCENT_CHANGED_EVENT = "windows-accent-changed";
+const WINDOWS_ACCENT_CHANGED_EVENT = AppEvents.WindowsAccentChanged;
 
 let windowsAccentSubscribed = false;
 

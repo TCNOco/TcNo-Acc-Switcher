@@ -27,7 +27,10 @@ const platformServiceMock = vi.hoisted(() => ({
   SetThemeAccentPreset: vi.fn(),
 }));
 
-vi.mock("@wailsio/runtime", () => runtimeMock);
+vi.mock("@wailsio/runtime", async (importOriginal) => ({
+  ...await importOriginal<typeof import("@wailsio/runtime")>(),
+  ...runtimeMock,
+}));
 vi.mock("../updaterTheme", () => updaterThemeMock);
 vi.mock("../../styles/modal-primary.scss?inline", () => ({
   default: "/* modal primary */",

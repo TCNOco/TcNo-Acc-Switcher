@@ -1,4 +1,5 @@
 <script lang="ts">
+  import * as AppEvents from "../../bindings/events/index.js";
   import { onMount } from "svelte";
   import { fly } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
@@ -16,7 +17,7 @@
   $: visible = showBanner && !dismissed;
 
   onMount(() => {
-    const off = Events.On("app-update-available", (ev) => {
+    const off = Events.On(AppEvents.AppUpdateAvailable, (ev) => {
       const payload = ev.data;
       showBanner = true;
       dismissed = false;

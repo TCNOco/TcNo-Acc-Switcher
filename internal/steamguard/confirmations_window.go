@@ -49,6 +49,10 @@ type ConfirmationsGrant struct {
 	RequestID  string `json:"requestId"`
 }
 
+type LoginAgainRequest struct {
+	AccountID string `json:"accountId"`
+}
+
 // confirmationsWindowTitle renders the window caption for an account. The
 // username is a display string only; an unknown account falls back to the
 // generic caption rather than showing an empty prefix.

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import * as AppEvents from "../../bindings/events/index.js";
   import { onDestroy, onMount, tick } from "svelte";
   import { get } from "svelte/store";
   import { Events } from "@wailsio/runtime";
@@ -437,7 +438,7 @@
 
     // Subscribed while hidden as well, so a library that changes on the switcher tab
     // is already redrawn by the time the games tab comes back.
-    offGamesUpdated = Events.On("steam-owned-games-updated", () => {
+    offGamesUpdated = Events.On(AppEvents.SteamOwnedGamesUpdated, () => {
       scheduleGamesRefresh();
     });
 

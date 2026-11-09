@@ -1,4 +1,5 @@
 <script lang="ts">
+  import * as AppEvents from "../../bindings/events/index.js";
   import { onDestroy, onMount } from "svelte";
   import { get } from "svelte/store";
   import { Events } from "@wailsio/runtime";
@@ -275,7 +276,7 @@
       }),
     }],
 
-    updateEventName: "steam-account-updated",
+    updateEventName: AppEvents.SteamAccountUpdated,
 
     // Its own event rather than an AccountPatch: that DTO's vac/ltd/imageUrl
     // fields carry no omitempty, so a cooldown-only patch would arrive with all
@@ -429,7 +430,7 @@
       } catch {}
     })();
 
-    offShortcutsUpdated = Events.On("shortcuts-updated", (ev) => {
+    offShortcutsUpdated = Events.On(AppEvents.ShortcutsUpdated, (ev) => {
       try {
         const raw = ev.data;
         const p = raw instanceof ListPayload ? raw : ListPayload.createFrom(raw as Record<string, unknown>);

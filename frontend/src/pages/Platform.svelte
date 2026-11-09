@@ -1,4 +1,5 @@
 <script lang="ts">
+  import * as AppEvents from "../../bindings/events/index.js";
   import { get } from "svelte/store";
   import PlatformAccountsBase from "../components/PlatformAccountsBase.svelte";
   import type { PlatformAccountAdapter } from "../components/PlatformAccountAdapter";
@@ -149,7 +150,7 @@
     ].filter((x): x is MenuItemDef => x != null),
     buildBackgroundMenu: () => authenticatorMenu(),
 
-    updateEventName: "basic-account-image-updated",
+    updateEventName: AppEvents.BasicAccountImageUpdated,
     buildPatch: (raw: unknown) =>
       raw instanceof AccountImagePatch
         ? raw

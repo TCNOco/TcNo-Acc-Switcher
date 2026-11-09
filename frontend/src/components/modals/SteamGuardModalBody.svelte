@@ -1,4 +1,5 @@
 <script lang="ts">
+  import * as AppEvents from "../../../bindings/events/index.js";
   import { onDestroy, onMount, tick } from "svelte";
   import { Events } from "@wailsio/runtime";
   import {
@@ -2510,11 +2511,11 @@
   }
 
   onMount(() => {
-			offAccountUpdated = Events.On("steam-account-updated", () => {
+			offAccountUpdated = Events.On(AppEvents.SteamAccountUpdated, () => {
 				if (state.screen !== "all-accounts") return;
 				schedulePickerRefresh();
 			});
-			offRevoked = Events.On("steamguard:sensitive-view-revoked", () => {
+			offRevoked = Events.On(AppEvents.SteamguardSensitiveViewRevoked, () => {
 				contentProtection.revoke();
 				const currentAccount = steamGuardAccountForState(state) ?? account;
 				if (state.screen === "enrollment") {

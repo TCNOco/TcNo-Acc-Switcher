@@ -1,4 +1,5 @@
 <script context="module" lang="ts">
+  import * as AppEvents from "../../bindings/events/index.js";
   import type { ShortcutReorderCommand as PaletteShortcutReorderCommand } from "../lib/dragReorderShortcuts";
 
   export type ShortcutCommandPaletteItem = {
@@ -500,7 +501,7 @@
       void Shortcuts.ScanShortcuts(platformName);
     })();
 
-    offEv = Events.On("shortcuts-updated", (ev) => {
+    offEv = Events.On(AppEvents.ShortcutsUpdated, (ev) => {
       const raw = ev.data;
       const p =
         raw instanceof ListPayload

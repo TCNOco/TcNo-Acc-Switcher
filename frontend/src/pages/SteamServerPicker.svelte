@@ -1,4 +1,5 @@
 <script lang="ts">
+  import * as AppEvents from "../../bindings/events/index.js";
   import { onMount, onDestroy } from "svelte";
   import { get } from "svelte/store";
   import { Events } from "@wailsio/runtime";
@@ -45,8 +46,8 @@
   import "../styles/Settings.scss";
   import "../styles/serverPicker.scss";
 
-  const PING_EVENT = "serverpicker:ping";
-  const PING_DONE_EVENT = "serverpicker:ping-done";
+  const PING_EVENT = AppEvents.ServerpickerPing;
+  const PING_DONE_EVENT = AppEvents.ServerpickerPingDone;
   const FLAG_FALLBACK = "/img/flags/xx.svg";
   // Their source SVGs carried heavy coats of arms; rasterised at 4x the 22x16 display size.
   const RASTER_FLAGS = new Set(["es", "mx"]);

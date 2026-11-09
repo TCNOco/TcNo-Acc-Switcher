@@ -1,3 +1,4 @@
+import * as AppEvents from "../../bindings/events/index.js";
 import * as SteamGuardService from "../../bindings/TcNo-Acc-Switcher/internal/steamguard/service.js";
 import * as SteamGuardModels from "../../bindings/TcNo-Acc-Switcher/internal/steamguard/models.js";
 import * as SteamService from "../../bindings/TcNo-Acc-Switcher/internal/steam/steamservice.js";
@@ -505,8 +506,8 @@ async function requestSensitiveView(accountId: string): Promise<{
       else if (grant) resolve(grant);
       else reject(new Error("Steam Guard capability unavailable"));
     };
-    const off = Events.On("steamguard:sensitive-view-grant", (event) => {
-      const data = event.data as Record<string, unknown> | null;
+    const off = Events.On(AppEvents.SteamguardSensitiveViewGrant, (event) => {
+      const data = event.data;
       if (!data || data.requestId !== requestId || data.accountId !== accountId) return;
       if (typeof data.capability !== "string" || typeof data.lease !== "string") {
         finish(new Error("Invalid Steam Guard capability grant"));
@@ -532,8 +533,8 @@ async function requestConfirmationsGrant(): Promise<{ capability: string; accoun
 			else if (grant) resolve(grant);
 			else reject(new Error("Confirmation capability unavailable"));
 		};
-		const off = Events.On("steamguard:confirmations-grant", (event) => {
-			const data = event.data as Record<string, unknown> | null;
+		const off = Events.On(AppEvents.SteamguardConfirmationsGrant, (event) => {
+			const data = event.data;
 			if (!data || data.requestId !== requestId) return;
 			if (typeof data.capability !== "string" || typeof data.accountId !== "string") {
 				finish(new Error("Invalid confirmation capability grant"));
@@ -550,12 +551,12 @@ async function requestConfirmationsGrant(): Promise<{ capability: string; accoun
  * Emitted by the confirmations window and handled by the main window: application-wide
  * Wails custom event carrying only a steamId64.
  */
-const STEAM_GUARD_LOGIN_AGAIN_EVENT = "steamguard:login-again-request";
+const STEAM_GUARD_LOGIN_AGAIN_EVENT = AppEvents.SteamguardLoginAgainRequest;
 
 function installLoginAgainHandoff(): () => void {
 	if (window.location.hash === "#/steam/confirmations") return () => {};
 	return Events.On(STEAM_GUARD_LOGIN_AGAIN_EVENT, (event) => {
-		const data = event.data as { accountId?: unknown } | null;
+		const data = event.data;
 		const accountId = typeof data?.accountId === "string" ? data.accountId.trim() : "";
 		if (!accountId) return;
 		void (async () => {
@@ -775,7 +776,7 @@ function installConfirmationsBridge(): () => void {
 		}
 	};
 
-	const offContext = Events.On("steamguard:confirmations-context-changed", () => { void connect(); });
+	const offContext = Events.On(AppEvents.SteamguardConfirmationsContextChanged, () => { void connect(); });
 	void connect();
 	return () => {
 		disposed = true;

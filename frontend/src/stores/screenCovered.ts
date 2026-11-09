@@ -1,3 +1,4 @@
+import * as AppEvents from "../../bindings/events/index.js";
 import { derived, writable } from "svelte/store";
 import { Events } from "@wailsio/runtime";
 import * as PlatformService from "../../bindings/TcNo-Acc-Switcher/internal/platform/platformservice.js";
@@ -55,10 +56,10 @@ export function initScreenCovered(): void {
       /* Same. */
     });
 
-  Events.On("screen-covered", (ev) => {
+  Events.On(AppEvents.ScreenCovered, (ev) => {
     screenCovered.set(ev.data === true);
   });
-  Events.On("game-running", (ev) => {
+  Events.On(AppEvents.GameRunning, (ev) => {
     gameRunning.set(ev.data === true);
   });
 

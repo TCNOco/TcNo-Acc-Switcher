@@ -5,7 +5,8 @@ const fixture = vi.hoisted(() => ({
   listeners: new Set<(event: { data: unknown }) => void>(),
   call: vi.fn(),
 }));
-vi.mock("@wailsio/runtime", () => ({
+vi.mock("@wailsio/runtime", async (importOriginal) => ({
+  ...await importOriginal<typeof import("@wailsio/runtime")>(),
   Call: { ByName: fixture.call },
   Events: { On: (_name: string, callback: (event: { data: unknown }) => void) => { fixture.listeners.add(callback); return () => fixture.listeners.delete(callback); } },
 }));

@@ -1,11 +1,6 @@
+import * as AppEvents from "../../bindings/events/index.js";
 import { Events } from "@wailsio/runtime";
 import * as Shortcuts from "wails-shortcuts-service";
-
-type RenderSVGRequest = {
-  id: string;
-  svg: string;
-  size: number;
-};
 
 function arrayBufferToBase64(buffer: ArrayBuffer): string {
   let binary = "";
@@ -21,8 +16,8 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
  * Listens for Go-side SVG raster fallback (oksvg failed) and renders via canvas, then reports PNG back.
  */
 export function registerSvgRenderBridge(): () => void {
-  return Events.On("shortcut:render-svg-request", async (ev) => {
-    const d = ev.data as RenderSVGRequest;
+  return Events.On(AppEvents.ShortcutRenderSvgRequest, async (ev) => {
+    const d = ev.data;
     if (!d?.id || !d.svg || !d.size) {
       return;
     }

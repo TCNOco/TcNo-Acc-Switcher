@@ -1,4 +1,5 @@
 <script lang="ts">
+  import * as AppEvents from "../../bindings/events/index.js";
   import { onMount } from "svelte";
   import { fly } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
@@ -118,8 +119,8 @@
   }
 
   onMount(() => {
-    const off = Events.On("stability-prompt", (ev) => {
-      const data = ev.data as { platform?: string } | undefined;
+    const off = Events.On(AppEvents.StabilityPrompt, (ev) => {
+      const data = ev.data;
       const p = typeof data?.platform === "string" ? data.platform.trim() : "";
       if (p) showPrompt(p);
     });

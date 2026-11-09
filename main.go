@@ -30,6 +30,7 @@ import (
 	"TcNo-Acc-Switcher/internal/steam"
 	"TcNo-Acc-Switcher/internal/steambrowser"
 	"TcNo-Acc-Switcher/internal/steamguard"
+	"TcNo-Acc-Switcher/internal/streamer"
 	"TcNo-Acc-Switcher/internal/tray"
 	"TcNo-Acc-Switcher/internal/winutil"
 
@@ -91,6 +92,15 @@ func init() {
 	application.RegisterEvent[platform.UserDataMoveProgressPayload](platform.UserDataMoveProgressEvent)
 	application.RegisterEvent[serverpicker.PingResult](serverpicker.PingEvent)
 	application.RegisterEvent[string](serverpicker.PingDoneEvent)
+	application.RegisterEvent[steam.OwnedGamesPatch](steam.OwnedGamesUpdatedEvent)
+	application.RegisterEvent[steambrowser.ViewState](steambrowser.StateEvent)
+	application.RegisterEvent[streamer.State](platform.StreamerModeChangedEvent)
+	application.RegisterEvent[string](platform.WindowsAccentChangedEvent)
+	application.RegisterEvent[steamguard.SensitiveViewGrant](steamguard.SensitiveViewGrantEvent)
+	application.RegisterEvent[steamguard.ConfirmationsGrant](steamguard.ConfirmationsGrantEvent)
+	application.RegisterEvent[steamguard.LoginAgainRequest](steamguard.LoginAgainRequestEvent)
+	application.RegisterEvent[any](steamguard.ConfirmationsContextEvent)
+	application.RegisterEvent[any](steamguard.SensitiveViewRevokedEvent)
 
 	// Steam Guard enrollment adds accounts to the Steam account store from a
 	// package that holds no SteamService; this is how it asks for their avatars.

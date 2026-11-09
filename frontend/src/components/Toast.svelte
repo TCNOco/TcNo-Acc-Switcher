@@ -1,4 +1,5 @@
 <script lang="ts">
+  import * as AppEvents from "../../bindings/events/index.js";
   import { onMount } from 'svelte'
   import { fly } from 'svelte/transition'
   import { flip } from 'svelte/animate'
@@ -44,7 +45,7 @@
   }
 
   onMount(() => {
-    const offToast = Events.On('toast', (ev) => {
+    const offToast = Events.On(AppEvents.Toast, (ev) => {
       fromWailsPayload(ev.data)
     })
 
