@@ -3,7 +3,6 @@
 package webview2
 
 import (
-	"errors"
 	"syscall"
 	"unsafe"
 
@@ -20,23 +19,16 @@ type ICoreWebView2Deferral struct {
 }
 
 // AddRef increments the reference count of ICoreWebView2Deferral interface
-func (i *ICoreWebView2Deferral) AddRef() error {
-	_, _, err := i.Vtbl.AddRef.Call(uintptr(unsafe.Pointer(i)))
-	if err != nil && !errors.Is(err, windows.ERROR_SUCCESS) {
-		return err
-	}
-
-	return nil
+func (i *ICoreWebView2Deferral) AddRef() uint32 {
+	// IUnknown returns a reference count, not HRESULT or GetLastError.
+	count, _, _ := i.Vtbl.AddRef.Call(uintptr(unsafe.Pointer(i)))
+	return uint32(count)
 }
 
 // Release decrements the reference count of ICoreWebView2Deferral interface
-func (i *ICoreWebView2Deferral) Release() error {
-	_, _, err := i.Vtbl.AddRef.Call(uintptr(unsafe.Pointer(i)))
-	if err != nil && !errors.Is(err, windows.ERROR_SUCCESS) {
-		return err
-	}
-
-	return nil
+func (i *ICoreWebView2Deferral) Release() uint32 {
+	count, _, _ := i.Vtbl.Release.Call(uintptr(unsafe.Pointer(i)))
+	return uint32(count)
 }
 
 func (i *ICoreWebView2Deferral) Complete() error {

@@ -734,9 +734,13 @@ func (e *Chromium) PermissionRequested(_ *ICoreWebView2, args *iCoreWebView2Perm
 }
 
 func (e *Chromium) WebResourceRequested(sender *ICoreWebView2, args *ICoreWebView2WebResourceRequestedEventArgs) uintptr {
+	if args == nil {
+		return 0
+	}
 	req, err := args.GetRequest()
-	if err != nil {
-		log.Fatal(err)
+	if err != nil || req == nil {
+		log.Printf("[WebView2] Dropping unavailable resource request: %v", err)
+		return 0
 	}
 	defer req.Release()
 
