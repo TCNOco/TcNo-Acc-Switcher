@@ -17,11 +17,12 @@ tasks:
   build:
     summary: Builds the application for Linux
     cmds:
-      # Linux requires CGO - use Docker when:
+      # The default backend requires CGO. WAILS_PUREGO=1 opts into Wails' experimental backend.
+      # For the default backend use Docker when:
       # 1. Cross-compiling from non-Linux, OR
       # 2. No C compiler is available, OR
       # 3. Target architecture differs from host architecture (cross-arch compilation)
-      - task: '{{if and (eq OS "linux") (eq .HAS_CC "true") (eq .TARGET_ARCH ARCH)}}build:native{{else}}build:docker{{end}}'
+      - task: '{{if eq .PUREGO_ENABLED "1"}}build:purego{{else if and (eq OS "linux") (eq .HAS_CC "true") (eq .TARGET_ARCH ARCH)}}build:native{{else}}build:docker{{end}}'
         vars:
           ARCH: '{{.ARCH}}'
           DEV: '{{.DEV}}'
@@ -32,9 +33,23 @@ tasks:
       OUTPUT: '{{ .OUTPUT | default .DEFAULT_OUTPUT }}'
       # Determine target architecture (defaults to host ARCH if not specified)
       TARGET_ARCH: '{{.ARCH | default ARCH}}'
+      PUREGO_ENABLED: '{{.WAILS_PUREGO | default "0"}}'
       # Check if a C compiler is available (gcc or clang)
       HAS_CC:
         sh: '(command -v gcc >/dev/null 2>&1 || command -v clang >/dev/null 2>&1) && echo "true" || echo "false"'
+
+  build:purego:
+    summary: Builds the experimental purego backend (target still needs GTK4/WebKitGTK 6.0)
+    cmds:
+      - task: common:build:purego
+        vars:
+          TARGET_OS: linux
+          OUTPUT: '{{.OUTPUT | default .DEFAULT_OUTPUT}}'
+          ARCH: '{{.ARCH | default ARCH}}'
+          DEV: '{{.DEV}}'
+          EXTRA_TAGS: '{{.EXTRA_TAGS}}'
+    vars:
+      DEFAULT_OUTPUT: '{{.BIN_DIR}}/{{.APP_NAME}}'
 
   build:native:
     summary: Builds the application natively on Linux

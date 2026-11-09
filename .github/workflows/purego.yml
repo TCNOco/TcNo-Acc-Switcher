@@ -1,0 +1,35 @@
+name: Experimental purego builds
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [linux, darwin]
+        arch: [amd64, arm64]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - name: Install build tools
+        run: |
+          npm install -g pnpm@11.0.8
+          go install github.com/wailsapp/wails/v3/cmd/wails3@v3.1.0
+      - name: Cross-compile GUI
+        run: wails3 task ${{ matrix.target }}:build WAILS_PUREGO=1 ARCH=${{ matrix.arch }}
+      - uses: actions/upload-artifact@v7
+        with:
+          name: purego-${{ matrix.target }}-${{ matrix.arch }}
+          path: bin/TcNo-Acc-Switcher
+          if-no-files-found: error

@@ -28,8 +28,8 @@ export default defineConfig({
   ],
   build: {
     // Three webviews, not one: WebView2 is evergreen and WebKitGTK 6.0 is
-    // recent, so macOS is the floor -- LSMinimumSystemVersion is 10.15, whose
-    // WKWebView is Safari 13.1. Raise this only alongside that plist.
+    // recent. Keep the conservative Safari 13.1 output target; the native Go
+    // 1.27 runtime now requires macOS 13 regardless of this JavaScript target.
     target: ["chrome87", "safari13.1"],
   },
   json: {

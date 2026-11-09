@@ -1,6 +1,26 @@
 version: '3'
 
 tasks:
+  build:purego:
+    summary: Cross-compiles an experimental Linux/macOS GUI without a C toolchain
+    internal: true
+    requires:
+      vars: [TARGET_OS, OUTPUT]
+    deps:
+      - task: build:frontend
+        vars:
+          BUILD_FLAGS: '{{.BUILD_FLAGS}}'
+          DEV: '{{.DEV}}'
+      - task: generate:icons
+    cmds:
+      - go build -mod=readonly {{.BUILD_FLAGS}} -o "{{.OUTPUT}}" .
+    vars:
+      BUILD_FLAGS: '{{if eq .DEV "true"}}-tags purego{{if .EXTRA_TAGS}},{{.EXTRA_TAGS}}{{end}} -buildvcs=false{{else}}-tags production,purego{{if .EXTRA_TAGS}},{{.EXTRA_TAGS}}{{end}} -trimpath -buildvcs=false -ldflags="-w -s"{{end}}'
+    env:
+      GOOS: '{{.TARGET_OS}}'
+      GOARCH: '{{.ARCH | default ARCH}}'
+      CGO_ENABLED: '0'
+
   go:mod:tidy:
     summary: Runs `go mod tidy`
     internal: true

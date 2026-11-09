@@ -92,6 +92,23 @@ Albion Online, **[Battle.net](https://youtu.be/cvbo_VY05bo?list=PLsSFD61FiOVmAwC
 
 Want a portable install? Download and run `TcNo-Acc-Switcher.exe` directly (Do see info and steps on the [portable installs wiki page](https://github.com/TCNOco/TcNo-Acc-Switcher/wiki#portable-eg-for-usb))
 
+## Building from source
+
+Use Go 1.27.3 or newer, Node.js 24, pnpm 11.0.8, and Wails CLI 3.1.0. The frontend runtime, Go module, and release CLI are pinned together. Windows builds use `wails3 task windows:build`.
+
+Experimental Linux and macOS builds can use Wails' pure-Go backend without Docker, a C compiler, or a macOS SDK:
+
+```sh
+wails3 task linux:build WAILS_PUREGO=1 ARCH=amd64
+wails3 task darwin:build WAILS_PUREGO=1 ARCH=arm64
+```
+
+Both targets support `amd64` and `arm64`. Linux still needs GTK4 and WebKitGTK 6.0 on the target machine. macOS requires version 13 or newer, matching Go 1.27's runtime requirement. These are compile-checked experimental builds; native desktop testing is still needed. Steam/Battle.net session browser windows remain Windows-only.
+
+The **Experimental purego builds** Actions workflow can build all four combinations on request. The regular release and SignPath signing workflow continues to use its existing build path. Wake's YAML migration is inactive because its migration analysis cannot represent our customized frontend, packaging, and signing tasks.
+
+For a local goroutine leak report, start a fresh GUI process with `--goroutine-leak-profile=<absolute filename>` and close the application after reproducing the problem. The report is written on exit, and the destination must not already exist. Main-window scaling is available under **Settings → Theme → Interface scale**; Automatic retains handheld Game Mode scaling.
+
 ## Screenshots
 
 <p>

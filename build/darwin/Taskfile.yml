@@ -16,7 +16,7 @@ tasks:
   build:
     summary: Builds the application
     cmds:
-      - task: '{{if eq OS "darwin"}}build:native{{else}}build:docker{{end}}'
+      - task: '{{if eq .PUREGO_ENABLED "1"}}build:purego{{else if eq OS "darwin"}}build:native{{else}}build:docker{{end}}'
         vars:
           ARCH: '{{.ARCH}}'
           DEV: '{{.DEV}}'
@@ -25,6 +25,20 @@ tasks:
     vars:
       DEFAULT_OUTPUT: '{{.BIN_DIR}}/{{.APP_NAME}}'
       OUTPUT: '{{ .OUTPUT | default .DEFAULT_OUTPUT }}'
+      PUREGO_ENABLED: '{{.WAILS_PUREGO | default "0"}}'
+
+  build:purego:
+    summary: Cross-compiles the experimental macOS purego backend without Docker or an SDK
+    cmds:
+      - task: common:build:purego
+        vars:
+          TARGET_OS: darwin
+          OUTPUT: '{{.OUTPUT | default .DEFAULT_OUTPUT}}'
+          ARCH: '{{.ARCH | default ARCH}}'
+          DEV: '{{.DEV}}'
+          EXTRA_TAGS: '{{.EXTRA_TAGS}}'
+    vars:
+      DEFAULT_OUTPUT: '{{.BIN_DIR}}/{{.APP_NAME}}'
 
   build:native:
     summary: Builds the application natively on macOS
@@ -48,9 +62,9 @@ tasks:
       GOOS: darwin
       CGO_ENABLED: 1
       GOARCH: '{{.ARCH | default ARCH}}'
-      CGO_CFLAGS: "-mmacosx-version-min=10.15"
-      CGO_LDFLAGS: "-mmacosx-version-min=10.15"
-      MACOSX_DEPLOYMENT_TARGET: "10.15"
+      CGO_CFLAGS: "-mmacosx-version-min=13.0"
+      CGO_LDFLAGS: "-mmacosx-version-min=13.0"
+      MACOSX_DEPLOYMENT_TARGET: "13.0"
 
   build:docker:
     summary: Cross-compiles for macOS using Docker (for Linux/Windows hosts)
