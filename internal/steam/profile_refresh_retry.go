@@ -63,6 +63,14 @@ func fetchProfileXMLWithRetry(
 
 	var lastErr error
 	for attempt := 1; attempt <= attempts; attempt++ {
+		if err := ctx.Err(); err != nil {
+			return ProfileXMLFields{}, err
+		}
+		// The deadline's cancellation callback may still be queued when a retry
+		// timer fires at exactly the same instant.
+		if deadline, ok := ctx.Deadline(); ok && !time.Now().Before(deadline) {
+			return ProfileXMLFields{}, context.DeadlineExceeded
+		}
 		attemptCtx := ctx
 		cancel := func() {}
 		if policy.AttemptTimeout > 0 {

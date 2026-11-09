@@ -21,6 +21,7 @@ type signedGitHubProvider struct {
 	repo      string
 	sigSuffix string
 	apiBase   string
+	client    *http.Client
 }
 
 func NewSignedGitHubProvider(cfg github.Config, sigSuffix string) (updater.Provider, error) {
@@ -45,7 +46,15 @@ func NewSignedGitHubProvider(cfg github.Config, sigSuffix string) (updater.Provi
 		repo:      parts[1],
 		sigSuffix: sigSuffix,
 		apiBase:   "https://api.github.com",
+		client:    cfg.HTTPClient,
 	}, nil
+}
+
+func (p *signedGitHubProvider) httpClient() *http.Client {
+	if p.client != nil {
+		return p.client
+	}
+	return appclient.Shared
 }
 
 func (p *signedGitHubProvider) Name() string { return p.inner.Name() }
@@ -97,7 +106,7 @@ func (p *signedGitHubProvider) fetchSignature(ctx context.Context, version, arti
 	req.Header.Set("Accept", "application/vnd.github+json")
 	req.Header.Set("User-Agent", "TcNo-Acc-Switcher-Updater")
 
-	resp, err := appclient.Shared.Do(req)
+	resp, err := p.httpClient().Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -142,7 +151,7 @@ func (p *signedGitHubProvider) downloadSig(ctx context.Context, url string) ([]b
 	}
 	req.Header.Set("User-Agent", "TcNo-Acc-Switcher-Updater")
 
-	resp, err := appclient.Shared.Do(req)
+	resp, err := p.httpClient().Do(req)
 	if err != nil {
 		return nil, err
 	}

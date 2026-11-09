@@ -3,11 +3,14 @@ package updatecheck
 import (
 	"context"
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"testing/synctest"
+	"time"
 
 	"github.com/wailsapp/wails/v3/pkg/updater"
 )
@@ -26,20 +29,25 @@ func (s *stubProvider) Download(ctx context.Context, r *updater.Release, dst io.
 	return nil
 }
 
-func newTestProvider(release *updater.Release, apiBase string) *signedGitHubProvider {
+func newTestProvider(release *updater.Release, apiBase string, client ...*http.Client) *signedGitHubProvider {
+	var httpClient *http.Client
+	if len(client) > 0 {
+		httpClient = client[0]
+	}
 	return &signedGitHubProvider{
 		inner:     &stubProvider{release: release},
 		owner:     "owner",
 		repo:      "repo",
 		sigSuffix: ".exe.sig",
 		apiBase:   apiBase,
+		client:    httpClient,
 	}
 }
 
 func TestSignedProviderAttachesSignature(t *testing.T) {
 	sig := []byte("signature-bytes-0123456789012345678901234567890123456789012345678901234567890123")
 	var srv *httptest.Server
-	srv = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	srv = httptest.NewTestServer(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/repos/owner/repo/releases/tags/v1.2.3":
 			fmt.Fprintf(w, `{"assets":[{"name":"TcNo-Acc-Switcher.exe.sig","browser_download_url":"%s/sig"}]}`, srv.URL)
@@ -49,9 +57,9 @@ func TestSignedProviderAttachesSignature(t *testing.T) {
 			http.NotFound(w, r)
 		}
 	}))
-	defer srv.Close()
+	client := srv.Client()
 
-	p := newTestProvider(&updater.Release{Version: "1.2.3"}, srv.URL)
+	p := newTestProvider(&updater.Release{Version: "1.2.3"}, srv.URL, client)
 	r, err := p.Check(context.Background(), updater.CheckRequest{})
 	if err != nil {
 		t.Fatal(err)
@@ -77,10 +85,10 @@ func TestSignedProviderFailsClosedWithoutSignature(t *testing.T) {
 	}
 	for name, handler := range cases {
 		t.Run(name, func(t *testing.T) {
-			srv := httptest.NewServer(handler)
-			defer srv.Close()
+			srv := httptest.NewTestServer(t, handler)
+			client := srv.Client()
 
-			p := newTestProvider(&updater.Release{Version: "1.2.3"}, srv.URL)
+			p := newTestProvider(&updater.Release{Version: "1.2.3"}, srv.URL, client)
 			r, err := p.Check(context.Background(), updater.CheckRequest{})
 			if err == nil {
 				t.Fatalf("Check = %+v, nil; want error when signature is unavailable", r)
@@ -102,7 +110,7 @@ func TestSignedProviderPassesThroughUpToDate(t *testing.T) {
 func TestSignedProviderPicksTheSignatureForItsOwnArtifact(t *testing.T) {
 	linuxSig := []byte("linux-signature-01234567890123456789012345678901234567890123456789012345678")
 	var srv *httptest.Server
-	srv = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	srv = httptest.NewTestServer(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/repos/owner/repo/releases/tags/v1.2.3":
 			fmt.Fprintf(w, `{"assets":[
@@ -115,16 +123,35 @@ func TestSignedProviderPicksTheSignatureForItsOwnArtifact(t *testing.T) {
 			http.Error(w, "wrong signature fetched", http.StatusNotFound)
 		}
 	}))
-	defer srv.Close()
+	client := srv.Client()
 
 	release := &updater.Release{Version: "1.2.3"}
 	release.Artifact.Filename = "TcNo-Acc-Switcher-linux-amd64.tar.gz"
 
-	got, err := newTestProvider(release, srv.URL).Check(context.Background(), updater.CheckRequest{})
+	got, err := newTestProvider(release, srv.URL, client).Check(context.Background(), updater.CheckRequest{})
 	if err != nil {
 		t.Fatal(err)
 	}
 	if got.Verification == nil || string(got.Verification.Signature) != string(linuxSig) {
 		t.Errorf("attached the wrong signature: %q", got.Verification.Signature)
 	}
+}
+
+func TestSignatureCheckCancelsInFlightRequest(t *testing.T) {
+	synctest.Test(t, func(t *testing.T) {
+		srv := httptest.NewTestServer(t, http.HandlerFunc(func(_ http.ResponseWriter, request *http.Request) {
+			<-request.Context().Done()
+		}))
+		client := srv.Client()
+		provider := newTestProvider(&updater.Release{Version: "1.2.3"}, srv.URL, client)
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		started := time.Now()
+		if release, err := provider.Check(ctx, updater.CheckRequest{}); release != nil || !errors.Is(err, context.DeadlineExceeded) {
+			t.Fatalf("incomplete signature check accepted: release=%v err=%v", release, err)
+		}
+		if elapsed := time.Since(started); elapsed != 5*time.Second {
+			t.Fatalf("request did not honor its deadline: %v", elapsed)
+		}
+	})
 }
