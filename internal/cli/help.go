@@ -33,6 +33,9 @@ List:                --list-platforms
 Other:               -h, --help    Show this help
                      -v, --verbose Debug logging (same as --log-level=debug)
                      --log-level=  Logging: debug, info, warn, error (app + Wails; default info)
+                     --goroutine-leak-profile=<absolute filename>
+                                   Write a Go goroutine leak report after the GUI exits.
+                                   The output file must not already exist.
                      -tray, --tray Start with the main window hidden (tray / background)
                      --allow-steamguard-capture
                                    Let Steam Guard windows be screenshotted or recorded.

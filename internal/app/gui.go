@@ -152,6 +152,13 @@ func githubUpdaterConfig(guiSettings platform.AppSettings) github.Config {
 
 func RunGUI(params RunGUIParams) {
 	parsed := params.Parsed
+	if path := parsed.GoroutineLeakProfile; path != "" {
+		defer func() {
+			if err := writeGoroutineLeakProfile(path); err != nil {
+				slog.Warn("goroutine leak report failed", "error", err)
+			}
+		}()
+	}
 	guiSettings := params.GuiSettings
 	disp := params.Dispatch
 

@@ -44,6 +44,7 @@ type Parsed struct {
 	ListAccountsPlatform  string   // KindListAccounts: empty = all platforms; else canonical name
 	LogLevelSet           bool     // true if --log-level was passed
 	LogLevel              slog.Level
+	GoroutineLeakProfile  string // optional diagnostic report written after the GUI exits
 	UserDataMoveFrom      string // --userdata-move-from= old path after relocation restart
 	UserDataMoveTo        string // --userdata-move-to= new path after relocation restart
 	StartupToast          string // --toast= i18n key emitted when GUI window is ready
@@ -140,6 +141,14 @@ func Parse(argv []string, idx *PlatformIndex) (Parsed, error) {
 			continue
 		}
 
+		if strings.HasPrefix(al, "--goroutine-leak-profile=") {
+			path := strings.TrimSpace(a[len("--goroutine-leak-profile="):])
+			if !filepath.IsAbs(path) || p.GoroutineLeakProfile != "" {
+				return Parsed{}, fmt.Errorf("--goroutine-leak-profile requires one absolute output filename")
+			}
+			p.GoroutineLeakProfile = path
+			continue
+		}
 		if lvl, ok, err := parseLogLevelArg(a); err != nil {
 			return Parsed{}, err
 		} else if ok {
