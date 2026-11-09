@@ -10,6 +10,33 @@ import (
 	"TcNo-Acc-Switcher/internal/updatecheck"
 )
 
+func TestBattleNetFreshLoginFilesAreOnlyClearedForAddNew(t *testing.T) {
+	raw, err := os.ReadFile(filepath.Join("..", "..", "Platforms.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	d, err := ParseDescriptor(raw, "BattleNet")
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []string{
+		`%LocalAppData%\Battle.net\BrowserCaches\common\Network\Cookies`,
+		`%LocalAppData%\Battle.net\BrowserCaches\common\Network\Cookies-journal`,
+		`%LocalAppData%\Battle.net\BrowserCaches\common\Network\Cookies-wal`,
+		`%LocalAppData%\Battle.net\BrowserCaches\common\Network\Cookies-shm`,
+	}
+	if !slices.Equal(d.AddNewFilesToClear, want) {
+		t.Fatalf("Battle.net Add New files = %v, want %v", d.AddNewFilesToClear, want)
+	}
+	if !slices.Equal(d.PathListToClear, []string{`JSON_EMPTY_VALUE::%AppData%\Battle.net\Battle.net.config::Client.SavedAccountNames`}) {
+		t.Fatalf("normal switches must only change the selected email: %v", d.PathListToClear)
+	}
+	version, err := updatecheck.ParsePlatformsJSONVersion(raw)
+	if err != nil || !updatecheck.IsVersionNewer(version, "4.0.11") {
+		t.Fatalf("catalog %q will not upgrade existing 4.0.11 copies: %v", version, err)
+	}
+}
+
 func TestShippedEpicCredentialSessionCatalogUpgrade(t *testing.T) {
 	raw, err := os.ReadFile(filepath.Join("..", "..", "Platforms.json"))
 	if err != nil {

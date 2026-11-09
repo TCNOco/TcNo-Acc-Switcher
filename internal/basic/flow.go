@@ -892,7 +892,7 @@ func AddNew(deps FlowDeps, platformKey string) (err error) {
 		return err
 	}
 	platform.EmitActionBarStatusI18n("Status_ActionBar_ClearingSession")
-	if err := ClearCurrentLogin(deps, fc); err != nil {
+	if err := clearLoginForAddNew(deps, fc); err != nil {
 		return err
 	}
 	if !fc.Settings.AutoStart {

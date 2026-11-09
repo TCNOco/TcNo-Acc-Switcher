@@ -52,16 +52,18 @@ type Descriptor struct {
 	GetPathFromShortcutNamed string                 `json:"GetPathFromShortcutNamed,omitempty"`
 	ExesToEnd                []string               `json:"ExesToEnd,omitempty"`
 	PathListToClear          []string               `json:"PathListToClear,omitempty"`
-	LoginFiles               map[string]string      `json:"LoginFiles,omitempty"`
-	AllFilesRequired         bool                   `json:"AllFilesRequired"`
-	DisabledByDefault        bool                   `json:"DisabledByDefault"`
-	ExitBeforeInteract       bool                   `json:"ExitBeforeInteract"`
-	ExitBeforeSave           bool                   `json:"ExitBeforeSave"`
-	RegDeleteOnClear         bool                   `json:"RegDeleteOnClear"`
-	UniqueIdFile             string                 `json:"UniqueIdFile,omitempty"`
-	UniqueIdMethod           string                 `json:"UniqueIdMethod,omitempty"`
-	UniqueIdRegex            string                 `json:"UniqueIdRegex,omitempty"`
-	Extras                   DescriptorExtras       `json:"Extras,omitempty"`
+	// Exact transient login files reset only by Add New, never by a swap.
+	AddNewFilesToClear []string          `json:"AddNewFilesToClear,omitempty"`
+	LoginFiles         map[string]string `json:"LoginFiles,omitempty"`
+	AllFilesRequired   bool              `json:"AllFilesRequired"`
+	DisabledByDefault  bool              `json:"DisabledByDefault"`
+	ExitBeforeInteract bool              `json:"ExitBeforeInteract"`
+	ExitBeforeSave     bool              `json:"ExitBeforeSave"`
+	RegDeleteOnClear   bool              `json:"RegDeleteOnClear"`
+	UniqueIdFile       string            `json:"UniqueIdFile,omitempty"`
+	UniqueIdMethod     string            `json:"UniqueIdMethod,omitempty"`
+	UniqueIdRegex      string            `json:"UniqueIdRegex,omitempty"`
+	Extras             DescriptorExtras  `json:"Extras,omitempty"`
 }
 
 // ParseDescriptor expands PathListToClear entries equal to SAME_AS_LOGIN_FILES into LoginFiles keys.

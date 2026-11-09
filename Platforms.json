@@ -608,6 +608,12 @@
       "GetPathFromShortcutNamed": "Battle.net",
       "ExesToEnd": [ "Battle.net" ],
       "PathListToClear": [ "JSON_EMPTY_VALUE::%AppData%\\Battle.net\\Battle.net.config::Client.SavedAccountNames" ],
+      "AddNewFilesToClear": [
+        "%LocalAppData%\\Battle.net\\BrowserCaches\\common\\Network\\Cookies",
+        "%LocalAppData%\\Battle.net\\BrowserCaches\\common\\Network\\Cookies-journal",
+        "%LocalAppData%\\Battle.net\\BrowserCaches\\common\\Network\\Cookies-wal",
+        "%LocalAppData%\\Battle.net\\BrowserCaches\\common\\Network\\Cookies-shm"
+      ],
       "LoginFiles": {
         "JSON_SELECT_FIRST,::%AppData%\\Battle.net\\Battle.net.config::Client.SavedAccountNames": "email.json"
       },
@@ -743,5 +749,5 @@
   },
   "Platform-WIP": {
   },
-  "Version": "4.0.11"
+  "Version": "4.0.12"
 }
