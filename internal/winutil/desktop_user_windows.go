@@ -109,7 +109,7 @@ func createProcessWithToken(token windows.Token, app, cmdLine *uint16, flags uin
 		uintptr(unsafe.Pointer(app)),
 		uintptr(unsafe.Pointer(cmdLine)),
 		uintptr(flags),
-		0, // lpEnvironment: inherit ours
+		0, // lpEnvironment: build from the desktop user's profile
 		uintptr(unsafe.Pointer(wd)),
 		uintptr(unsafe.Pointer(si)),
 		uintptr(unsafe.Pointer(pi)),
@@ -121,12 +121,4 @@ func createProcessWithToken(token windows.Token, app, cmdLine *uint16, flags uin
 		return fmt.Errorf("CreateProcessWithTokenW failed")
 	}
 	return nil
-}
-
-func tryRunAsDesktopUser(exe string, args []string, workingDir string, hideWindow bool) bool {
-	if err := runAsDesktopUser(exe, args, workingDir, hideWindow); err != nil {
-		slogWin().Debug("RunAsDesktopUser failed", "exe", exe, "err", err)
-		return false
-	}
-	return true
 }

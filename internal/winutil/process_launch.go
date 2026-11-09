@@ -3,24 +3,43 @@
 package winutil
 
 import (
+	"errors"
 	"fmt"
 	"os/exec"
 	"strings"
 	"syscall"
+
+	"TcNo-Acc-Switcher/internal/actionlog"
 )
 
 // Start launches exe with args, fully decoupled from this process (see [spawnDetached]).
 // Uses PowerShell Start-Process -Verb RunAs when opts.Admin.
-func Start(exe string, args []string, opts StartOpts) error {
-	if opts.AsDesktopUser && IsProcessElevated() {
-		slogWin().Debug("start request", "exe", exe, "mode", "desktop-user", "args", len(args), "admin", opts.Admin)
+func Start(exe string, args []string, opts StartOpts) (err error) {
+	appElevated := IsProcessElevated()
+	mode := "detached"
+	if opts.AsDesktopUser && appElevated {
+		mode = "desktop_user"
+	} else if opts.Admin {
+		mode = "elevated"
+	}
+	// Launch arguments can contain credentials. Only record the mode and count.
+	defer func() {
+		recordErr := err
+		if opts.Admin && err != nil {
+			// PowerShell's error output may echo the full command, including arguments.
+			recordErr = fmt.Errorf("elevated launch failed")
+		}
+		actionlog.Record("process:start", exe, fmt.Sprintf("app_elevated=%t run_as_admin=%t as_desktop_user=%t launch_mode=%s argument_count=%d", appElevated, opts.Admin, opts.AsDesktopUser, mode, len(args)), recordErr)
+	}()
+	slogWin().Debug("start request", "exe", exe, "launch_mode", mode, "app_elevated", appElevated,
+		"run_as_admin", opts.Admin, "as_desktop_user", opts.AsDesktopUser, "args", len(args), "workingDir", strings.TrimSpace(opts.WorkingDir))
+	if opts.AsDesktopUser && appElevated {
 		return startAsDesktopUser(exe, args, opts)
 	}
 	exe = strings.TrimSpace(exe)
 	if exe == "" {
 		return fmt.Errorf("empty executable")
 	}
-	slogWin().Debug("start request", "exe", exe, "args", len(args), "admin", opts.Admin, "workingDir", strings.TrimSpace(opts.WorkingDir))
 	if opts.Admin {
 		err := startElevated(exe, args, opts)
 		if err != nil {
@@ -82,28 +101,35 @@ func psArgList(args []string) string {
 	return b.String()
 }
 
-// startAsDesktopUser avoids inheriting admin when the switcher is elevated. Reparenting to the
-// shell drops elevation and leaves our process tree in one step, so it is tried first;
-// CreateProcessWithTokenW (shell user token) and cmd /c start remain as fallbacks. Every step
-// here runs as the desktop user - none may quietly degrade into an elevated launch.
+// Ask the running desktop shell to create the process with its own token and environment.
+// Merely assigning Explorer as the parent still creates the target from our elevated
+// context. Keep the explicit desktop-token launch as a fallback, never an elevated cmd shim.
 func startAsDesktopUser(exe string, args []string, opts StartOpts) error {
+	exe = strings.TrimSpace(exe)
+	if exe == "" {
+		return fmt.Errorf("empty executable")
+	}
 	wd := strings.TrimSpace(opts.WorkingDir)
-	if pid, err := spawnReparented(exe, args, wd, opts.HideWindow); err == nil {
-		slogWin().Debug("start launched", "exe", exe, "mode", "shell-reparented", "pid", pid)
+	return launchAsDesktopUser(func() error {
+		return shellExecuteAsDesktopUser(exe, args, wd, opts.HideWindow)
+	}, func() error {
+		return runAsDesktopUser(exe, args, wd, opts.HideWindow)
+	}, func(mode string, err error) {
+		actionlog.Record("process:desktop_launch", exe, mode, err)
+	})
+}
+
+func launchAsDesktopUser(shell, token func() error, record func(string, error)) error {
+	shellErr := shell()
+	record("explorer", shellErr)
+	if shellErr == nil {
 		return nil
-	} else {
-		slogWin().Debug("shell reparent unavailable", "exe", exe, "err", err)
 	}
-	if tryRunAsDesktopUser(exe, args, wd, opts.HideWindow) {
+	tokenErr := token()
+	record("desktop_token", tokenErr)
+	if tokenErr == nil {
 		return nil
 	}
-	slogWin().Debug("falling back to cmd start", "exe", exe)
-	cmdline := append([]string{"/c", "start", "", exe}, args...)
-	// The shim is always hidden regardless of opts.HideWindow: `start` (no /B) builds its own
-	// STARTUPINFO for the target, so cmd's console is a separate window that only ever shows up
-	// as a stray popup - worse under Windows Terminal, which keeps it around.
-	if _, err := spawnDetached("cmd.exe", cmdline, wd, true); err != nil {
-		return WrapIfElevationRequired(err)
-	}
-	return nil
+	return fmt.Errorf("launch as desktop user: %w", errors.Join(
+		fmt.Errorf("Explorer: %w", shellErr), fmt.Errorf("desktop token: %w", tokenErr)))
 }

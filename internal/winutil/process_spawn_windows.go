@@ -149,17 +149,6 @@ func spawnDetached(exe string, args []string, workingDir string, hideWindow bool
 	return spec.create(spec.flags, 0)
 }
 
-// spawnReparented is spawnDetached without the in-tree fallback. Callers reach for it when the
-// launch must also drop our elevation: a plain CreateProcess would hand the child our admin
-// token, so failing here and letting the caller try something else is the only safe answer.
-func spawnReparented(exe string, args []string, workingDir string, hideWindow bool) (uint32, error) {
-	spec, err := newLaunchSpec(exe, args, workingDir, hideWindow)
-	if err != nil {
-		return 0, err
-	}
-	return spec.reparented()
-}
-
 // spawnWithToken launches under an explicit primary token via CreateProcessWithTokenW.
 func spawnWithToken(exe string, args []string, workingDir string, hideWindow bool, token windows.Token) (uint32, error) {
 	spec, err := newLaunchSpec(exe, args, workingDir, hideWindow)
