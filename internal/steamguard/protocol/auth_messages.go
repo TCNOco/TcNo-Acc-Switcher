@@ -104,7 +104,7 @@ func marshalMobileConfirmationRequest(request MobileConfirmationRequest) []byte 
 }
 
 func unmarshalBeginCredentialsResponse(data []byte) (beginCredentialsWireResult, *Error) {
-	var result beginCredentialsWireResult
+	result := beginCredentialsWireResult{interval: defaultAuthPollInterval}
 	var agreementURL []byte
 	var serverMessage []byte
 	var seen uint64
@@ -131,11 +131,11 @@ func unmarshalBeginCredentialsResponse(data []byte) (beginCredentialsWireResult,
 			if field.typeID != wireFixed32 || !markSingleton(&seen, field.number) {
 				return beginCredentialsWireResult{}, invalidResponseDetail("begin_interval_field")
 			}
-			seconds := math.Float32frombits(field.fixed32)
-			if math.IsNaN(float64(seconds)) || math.IsInf(float64(seconds), 0) || seconds < 0.25 || seconds > 60 {
+			interval, valid := authPollInterval(math.Float32frombits(field.fixed32))
+			if !valid {
 				return beginCredentialsWireResult{}, invalidResponseDetail("begin_interval_range")
 			}
-			result.interval = time.Duration(float64(seconds) * float64(time.Second))
+			result.interval = interval
 		case 4:
 			value, valid := fieldBytes(field, 512)
 			if !valid || len(result.challenges) >= 8 {
@@ -184,9 +184,6 @@ func unmarshalBeginCredentialsResponse(data []byte) (beginCredentialsWireResult,
 	}
 	if len(result.requestID) == 0 {
 		return beginCredentialsWireResult{}, invalidResponseDetail("begin_missing_request_id")
-	}
-	if result.interval == 0 {
-		return beginCredentialsWireResult{}, invalidResponseDetail("begin_missing_interval")
 	}
 	if !validAccountSteamID(result.steamID) {
 		return beginCredentialsWireResult{}, invalidResponseDetail("begin_steamid_range")

@@ -96,7 +96,7 @@ func marshalBeginQRRequest(request BeginQRRequest) []byte {
 }
 
 func unmarshalBeginQRResponse(data []byte) (beginQRWireResult, *Error) {
-	var result beginQRWireResult
+	result := beginQRWireResult{interval: defaultAuthPollInterval}
 	var challengeURL []byte
 	decoder := protobufDecoder{data: data}
 	for {
@@ -127,11 +127,11 @@ func unmarshalBeginQRResponse(data []byte) (beginQRWireResult, *Error) {
 			if field.typeID != wireFixed32 || !markSingleton(&result.seen, field.number) {
 				return beginQRWireResult{}, invalidResponseDetail("qr_begin_interval_field")
 			}
-			seconds := math.Float32frombits(field.fixed32)
-			if math.IsNaN(float64(seconds)) || math.IsInf(float64(seconds), 0) || seconds < 0.25 || seconds > 60 {
+			interval, valid := authPollInterval(math.Float32frombits(field.fixed32))
+			if !valid {
 				return beginQRWireResult{}, invalidResponseDetail("qr_begin_interval_range")
 			}
-			result.interval = time.Duration(float64(seconds) * float64(time.Second))
+			result.interval = interval
 		case 5:
 			value, valid := fieldBytes(field, 512)
 			if !valid || len(result.challenges) >= 8 {
@@ -160,9 +160,6 @@ func unmarshalBeginQRResponse(data []byte) (beginQRWireResult, *Error) {
 	}
 	if len(result.requestID) == 0 {
 		return beginQRWireResult{}, invalidResponseDetail("qr_begin_missing_request_id")
-	}
-	if result.interval == 0 {
-		return beginQRWireResult{}, invalidResponseDetail("qr_begin_missing_interval")
 	}
 	// The URL becomes an image the user is asked to trust, so only Steam's own
 	// format is accepted and it has to name the session that was just opened.

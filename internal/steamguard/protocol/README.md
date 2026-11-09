@@ -99,6 +99,11 @@ The ID is not sent to Steam. `AuthSession` keeps Steam's request ID private and
 uses it only for polling. Call `Destroy` when polling completes or the owning
 vault locks.
 
+Steam's polling interval is optional. Zero or omitted intervals use a five-second
+delay; positive intervals shorter than 250 ms use 250 ms, and longer intervals are
+preserved. Negative, non-finite, and duration-overflowing values remain invalid.
+Session identifiers and authentication results are validated separately.
+
 `AuthResultState` tells the caller to wait, request a challenge, open an
 agreement URL, or store issued tokens. Access tokens, refresh tokens, guard
 data, associated email hints, encrypted passwords, mobile signatures, and raw
