@@ -10,8 +10,9 @@
         "%AppData%\\Battlestate Games\\BsgLauncher\\settings": "settings"
       },
       "AllFilesRequired": true,
-      "UniqueIdFile": "settings",
-      "UniqueIdRegex": "EMAIL_REGEX"
+      "ExitBeforeInteract": true,
+      "ExitBeforeSave": true,
+      "UniqueIdFile": "JSON_SELECT::%AppData%\\Battlestate Games\\BsgLauncher\\settings::login"
     },
     "OBS Studio": {
       "Identifiers": [ "obs" ],
@@ -742,5 +743,5 @@
   },
   "Platform-WIP": {
   },
-  "Version": "4.0.10"
+  "Version": "4.0.11"
 }
