@@ -39,6 +39,10 @@ func launchAfterCompletedOperation(platformKey, warningKey string, launch func()
 
 func runSaveWithRelaunch(wasRunning, autoStart bool, save func() error, launch func() error, warn func(error)) error {
 	saveErr := save()
+	// Read-only LevelDB handles still lock the live database on Windows. Release
+	// handles used for the account ID and avatar before the launcher reopens it,
+	// including when saving failed and we restart the original session.
+	closeSharedLevelDBHandles("SaveCurrent.beforeRelaunch")
 	if wasRunning && autoStart {
 		if err := launch(); err != nil && warn != nil {
 			warn(err)

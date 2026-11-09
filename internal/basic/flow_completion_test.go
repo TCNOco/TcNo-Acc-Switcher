@@ -3,6 +3,9 @@ package basic
 import (
 	"errors"
 	"testing"
+
+	"github.com/syndtr/goleveldb/leveldb"
+	"github.com/syndtr/goleveldb/leveldb/storage"
 )
 
 func TestCompletedSwitchLaunchSuccessDoesNotWarn(t *testing.T) {
@@ -119,5 +122,41 @@ func TestSaveRelaunchPreservesOriginalSaveFailure(t *testing.T) {
 	})
 	if err != saveErr || warning != launchErr || launches != 1 {
 		t.Fatalf("save error=%v warning=%v launches=%d", err, warning, launches)
+	}
+}
+
+func TestSaveReleasesLevelDBBeforeRelaunch(t *testing.T) {
+	for _, saveErr := range []error{nil, errors.New("session capture failed")} {
+		name := "success"
+		if saveErr != nil {
+			name = "failure"
+		}
+		t.Run(name, func(t *testing.T) {
+			defer closeSharedLevelDBHandles("test.end")
+			var db *leveldb.DB
+			launched := false
+			err := runSaveWithRelaunch(true, true, func() error {
+				var err error
+				db, err = leveldb.Open(storage.NewMemStorage(), nil)
+				if err != nil {
+					t.Fatalf("open database: %v", err)
+				}
+				// Model the handle retained by account ID / avatar resolution.
+				// The save callback leaves it open for the flow to release.
+				sharedLevelDBStore.mu.Lock()
+				sharedLevelDBStore.handles["saved-session"] = &levelDBHandle{db: db}
+				sharedLevelDBStore.mu.Unlock()
+				return saveErr
+			}, func() error {
+				launched = true
+				if _, err := db.Get([]byte("key"), nil); !errors.Is(err, leveldb.ErrClosed) {
+					t.Fatalf("database still open when launcher starts: %v", err)
+				}
+				return nil
+			}, nil)
+			if err != saveErr || !launched {
+				t.Fatalf("save error=%v want=%v launched=%t", err, saveErr, launched)
+			}
+		})
 	}
 }
