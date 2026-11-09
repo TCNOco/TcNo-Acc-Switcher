@@ -27,7 +27,7 @@ func TestShortcutAlreadyMatches(t *testing.T) {
 	writeTestShortcut(t, lnk, exe, "+s:76561197960287930")
 
 	t.Run("same target and arguments", func(t *testing.T) {
-		if !shortcutAlreadyMatches(lnk, exe, "+s:76561197960287930") {
+		if !shortcutAlreadyMatches(lnk, exe, "+s:76561197960287930", "") {
 			t.Error("an identical shortcut was not recognised, so the user gets told one was created")
 		}
 	})
@@ -35,13 +35,13 @@ func TestShortcutAlreadyMatches(t *testing.T) {
 	// The arguments carry the account, so a different account behind the same
 	// filename must rewrite rather than report the old one as already correct.
 	t.Run("different arguments", func(t *testing.T) {
-		if shortcutAlreadyMatches(lnk, exe, "+s:76561197960287931") {
+		if shortcutAlreadyMatches(lnk, exe, "+s:76561197960287931", "") {
 			t.Error("a shortcut for a different account was treated as a match")
 		}
 	})
 
 	t.Run("missing file", func(t *testing.T) {
-		if shortcutAlreadyMatches(filepath.Join(dir, "absent.lnk"), exe, "+s:76561197960287930") {
+		if shortcutAlreadyMatches(filepath.Join(dir, "absent.lnk"), exe, "+s:76561197960287930", "") {
 			t.Error("a nonexistent shortcut was reported as already there")
 		}
 	})
@@ -51,8 +51,25 @@ func TestShortcutAlreadyMatches(t *testing.T) {
 		if err := os.Mkdir(asDir, 0o755); err != nil {
 			t.Fatal(err)
 		}
-		if shortcutAlreadyMatches(asDir, exe, "+s:76561197960287930") {
+		if shortcutAlreadyMatches(asDir, exe, "+s:76561197960287930", "") {
 			t.Error("a directory was treated as a matching shortcut")
+		}
+	})
+
+	t.Run("missing icon needs repair", func(t *testing.T) {
+		if shortcutAlreadyMatches(lnk, exe, "+s:76561197960287930", filepath.Join(dir, "account.ico")+",0") {
+			t.Fatal("an empty icon was treated as a match for a generated account icon")
+		}
+	})
+
+	t.Run("matching icon does not rewrite", func(t *testing.T) {
+		icon := filepath.Join(dir, "account.ico") + ",0"
+		withIcon := filepath.Join(dir, "with-icon.lnk")
+		if err := winutil.WriteShortcutLnk(withIcon, exe, "+s:76561197960287930", dir, "test", icon, ""); err != nil {
+			t.Fatal(err)
+		}
+		if !shortcutAlreadyMatches(withIcon, exe, "+s:76561197960287930", icon) {
+			t.Fatal("matching icon was not recognised")
 		}
 	})
 }

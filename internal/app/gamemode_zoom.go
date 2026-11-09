@@ -3,10 +3,12 @@ package app
 import (
 	"log/slog"
 	"math"
+	"sync"
 
 	"TcNo-Acc-Switcher/internal/platform"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
+	"github.com/wailsapp/wails/v3/pkg/events"
 )
 
 // gameModeCSSWidth is the width the UI is scaled to present, in CSS pixels.
@@ -23,6 +25,17 @@ func gameModeZoom(screenWidth int) float64 {
 		return 1
 	}
 	return math.Max(1, math.Min(2, float64(screenWidth)/gameModeCSSWidth))
+}
+
+// SetMinSize dispatches synchronously even before the native window exists.
+// Wait for the runtime so Run can start the UI loop and the window's screen is
+// available for automatic handheld scaling. Reloads must not restore a stale
+// startup preference after the user changes it.
+func registerInitialInterfaceScale(win application.Window, scale float64) {
+	var once sync.Once
+	win.OnWindowEvent(events.Common.WindowRuntimeReady, func(*application.WindowEvent) {
+		once.Do(func() { applyInterfaceScale(win, scale) })
+	})
 }
 
 // Explicit scale applies to the main window. Automatic keeps handheld scaling.

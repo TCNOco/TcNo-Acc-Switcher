@@ -300,7 +300,7 @@ func RunGUI(params RunGUIParams) {
 	if !platform.InGamescopeSession() {
 		registerWindowPlacement(wailsApp, win, disp.PlatformSvc, platform.SavedWindowPlacement(guiSettings))
 	}
-	applyInterfaceScale(win, guiSettings.InterfaceScale)
+	registerInitialInterfaceScale(win, guiSettings.InterfaceScale)
 	platform.SetInterfaceScaleHandler(func(scale float64) {
 		application.InvokeAsync(func() { applyInterfaceScale(win, scale) })
 	})

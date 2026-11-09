@@ -76,7 +76,7 @@ func CreateGameAccountShortcut(platformKey, uniqueID, accountDisplayName, accoun
 	workDir := filepath.Dir(self)
 	desc := fmt.Sprintf("TcNo Account Switcher - %s - %s", platformKey, title)
 	appID := winutil.ShortcutAppUserModelID(platformKey, uniqueID, gameFileName)
-	if shortcutAlreadyMatches(outPath, self, argv) {
+	if shortcutAlreadyMatches(outPath, self, argv, icon) {
 		return ShortcutResult{Path: outPath, AlreadyExisted: true}, nil
 	}
 	if err := winutil.WriteShortcutLnk(outPath, self, argv, workDir, desc, icon, appID); err != nil {
@@ -109,17 +109,17 @@ func gameAccountShortcutDesktopBaseName(platformKey, uniqueID, displayName, acco
 }
 
 func buildGameAccountShortcutIcon(platformKey, uniqueID, gameFileName string) string {
-	p, ok := profileimage.CachedFilePath(platformKey, uniqueID)
+	p, ok := cachedShortcutAvatar(platformKey, uniqueID)
 	if !ok || p == "" {
-		return ""
+		return buildAccountShortcutIcon(platformKey, uniqueID)
 	}
 	root, err := paths.DataRoot()
 	if err != nil {
-		return fallbackAvatarIconOnly(p)
+		return ""
 	}
 	cacheDir := filepath.Join(root, "IconCache")
 	if err := os.MkdirAll(cacheDir, 0o755); err != nil {
-		return fallbackAvatarIconOnly(p)
+		return ""
 	}
 
 	gameIconPath, err := iconDiskPath(platformKey, gameFileName)
@@ -136,21 +136,5 @@ func buildGameAccountShortcutIcon(platformKey, uniqueID, gameFileName string) st
 		}
 	}
 
-	platformIcoPath := filepath.Join(cacheDir, profileimage.PlatformFolder(platformKey)+"_platform.ico")
-	if _, err := os.Stat(platformIcoPath); err != nil {
-		_ = winutil.BuildPlatformIcon(platformKey, platformIcoPath)
-	}
-	icoName := fmt.Sprintf("%s_%s.ico", profileimage.PlatformFolder(platformKey), sanitizeShortcutFileName(uniqueID))
-	icoPath := filepath.Join(cacheDir, icoName)
-	if err := winutil.BuildCombinedAccountIcon(platformKey, p, icoPath, platformIcoPath); err == nil {
-		return icoPath + ",0"
-	}
-	return fallbackAvatarIconOnly(p)
-}
-
-func fallbackAvatarIconOnly(p string) string {
-	if p != "" {
-		return p + ",0"
-	}
-	return ""
+	return buildAccountShortcutIcon(platformKey, uniqueID)
 }

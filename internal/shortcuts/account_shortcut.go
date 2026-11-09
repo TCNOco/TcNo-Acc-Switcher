@@ -8,7 +8,6 @@ import (
 
 	"TcNo-Acc-Switcher/internal/cli"
 	"TcNo-Acc-Switcher/internal/paths"
-	"TcNo-Acc-Switcher/internal/profileimage"
 	"TcNo-Acc-Switcher/internal/winutil"
 )
 
@@ -53,31 +52,12 @@ func CreateAccountShortcut(platformKey, uniqueID, displayName, stateSuffix, stat
 		argv = "+" + short + ":" + uniqueID
 	}
 
-	icon := ""
-	if p, ok := profileimage.CachedFilePath(platformKey, uniqueID); ok && p != "" {
-		if root, err := paths.DataRoot(); err == nil {
-			cacheDir := filepath.Join(root, "IconCache")
-			if err := os.MkdirAll(cacheDir, 0o755); err == nil {
-				platformIcoPath := filepath.Join(cacheDir, profileimage.PlatformFolder(platformKey)+"_platform.ico")
-				if _, err := os.Stat(platformIcoPath); err != nil {
-					_ = winutil.BuildPlatformIcon(platformKey, platformIcoPath)
-				}
-				icoName := fmt.Sprintf("%s_%s.ico", profileimage.PlatformFolder(platformKey), sanitizeShortcutFileName(uniqueID))
-				icoPath := filepath.Join(cacheDir, icoName)
-				if err := winutil.BuildCombinedAccountIcon(platformKey, p, icoPath, platformIcoPath); err == nil {
-					icon = icoPath + ",0"
-				}
-			}
-		}
-		if icon == "" {
-			icon = p + ",0"
-		}
-	}
+	icon := buildAccountShortcutIcon(platformKey, uniqueID)
 
 	workDir := filepath.Dir(self)
 	desc := fmt.Sprintf("TcNo Account Switcher - %s - %s", platformKey, title)
 	appID := winutil.ShortcutAppUserModelID(platformKey, uniqueID, stateSuffix)
-	if shortcutAlreadyMatches(outPath, self, argv) {
+	if shortcutAlreadyMatches(outPath, self, argv, icon) {
 		return ShortcutResult{Path: outPath, AlreadyExisted: true}, nil
 	}
 	if err := winutil.WriteShortcutLnk(outPath, self, argv, workDir, desc, icon, appID); err != nil {

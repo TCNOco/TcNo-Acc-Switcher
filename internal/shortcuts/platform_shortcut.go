@@ -76,7 +76,7 @@ func CreatePlatformShortcut(platformKey string) (ShortcutResult, error) {
 	desc := fmt.Sprintf("TcNo Account Switcher - %s", platformKey)
 	argv := platformKey
 	appID := winutil.ShortcutAppUserModelID("platform", platformKey)
-	if shortcutAlreadyMatches(outPath, self, argv) {
+	if shortcutAlreadyMatches(outPath, self, argv, icon) {
 		return ShortcutResult{Path: outPath, AlreadyExisted: true}, nil
 	}
 	if err := winutil.WriteShortcutLnk(outPath, self, argv, workDir, desc, icon, appID); err != nil {

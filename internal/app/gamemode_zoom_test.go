@@ -1,6 +1,59 @@
 package app
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/wailsapp/wails/v3/pkg/application"
+	"github.com/wailsapp/wails/v3/pkg/events"
+)
+
+type scaleStartupWindow struct {
+	application.Window
+	ready                   func(*application.WindowEvent)
+	minWidth, minHeight     int
+	zoom                    float64
+	minSizeCalls, zoomCalls int
+}
+
+func (w *scaleStartupWindow) OnWindowEvent(event events.WindowEventType, handler func(*application.WindowEvent)) func() {
+	if event == events.Common.WindowRuntimeReady {
+		w.ready = handler
+	}
+	return func() {}
+}
+
+func (w *scaleStartupWindow) SetMinSize(width, height int) application.Window {
+	w.minWidth, w.minHeight = width, height
+	w.minSizeCalls++
+	return w
+}
+
+func (w *scaleStartupWindow) SetZoom(zoom float64) application.Window {
+	w.zoom = zoom
+	w.zoomCalls++
+	return w
+}
+
+func TestInitialInterfaceScaleWaitsForRuntime(t *testing.T) {
+	for _, scale := range []float64{0.75, 1, 1.5, 2} {
+		win := &scaleStartupWindow{}
+		registerInitialInterfaceScale(win, scale)
+		if win.minSizeCalls != 0 || win.zoomCalls != 0 {
+			t.Fatal("startup called window setters before the UI loop could run")
+		}
+		if win.ready == nil {
+			t.Fatal("startup scaling is not waiting for the window runtime")
+		}
+		win.ready(nil)
+		if win.zoom != scale || win.minWidth != int(mainWindowMinWidth*scale) || win.minHeight != int(mainWindowMinHeight*scale) {
+			t.Fatalf("scale %v: zoom=%v min=%dx%d", scale, win.zoom, win.minWidth, win.minHeight)
+		}
+		win.ready(nil)
+		if win.minSizeCalls != 1 || win.zoomCalls != 1 {
+			t.Fatal("runtime reload reapplied the startup scale")
+		}
+	}
+}
 
 func TestMainWindowZoomManualAndAutomatic(t *testing.T) {
 	for _, tc := range []struct {

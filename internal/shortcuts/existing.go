@@ -16,18 +16,20 @@ type ShortcutResult struct {
 }
 
 // shortcutAlreadyMatches reports whether path already holds a shortcut that
-// launches exactly this.
-//
-// Target and arguments are the functional identity of a switcher shortcut —
-// the arguments carry the account, and for a game shortcut the game too — so an
-// icon that has since changed is not a difference worth rewriting for.
-func shortcutAlreadyMatches(path, target, arguments string) bool {
+// launches exactly this and, when requested, uses the generated icon. This lets
+// recreating a shortcut repair an empty or outdated icon reference.
+func shortcutAlreadyMatches(path, target, arguments, iconLocation string) bool {
 	st, err := os.Stat(path)
 	if err != nil || st.IsDir() {
 		return false
 	}
-	gotTarget, gotArgs, _, err := winutil.ReadLnkShortcut(path)
+	gotTarget, gotArgs, gotIcon, err := winutil.ReadLnkShortcut(path)
 	if err != nil {
+		return false
+	}
+	// ReadLnkShortcut returns the icon's path string without the header's index;
+	// all generated switcher ICO references use index zero.
+	if iconLocation != "" && !strings.EqualFold(strings.TrimSpace(gotIcon), strings.TrimSuffix(iconLocation, ",0")) {
 		return false
 	}
 	// The target is a path, so case-insensitive; the arguments are ours and are
