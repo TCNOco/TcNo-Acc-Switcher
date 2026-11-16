@@ -418,9 +418,25 @@
         "%Platform_Folder%\\logs\\launcher_log.txt": "logs\\launcher_log.txt",
         "%LocalAppData%\\Ubisoft Game Launcher\\ConnectSecureStorage.dat": "ConnectSecureStorage.dat",
         "%LocalAppData%\\Ubisoft Game Launcher\\settings.yaml": "settings.yaml",
+        "%LocalAppData%\\Ubisoft Game Launcher\\user.vdat": "user.vdat",
         "%LocalAppData%\\Ubisoft Game Launcher\\user.dat": "user.dat"
       },
       "Extras": {
+        "ConfigOverrides": [
+          {
+            "File": "%LocalAppData%\\Ubisoft Game Launcher\\settings.yaml",
+            "Format": "yaml",
+            "Path": "user.closebehavior",
+            "Value": "CloseBehavior_Close"
+          }
+        ],
+        "BuiltInUsernameFile": "%LocalAppData%\\Ubisoft Game Launcher\\cache\\http2\\Default\\Cache\\Cache_Data\\data_*",
+        "BuiltInUsernameFileFallbacks": [
+          "%LocalAppData%\\Ubisoft Game Launcher\\cache\\http2\\Default\\Service Worker\\CacheStorage\\*\\*\\*_0",
+          "%Platform_Folder%\\cache\\http2\\Default\\Cache\\Cache_Data\\data_*"
+        ],
+        "BuiltInUsernameJSONPath": "nameOnPlatform",
+        "BuiltInUsernameJSONMatchPath": "userId",
         "ProfilePicPath": "https://avatars.ubisoft.com/%UniqueId%/default_256_256.png",
         "CachePaths": [
           "%Platform_Folder%\\cache\\achievements",

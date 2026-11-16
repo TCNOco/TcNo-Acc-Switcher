@@ -15,17 +15,31 @@ type CredentialSessionDescriptor struct {
 	RecoveryCopies int      `json:"RecoveryCopies,omitempty"`
 }
 
+// ConfigOverride sets a scalar value in a launcher-owned JSON or YAML file.
+// Overrides run before close, after restore and before a managed launch.
+type ConfigOverride struct {
+	File   string `json:"File"`
+	Format string `json:"Format"`
+	Path   string `json:"Path"`
+	Value  any    `json:"Value"`
+}
+
 type DescriptorExtras struct {
-	AuthenticatorProvider   string                       `json:"AuthenticatorProvider,omitempty"`
-	CredentialSession       *CredentialSessionDescriptor `json:"CredentialSession,omitempty"`
-	CachePaths              []string                     `json:"CachePaths,omitempty"`
-	BackupFolders           map[string]string            `json:"BackupFolders,omitempty"`
-	Variables               map[string]string            `json:"variables,omitempty"`
-	ProfilePicPath          string                       `json:"ProfilePicPath,omitempty"`
-	ProfilePicFromFile      string                       `json:"ProfilePicFromFile,omitempty"`
-	ProfilePicRegex         string                       `json:"ProfilePicRegex,omitempty"`
-	BuiltInUsernameFile     string                       `json:"BuiltInUsernameFile,omitempty"`
-	BuiltInProfileImageFile string                       `json:"BuiltInProfileImageFile,omitempty"`
+	ConfigOverrides       []ConfigOverride             `json:"ConfigOverrides,omitempty"`
+	AuthenticatorProvider string                       `json:"AuthenticatorProvider,omitempty"`
+	CredentialSession     *CredentialSessionDescriptor `json:"CredentialSession,omitempty"`
+	CachePaths            []string                     `json:"CachePaths,omitempty"`
+	BackupFolders         map[string]string            `json:"BackupFolders,omitempty"`
+	Variables             map[string]string            `json:"variables,omitempty"`
+	ProfilePicPath        string                       `json:"ProfilePicPath,omitempty"`
+	ProfilePicFromFile    string                       `json:"ProfilePicFromFile,omitempty"`
+	ProfilePicRegex       string                       `json:"ProfilePicRegex,omitempty"`
+	BuiltInUsernameFile   string                       `json:"BuiltInUsernameFile,omitempty"`
+	// Select a string from JSON objects embedded in browser cache files.
+	BuiltInUsernameJSONPath string `json:"BuiltInUsernameJSONPath,omitempty"`
+	// When set, this JSON field must equal the launcher's current unique ID.
+	BuiltInUsernameJSONMatchPath string `json:"BuiltInUsernameJSONMatchPath,omitempty"`
+	BuiltInProfileImageFile      string `json:"BuiltInProfileImageFile,omitempty"`
 	// Additional cache patterns, scanned together with the primary pattern by recency.
 	BuiltInUsernameFileFallbacks     []string `json:"BuiltInUsernameFileFallbacks,omitempty"`
 	BuiltInProfileImageFileFallbacks []string `json:"BuiltInProfileImageFileFallbacks,omitempty"`

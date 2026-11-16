@@ -1,0 +1,4 @@
+user:
+  closebehavior: CloseBehavior_Close # remember this choice
+  offline: false
+untouched: fixture-value

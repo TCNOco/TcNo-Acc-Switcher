@@ -160,11 +160,16 @@ func forceKillAndConfirm(exeImage string, running func(string) (bool, error), ki
 	if !alive {
 		return nil
 	}
-	if err := kill(exeImage); err != nil {
-		return fmt.Errorf("terminate process %s: %w", exeImage, err)
-	}
+	killErr := kill(exeImage)
+	// A parent or sibling can finish shutting down this image while taskkill /T
+	// enumerates its children. Confirm the actual exit even when taskkill failed;
+	// its localized output is not authoritative about the final process state.
 	if err := wait(exeImage); err != nil {
-		return fmt.Errorf("confirm process %s exited: %w", exeImage, err)
+		confirmErr := fmt.Errorf("confirm process %s exited: %w", exeImage, err)
+		if killErr != nil {
+			return errors.Join(fmt.Errorf("terminate process %s: %w", exeImage, killErr), confirmErr)
+		}
+		return confirmErr
 	}
 	return nil
 }

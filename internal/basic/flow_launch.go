@@ -16,6 +16,9 @@ func killPlatformExes(deps FlowDeps, fc FlowContext) error {
 		platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatformFailed", fc.PlatformKey)
 		return err
 	}
+	if err := applyConfigOverrides(fc); err != nil {
+		return err
+	}
 	platform.EmitActionBarStatusI18nPlatform("Status_ClosingPlatform", fc.PlatformKey)
 	opts := winutil.KillOpts{
 		NativeQuit:          descriptorNativeQuit(deps, fc),
@@ -102,6 +105,9 @@ func launchBasicNoStatusAs(deps FlowDeps, platformKey string, forceAdmin bool, e
 	}
 	if deps.PS == nil {
 		return fmt.Errorf("platform service not set")
+	}
+	if err := applyConfigOverrides(fc); err != nil {
+		return err
 	}
 	exe, err := deps.PS.ResolvePlatformExeFullPath(platformKey)
 	if err != nil || exe == "" {

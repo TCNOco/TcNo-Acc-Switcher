@@ -693,7 +693,7 @@ func Login(deps FlowDeps, fc FlowContext, accountName string) error {
 			}
 		}
 	}
-	return nil
+	return applyConfigOverrides(fc)
 }
 
 func ClearCurrentLogin(deps FlowDeps, fc FlowContext) error {

@@ -23,7 +23,9 @@ func TestForceKillAndConfirmExitPolicy(t *testing.T) {
 	}{
 		{name: "already exited", wantCalls: []string{"inspect"}},
 		{name: "enumeration failed", inspectErr: inspectErr, wantErr: inspectErr, wantCalls: []string{"inspect"}},
-		{name: "termination failed", running: true, killErr: killErr, wantErr: killErr, wantCalls: []string{"inspect", "terminate"}},
+		{name: "termination failed and still running", running: true, killErr: killErr, waitErr: errProcessExitTimeout, wantErr: killErr, wantCalls: []string{"inspect", "terminate", "wait"}},
+		{name: "exited during taskkill child enumeration", running: true, killErr: errors.New("taskkill exit status 255: no running instance of the task"), wantCalls: []string{"inspect", "terminate", "wait"}},
+		{name: "localized taskkill error after exit", running: true, killErr: errors.New("localized process-not-found message"), wantCalls: []string{"inspect", "terminate", "wait"}},
 		{name: "exit timed out", running: true, waitErr: errProcessExitTimeout, wantErr: errProcessExitTimeout, wantCalls: []string{"inspect", "terminate", "wait"}},
 		{name: "wait failed", running: true, waitErr: inspectErr, wantErr: inspectErr, wantCalls: []string{"inspect", "terminate", "wait"}},
 		{name: "confirmed exit", running: true, wantCalls: []string{"inspect", "terminate", "wait"}},

@@ -67,6 +67,17 @@ func platformSuggestedSaveName(platformKey, folder string, ctx platform.PathToke
 	}
 	vars := resolveDescriptorVariables(d, folder, ctx, "", false)
 	vars = resolveBuiltInRuntimeVariables(platformKey, d, folder, ctx, vars, "", false)
+	if strings.TrimSpace(d.Extras.BuiltInUsernameJSONPath) != "" {
+		currentID := ""
+		if strings.TrimSpace(d.Extras.BuiltInUsernameJSONMatchPath) != "" {
+			currentID, err = ReadUniqueID(platformKey, d, folder)
+			if err != nil {
+				return "", true, err
+			}
+		}
+		name, err := descriptorCachedJSONSaveName(d, folder, ctx, vars, currentID)
+		return name, true, err
+	}
 	switch key {
 	case "ea desktop":
 		dataPat := builtInPatternPath(d, folder, ctx, d.Extras.BuiltInUsernameFile, vars, "", false)
@@ -101,6 +112,12 @@ func platformSuggestedSaveName(platformKey, folder string, ctx platform.PathToke
 		}
 		return name, true, nil
 	}
+}
+
+func descriptorCachedJSONSaveName(d platform.Descriptor, folder string, ctx platform.PathTokenContext, vars map[string]string, currentID string) (string, error) {
+	pattern := builtInPatternPath(d, folder, ctx, d.Extras.BuiltInUsernameFile, vars, "", false)
+	fallbacks := builtInPatternFallbacks(d, folder, ctx, d.Extras.BuiltInUsernameFileFallbacks, vars, "", false)
+	return basicplatforms.CachedJSONValue(pattern, fallbacks, d.Extras.BuiltInUsernameJSONPath, d.Extras.BuiltInUsernameJSONMatchPath, currentID)
 }
 
 func platformProfileImagesSavedPerAccount(platformKey string) bool {
