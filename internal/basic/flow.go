@@ -142,6 +142,9 @@ func saveCurrentAfterKill(deps FlowDeps, accountName string, fc FlowContext) err
 	if accountName == "" {
 		return fmt.Errorf("account name is empty or invalid after normalization")
 	}
+	if err := validateLiveLoginFiles(fc.Descriptor, fc.PathCtx); err != nil {
+		return err
+	}
 	platform.EmitActionBarStatusI18n("Status_GetUniqueId")
 	uid, err := ensureUniqueIDOnSave(fc.PlatformKey, fc.Descriptor, fc.PathCtx)
 	if err != nil {
@@ -416,6 +419,9 @@ func saveCurrentAfterKill(deps FlowDeps, accountName string, fc FlowContext) err
 		logFlow().Debug("wrote registry dump cache", "path", regPath)
 	}
 
+	if err := validateSavedLoginFiles(fc, destRoot); err != nil {
+		return err
+	}
 	if err := security.CommitAccountSave(save, normalDestRoot); err != nil {
 		return err
 	}
@@ -495,6 +501,9 @@ func Login(deps FlowDeps, fc FlowContext, accountName string) error {
 		return err
 	}
 	defer cleanup()
+	if err := validateSavedLoginFiles(fc, srcRoot); err != nil {
+		return fmt.Errorf("saved session for %q is incomplete: %w", accountName, err)
+	}
 	regData, _ := os.ReadFile(filepath.Join(srcRoot, "reg.json"))
 	var regDump map[string]regDumpEntry
 	if len(regData) > 0 {
@@ -794,6 +803,10 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 		logFlow().Debug("swap short-circuit: already on requested account", "platform", platformKey, "uniqueID", uniqueID)
 		return nil
 	}
+	// Check the destination before closing or clearing the current session.
+	if err := validateSavedLoginSession(fc, accName, uniqueID); err != nil {
+		return err
+	}
 	var restorePrepared func() error
 	if isCredentialSessionFlow(fc) && shouldRestoreSavedSession(fc, cur, uniqueID, curErr) {
 		var cleanup func()
@@ -894,8 +907,23 @@ func AddNew(deps FlowDeps, platformKey string) (err error) {
 	if err := killPlatformExes(deps, fc); err != nil {
 		return err
 	}
-	platform.EmitActionBarStatusI18n("Status_ActionBar_ClearingSession")
-	if err := clearLoginForAddNew(deps, fc); err != nil {
+	accounts, err := readIDs(platformKey)
+	if err != nil {
+		return err
+	}
+	currentID, readErr := ReadUniqueID(platformKey, fc.Descriptor, fc.Folder)
+	if readErr != nil {
+		logFlow().Debug("Add New: no active session to refresh", "platform", platformKey, "err", readErr)
+		currentID = ""
+	}
+	if err := resetLoginPreservingKnownSession(currentID, accounts, func(name string) error {
+		platform.EmitActionBarStatusI18n("Status_ActionBar_SavingSession")
+		return saveCurrentAfterKill(deps, name, fc)
+	}, func() error {
+		closeSharedLevelDBHandles("AddNew.beforeClear")
+		platform.EmitActionBarStatusI18n("Status_ActionBar_ClearingSession")
+		return clearLoginForAddNew(deps, fc)
+	}); err != nil {
 		return err
 	}
 	if !fc.Settings.AutoStart {

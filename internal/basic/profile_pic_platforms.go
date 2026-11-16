@@ -29,14 +29,9 @@ func platformProfileImageSource(platformKey, folder string, ctx platform.PathTok
 	switch key {
 	case "ea desktop":
 		cachePat := builtInPatternPath(d, folder, ctx, d.Extras.BuiltInProfileImageFile, vars, "", false)
-		if strings.TrimSpace(cachePat) == "" {
-			cachePat = builtInPatternPath(d, folder, ctx, `%LocalAppData%\Electronic Arts\EA Desktop\CEF\BrowserCache\EADesktop\Cache\Cache_Data\data_*`, vars, "", false)
-		}
 		userPat := builtInPatternPath(d, folder, ctx, d.Extras.BuiltInUserId, vars, "", false)
-		if strings.TrimSpace(userPat) == "" {
-			userPat = builtInPatternPath(d, folder, ctx, `%LocalAppData%\Electronic Arts\EA Desktop\user_*.ini`, vars, "", false)
-		}
-		src, err := basicplatforms.EAImageSource(cachePat, userPat)
+		fallbacks := builtInPatternFallbacks(d, folder, ctx, d.Extras.BuiltInProfileImageFileFallbacks, vars, "", false)
+		src, err := basicplatforms.EAImageSource(cachePat, userPat, fallbacks...)
 		return profileImageSource{LocalPath: src.LocalPath, RemoteURL: src.RemoteURL}, true, err
 	case "rockstar":
 		// Rockstar built-ins should resolve from descriptor paths (Documents), not platform exe folder context.
@@ -44,7 +39,8 @@ func platformProfileImageSource(platformKey, folder string, ctx platform.PathTok
 		if strings.TrimSpace(dataPat) == "" {
 			dataPat = builtInPatternPath(d, "", platform.PathTokenContext{}, `%Documents%\Rockstar Games\Social Club\Launcher\Renderer\Default\Cache\Cache_Data\data_*`, vars, "", false)
 		}
-		src, err := basicplatforms.RockstarImageSource(dataPat)
+		fallbacks := builtInPatternFallbacks(d, "", platform.PathTokenContext{}, d.Extras.BuiltInProfileImageFileFallbacks, vars, "", false)
+		src, err := basicplatforms.RockstarImageSource(dataPat, fallbacks...)
 		return profileImageSource{LocalPath: src.LocalPath, RemoteURL: src.RemoteURL}, true, err
 	default:
 		if built := descriptorBuiltInProfileSource(d, folder, ctx, vars, "", false); strings.TrimSpace(built.LocalPath) != "" || strings.TrimSpace(built.RemoteURL) != "" {
@@ -74,15 +70,10 @@ func platformSuggestedSaveName(platformKey, folder string, ctx platform.PathToke
 	switch key {
 	case "ea desktop":
 		dataPat := builtInPatternPath(d, folder, ctx, d.Extras.BuiltInUsernameFile, vars, "", false)
-		if strings.TrimSpace(dataPat) == "" {
-			dataPat = builtInPatternPath(d, folder, ctx, `%LocalAppData%\Electronic Arts\EA Desktop\CEF\BrowserCache\EADesktop\Cache\Cache_Data\data_*`, vars, "", false)
-		}
 		userPat := builtInPatternPath(d, folder, ctx, d.Extras.BuiltInUserId, vars, "", false)
-		if strings.TrimSpace(userPat) == "" {
-			userPat = builtInPatternPath(d, folder, ctx, `%LocalAppData%\Electronic Arts\EA Desktop\user_*.ini`, vars, "", false)
-		}
 		profileImageProviderLog().Debug("ea suggested-name patterns", "builtInUsernameFile", d.Extras.BuiltInUsernameFile, "builtInUserId", d.Extras.BuiltInUserId, "resolvedDataPattern", dataPat, "resolvedUserPattern", userPat)
-		name, err := basicplatforms.EASuggestedName(dataPat, userPat)
+		fallbacks := builtInPatternFallbacks(d, folder, ctx, d.Extras.BuiltInUsernameFileFallbacks, vars, "", false)
+		name, err := basicplatforms.EASuggestedName(dataPat, userPat, fallbacks...)
 		return strings.TrimSpace(name), true, err
 	case "rockstar":
 		// Rockstar built-ins should resolve from descriptor paths (Documents), not platform exe folder context.
@@ -91,7 +82,8 @@ func platformSuggestedSaveName(platformKey, folder string, ctx platform.PathToke
 			dataPat = builtInPatternPath(d, "", platform.PathTokenContext{}, `%Documents%\Rockstar Games\Social Club\Launcher\Renderer\Default\Cache\Cache_Data\data_*`, vars, "", false)
 		}
 		profileImageProviderLog().Debug("rockstar suggested-name pattern", "builtInUsernameFile", d.Extras.BuiltInUsernameFile, "resolvedDataPattern", dataPat)
-		name, err := basicplatforms.RockstarSuggestedName(dataPat)
+		fallbacks := builtInPatternFallbacks(d, "", platform.PathTokenContext{}, d.Extras.BuiltInUsernameFileFallbacks, vars, "", false)
+		name, err := basicplatforms.RockstarSuggestedName(dataPat, fallbacks...)
 		return strings.TrimSpace(name), true, err
 	case "geforce now":
 		dataPat := builtInPatternPath(d, folder, ctx, d.Extras.BuiltInUsernameFile, vars, "", false)
@@ -99,7 +91,8 @@ func platformSuggestedSaveName(platformKey, folder string, ctx platform.PathToke
 			dataPat = builtInPatternPath(d, folder, ctx, `%LocalAppData%\NVIDIA Corporation\GeForceNOW\CefCache\Default\Cache\Cache_Data\data_*`, vars, "", false)
 		}
 		profileImageProviderLog().Debug("geforce now suggested-name pattern", "builtInUsernameFile", d.Extras.BuiltInUsernameFile, "resolvedDataPattern", dataPat)
-		name, err := basicplatforms.GeForceNowSuggestedName(dataPat)
+		fallbacks := builtInPatternFallbacks(d, folder, ctx, d.Extras.BuiltInUsernameFileFallbacks, vars, "", false)
+		name, err := basicplatforms.GeForceNowSuggestedName(dataPat, fallbacks...)
 		return strings.TrimSpace(name), true, err
 	default:
 		name := strings.TrimSpace(resolveDescriptorValue(d, d.Extras.BuiltInUsernameFile, folder, ctx, vars, "", false))
@@ -148,21 +141,17 @@ func platformProfileImageSourceFromSavedAccount(platformKey, accountName string)
 	switch key {
 	case "ea desktop":
 		cachePat := builtInPatternPath(d, "", platform.PathTokenContext{}, d.Extras.BuiltInProfileImageFile, vars, root, true)
-		if strings.TrimSpace(cachePat) == "" {
-			cachePat = builtInPatternPath(d, "", platform.PathTokenContext{}, `%LocalAppData%\Electronic Arts\EA Desktop\CEF\BrowserCache\EADesktop\Cache\Cache_Data\data_*`, vars, root, true)
-		}
 		userPat := builtInPatternPath(d, "", platform.PathTokenContext{}, d.Extras.BuiltInUserId, vars, root, true)
-		if strings.TrimSpace(userPat) == "" {
-			userPat = builtInPatternPath(d, "", platform.PathTokenContext{}, `%LocalAppData%\Electronic Arts\EA Desktop\user_*.ini`, vars, root, true)
-		}
-		src, err := basicplatforms.EAImageSource(cachePat, userPat)
+		fallbacks := builtInPatternFallbacks(d, "", platform.PathTokenContext{}, d.Extras.BuiltInProfileImageFileFallbacks, vars, root, true)
+		src, err := basicplatforms.EAImageSource(cachePat, userPat, fallbacks...)
 		return profileImageSource{LocalPath: src.LocalPath, RemoteURL: src.RemoteURL}, true, err
 	case "rockstar":
 		dataPat := builtInPatternPath(d, "", platform.PathTokenContext{}, d.Extras.BuiltInProfileImageFile, vars, root, true)
 		if strings.TrimSpace(dataPat) == "" {
 			dataPat = builtInPatternPath(d, "", platform.PathTokenContext{}, `%Documents%\Rockstar Games\Social Club\Launcher\Renderer\Default\Cache\Cache_Data\data_*`, vars, root, true)
 		}
-		src, err := basicplatforms.RockstarImageSource(dataPat)
+		fallbacks := builtInPatternFallbacks(d, "", platform.PathTokenContext{}, d.Extras.BuiltInProfileImageFileFallbacks, vars, root, true)
+		src, err := basicplatforms.RockstarImageSource(dataPat, fallbacks...)
 		return profileImageSource{LocalPath: src.LocalPath, RemoteURL: src.RemoteURL}, true, err
 	default:
 		if built := descriptorBuiltInProfileSource(d, "", platform.PathTokenContext{}, vars, root, true); strings.TrimSpace(built.LocalPath) != "" || strings.TrimSpace(built.RemoteURL) != "" {
@@ -182,6 +171,16 @@ func descriptorBuiltInProfileSource(d platform.Descriptor, folder string, ctx pl
 		return profileImageSource{RemoteURL: p}
 	}
 	return profileImageSource{LocalPath: p}
+}
+
+func builtInPatternFallbacks(d platform.Descriptor, folder string, ctx platform.PathTokenContext, patterns []string, vars map[string]string, accountCacheRoot string, saved bool) []string {
+	var out []string
+	for _, pattern := range patterns {
+		if strings.TrimSpace(pattern) != "" {
+			out = append(out, builtInPatternPath(d, folder, ctx, pattern, vars, accountCacheRoot, saved))
+		}
+	}
+	return out
 }
 
 func builtInPatternPath(d platform.Descriptor, folder string, ctx platform.PathTokenContext, builtInPattern string, vars map[string]string, accountCacheRoot string, saved bool) string {
@@ -206,7 +205,7 @@ func mapLiveBuiltInToSavedPattern(d platform.Descriptor, folder string, ctx plat
 		return ""
 	}
 	tail := strings.TrimPrefix(liveBuiltInPattern, liveBuiltRoot)
-	return filepath.Clean(savedBuiltRoot) + tail
+	return filepath.Join(savedBuiltRoot, strings.TrimLeft(tail, `\/`))
 }
 
 func mapLivePathToSavedPath(d platform.Descriptor, folder string, ctx platform.PathTokenContext, livePath, accountCacheRoot string) string {

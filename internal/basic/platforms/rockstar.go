@@ -2,68 +2,18 @@ package platforms
 
 import (
 	"bytes"
-	"log/slog"
-	"os"
-	"path/filepath"
 	"regexp"
 	"strings"
 	"unicode"
 )
 
-func RockstarImageSource(dataPattern string) (ProfileImageSource, error) {
-	matches, err := filepath.Glob(strings.TrimSpace(dataPattern))
-	if err != nil || len(matches) == 0 {
-		return ProfileImageSource{}, err
-	}
-	sortByModDesc(matches)
-	for _, f := range matches {
-		st, err := os.Stat(f)
-		if err != nil || st.IsDir() {
-			continue
-		}
-		data, err := os.ReadFile(f)
-		if err != nil || len(data) == 0 {
-			continue
-		}
-		if u := parseRockstarAvatarURL(data); u != "" {
-			return ProfileImageSource{RemoteURL: u}, nil
-		}
-	}
-	return ProfileImageSource{}, nil
+func RockstarImageSource(dataPattern string, fallbackPatterns ...string) (ProfileImageSource, error) {
+	url, err := firstCacheValue(dataPattern, fallbackPatterns, parseRockstarAvatarURL)
+	return ProfileImageSource{RemoteURL: url}, err
 }
 
-func RockstarSuggestedName(dataPattern string) (string, error) {
-	matches, err := filepath.Glob(strings.TrimSpace(dataPattern))
-	if err != nil || len(matches) == 0 {
-		slog.Debug("rockstar save-name data files missing", "component", "profile-image-provider", "dataPattern", dataPattern, "err", err)
-		return "", err
-	}
-	slog.Debug("rockstar save-name scanning data files", "component", "profile-image-provider", "dataPattern", dataPattern, "files", len(matches))
-	sortByModDesc(matches)
-	for _, f := range matches {
-		st, err := os.Stat(f)
-		if err != nil || st.IsDir() {
-			if err != nil {
-				slog.Debug("rockstar save-name stat failed", "component", "profile-image-provider", "file", f, "err", err)
-			}
-			continue
-		}
-		data, err := os.ReadFile(f)
-		if err != nil {
-			slog.Debug("rockstar save-name read failed", "component", "profile-image-provider", "file", f, "err", err)
-			continue
-		}
-		if len(data) == 0 {
-			slog.Debug("rockstar save-name empty file", "component", "profile-image-provider", "file", f)
-			continue
-		}
-		if n := parseRockstarNickname(data); n != "" {
-			slog.Debug("rockstar nickname extracted", "component", "profile-image-provider", "file", f, "nickname", n)
-			return n, nil
-		}
-	}
-	slog.Debug("rockstar nickname not found", "component", "profile-image-provider", "dataPattern", dataPattern)
-	return "", nil
+func RockstarSuggestedName(dataPattern string, fallbackPatterns ...string) (string, error) {
+	return firstCacheValue(dataPattern, fallbackPatterns, parseRockstarNickname)
 }
 
 func parseRockstarAvatarURL(data []byte) string {

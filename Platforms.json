@@ -351,6 +351,9 @@
       "GetPathFromShortcutNamed": "EA",
       "ExesToEnd": [ "EADesktop.exe", "EABackgroundService.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+      "RequiredLoginFiles": [
+        "%LocalAppData%\\Electronic Arts\\EA Desktop\\cookie.ini"
+      ],
       "LoginFiles": {
         "%LocalAppData%\\Electronic Arts\\EA Desktop\\": "LocalAppData\\",
         "%ProgramData%\\EA Desktop\\": "ProgramData\\"
@@ -364,8 +367,14 @@
         "BackupFolders": {
           "%LocalAppData%\\Electronic Arts\\EA Desktop\\": "LocalAppData"
         },
-        "BuiltInUsernameFile": "%LocalAppData%\\Electronic Arts\\EA Desktop\\CEF\\BrowserCache\\EADesktop\\Cache\\Cache_Data\\data_*",
-        "BuiltInProfileImageFile": "%LocalAppData%\\Electronic Arts\\EA Desktop\\CEF\\BrowserCache\\EADesktop\\Cache\\Cache_Data\\data_*",
+        "BuiltInUsernameFile": "%LocalAppData%\\Electronic Arts\\EA Desktop\\CEF\\*\\EADesktop\\Default\\Cache\\Cache_Data\\data_*",
+        "BuiltInUsernameFileFallbacks": [
+          "%LocalAppData%\\Electronic Arts\\EA Desktop\\CEF\\BrowserCache\\EADesktop\\Cache\\Cache_Data\\data_*"
+        ],
+        "BuiltInProfileImageFile": "%LocalAppData%\\Electronic Arts\\EA Desktop\\CEF\\*\\EADesktop\\Default\\Cache\\Cache_Data\\data_*",
+        "BuiltInProfileImageFileFallbacks": [
+          "%LocalAppData%\\Electronic Arts\\EA Desktop\\CEF\\BrowserCache\\EADesktop\\Cache\\Cache_Data\\data_*"
+        ],
         "BuiltInUserId": "%LocalAppData%\\Electronic Arts\\EA Desktop\\user_*.ini",
         "BackupFileTypesIgnore": [
           ".log"
@@ -749,5 +758,5 @@
   },
   "Platform-WIP": {
   },
-  "Version": "4.0.12"
+  "Version": "4.0.14"
 }

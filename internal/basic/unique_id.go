@@ -30,6 +30,10 @@ func ReadUniqueID(platformKey string, d platform.Descriptor, platformFolder stri
 	method := strings.TrimSpace(d.UniqueIdMethod)
 	ctx := platform.PathTokenContext{PlatformFolder: platformFolder}
 	slog.Debug("read unique id begin", "platform", platformKey, "method", method, "file", d.UniqueIdFile)
+	if err := validateLiveLoginFiles(d, ctx); err != nil {
+		logUniqueIDResult(platformKey, method, "", err)
+		return "", err
+	}
 
 	switch strings.ToUpper(method) {
 	case "DPAPI_JSON_SELECT":

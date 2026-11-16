@@ -3,8 +3,6 @@ package platforms
 import (
 	"bytes"
 	"encoding/json"
-	"os"
-	"path/filepath"
 	"strings"
 )
 
@@ -14,26 +12,8 @@ type geforceNowUserJSON struct {
 
 // GeForceNowSuggestedName reads Chromium cache blobs under dataPattern (glob),
 // newest first, and returns preferred_username from the first parseable JSON object.
-func GeForceNowSuggestedName(dataPattern string) (string, error) {
-	files, err := filepath.Glob(strings.TrimSpace(dataPattern))
-	if err != nil || len(files) == 0 {
-		return "", err
-	}
-	sortByModDesc(files)
-	for _, f := range files {
-		st, err := os.Stat(f)
-		if err != nil || st.IsDir() {
-			continue
-		}
-		data, err := os.ReadFile(f)
-		if err != nil || len(data) == 0 {
-			continue
-		}
-		if n := parseGeForceNowPreferredUsername(data); n != "" {
-			return n, nil
-		}
-	}
-	return "", nil
+func GeForceNowSuggestedName(dataPattern string, fallbackPatterns ...string) (string, error) {
+	return firstCacheValue(dataPattern, fallbackPatterns, parseGeForceNowPreferredUsername)
 }
 
 func parseGeForceNowPreferredUsername(data []byte) string {

@@ -4,51 +4,22 @@ import (
 	"bytes"
 	"os"
 	"path/filepath"
-	"sort"
 	"strings"
 )
 
-func EAImageSource(cacheDataPattern, userIniPattern string) (ProfileImageSource, error) {
+func EAImageSource(cacheDataPattern, userIniPattern string, fallbackPatterns ...string) (ProfileImageSource, error) {
 	userIDs := eaUserIDsByRecency(userIniPattern)
-	matches, err := filepath.Glob(strings.TrimSpace(cacheDataPattern))
-	if err != nil || len(matches) == 0 {
-		return ProfileImageSource{}, err
-	}
-	sortByModDesc(matches)
-	for _, f := range matches {
-		st, err := os.Stat(f)
-		if err != nil || st.IsDir() {
-			continue
-		}
-		data, err := os.ReadFile(f)
-		if err != nil || len(data) == 0 {
-			continue
-		}
-		url := parseEAAvatarURLForUserIDs(data, userIDs)
-		if strings.TrimSpace(url) != "" {
-			return ProfileImageSource{RemoteURL: url}, nil
-		}
-	}
-	return ProfileImageSource{}, nil
+	url, err := firstCacheValue(cacheDataPattern, fallbackPatterns, func(data []byte) string {
+		return parseEAAvatarURLForUserIDs(data, userIDs)
+	})
+	return ProfileImageSource{RemoteURL: url}, err
 }
 
-func EASuggestedName(dataPattern, userIniPattern string) (string, error) {
+func EASuggestedName(dataPattern, userIniPattern string, fallbackPatterns ...string) (string, error) {
 	userIDs := eaUserIDsByRecency(userIniPattern)
-	files, err := filepath.Glob(strings.TrimSpace(dataPattern))
-	if err != nil || len(files) == 0 {
-		return "", err
-	}
-	sortByModDesc(files)
-	for _, f := range files {
-		data, err := os.ReadFile(f)
-		if err != nil || len(data) == 0 {
-			continue
-		}
-		if n := parseEANameForUserIDs(data, userIDs); n != "" {
-			return n, nil
-		}
-	}
-	return "", nil
+	return firstCacheValue(dataPattern, fallbackPatterns, func(data []byte) string {
+		return parseEANameForUserIDs(data, userIDs)
+	})
 }
 
 func parseEAAvatarURLForUserIDs(data []byte, userIDs []string) string {
@@ -234,15 +205,4 @@ func parseEAStringField(data []byte, key string) string {
 		return ""
 	}
 	return strings.TrimSpace(strings.ReplaceAll(string(rest[:j]), `\/`, `/`))
-}
-
-func sortByModDesc(paths []string) {
-	sort.Slice(paths, func(i, j int) bool {
-		ist, ierr := os.Stat(paths[i])
-		jst, jerr := os.Stat(paths[j])
-		if ierr != nil || jerr != nil {
-			return paths[i] > paths[j]
-		}
-		return ist.ModTime().After(jst.ModTime())
-	})
 }

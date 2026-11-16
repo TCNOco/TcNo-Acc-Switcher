@@ -145,6 +145,13 @@ func main() {
 	// version). In helper mode this call never returns.
 	updater.HandleHelperMode()
 
+	restartArgs, err := winutil.WaitForRestartParent(os.Args[1:])
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "restart handoff:", err)
+		os.Exit(1)
+	}
+	os.Args = append(os.Args[:1], restartArgs...)
+
 	exeDir, err := platform.ResolveExeDir()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "exe dir:", err)
@@ -244,8 +251,7 @@ func main() {
 		}
 		os.Exit(0)
 	}
-	// Wrapped so a failed elevation below can swap in the lock it re-took.
-	defer func() { releaseSingleton() }()
+	defer releaseSingleton()
 	winutil.RegisterSingletonReleaser(releaseSingleton)
 
 	// "Always run as admin" hands over to an elevated copy here, after the
@@ -255,13 +261,8 @@ func main() {
 		if err := winutil.RestartElevated(os.Args[1:]); err != nil {
 			// Declined at the UAC prompt, or blocked by policy. Carry on
 			// unelevated rather than leaving a preference the user cannot reach
-			// to turn off. RestartElevated drops the single-instance lock before
-			// it asks, so take it back.
+			// to turn off. Failed restarts leave the single-instance lock held.
 			slog.Warn("always run as admin: continuing unelevated", "err", err)
-			if again, alreadyRunning, aerr := winutil.TryAcquireSingleton(); aerr == nil && !alreadyRunning {
-				releaseSingleton = again
-				winutil.RegisterSingletonReleaser(again)
-			}
 		}
 	}
 

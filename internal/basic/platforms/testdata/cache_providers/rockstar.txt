@@ -1,0 +1,2 @@
+<RockstarAccount><Nickname>RockstarPlayer</Nickname></RockstarAccount>
+https://prod-avatars.akamaized.net/avatars/player.png

@@ -26,15 +26,18 @@ type DescriptorExtras struct {
 	ProfilePicRegex         string                       `json:"ProfilePicRegex,omitempty"`
 	BuiltInUsernameFile     string                       `json:"BuiltInUsernameFile,omitempty"`
 	BuiltInProfileImageFile string                       `json:"BuiltInProfileImageFile,omitempty"`
-	BuiltInUserId           string                       `json:"BuiltInUserId,omitempty"`
-	ShortcutFolders         []string                     `json:"ShortcutFolders,omitempty"`
-	ShortcutIgnore          []string                     `json:"ShortcutIgnore,omitempty"`
-	ShortcutIncludeMainExe  *bool                        `json:"ShortcutIncludeMainExe,omitempty"`
-	SearchStartMenuForIcon  bool                         `json:"SearchStartMenuForIcon,omitempty"`
-	BackupFileTypesInclude  []string                     `json:"BackupFileTypesInclude,omitempty"`
-	BackupFileTypesIgnore   []string                     `json:"BackupFileTypesIgnore,omitempty"`
-	ClosingMethod           string                       `json:"ClosingMethod,omitempty"`
-	ForceClosingMethod      bool                         `json:"ForceClosingMethod,omitempty"`
+	// Additional cache patterns, scanned together with the primary pattern by recency.
+	BuiltInUsernameFileFallbacks     []string `json:"BuiltInUsernameFileFallbacks,omitempty"`
+	BuiltInProfileImageFileFallbacks []string `json:"BuiltInProfileImageFileFallbacks,omitempty"`
+	BuiltInUserId                    string   `json:"BuiltInUserId,omitempty"`
+	ShortcutFolders                  []string `json:"ShortcutFolders,omitempty"`
+	ShortcutIgnore                   []string `json:"ShortcutIgnore,omitempty"`
+	ShortcutIncludeMainExe           *bool    `json:"ShortcutIncludeMainExe,omitempty"`
+	SearchStartMenuForIcon           bool     `json:"SearchStartMenuForIcon,omitempty"`
+	BackupFileTypesInclude           []string `json:"BackupFileTypesInclude,omitempty"`
+	BackupFileTypesIgnore            []string `json:"BackupFileTypesIgnore,omitempty"`
+	ClosingMethod                    string   `json:"ClosingMethod,omitempty"`
+	ForceClosingMethod               bool     `json:"ForceClosingMethod,omitempty"`
 	// QuitArgs are passed to the platform's own executable to ask it to shut itself down,
 	// e.g. "-shutdown" for Steam. Use it when the platform ignores WM_CLOSE - a launcher that
 	// minimises to tray on close never exits, so the graceful window expires on every switch
@@ -56,14 +59,16 @@ type Descriptor struct {
 	AddNewFilesToClear []string          `json:"AddNewFilesToClear,omitempty"`
 	LoginFiles         map[string]string `json:"LoginFiles,omitempty"`
 	AllFilesRequired   bool              `json:"AllFilesRequired"`
-	DisabledByDefault  bool              `json:"DisabledByDefault"`
-	ExitBeforeInteract bool              `json:"ExitBeforeInteract"`
-	ExitBeforeSave     bool              `json:"ExitBeforeSave"`
-	RegDeleteOnClear   bool              `json:"RegDeleteOnClear"`
-	UniqueIdFile       string            `json:"UniqueIdFile,omitempty"`
-	UniqueIdMethod     string            `json:"UniqueIdMethod,omitempty"`
-	UniqueIdRegex      string            `json:"UniqueIdRegex,omitempty"`
-	Extras             DescriptorExtras  `json:"Extras,omitempty"`
+	// Each pattern must contain a nonempty login file before a session can be saved or restored.
+	RequiredLoginFiles []string         `json:"RequiredLoginFiles,omitempty"`
+	DisabledByDefault  bool             `json:"DisabledByDefault"`
+	ExitBeforeInteract bool             `json:"ExitBeforeInteract"`
+	ExitBeforeSave     bool             `json:"ExitBeforeSave"`
+	RegDeleteOnClear   bool             `json:"RegDeleteOnClear"`
+	UniqueIdFile       string           `json:"UniqueIdFile,omitempty"`
+	UniqueIdMethod     string           `json:"UniqueIdMethod,omitempty"`
+	UniqueIdRegex      string           `json:"UniqueIdRegex,omitempty"`
+	Extras             DescriptorExtras `json:"Extras,omitempty"`
 }
 
 // ParseDescriptor expands PathListToClear entries equal to SAME_AS_LOGIN_FILES into LoginFiles keys.

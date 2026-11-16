@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 	"strings"
 	"syscall"
-	"time"
 	"unsafe"
 
 	"golang.org/x/sys/windows"
@@ -16,31 +15,30 @@ import (
 
 var singletonReleaser func()
 
-// RegisterSingletonReleaser registers a callback run before spawning an elevated copy
-// (e.g. release the app singleton mutex so the new instance can start).
+// RegisterSingletonReleaser registers a callback run after a replacement is launched,
+// immediately before this process exits. Failed launches keep the singleton held.
 func RegisterSingletonReleaser(f func()) {
 	singletonReleaser = f
 }
 
 var (
-	modshell32        = windows.NewLazySystemDLL("shell32.dll")
-	procShellExecuteW = modshell32.NewProc("ShellExecuteW")
+	modshell32 = windows.NewLazySystemDLL("shell32.dll")
 )
 
 // RestartElevated re-launches the current executable with verb "runas" (UAC), forwards extraArgs,
-// then exits this process. Call RegisterSingletonReleaser first so the mutex is released.
+// then exits this process. The replacement waits for our exit before taking any locks.
 func RestartElevated(extraArgs []string) error {
+	return restartWindows("runas", extraArgs)
+}
+
+func restartWindows(verbName string, extraArgs []string) error {
 	self, err := os.Executable()
 	if err != nil {
 		return err
 	}
 	self = filepath.Clean(self)
 
-	if singletonReleaser != nil {
-		singletonReleaser()
-	}
-
-	verb, err := windows.UTF16PtrFromString("runas")
+	verb, err := windows.UTF16PtrFromString(verbName)
 	if err != nil {
 		return err
 	}
@@ -48,7 +46,7 @@ func RestartElevated(extraArgs []string) error {
 	if err != nil {
 		return err
 	}
-	params := joinArgsUTF16(extraArgs)
+	params := joinArgsUTF16(restartArgs(extraArgs, os.Getpid()))
 	var paramsPtr *uint16
 	if params != "" {
 		p, err := windows.UTF16PtrFromString(params)
@@ -62,32 +60,36 @@ func RestartElevated(extraArgs []string) error {
 		return err
 	}
 
-	const swShow = 5
-	r, _, callErr := procShellExecuteW.Call(
-		0,
-		uintptr(unsafe.Pointer(verb)),
-		uintptr(unsafe.Pointer(file)),
-		uintptr(unsafe.Pointer(paramsPtr)),
-		uintptr(unsafe.Pointer(dir)),
-		swShow,
-	)
-	if r <= 32 {
+	info := shellExecuteInfoW{
+		fMask:        seeMaskNoCloseProcess | seeMaskNoAsync,
+		lpVerb:       verb,
+		lpFile:       file,
+		lpParameters: paramsPtr,
+		lpDirectory:  dir,
+		nShow:        swShowNormal,
+	}
+	info.cbSize = uint32(unsafe.Sizeof(info))
+	r, _, callErr := procShellExecuteExW.Call(uintptr(unsafe.Pointer(&info)))
+	if r == 0 {
+		if callErr == syscall.Errno(errorCancelled) {
+			return ErrElevationDeclined
+		}
 		if callErr != nil && callErr != syscall.Errno(0) {
-			return fmt.Errorf("ShellExecuteW runas: %w (code=%d)", callErr, r)
+			return fmt.Errorf("ShellExecuteExW %s: %w", verbName, callErr)
 		}
-		return fmt.Errorf("ShellExecuteW runas failed (code=%d)", r)
+		return fmt.Errorf("ShellExecuteExW %s failed", verbName)
 	}
-
-	name, _ := windows.UTF16PtrFromString(singletonMutexName)
-	for i := 0; i < 30; i++ {
-		h, err := windows.OpenMutex(windows.SYNCHRONIZE, false, name)
-		if err == nil {
-			windows.CloseHandle(h)
-			os.Exit(0)
-		}
-		time.Sleep(100 * time.Millisecond)
+	if info.hProcess == 0 {
+		return fmt.Errorf("ShellExecuteExW %s returned no process handle", verbName)
 	}
-	return fmt.Errorf("elevated restart failed: child process did not start within 3s")
+	_ = windows.CloseHandle(info.hProcess)
+	// Do not wait for the child to acquire our singleton: Wails holds a second
+	// singleton until process exit, so the child must wait for us instead.
+	if singletonReleaser != nil {
+		singletonReleaser()
+	}
+	os.Exit(0)
+	return nil
 }
 
 func joinArgsUTF16(args []string) string {
@@ -99,7 +101,7 @@ func joinArgsUTF16(args []string) string {
 		if i > 0 {
 			b.WriteByte(' ')
 		}
-		b.WriteString(syscall.EscapeArg(strings.TrimSpace(a)))
+		b.WriteString(syscall.EscapeArg(a))
 	}
 	return b.String()
 }
