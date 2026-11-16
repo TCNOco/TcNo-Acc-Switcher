@@ -1,7 +1,6 @@
 package basic
 
 import (
-	"path/filepath"
 	"strings"
 
 	"TcNo-Acc-Switcher/internal/paths"
@@ -92,11 +91,7 @@ func expandPlatformPath(s string, platformFolder string, ctx platform.PathTokenC
 }
 
 func accountCacheDir(platformKey, accountName string) (string, error) {
-	base, err := loginCacheRoot(platformKey)
-	if err != nil {
-		return "", err
-	}
-	return filepath.Join(base, safeFileName(accountName)), nil
+	return paths.AccountCacheDir(platformKey, accountName)
 }
 
 func safeFileName(s string) string {

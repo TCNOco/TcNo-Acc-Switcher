@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"TcNo-Acc-Switcher/internal/accountindex"
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
 )
@@ -537,7 +538,10 @@ func collectPlainSavedSessions() ([]savedSession, error) {
 			return nil, err
 		}
 		for uid, accountName := range ids {
-			dir := filepath.Join(root, platformKey, paths.SanitizePathSegment(accountName))
+			dir, err := paths.AccountCacheDir(platformKey, accountName)
+			if err != nil {
+				return nil, err
+			}
 			if st, err := os.Stat(dir); err == nil && st.IsDir() {
 				blob, err := accountBlobPath(platformKey, uid)
 				if err != nil {
@@ -853,7 +857,7 @@ func newStagingDir(kind, platformKey, uniqueID string) (string, error) {
 }
 
 func readIDsLite(path string) (map[string]string, error) {
-	data, err := os.ReadFile(path)
+	data, err := accountindex.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return map[string]string{}, nil
@@ -862,7 +866,7 @@ func readIDsLite(path string) (map[string]string, error) {
 	}
 	var f idsFileLite
 	if err := json.Unmarshal(data, &f); err != nil {
-		return map[string]string{}, nil
+		return nil, err
 	}
 	if f.IDs == nil {
 		f.IDs = map[string]string{}

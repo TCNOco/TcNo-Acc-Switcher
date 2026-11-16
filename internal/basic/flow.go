@@ -147,6 +147,9 @@ func saveCurrentAfterKill(deps FlowDeps, accountName string, fc FlowContext) err
 	if err != nil {
 		return err
 	}
+	if strings.TrimSpace(uid) == "" {
+		return fmt.Errorf("no current account ID found; sign in to the launcher before saving")
+	}
 
 	idsFileData, err := readIdsFile(fc.PlatformKey)
 	if err != nil {

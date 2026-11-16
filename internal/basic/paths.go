@@ -9,6 +9,7 @@ import (
 	"sync"
 	"time"
 
+	"TcNo-Acc-Switcher/internal/accountindex"
 	"TcNo-Acc-Switcher/internal/fsutil"
 	"TcNo-Acc-Switcher/internal/paths"
 )
@@ -74,7 +75,7 @@ func readIdsFile(platformKey string) (idsFile, error) {
 	if err != nil {
 		return idsFile{}, err
 	}
-	data, err := os.ReadFile(p)
+	data, err := accountindex.ReadFile(p)
 	if err != nil {
 		if os.IsNotExist(err) {
 			f := idsFile{IDs: map[string]string{}, LastUsed: map[string]string{}}
@@ -85,9 +86,7 @@ func readIdsFile(platformKey string) (idsFile, error) {
 	}
 	var f idsFile
 	if err := json.Unmarshal(data, &f); err != nil {
-		f2 := idsFile{IDs: map[string]string{}, LastUsed: map[string]string{}}
-		normalizeTagMaps(&f2)
-		return f2, nil
+		return idsFile{}, fmt.Errorf("decode %s: %w", p, err)
 	}
 	if f.IDs == nil {
 		f.IDs = map[string]string{}
