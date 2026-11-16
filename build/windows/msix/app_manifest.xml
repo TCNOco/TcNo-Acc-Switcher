@@ -10,7 +10,7 @@
   <Identity 
     Name="com.example.tcnoaccswitcher"
     Publisher="CN=My Company"
-    Version="0.1.0.0" 
+    Version="4.0.9.0"
     ProcessorArchitecture="x64" />
   
   <Properties>

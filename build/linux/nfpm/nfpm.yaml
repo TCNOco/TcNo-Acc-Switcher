@@ -7,7 +7,7 @@
 name: "tcno-acc-switcher"
 arch: ${GOARCH}
 platform: "linux"
-version: "0.1.0"
+version: "4.0.9"
 section: "utils"
 priority: "optional"
 maintainer: ${GIT_COMMITTER_NAME} <${GIT_COMMITTER_EMAIL}>

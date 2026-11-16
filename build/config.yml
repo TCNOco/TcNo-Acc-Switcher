@@ -11,7 +11,7 @@ info:
   description: "A Super-fast account switcher for Steam, Battle.net, Epic Games, Origin, Riot, Ubisoft and many others! " # The application description
   copyright: "(c) 2026, TroubleChute (Wesley Pyburn)" # Copyright text
   comments: "Currently an experimental version!" # Comments
-  version: "4.0.8" # The application version (semver)
+  version: "4.0.9" # The application version (semver)
   # cfBundleIconName: "appicon" # The macOS icon name in Assets.car icon bundles (optional)
   #                               # Should match the name of your .icon file without the extension
   #                               # If not set and Assets.car exists, defaults to "appicon"

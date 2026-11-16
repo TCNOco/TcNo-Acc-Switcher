@@ -6,10 +6,10 @@
 ;Defaults (override via -D on makensis command line)
 
 !ifndef VERSION
-  !define VERSION "0.0.0.0"
+  !define VERSION "4.0.9.0"
 !endif
 !ifndef DISPLAY_VERSION
-  !define DISPLAY_VERSION "0.0.0_0"
+  !define DISPLAY_VERSION "4.0.9"
 !endif
 
 !ifndef INSTALLER_7Z

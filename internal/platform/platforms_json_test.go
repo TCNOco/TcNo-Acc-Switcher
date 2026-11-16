@@ -32,8 +32,8 @@ func TestBattleNetFreshLoginFilesAreOnlyClearedForAddNew(t *testing.T) {
 		t.Fatalf("normal switches must only change the selected email: %v", d.PathListToClear)
 	}
 	version, err := updatecheck.ParsePlatformsJSONVersion(raw)
-	if err != nil || !updatecheck.IsVersionNewer(version, "4.0.11") {
-		t.Fatalf("catalog %q will not upgrade existing 4.0.11 copies: %v", version, err)
+	if err != nil || !updatecheck.IsVersionNewer(version, "4.0.8") {
+		t.Fatalf("catalog %q will not upgrade existing 4.0.8 copies: %v", version, err)
 	}
 }
 

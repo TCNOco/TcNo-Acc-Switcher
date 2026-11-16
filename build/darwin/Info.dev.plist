@@ -10,11 +10,11 @@
         <key>CFBundleIdentifier</key>
             <string>com.example.tcnoaccswitcher</string>
         <key>CFBundleVersion</key>
-            <string>0.1.0</string>
+            <string>4.0.9</string>
         <key>CFBundleGetInfoString</key>
             <string>This is a comment</string>
         <key>CFBundleShortVersionString</key>
-            <string>0.1.0</string>
+            <string>4.0.9</string>
         <key>CFBundleIconFile</key>
             <string>icons</string>
         <key>CFBundleIconName</key>
