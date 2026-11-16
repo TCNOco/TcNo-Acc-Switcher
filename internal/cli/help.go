@@ -16,6 +16,8 @@ Extra argv for the platform exe (e.g. Steam) after swap/launch from CLI or short
 Swap & launch (desktop shortcuts / game tiles):
                      +s:<steamId64> --run-appid=<appId>
                      (Steam only; launches steam://rungameid/<appId> after swap)
+                     tcno://s:<steamId64> steam://rungameid/<appId>
+                     (legacy tcno:\s: links are also supported)
                      +s:<id> --run-shortcut=<urlEncodedFile.lnk>
                      +<platformShort>:<uniqueId> --run-shortcut=<urlEncodedFile.lnk>
                      (launches cached .lnk/.url after swap; resolves Desktop / Start Menu if cache missing)

@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"unicode"
 )
 
 // Kind describes the primary CLI intent after parsing.
@@ -73,17 +74,11 @@ func (p Parsed) EffectiveSlogLevel() slog.Level {
 	return slog.LevelInfo
 }
 
-// NormalizeProtocolArg strips tcno:// and returns the payload path (e.g. "s:765...").
+// NormalizeProtocolArg strips the tcno scheme and modern or legacy path separators.
 func NormalizeProtocolArg(s string) string {
 	s = strings.TrimSpace(s)
-	low := strings.ToLower(s)
-	if strings.HasPrefix(low, "tcno://") {
-		s = s[len("tcno://"):]
-	} else if strings.HasPrefix(low, "tcno:") && len(s) > 5 && s[5] == '/' {
-		s = s[5:]
-		if strings.HasPrefix(s, "//") {
-			s = s[2:]
-		}
+	if strings.HasPrefix(strings.ToLower(s), "tcno:") {
+		s = strings.TrimLeft(s[len("tcno:"):], `/\`)
 	}
 	return strings.TrimSpace(s)
 }
@@ -103,8 +98,31 @@ func Parse(argv []string, idx *PlatformIndex) (Parsed, error) {
 		if a == "" {
 			continue
 		}
-		if strings.Contains(a, "://") || strings.HasPrefix(strings.ToLower(a), "tcno:") {
+		if strings.HasPrefix(strings.ToLower(a), "tcno:") {
 			a = NormalizeProtocolArg(a)
+			// Windows passes the whole protocol URL as one quoted argument.
+			// Browsers may escape the space before an appended Steam URI.
+			decoded, err := url.PathUnescape(a)
+			if err != nil {
+				return Parsed{}, fmt.Errorf("tcno protocol: %w", err)
+			}
+			a = strings.TrimSpace(decoded)
+			var gameURI string
+			if split := strings.LastIndexFunc(a, unicode.IsSpace); split >= 0 &&
+				strings.HasPrefix(strings.ToLower(a[split+1:]), "steam://rungameid/") {
+				gameURI = a[split+1:]
+				a = strings.TrimSpace(a[:split])
+			}
+			// Protocol swap tokens omit the CLI's leading '+'. Keep logout
+			// and page payloads on their existing command paths.
+			if strings.Contains(a, ":") && !strings.HasPrefix(a, "+") && !isLogoutToken(a) {
+				a = "+" + a
+			}
+			expanded = append(expanded, a)
+			if gameURI != "" {
+				expanded = append(expanded, gameURI)
+			}
+			continue
 		}
 		expanded = append(expanded, a)
 	}
@@ -373,7 +391,7 @@ func parseStartupToastFlag(a string) (string, bool) {
 func parseRunAppIDFlag(a string) (string, bool) {
 	s := strings.TrimSpace(a)
 	lo := strings.ToLower(s)
-	for _, prefix := range []string{"--run-appid=", "-run-appid="} {
+	for _, prefix := range []string{"--run-appid=", "-run-appid=", "steam://rungameid/"} {
 		if strings.HasPrefix(lo, strings.ToLower(prefix)) {
 			return strings.TrimSpace(s[len(prefix):]), true
 		}

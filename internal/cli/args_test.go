@@ -40,6 +40,85 @@ func TestParseRunAppIDSteam(t *testing.T) {
 	}
 }
 
+func TestParseProtocolSteamSwapAndLaunch(t *testing.T) {
+	for _, tc := range []struct {
+		name  string
+		argv  []string
+		state int
+	}{
+		{"legacy single backslash", []string{`tcno:\s:76561197960287930 steam://rungameid/730`}, -1},
+		{"legacy double backslash", []string{`tcno:\\s:76561197960287930 steam://rungameid/730`}, -1},
+		{"modern quoted payload", []string{"tcno://s:76561197960287930 steam://rungameid/730"}, -1},
+		{"separate arguments", []string{`tcno:\s:76561197960287930`, "steam://rungameid/730"}, -1},
+		{"persona and escaped space", []string{"tcno://s:76561197960287930:3%20steam://rungameid/730"}, 3},
+		{"case and whitespace", []string{" TCNO:///s:76561197960287930:0 \t STEAM://RUNGAMEID/730 "}, 0},
+		{"explicit plus", []string{"tcno://+s:76561197960287930 steam://rungameid/730"}, -1},
+		{"CLI appended URI", []string{"+s:76561197960287930", "steam://rungameid/730"}, -1},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			p, err := Parse(tc.argv, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if p.Kind != KindSwapSteam || p.PlatformKey != "Steam" ||
+				p.SteamID64 != "76561197960287930" || p.PersonaState != tc.state || p.RunAppID != "730" {
+				t.Fatalf("got %#v", p)
+			}
+			if len(p.PassthroughLaunchArgs) != 0 || !p.NeedsHeadlessMutex() {
+				t.Fatalf("expected a swap with no passthrough arguments, got %#v", p)
+			}
+		})
+	}
+}
+
+func TestParseProtocolCommands(t *testing.T) {
+	idx := &PlatformIndex{
+		Names:             map[string]string{"steam": "Steam", "discord": "Discord"},
+		IdentifierAliases: map[string]string{"d": "Discord", "valve": "Steam"},
+	}
+	for _, tc := range []struct {
+		arg      string
+		kind     Kind
+		platform string
+		id       string
+	}{
+		{"tcno://s:76561197960287930", KindSwapSteam, "Steam", ""},
+		{`tcno:\valve:76561197960287930`, KindSwapSteam, "Steam", ""},
+		{"tcno://d:123456789012345678", KindSwapBasic, "Discord", "123456789012345678"},
+		{"tcno://d:name%20with%20spaces", KindSwapBasic, "Discord", "name with spaces"},
+		{"tcno://logout:Steam", KindLogout, "", ""},
+		{"tcno://Steam", KindOpenPage, "", ""},
+	} {
+		t.Run(tc.arg, func(t *testing.T) {
+			p, err := Parse([]string{tc.arg}, idx)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if p.Kind != tc.kind || p.PlatformKey != tc.platform || p.UniqueID != tc.id {
+				t.Fatalf("got %#v", p)
+			}
+		})
+	}
+}
+
+func TestParseAppendedSteamURIValidation(t *testing.T) {
+	idx := &PlatformIndex{IdentifierAliases: map[string]string{"d": "Discord"}}
+	for _, argv := range [][]string{
+		{"tcno://s:76561197960287930 steam://rungameid/"},
+		{"tcno://s:76561197960287930 steam://rungameid/730?extra=1"},
+		{"tcno://s:76561197960287930 steam://rungameid/not-a-number"},
+		{"tcno://s:76561197960287930 steam://rungameid/730", "--run-appid=440"},
+		{"tcno://s:76561197960287930 steam://rungameid/730", "--run-shortcut=game.lnk"},
+		{"tcno://d:123 steam://rungameid/730"},
+		{"steam://rungameid/730"},
+		{"tcno://s:76561197960287930%ZZ"},
+	} {
+		if p, err := Parse(argv, idx); err == nil {
+			t.Errorf("Parse(%q) = %#v, want error", argv, p)
+		}
+	}
+}
+
 func TestParseRunAppIDRequiresSteam(t *testing.T) {
 	idx := &PlatformIndex{
 		Names:             map[string]string{"steam": "Steam", "epic": "Epic Games"},
