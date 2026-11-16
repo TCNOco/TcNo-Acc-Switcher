@@ -18,6 +18,7 @@
   import { formatToastWithError } from "../lib/formatWailsError";
   import { offerRestartIfNeedsAdmin, isNeedsAdminError } from "../lib/adminFlow";
   import { openPrompt } from "../stores/modal";
+  import { saveCurrentAccount } from "../lib/accounts/saveCurrent";
   import { onDestroy } from "svelte";
   import { openAuthenticator } from "../lib/authenticators";
   import { publishAuthenticatorAction, clearAuthenticatorAction } from "../stores/authenticatorAction";
@@ -175,27 +176,26 @@
     searchHay: (a: BasicRow, _q: string) => [a.displayName, a.uniqueId, a.note ?? ""].join("\n"),
 
     saveCurrent: async () => {
-      let suggestedName = "";
+      const platformKey = name;
       try {
-        suggestedName = await BasicService.SuggestedSaveAccountName(name);
-      } catch (e) {
-        await offerRestartIfNeedsAdmin(e, name);
-        if (isNeedsAdminError(e)) return false;
-      }
-      const displayName = await openPrompt({
-        title: get(t)("Modal_SaveCurrent_Title"),
-        body: get(t)("Modal_SaveCurrent_Body"),
-        positiveLabel: get(t)("Button_SaveCurrent"),
-        negativeLabel: get(t)("Button_Cancel"),
-        initialValue: suggestedName || "",
-      });
-      if (displayName === null || !String(displayName).trim()) return false;
-      try {
-        await BasicService.SaveCurrent(name, String(displayName).trim());
+        const saved = await saveCurrentAccount({
+          prepare: () => Call.ByName("TcNo-Acc-Switcher/internal/basic.BasicService.PrepareSaveCurrent", platformKey),
+          prompt: (suggestedName) => openPrompt({
+            title: get(t)("Modal_SaveCurrent_Title"),
+            body: get(t)("Modal_SaveCurrent_Body"),
+            positiveLabel: get(t)("Button_SaveCurrent"),
+            negativeLabel: get(t)("Button_Cancel"),
+            initialValue: suggestedName || "",
+          }),
+          save: (displayName) => BasicService.SaveCurrent(platformKey, displayName),
+          cancelPreparation: () => Call.ByName("TcNo-Acc-Switcher/internal/basic.BasicService.CancelPreparedSave", platformKey),
+          isActive: () => !disposed && name === platformKey,
+        });
+        if (!saved) return false;
         pushToast({ type: "success", message: get(t)("Toast_AccountSaved"), duration: 4000 });
         return true;
       } catch (e) {
-        await offerRestartIfNeedsAdmin(e, name);
+        await offerRestartIfNeedsAdmin(e, platformKey);
         if (isNeedsAdminError(e)) return false;
         pushToast({ type: "error", message: formatToastWithError(get(t)("Toast_SaveFailed"), e), duration: 8000 });
         return false;

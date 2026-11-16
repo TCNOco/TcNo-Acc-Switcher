@@ -20,6 +20,7 @@ import (
 type BasicService struct {
 	mu                      sync.Mutex
 	PS                      *platform.PlatformService
+	preparedSave            *preparedSaveCurrent
 	gameStatsActiveMu       sync.RWMutex
 	gameStatsActivePlatform string
 
@@ -106,7 +107,14 @@ func (b *BasicService) SaveCurrent(platformKey, accountName string) error {
 	}
 	platformKey = strings.TrimSpace(platformKey)
 	accountName = strings.TrimSpace(accountName)
-	err := SaveCurrent(b.deps(), platformKey, accountName)
+	var err error
+	if b.preparedSave != nil && b.preparedSave.flow.PlatformKey == platformKey {
+		prepared := b.preparedSave
+		b.preparedSave = nil
+		err = prepared.save(b.deps(), accountName)
+	} else {
+		err = SaveCurrent(b.deps(), platformKey, accountName)
+	}
 	if err != nil {
 		slog.Default().Error("SaveCurrent failed",
 			"platform", platformKey,
@@ -118,6 +126,12 @@ func (b *BasicService) SaveCurrent(platformKey, accountName string) error {
 
 // SuggestedSaveAccountName returns a platform-specific suggested display name for Save Current.
 func (b *BasicService) SuggestedSaveAccountName(platformKey string) (string, error) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	return b.suggestedSaveAccountName(platformKey)
+}
+
+func (b *BasicService) suggestedSaveAccountName(platformKey string) (string, error) {
 	if err := security.RequireUnlocked(); err != nil {
 		return "", err
 	}
