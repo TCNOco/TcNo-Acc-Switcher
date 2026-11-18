@@ -37,6 +37,29 @@ func TestBattleNetFreshLoginFilesAreOnlyClearedForAddNew(t *testing.T) {
 	}
 }
 
+func TestUbisoftClearsSiegeStagedExeOnlyOnSwitch(t *testing.T) {
+	raw, err := os.ReadFile(filepath.Join("..", "..", "Platforms.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	d, err := ParseDescriptor(raw, "Ubisoft")
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []string{
+		`REG_DIR::HKLM\SOFTWARE\WOW6432Node\Ubisoft\Launcher\Installs\635:InstallDir::multiexe\RainbowSix.exe`,
+		`REG_DIR::HKLM\SOFTWARE\WOW6432Node\Ubisoft\Launcher\Installs\1842:InstallDir::multiexe\RainbowSix.exe`,
+	}
+	if !slices.Equal(d.SwitchFilesToClear, want) {
+		t.Fatalf("Ubisoft switch files = %v, want %v", d.SwitchFilesToClear, want)
+	}
+	for _, path := range want {
+		if _, saved := d.LoginFiles[path]; saved || slices.Contains(d.PathListToClear, path) {
+			t.Fatalf("staged game exe must not be saved per account: %s", path)
+		}
+	}
+}
+
 func TestShippedEpicCredentialSessionCatalogUpgrade(t *testing.T) {
 	raw, err := os.ReadFile(filepath.Join("..", "..", "Platforms.json"))
 	if err != nil {
