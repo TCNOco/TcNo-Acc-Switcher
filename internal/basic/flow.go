@@ -807,6 +807,10 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 	if err := validateSavedLoginSession(fc, accName, uniqueID); err != nil {
 		return err
 	}
+	switchFiles, err := resolveSwitchFilesToClear(fc)
+	if err != nil {
+		return err
+	}
 	var restorePrepared func() error
 	if isCredentialSessionFlow(fc) && shouldRestoreSavedSession(fc, cur, uniqueID, curErr) {
 		var cleanup func()
@@ -863,6 +867,7 @@ func SwapTo(deps FlowDeps, platformKey, uniqueID string, extraLaunchArgs []strin
 			return wrapNeedsAdminIfPermission(err)
 		}
 	}
+	clearSwitchFiles(switchFiles)
 	_ = touchLastUsed(fc.PlatformKey, uniqueID)
 	recordBasicTrayRecent(platformKey, uniqueID)
 	stability.OnSuccessfulSwitch(platformKey)
@@ -904,6 +909,10 @@ func AddNew(deps FlowDeps, platformKey string) (err error) {
 	if err != nil {
 		return err
 	}
+	switchFiles, err := resolveSwitchFilesToClear(fc)
+	if err != nil {
+		return err
+	}
 	if err := killPlatformExes(deps, fc); err != nil {
 		return err
 	}
@@ -926,6 +935,7 @@ func AddNew(deps FlowDeps, platformKey string) (err error) {
 	}); err != nil {
 		return err
 	}
+	clearSwitchFiles(switchFiles)
 	if !fc.Settings.AutoStart {
 		tray.MaybeHideMainWindow()
 		return nil

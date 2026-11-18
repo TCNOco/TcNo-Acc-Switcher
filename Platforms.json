@@ -414,6 +414,10 @@
       "GetPathFromShortcutNamed": "Ubisoft Connect",
       "ExesToEnd": [ "upc.exe", "UplayService.exe", "UplayWebCore.exe" ],
       "PathListToClear": [ "SAME_AS_LOGIN_FILES" ],
+      "SwitchFilesToClear": [
+        "REG_DIR::HKLM\\SOFTWARE\\WOW6432Node\\Ubisoft\\Launcher\\Installs\\635:InstallDir::multiexe\\RainbowSix.exe",
+        "REG_DIR::HKLM\\SOFTWARE\\WOW6432Node\\Ubisoft\\Launcher\\Installs\\1842:InstallDir::multiexe\\RainbowSix.exe"
+      ],
       "LoginFiles": {
         "%Platform_Folder%\\logs\\launcher_log.txt": "logs\\launcher_log.txt",
         "%LocalAppData%\\Ubisoft Game Launcher\\ConnectSecureStorage.dat": "ConnectSecureStorage.dat",

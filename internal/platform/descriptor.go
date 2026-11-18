@@ -70,7 +70,10 @@ type Descriptor struct {
 	ExesToEnd                []string               `json:"ExesToEnd,omitempty"`
 	PathListToClear          []string               `json:"PathListToClear,omitempty"`
 	// Exact transient login files reset only by Add New, never by a swap.
-	AddNewFilesToClear []string          `json:"AddNewFilesToClear,omitempty"`
+	AddNewFilesToClear []string `json:"AddNewFilesToClear,omitempty"`
+	// Exact files a game leaves for the last account; deleted when the account changes, never saved.
+	// Entries are paths or REG_DIR::<HIVE\Key:Value>::<relative path> for registry-recorded install folders.
+	SwitchFilesToClear []string          `json:"SwitchFilesToClear,omitempty"`
 	LoginFiles         map[string]string `json:"LoginFiles,omitempty"`
 	AllFilesRequired   bool              `json:"AllFilesRequired"`
 	// Each pattern must contain a nonempty login file before a session can be saved or restored.
